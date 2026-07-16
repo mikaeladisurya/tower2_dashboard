@@ -1,0 +1,31 @@
+request_id,batch_id,batch_name,kategori_rekrutmen,job_position,job_category,unit_peminta,region,jumlah_kebutuhan,pendidikan_minimal,kompetensi_utama,priority
+REQ0001,B090,Batch 90,Angkatan Teknik,Electrical Engineer,Teknik,UID Jawa Barat,Jawa,60,S1,Sesuai jabatan,High
+REQ0002,B090,Batch 90,Angkatan Teknik,Mechanical Engineer,Teknik,UID Jakarta Raya,Jawa,55,S1,Sesuai jabatan,High
+REQ0003,B090,Batch 90,Angkatan Teknik,Civil Engineer,Teknik,UID Jawa Tengah,Jawa,40,S1,Sesuai jabatan,Medium
+REQ0004,B090,Batch 90,Angkatan Teknik,IT Engineer,Teknik,UID Jawa Timur,Jawa,45,S1,Sesuai jabatan,High
+REQ0005,B090,Batch 90,Angkatan Teknik,Operator Pembangkit,Teknik,UIP Sumatera,Sumatera,100,S1,Sesuai jabatan,High
+REQ0006,B090,Batch 90,Angkatan Non-Teknik,Finance Officer,Non-Teknik,UID Jawa Barat,Jawa,35,S1,Sesuai jabatan,Medium
+REQ0007,B090,Batch 90,Angkatan Non-Teknik,HR Officer,Non-Teknik,UID Jakarta Raya,Jawa,25,S1,Sesuai jabatan,Medium
+REQ0008,B090,Batch 90,Angkatan Non-Teknik,Legal Officer,Non-Teknik,UID Jawa Tengah,Jawa,15,S1,Sesuai jabatan,Low
+REQ0009,B090,Batch 90,Angkatan Non-Teknik,Supply Chain Officer,Non-Teknik,UID Jawa Timur,Jawa,20,S1,Sesuai jabatan,Medium
+REQ0010,B090,Batch 90,Angkatan Non-Teknik,Corporate Communication,Non-Teknik,UIP Sumatera,Sumatera,15,S1,Sesuai jabatan,Low
+REQ0011,B091,Batch 91,Angkatan Teknik,Electrical Engineer,Teknik,UID Jawa Barat,Jawa,60,S1,Sesuai jabatan,High
+REQ0012,B091,Batch 91,Angkatan Teknik,Mechanical Engineer,Teknik,UID Jakarta Raya,Jawa,55,S1,Sesuai jabatan,High
+REQ0013,B091,Batch 91,Angkatan Teknik,Civil Engineer,Teknik,UID Jawa Tengah,Jawa,40,S1,Sesuai jabatan,Medium
+REQ0014,B091,Batch 91,Angkatan Teknik,IT Engineer,Teknik,UID Jawa Timur,Jawa,45,S1,Sesuai jabatan,High
+REQ0015,B091,Batch 91,Angkatan Teknik,Operator Pembangkit,Teknik,UIP Sumatera,Sumatera,100,S1,Sesuai jabatan,High
+REQ0016,B091,Batch 91,Angkatan Non-Teknik,Finance Officer,Non-Teknik,UID Jawa Barat,Jawa,35,S1,Sesuai jabatan,Medium
+REQ0017,B091,Batch 91,Angkatan Non-Teknik,HR Officer,Non-Teknik,UID Jakarta Raya,Jawa,25,S1,Sesuai jabatan,Medium
+REQ0018,B091,Batch 91,Angkatan Non-Teknik,Legal Officer,Non-Teknik,UID Jawa Tengah,Jawa,15,S1,Sesuai jabatan,Low
+REQ0019,B091,Batch 91,Angkatan Non-Teknik,Supply Chain Officer,Non-Teknik,UID Jawa Timur,Jawa,20,S1,Sesuai jabatan,Medium
+REQ0020,B091,Batch 91,Angkatan Non-Teknik,Corporate Communication,Non-Teknik,UIP Sumatera,Sumatera,15,S1,Sesuai jabatan,Low
+REQ0021,B092,Batch 92,Angkatan Teknik,Electrical Engineer,Teknik,UID Jawa Barat,Jawa,60,S1,Sesuai jabatan,High
+REQ0022,B092,Batch 92,Angkatan Teknik,Mechanical Engineer,Teknik,UID Jakarta Raya,Jawa,55,S1,Sesuai jabatan,High
+REQ0023,B092,Batch 92,Angkatan Teknik,Civil Engineer,Teknik,UID Jawa Tengah,Jawa,40,S1,Sesuai jabatan,Medium
+REQ0024,B092,Batch 92,Angkatan Teknik,IT Engineer,Teknik,UID Jawa Timur,Jawa,45,S1,Sesuai jabatan,High
+REQ0025,B092,Batch 92,Angkatan Teknik,Operator Pembangkit,Teknik,UIP Sumatera,Sumatera,100,S1,Sesuai jabatan,High
+REQ0026,B092,Batch 92,Angkatan Non-Teknik,Finance Officer,Non-Teknik,UID Jawa Barat,Jawa,35,S1,Sesuai jabatan,Medium
+REQ0027,B092,Batch 92,Angkatan Non-Teknik,HR Officer,Non-Teknik,UID Jakarta Raya,Jawa,25,S1,Sesuai jabatan,Medium
+REQ0028,B092,Batch 92,Angkatan Non-Teknik,Legal Officer,Non-Teknik,UID Jawa Tengah,Jawa,15,S1,Sesuai jabatan,Low
+REQ0029,B092,Batch 92,Angkatan Non-Teknik,Supply Chain Officer,Non-Teknik,UID Jawa Timur,Jawa,20,S1,Sesuai jabatan,Medium
+REQ0030,B092,Batch 92,Angkatan Non-Teknik,Corporate Communication,Non-Teknik,UIP Sumatera,Sumatera,15,S1,Sesuai jabatan,Low

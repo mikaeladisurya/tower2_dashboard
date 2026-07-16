@@ -1,0 +1,4 @@
+batch_id,batch_name,program_rekrutmen,tahun,tgl_pembukaan,tgl_penutupan,target_headcount,unit_penyelenggara,status
+B090,Batch 90,Reguler,2026,2026-01-05,2026-02-05,500,DIV HTD,Closed
+B091,Batch 91,Reguler,2026,2026-05-01,2026-05-31,700,DIV HTD,Closed
+B092,Batch 92,BUMN,2026,2026-09-01,2026-09-30,800,DIV HTD,Open

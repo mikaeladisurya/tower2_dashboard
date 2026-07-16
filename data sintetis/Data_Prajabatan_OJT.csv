@@ -1,0 +1,821 @@
+candidate_id,batch_id,request_id,job_position,job_category,prajabatan_batch,ojt_start_date,ojt_end_date,unit_placement,region,mentor,ojt_status,employment_status
+C00011,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 4,Completed,Permanent
+C00016,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 32,Completed,Permanent
+C00017,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 14,Completed,Permanent
+C00020,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 70,Completed,Permanent
+C00022,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 55,Completed,Permanent
+C00032,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 12,Completed,Permanent
+C00035,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 65,Completed,Permanent
+C00039,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 72,Completed,Permanent
+C00045,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 70,Completed,Permanent
+C00052,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 58,Completed,Permanent
+C00055,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 1,Completed,Permanent
+C00059,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 21,On Going,On OJT
+C00062,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 44,Completed,Permanent
+C00067,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 28,Completed,Permanent
+C00069,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 44,On Going,On OJT
+C00071,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 49,Completed,Permanent
+C00072,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 45,Completed,Permanent
+C00074,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 6,Completed,Permanent
+C00078,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 69,Completed,Permanent
+C00079,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 49,Completed,Permanent
+C00085,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 38,Completed,Permanent
+C00087,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 80,On Going,On OJT
+C00092,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 47,On Going,On OJT
+C00093,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 9,Completed,Permanent
+C00097,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 30,Completed,Permanent
+C00105,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 11,On Going,On OJT
+C00113,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 13,On Going,On OJT
+C00114,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 59,Completed,Permanent
+C00116,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 47,Completed,Permanent
+C00118,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 46,Completed,Permanent
+C00120,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 35,Completed,Permanent
+C00122,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 10,Completed,Permanent
+C00127,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 22,Completed,Permanent
+C00128,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 32,Completed,Permanent
+C00136,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 49,Completed,Permanent
+C00142,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 72,Completed,Permanent
+C00145,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 42,Completed,Permanent
+C00148,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 8,On Going,On OJT
+C00156,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 5,Completed,Permanent
+C00160,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 52,On Going,On OJT
+C00161,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 28,Completed,Permanent
+C00172,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 73,On Going,On OJT
+C00174,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 41,On Going,On OJT
+C00175,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 64,Completed,Permanent
+C00178,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 59,Completed,Permanent
+C00184,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 18,Completed,Permanent
+C00185,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 72,Completed,Permanent
+C00186,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 75,Completed,Permanent
+C00187,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 75,Completed,Permanent
+C00188,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 29,Completed,Permanent
+C00190,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 18,Resigned,Candidate Withdrawn
+C00191,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 12,Completed,Permanent
+C00193,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 15,On Going,On OJT
+C00197,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 21,Completed,Permanent
+C00198,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 55,On Going,On OJT
+C00200,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 50,Completed,Permanent
+C00202,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 60,Completed,Permanent
+C00205,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 71,Completed,Permanent
+C00214,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 2,On Going,On OJT
+C00218,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 15,Completed,Permanent
+C00220,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 69,Completed,Permanent
+C00224,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 44,On Going,On OJT
+C00225,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 56,Completed,Permanent
+C00230,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 1,Completed,Permanent
+C00235,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 34,On Going,On OJT
+C00240,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 23,Resigned,Candidate Withdrawn
+C00241,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 14,Completed,Permanent
+C00243,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 39,On Going,On OJT
+C00248,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 65,On Going,On OJT
+C00254,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 20,Completed,Permanent
+C00258,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 21,Completed,Permanent
+C00262,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 68,Completed,Permanent
+C00263,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 77,On Going,On OJT
+C00266,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 3,Completed,Permanent
+C00267,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 47,Completed,Permanent
+C00269,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 40,On Going,On OJT
+C00270,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 31,Completed,Permanent
+C00273,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 11,On Going,On OJT
+C00274,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 63,Completed,Permanent
+C00281,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 69,On Going,On OJT
+C00282,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 17,On Going,On OJT
+C00283,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 71,Completed,Permanent
+C00285,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 68,Completed,Permanent
+C00286,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 55,On Going,On OJT
+C00288,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 70,On Going,On OJT
+C00292,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 26,On Going,On OJT
+C00295,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 52,Completed,Permanent
+C00298,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 48,Resigned,Candidate Withdrawn
+C00302,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 67,Completed,Permanent
+C00303,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 32,Completed,Permanent
+C00304,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 44,Completed,Permanent
+C00305,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 71,Completed,Permanent
+C00306,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 29,Completed,Permanent
+C00307,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 8,Completed,Permanent
+C00314,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 5,Completed,Permanent
+C00315,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 10,On Going,On OJT
+C00316,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 36,Completed,Permanent
+C00319,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 28,Completed,Permanent
+C00323,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 74,Completed,Permanent
+C00326,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 32,Completed,Permanent
+C00327,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 53,On Going,On OJT
+C00328,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 13,Completed,Permanent
+C00329,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 46,Completed,Permanent
+C00330,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 60,Completed,Permanent
+C00332,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 7,On Going,On OJT
+C00334,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 13,Completed,Permanent
+C00335,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 44,Completed,Permanent
+C00337,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 14,On Going,On OJT
+C00339,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 25,Completed,Permanent
+C00342,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 18,Completed,Permanent
+C00351,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 36,Completed,Permanent
+C00354,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 10,Completed,Permanent
+C00356,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 71,Completed,Permanent
+C00358,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 70,Completed,Permanent
+C00365,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 12,On Going,On OJT
+C00367,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 31,On Going,On OJT
+C00368,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 63,Completed,Permanent
+C00373,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 52,Completed,Permanent
+C00377,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 22,On Going,On OJT
+C00381,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 50,Completed,Permanent
+C00396,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 59,Completed,Permanent
+C00400,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 72,Completed,Permanent
+C00401,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 63,Completed,Permanent
+C00402,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 38,Completed,Permanent
+C00403,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 8,Completed,Permanent
+C00406,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 70,Completed,Permanent
+C00412,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 41,Completed,Permanent
+C00414,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 75,Completed,Permanent
+C00416,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 68,Completed,Permanent
+C00417,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 66,Completed,Permanent
+C00419,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 24,Completed,Permanent
+C00421,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 9,Completed,Permanent
+C00422,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 31,Completed,Permanent
+C00423,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 73,Completed,Permanent
+C00424,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 77,Completed,Permanent
+C00425,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 11,Completed,Permanent
+C00426,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 75,Completed,Permanent
+C00429,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 41,Completed,Permanent
+C00431,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 27,On Going,On OJT
+C00444,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 41,Completed,Permanent
+C00458,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 51,Completed,Permanent
+C00459,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 39,Completed,Permanent
+C00460,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 10,Completed,Permanent
+C00461,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 80,Completed,Permanent
+C00464,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 13,Resigned,Candidate Withdrawn
+C00467,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 28,Completed,Permanent
+C00468,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 17,Completed,Permanent
+C00470,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 9,On Going,On OJT
+C00472,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 48,On Going,On OJT
+C00473,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 57,Completed,Permanent
+C00476,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 39,On Going,On OJT
+C00478,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 68,Completed,Permanent
+C00480,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 71,Completed,Permanent
+C00487,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 14,Completed,Permanent
+C00488,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 18,On Going,On OJT
+C00495,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 14,Completed,Permanent
+C00496,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 20,Completed,Permanent
+C00497,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 78,Completed,Permanent
+C00498,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 44,Completed,Permanent
+C00506,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 34,Completed,Permanent
+C00507,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 33,Completed,Permanent
+C00508,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 7,On Going,On OJT
+C00510,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 55,Completed,Permanent
+C00515,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 6,On Going,On OJT
+C00516,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 17,Completed,Permanent
+C00519,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 34,Completed,Permanent
+C00522,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 57,Completed,Permanent
+C00523,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 55,Completed,Permanent
+C00525,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 15,Completed,Permanent
+C00526,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 20,Completed,Permanent
+C00533,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 48,Completed,Permanent
+C00536,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 19,Completed,Permanent
+C00538,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 6,Completed,Permanent
+C00541,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 6,Completed,Permanent
+C00542,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 27,On Going,On OJT
+C00543,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 14,Completed,Permanent
+C00546,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 72,Completed,Permanent
+C00547,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 53,On Going,On OJT
+C00549,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 20,Resigned,Candidate Withdrawn
+C00552,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 31,On Going,On OJT
+C00553,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 23,On Going,On OJT
+C00554,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 4,On Going,On OJT
+C00558,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 43,Completed,Permanent
+C00560,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 53,On Going,On OJT
+C00563,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 32,On Going,On OJT
+C00566,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 14,Completed,Permanent
+C00568,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 5,Completed,Permanent
+C00569,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 29,On Going,On OJT
+C00571,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 59,Completed,Permanent
+C00573,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 30,Completed,Permanent
+C00575,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 25,Completed,Permanent
+C00581,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 36,Completed,Permanent
+C00591,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 36,On Going,On OJT
+C00595,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 66,Completed,Permanent
+C00600,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 69,Completed,Permanent
+C00602,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 4,Completed,Permanent
+C00615,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 34,Completed,Permanent
+C00619,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 34,Completed,Permanent
+C00620,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 77,Completed,Permanent
+C00622,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 41,Completed,Permanent
+C00625,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 66,Completed,Permanent
+C00627,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 74,Completed,Permanent
+C00632,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 6,Completed,Permanent
+C00636,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 1,Completed,Permanent
+C00639,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 69,Completed,Permanent
+C00643,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 26,Completed,Permanent
+C00647,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 9,Completed,Permanent
+C00653,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 43,On Going,On OJT
+C00654,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 16,Completed,Permanent
+C00656,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 39,Completed,Permanent
+C00657,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 53,Completed,Permanent
+C00659,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 38,Completed,Permanent
+C00664,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 25,Completed,Permanent
+C00668,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 49,Completed,Permanent
+C00671,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 23,Completed,Permanent
+C00680,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 39,Completed,Permanent
+C00683,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 1,Completed,Permanent
+C00684,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 27,Completed,Permanent
+C00685,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 75,Completed,Permanent
+C00688,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 42,Completed,Permanent
+C00689,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 57,Completed,Permanent
+C00692,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 66,Completed,Permanent
+C00694,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 22,Completed,Permanent
+C00696,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 37,Completed,Permanent
+C00700,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 80,Completed,Permanent
+C00706,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 31,Completed,Permanent
+C00708,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 29,Completed,Permanent
+C00709,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 19,On Going,On OJT
+C00710,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 32,Completed,Permanent
+C00713,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 79,Resigned,Candidate Withdrawn
+C00714,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 10,On Going,On OJT
+C00719,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 74,Completed,Permanent
+C00720,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 50,Completed,Permanent
+C00724,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 32,Completed,Permanent
+C00733,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 1,Completed,Permanent
+C00735,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 14,On Going,On OJT
+C00736,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 29,On Going,On OJT
+C00737,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 67,Completed,Permanent
+C00738,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 72,Completed,Permanent
+C00743,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 16,Completed,Permanent
+C00754,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 60,Completed,Permanent
+C00756,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 72,Completed,Permanent
+C00758,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 57,Completed,Permanent
+C00775,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 65,Completed,Permanent
+C00777,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 71,Completed,Permanent
+C00779,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 21,Completed,Permanent
+C00782,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 61,Completed,Permanent
+C00787,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 32,Completed,Permanent
+C00789,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 36,On Going,On OJT
+C00790,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 67,On Going,On OJT
+C00795,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 31,Completed,Permanent
+C00796,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 10,Completed,Permanent
+C00797,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 31,Completed,Permanent
+C00798,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 41,Completed,Permanent
+C00800,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 11,On Going,On OJT
+C00801,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 30,Completed,Permanent
+C00802,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 20,Completed,Permanent
+C00803,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 9,Completed,Permanent
+C00810,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 43,Completed,Permanent
+C00813,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 54,Completed,Permanent
+C00814,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 54,Completed,Permanent
+C00815,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 75,Completed,Permanent
+C00816,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 3,On Going,On OJT
+C00819,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 74,On Going,On OJT
+C00823,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 1,Completed,Permanent
+C00825,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 39,On Going,On OJT
+C00826,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 54,On Going,On OJT
+C00828,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 70,Completed,Permanent
+C00829,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 29,On Going,On OJT
+C00830,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 35,Completed,Permanent
+C00834,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 4,Completed,Permanent
+C00835,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 52,Completed,Permanent
+C00843,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 60,Completed,Permanent
+C00847,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 80,On Going,On OJT
+C00849,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 51,Completed,Permanent
+C00850,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 4,Completed,Permanent
+C00860,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 55,Completed,Permanent
+C00861,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 60,Completed,Permanent
+C00862,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 34,Completed,Permanent
+C00869,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 28,Completed,Permanent
+C00872,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 44,Completed,Permanent
+C00875,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 49,On Going,On OJT
+C00878,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 54,Completed,Permanent
+C00882,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 11,Completed,Permanent
+C00885,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 70,Completed,Permanent
+C00886,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 45,Completed,Permanent
+C00892,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 9,Completed,Permanent
+C00895,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 6,On Going,On OJT
+C00897,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 32,On Going,On OJT
+C00898,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 3,Completed,Permanent
+C00899,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 31,Completed,Permanent
+C00903,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 15,Completed,Permanent
+C00911,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 28,Completed,Permanent
+C00913,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 33,Completed,Permanent
+C00914,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 22,On Going,On OJT
+C00917,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 15,Completed,Permanent
+C00919,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 21,On Going,On OJT
+C00921,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 14,On Going,On OJT
+C00922,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 40,Completed,Permanent
+C00923,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 49,Completed,Permanent
+C00925,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 26,Completed,Permanent
+C00931,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 32,Completed,Permanent
+C00935,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 39,Completed,Permanent
+C00937,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 77,On Going,On OJT
+C00938,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 73,On Going,On OJT
+C00943,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 45,On Going,On OJT
+C00944,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 48,Completed,Permanent
+C00945,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 44,Completed,Permanent
+C00946,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 54,Completed,Permanent
+C00950,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 14,On Going,On OJT
+C00952,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 47,Completed,Permanent
+C00954,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 59,Completed,Permanent
+C00956,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 56,Completed,Permanent
+C00959,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 67,Completed,Permanent
+C00960,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 35,On Going,On OJT
+C00961,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 69,Completed,Permanent
+C00964,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 60,On Going,On OJT
+C00967,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 76,Completed,Permanent
+C00968,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 32,Completed,Permanent
+C00972,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 12,On Going,On OJT
+C00977,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 58,Completed,Permanent
+C00980,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 60,Completed,Permanent
+C00982,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 49,Completed,Permanent
+C00986,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 64,Completed,Permanent
+C00988,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 24,On Going,On OJT
+C00990,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 46,Completed,Permanent
+C00991,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 44,On Going,On OJT
+C00992,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 77,Completed,Permanent
+C00995,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 36,Completed,Permanent
+C00997,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 67,Completed,Permanent
+C01000,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 11,On Going,On OJT
+C01001,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 53,Completed,Permanent
+C01004,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 31,Completed,Permanent
+C01005,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 63,Completed,Permanent
+C01006,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 3,Completed,Permanent
+C01008,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 29,Completed,Permanent
+C01009,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 32,Completed,Permanent
+C01019,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 75,Completed,Permanent
+C01023,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 71,Completed,Permanent
+C01024,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 55,Completed,Permanent
+C01027,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 71,Resigned,Candidate Withdrawn
+C01028,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 59,Completed,Permanent
+C01030,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 33,Completed,Permanent
+C01039,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 25,Completed,Permanent
+C01041,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 69,Completed,Permanent
+C01042,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 24,On Going,On OJT
+C01046,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 62,Completed,Permanent
+C01048,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 76,Completed,Permanent
+C01050,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 68,Resigned,Candidate Withdrawn
+C01051,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 13,Completed,Permanent
+C01053,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 38,On Going,On OJT
+C01055,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 23,Completed,Permanent
+C01056,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 69,Completed,Permanent
+C01059,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 6,Completed,Permanent
+C01066,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 71,Resigned,Candidate Withdrawn
+C01067,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 17,Completed,Permanent
+C01068,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 63,Completed,Permanent
+C01070,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 2,Completed,Permanent
+C01071,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 61,Completed,Permanent
+C01072,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 44,Completed,Permanent
+C01073,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 7,Completed,Permanent
+C01076,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 62,Completed,Permanent
+C01078,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 9,Completed,Permanent
+C01079,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 10,Completed,Permanent
+C01081,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 7,Completed,Permanent
+C01093,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 73,Completed,Permanent
+C01094,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 11,On Going,On OJT
+C01097,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 16,Resigned,Candidate Withdrawn
+C01099,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 54,Completed,Permanent
+C01100,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 80,Completed,Permanent
+C01101,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 67,Completed,Permanent
+C01103,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 57,Completed,Permanent
+C01109,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 76,Completed,Permanent
+C01114,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 40,Resigned,Candidate Withdrawn
+C01116,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 8,Completed,Permanent
+C01118,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 13,Completed,Permanent
+C01119,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 27,On Going,On OJT
+C01122,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 34,Completed,Permanent
+C01123,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 21,Completed,Permanent
+C01126,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 71,Completed,Permanent
+C01127,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 1,Completed,Permanent
+C01129,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 77,Completed,Permanent
+C01138,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 5,Completed,Permanent
+C01140,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 37,Completed,Permanent
+C01142,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 59,Completed,Permanent
+C01143,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 30,Completed,Permanent
+C01148,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 76,On Going,On OJT
+C01149,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 26,Completed,Permanent
+C01153,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 70,Completed,Permanent
+C01154,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 20,Completed,Permanent
+C01157,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 19,On Going,On OJT
+C01173,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 22,Completed,Permanent
+C01174,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 77,On Going,On OJT
+C01177,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 73,Completed,Permanent
+C01180,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 57,On Going,On OJT
+C01182,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 39,Completed,Permanent
+C01183,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 35,Completed,Permanent
+C01186,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 64,Completed,Permanent
+C01195,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 77,Completed,Permanent
+C01204,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 56,Completed,Permanent
+C01205,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 78,Completed,Permanent
+C01208,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 12,Completed,Permanent
+C01217,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 74,Completed,Permanent
+C01219,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 3,Completed,Permanent
+C01220,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 35,Resigned,Candidate Withdrawn
+C01224,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 23,Completed,Permanent
+C01227,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 57,Completed,Permanent
+C01232,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 24,On Going,On OJT
+C01236,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 56,Resigned,Candidate Withdrawn
+C01240,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 63,Completed,Permanent
+C01243,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 61,On Going,On OJT
+C01244,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 43,Completed,Permanent
+C01245,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 14,Completed,Permanent
+C01247,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 43,On Going,On OJT
+C01253,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 64,Completed,Permanent
+C01255,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 52,Completed,Permanent
+C01261,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 71,On Going,On OJT
+C01265,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 12,Completed,Permanent
+C01269,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 42,Completed,Permanent
+C01271,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 52,Completed,Permanent
+C01272,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 1,On Going,On OJT
+C01273,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 70,Completed,Permanent
+C01280,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 7,Completed,Permanent
+C01282,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 47,Completed,Permanent
+C01284,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 64,Completed,Permanent
+C01290,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 7,Completed,Permanent
+C01293,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 71,Completed,Permanent
+C01295,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 37,Completed,Permanent
+C01296,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 63,Completed,Permanent
+C01305,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 78,Completed,Permanent
+C01308,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 21,On Going,On OJT
+C01314,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 2,Completed,Permanent
+C01317,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 12,Completed,Permanent
+C01320,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 15,Completed,Permanent
+C01321,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 16,Completed,Permanent
+C01322,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 20,Completed,Permanent
+C01324,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 38,Completed,Permanent
+C01325,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 35,Completed,Permanent
+C01329,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 62,Completed,Permanent
+C01330,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 32,Resigned,Candidate Withdrawn
+C01331,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 19,Completed,Permanent
+C01332,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 77,Completed,Permanent
+C01333,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 18,Completed,Permanent
+C01337,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 36,On Going,On OJT
+C01340,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 54,On Going,On OJT
+C01345,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 65,Completed,Permanent
+C01346,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 1,Completed,Permanent
+C01350,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 39,Completed,Permanent
+C01356,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 75,On Going,On OJT
+C01357,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 63,Resigned,Candidate Withdrawn
+C01360,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 58,On Going,On OJT
+C01361,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 45,Completed,Permanent
+C01362,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 70,Completed,Permanent
+C01363,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 42,Completed,Permanent
+C01365,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 31,On Going,On OJT
+C01367,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 30,Completed,Permanent
+C01382,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 53,On Going,On OJT
+C01385,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 61,Completed,Permanent
+C01393,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 49,Completed,Permanent
+C01397,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 20,Completed,Permanent
+C01398,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 5,Completed,Permanent
+C01400,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 76,Completed,Permanent
+C01405,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 13,Completed,Permanent
+C01406,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 57,On Going,On OJT
+C01407,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 59,Completed,Permanent
+C01408,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 19,Completed,Permanent
+C01410,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 20,Completed,Permanent
+C01411,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 34,Completed,Permanent
+C01417,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 51,Completed,Permanent
+C01422,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 43,Completed,Permanent
+C01428,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 69,On Going,On OJT
+C01429,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 41,Completed,Permanent
+C01433,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 63,Completed,Permanent
+C01437,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 5,On Going,On OJT
+C01439,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 31,Completed,Permanent
+C01441,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 37,Completed,Permanent
+C01443,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 12,Resigned,Candidate Withdrawn
+C01444,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 13,Completed,Permanent
+C01452,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 13,On Going,On OJT
+C01454,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 39,Completed,Permanent
+C01457,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 6,On Going,On OJT
+C01459,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 8,Completed,Permanent
+C01462,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 48,Completed,Permanent
+C01467,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 32,Completed,Permanent
+C01468,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 73,Completed,Permanent
+C01469,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 24,Completed,Permanent
+C01470,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 11,Completed,Permanent
+C01471,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 49,Completed,Permanent
+C01472,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 31,Completed,Permanent
+C01474,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 75,Completed,Permanent
+C01475,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 60,Completed,Permanent
+C01478,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 59,Completed,Permanent
+C01480,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 2,Completed,Permanent
+C01481,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 60,On Going,On OJT
+C01485,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 70,On Going,On OJT
+C01489,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 57,Completed,Permanent
+C01493,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 76,On Going,On OJT
+C01495,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 55,Completed,Permanent
+C01497,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 59,Completed,Permanent
+C01501,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 26,On Going,On OJT
+C01504,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 62,Resigned,Candidate Withdrawn
+C01507,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 49,Completed,Permanent
+C01511,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 74,Completed,Permanent
+C01513,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 38,Completed,Permanent
+C01516,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 51,Completed,Permanent
+C01521,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 73,Completed,Permanent
+C01532,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 7,On Going,On OJT
+C01537,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 64,On Going,On OJT
+C01538,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 37,On Going,On OJT
+C01540,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 30,On Going,On OJT
+C01548,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 46,Completed,Permanent
+C01550,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 25,Completed,Permanent
+C01551,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 18,Completed,Permanent
+C01553,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 6,Completed,Permanent
+C01554,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 57,Completed,Permanent
+C01555,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 47,Completed,Permanent
+C01561,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 12,Completed,Permanent
+C01564,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 42,On Going,On OJT
+C01565,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 23,Completed,Permanent
+C01567,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 70,Completed,Permanent
+C01570,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 47,On Going,On OJT
+C01571,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 35,Completed,Permanent
+C01573,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 33,On Going,On OJT
+C01576,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 62,On Going,On OJT
+C01578,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 38,On Going,On OJT
+C01580,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 44,Completed,Permanent
+C01582,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 60,On Going,On OJT
+C01583,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 19,On Going,On OJT
+C01585,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 29,On Going,On OJT
+C01588,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 51,On Going,On OJT
+C01589,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 72,On Going,On OJT
+C01592,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 51,Completed,Permanent
+C01593,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 69,Completed,Permanent
+C01599,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 48,Completed,Permanent
+C01600,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 34,Completed,Permanent
+C01603,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 48,Completed,Permanent
+C01604,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 30,Completed,Permanent
+C01605,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 80,Completed,Permanent
+C01606,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 72,On Going,On OJT
+C01609,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 79,Completed,Permanent
+C01615,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 9,Completed,Permanent
+C01616,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 60,Completed,Permanent
+C01621,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 39,On Going,On OJT
+C01624,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 15,Completed,Permanent
+C01628,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 5,Completed,Permanent
+C01630,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 64,Completed,Permanent
+C01631,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 31,Completed,Permanent
+C01632,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 18,On Going,On OJT
+C01633,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 48,Completed,Permanent
+C01634,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 70,Completed,Permanent
+C01635,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 20,Completed,Permanent
+C01640,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 13,On Going,On OJT
+C01641,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 79,On Going,On OJT
+C01642,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 36,Completed,Permanent
+C01645,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 48,Completed,Permanent
+C01647,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 57,Completed,Permanent
+C01648,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 47,On Going,On OJT
+C01649,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 48,Completed,Permanent
+C01652,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 46,Completed,Permanent
+C01654,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 36,Completed,Permanent
+C01657,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 16,Completed,Permanent
+C01660,B090,REQ0006,Finance Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 59,On Going,On OJT
+C01668,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 28,Completed,Permanent
+C01669,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 77,Completed,Permanent
+C01670,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 7,Resigned,Candidate Withdrawn
+C01671,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 32,On Going,On OJT
+C01677,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 73,Resigned,Candidate Withdrawn
+C01680,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 71,Completed,Permanent
+C01687,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 28,Completed,Permanent
+C01688,B090,REQ0007,HR Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 30,On Going,On OJT
+C01693,B090,REQ0008,Legal Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 19,Completed,Permanent
+C01696,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 77,On Going,On OJT
+C01704,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 19,Completed,Permanent
+C01706,B090,REQ0009,Supply Chain Officer,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 70,Resigned,Candidate Withdrawn
+C01708,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 23,Completed,Permanent
+C01712,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 4,Completed,Permanent
+C01718,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 46,Completed,Permanent
+C01723,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 31,On Going,On OJT
+C01725,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 3,Completed,Permanent
+C01727,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 7,Completed,Permanent
+C01729,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 54,Completed,Permanent
+C01731,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 9,Completed,Permanent
+C01735,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 47,Completed,Permanent
+C01737,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 14,Completed,Permanent
+C01739,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 29,Completed,Permanent
+C01740,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 6,On Going,On OJT
+C01743,B090,REQ0010,Corporate Communication,Non-Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 67,Completed,Permanent
+C01753,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 4,Completed,Permanent
+C01754,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 62,Completed,Permanent
+C01758,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 55,On Going,On OJT
+C01760,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 63,Completed,Permanent
+C01761,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 57,Completed,Permanent
+C01765,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 11,Completed,Permanent
+C01766,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 19,Completed,Permanent
+C01768,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 36,Completed,Permanent
+C01775,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 75,Completed,Permanent
+C01781,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 42,Completed,Permanent
+C01784,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 77,Completed,Permanent
+C01790,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 59,Completed,Permanent
+C01793,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 56,Completed,Permanent
+C01794,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 15,Completed,Permanent
+C01796,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 71,On Going,On OJT
+C01797,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 28,Completed,Permanent
+C01798,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 30,Completed,Permanent
+C01799,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 59,Completed,Permanent
+C01802,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 13,Completed,Permanent
+C01804,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 41,Completed,Permanent
+C01805,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 48,Completed,Permanent
+C01806,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 61,On Going,On OJT
+C01809,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 11,Completed,Permanent
+C01810,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 13,Completed,Permanent
+C01811,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 48,Completed,Permanent
+C01812,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 72,On Going,On OJT
+C01822,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 72,Completed,Permanent
+C01823,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 16,Completed,Permanent
+C01825,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 55,Completed,Permanent
+C01827,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 7,On Going,On OJT
+C01828,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 77,On Going,On OJT
+C01833,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 14,Completed,Permanent
+C01834,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 28,Completed,Permanent
+C01837,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 62,Completed,Permanent
+C01843,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 14,Completed,Permanent
+C01849,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 72,Completed,Permanent
+C01853,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 36,Completed,Permanent
+C01854,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 55,Completed,Permanent
+C01857,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 80,On Going,On OJT
+C01858,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 72,Completed,Permanent
+C01859,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 35,Completed,Permanent
+C01862,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 35,Completed,Permanent
+C01863,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 40,Completed,Permanent
+C01864,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 45,On Going,On OJT
+C01877,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 19,Completed,Permanent
+C01879,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 52,Completed,Permanent
+C01880,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 4,Completed,Permanent
+C01882,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 68,Completed,Permanent
+C01884,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 54,Completed,Permanent
+C01887,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 21,Completed,Permanent
+C01889,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 42,Completed,Permanent
+C01894,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 73,On Going,On OJT
+C01902,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 7,Completed,Permanent
+C01903,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 80,Completed,Permanent
+C01908,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 11,Completed,Permanent
+C01913,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 55,Completed,Permanent
+C01916,B091,REQ0016,Finance Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 57,Completed,Permanent
+C01917,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 28,Completed,Permanent
+C01919,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 15,On Going,On OJT
+C01923,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 15,Completed,Permanent
+C01927,B091,REQ0017,HR Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 76,Completed,Permanent
+C01928,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 40,Completed,Permanent
+C01930,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 51,Completed,Permanent
+C01934,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 8,Resigned,Candidate Withdrawn
+C01935,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 39,Completed,Permanent
+C01936,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 18,On Going,On OJT
+C01941,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 38,On Going,On OJT
+C01944,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 1,Completed,Permanent
+C01951,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 56,Completed,Permanent
+C01953,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 49,Completed,Permanent
+C01958,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 30,Completed,Permanent
+C01959,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 46,Completed,Permanent
+C01963,B091,REQ0018,Legal Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 6,Completed,Permanent
+C01965,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 59,Completed,Permanent
+C01966,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 41,On Going,On OJT
+C01968,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 74,Completed,Permanent
+C01971,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 54,Completed,Permanent
+C01975,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 52,Completed,Permanent
+C01977,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 42,Completed,Permanent
+C01982,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 80,Completed,Permanent
+C01986,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 47,Completed,Permanent
+C01990,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 14,Completed,Permanent
+C01991,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 76,Completed,Permanent
+C01993,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 11,Completed,Permanent
+C01997,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 40,Completed,Permanent
+C01999,B091,REQ0019,Supply Chain Officer,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 29,Completed,Permanent
+C02000,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 22,Completed,Permanent
+C02001,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 15,Completed,Permanent
+C02003,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 25,Completed,Permanent
+C02006,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 45,On Going,On OJT
+C02009,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 19,Completed,Permanent
+C02012,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 19,Completed,Permanent
+C02017,B091,REQ0020,Corporate Communication,Non-Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 23,Completed,Permanent
+C02022,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 10,Completed,Permanent
+C02023,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 64,Completed,Permanent
+C02024,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 73,Completed,Permanent
+C02027,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 58,On Going,On OJT
+C02030,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 73,Completed,Permanent
+C02037,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 80,Completed,Permanent
+C02040,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 41,Completed,Permanent
+C02042,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 9,Completed,Permanent
+C02044,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 39,Completed,Permanent
+C02049,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 76,On Going,On OJT
+C02050,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 65,Completed,Permanent
+C02051,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 60,Completed,Permanent
+C02054,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 8,Completed,Permanent
+C02057,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 37,Completed,Permanent
+C02061,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 12,Completed,Permanent
+C02064,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 65,Completed,Permanent
+C02068,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 75,Completed,Permanent
+C02072,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 6,Completed,Permanent
+C02077,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 74,Completed,Permanent
+C02084,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 42,Completed,Permanent
+C02085,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 65,Completed,Permanent
+C02087,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 8,Completed,Permanent
+C02092,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 44,Completed,Permanent
+C02093,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 11,Resigned,Candidate Withdrawn
+C02096,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 23,Completed,Permanent
+C02098,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 57,Completed,Permanent
+C02099,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 68,Resigned,Candidate Withdrawn
+C02100,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 21,Completed,Permanent
+C02105,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 37,Completed,Permanent
+C02107,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 44,Completed,Permanent
+C02111,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 7,Completed,Permanent
+C02112,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 43,On Going,On OJT
+C02113,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 13,Completed,Permanent
+C02117,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 50,Completed,Permanent
+C02119,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 78,Completed,Permanent
+C02122,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 43,On Going,On OJT
+C02128,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 19,Completed,Permanent
+C02129,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 40,On Going,On OJT
+C02130,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 51,On Going,On OJT
+C02134,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 11,Completed,Permanent
+C02135,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 49,Completed,Permanent
+C02140,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 43,Completed,Permanent
+C02141,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 68,On Going,On OJT
+C02144,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 55,Completed,Permanent
+C02149,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 3,Completed,Permanent
+C02150,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 24,Completed,Permanent
+C02152,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 44,On Going,On OJT
+C02158,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 63,On Going,On OJT
+C02162,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 18,Completed,Permanent
+C02165,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 38,Completed,Permanent
+C02169,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 13,On Going,On OJT
+C02173,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 70,Completed,Permanent
+C02174,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 68,On Going,On OJT
+C02177,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 44,Completed,Permanent
+C02180,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 80,On Going,On OJT
+C02186,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 49,Completed,Permanent
+C02192,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 24,Completed,Permanent
+C02193,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 80,On Going,On OJT
+C02195,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 22,On Going,On OJT
+C02198,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 6,Completed,Permanent
+C02204,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 31,Completed,Permanent
+C02209,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 79,On Going,On OJT
+C02210,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 58,Completed,Permanent
+C02215,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 31,Completed,Permanent
+C02218,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 61,Completed,Permanent
+C02220,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 25,On Going,On OJT
+C02222,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 74,Completed,Permanent
+C02223,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 60,Resigned,Candidate Withdrawn
+C02230,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 49,On Going,On OJT
+C02233,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 54,Completed,Permanent
+C02235,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 26,On Going,On OJT
+C02237,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 18,On Going,On OJT
+C02241,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 7,On Going,On OJT
+C02244,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 48,Completed,Permanent
+C02251,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 14,Completed,Permanent
+C02258,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 67,Completed,Permanent
+C02259,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 37,On Going,On OJT
+C02267,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 21,Completed,Permanent
+C02275,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 66,Completed,Permanent
+C02278,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 56,Completed,Permanent
+C02285,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 29,Completed,Permanent
+C02289,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 45,On Going,On OJT
+C02290,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 54,On Going,On OJT
+C02296,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 65,Completed,Permanent
+C02300,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 50,Completed,Permanent
+C02302,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 48,Resigned,Candidate Withdrawn
+C02309,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 41,Completed,Permanent
+C02310,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 43,On Going,On OJT
+C02316,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 18,On Going,On OJT
+C02318,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 61,Completed,Permanent
+C02320,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 18,Completed,Permanent
+C02322,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 61,On Going,On OJT
+C02326,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 1,Completed,Permanent
+C02330,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 3,On Going,On OJT
+C02332,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 20,Completed,Permanent
+C02335,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 78,Completed,Permanent
+C02337,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 15,Completed,Permanent
+C02346,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 31,On Going,On OJT
+C02347,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 7,Completed,Permanent
+C02349,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 80,Completed,Permanent
+C02350,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 15,Completed,Permanent
+C02354,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 64,On Going,On OJT
+C02356,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 3,Completed,Permanent
+C02358,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 74,Completed,Permanent
+C02361,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 19,Completed,Permanent
+C02364,B090,REQ0001,Electrical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Barat,Jawa,Mentor 1,Completed,Permanent
+C02365,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 31,Completed,Permanent
+C02366,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 24,Completed,Permanent
+C02367,B090,REQ0002,Mechanical Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jakarta Raya,Jawa,Mentor 11,Completed,Permanent
+C02368,B090,REQ0003,Civil Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Tengah,Jawa,Mentor 47,Completed,Permanent
+C02373,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 68,Completed,Permanent
+C02374,B090,REQ0004,IT Engineer,Teknik,PJ-90,2026-03-01,2026-05-31,UID Jawa Timur,Jawa,Mentor 65,Completed,Permanent
+C02377,B090,REQ0005,Operator Pembangkit,Teknik,PJ-90,2026-03-01,2026-05-31,UIP Sumatera,Sumatera,Mentor 50,Completed,Permanent
+C02380,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 6,On Going,On OJT
+C02397,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 48,Completed,Permanent
+C02399,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 3,Completed,Permanent
+C02400,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 9,Completed,Permanent
+C02401,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 14,Completed,Permanent
+C02404,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 43,On Going,On OJT
+C02409,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 46,Completed,Permanent
+C02410,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 23,Completed,Permanent
+C02412,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 60,On Going,On OJT
+C02414,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 62,Resigned,Candidate Withdrawn
+C02418,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 18,Completed,Permanent
+C02426,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 59,Completed,Permanent
+C02428,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 26,Completed,Permanent
+C02434,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 26,Completed,Permanent
+C02435,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 41,On Going,On OJT
+C02449,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 66,On Going,On OJT
+C02455,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 70,Completed,Permanent
+C02458,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 5,Completed,Permanent
+C02462,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 25,On Going,On OJT
+C02481,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 7,Completed,Permanent
+C02489,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 43,On Going,On OJT
+C02500,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 48,Completed,Permanent
+C02503,B091,REQ0011,Electrical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Barat,Jawa,Mentor 52,Completed,Permanent
+C02510,B091,REQ0012,Mechanical Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jakarta Raya,Jawa,Mentor 50,Completed,Permanent
+C02511,B091,REQ0013,Civil Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Tengah,Jawa,Mentor 24,Completed,Permanent
+C02517,B091,REQ0014,IT Engineer,Teknik,PJ-91,2026-07-01,2026-09-30,UID Jawa Timur,Jawa,Mentor 64,Completed,Permanent
+C02522,B091,REQ0015,Operator Pembangkit,Teknik,PJ-91,2026-07-01,2026-09-30,UIP Sumatera,Sumatera,Mentor 67,Completed,Permanent

@@ -1,0 +1,957 @@
+id_kebutuhan,unit,unit_induk,HOLDING AP SH,jabatan,jenjang_pendidikan,jurusan,jumlah_pagu,prioritas
+K0001,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,5,Tinggi
+K0002,UP3 Madiun,UID Jawa Timur,SH,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0003,UP3 Bulungan,UID Jakarta Raya,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0004,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0005,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0006,ICON SBU Jawa Timur,ICON Plus,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0007,DIV RSD,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,5,Sedang
+K0008,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Data Analyst,S1,Statistika,1,Tinggi
+K0009,UP3 Bekasi,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,4,Tinggi
+K0010,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Sedang
+K0011,UP3 Depok,UID Jawa Barat,SH,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0012,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0013,DIV TCO,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0014,UP3 Cirebon,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0015,UP3 Padang,UID Sumatera Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0016,UP Suralaya,Indonesia Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0017,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,SH,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0018,UP3 Banda Aceh,UID Aceh,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0019,UP3 Kediri,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0020,ICON SBU Jawa Timur,ICON Plus,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0021,ICON SBU Jawa Timur,ICON Plus,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0022,DIV HST,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0023,UP3 Depok,UID Jawa Barat,SH,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0024,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0025,DIV TCO,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0026,UBP Gresik,PLN Nusantara Power,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0027,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0028,UP Suralaya,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0029,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0030,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0031,DIV HTD,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0032,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0033,UP3 Lampung,UID Lampung,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0034,DIV HSC,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0035,UP3 Surakarta,UID Jawa Tengah,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0036,UBP Gresik,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,4,Tinggi
+K0037,UP Paiton,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0038,UBP Ombilin,PLN Nusantara Power,AP,Business Analyst,S1,Manajemen,5,Sedang
+K0039,DIV HTD,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0040,UP3 Denpasar,UID Bali,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0041,UP3 Bogor,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,4,Tinggi
+K0042,DIV HSC,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0043,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0044,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0045,UP3 Kediri,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Tinggi
+K0046,UP3 Kediri,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0047,UP Paiton,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0048,ICON SBU Jawa Timur,ICON Plus,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0049,UP Priok,Indonesia Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Tinggi
+K0050,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0051,UP3 Malang,UID Jawa Timur,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0052,UP3 Depok,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0053,DIV HSC,Kantor Pusat,AP,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0054,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,5,Tinggi
+K0055,UP3 Bintaro,UID Jakarta Raya,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Tinggi
+K0056,UP Paiton,Indonesia Power,AP,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0057,DIV RSD,Kantor Pusat,AP,Business Analyst,S1,Manajemen,1,Sedang
+K0058,UP3 Surakarta,UID Jawa Tengah,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0059,UP Suralaya,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Tinggi
+K0060,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0061,UP3 Depok,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0062,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0063,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0064,ICON SBU Jakarta,ICON Plus,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0065,DIV HTD,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0066,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0067,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0068,UP3 Malang,UID Jawa Timur,AP,Data Analyst,S1,Statistika,2,Tinggi
+K0069,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0070,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0071,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0072,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0073,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0074,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0075,UP3 Banda Aceh,UID Aceh,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0076,ICON SBU Jawa Barat,ICON Plus,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0077,UP3 Denpasar,UID Bali,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0078,UP3 Cirebon,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0079,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Asset Management,S1,Teknik Industri,4,Sedang
+K0080,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0081,UP3 Surakarta,UID Jawa Tengah,AP,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0082,UP3 Bulungan,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0083,DIV HSC,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,3,Tinggi
+K0084,ICON SBU Jakarta,ICON Plus,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0085,UBP Ombilin,PLN Nusantara Power,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0086,UPT Surabaya,UIT Jawa Bagian Timur,AP,Business Analyst,S1,Manajemen,3,Sedang
+K0087,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0088,UP3 Padang,UID Sumatera Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0089,DIV STI,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0090,ICON SBU Jawa Timur,ICON Plus,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0091,UP3 Bogor,UID Jawa Barat,AP,IT Developer,S1,Informatika,1,Tinggi
+K0092,UP3 Madiun,UID Jawa Timur,AP,Data Analyst,S1,Statistika,2,Tinggi
+K0093,UBP Gresik,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0094,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0095,UP3 Semarang,UID Jawa Tengah,HOLDING,IT Developer,S1,Informatika,4,Sedang
+K0096,UBP Gresik,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,1,Tinggi
+K0097,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0098,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0099,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,IT Developer,S1,Informatika,3,Sedang
+K0100,ULTG Bandung,UPT Bandung,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0101,DIV HTD,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0102,UP3 Bogor,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0103,UP3 Padang,UID Sumatera Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0104,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0105,UP3 Surabaya Selatan,UID Jawa Timur,SH,Operator Pembangkit,D3,Teknik Mesin,2,Sedang
+K0106,UP3 Semarang,UID Jawa Tengah,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0107,UP3 Banda Aceh,UID Aceh,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0108,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0109,UP3 Depok,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0110,UP3 Bintaro,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0111,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0112,UP3 Depok,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0113,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0114,UP3 Lampung,UID Lampung,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0115,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0116,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,SH,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0117,DIV STI,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0118,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0119,UP3 Bekasi,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,5,Tinggi
+K0120,UP3 Medan,UID Sumatera Utara,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0121,DIV HST,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0122,UP3 Denpasar,UID Bali,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0123,ULTG Bandung,UPT Bandung,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0124,UP3 Malang,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,5,Tinggi
+K0125,UP3 Malang,UID Jawa Timur,HOLDING,IT Developer,S1,Informatika,5,Sedang
+K0126,ICON SBU Jakarta,ICON Plus,AP,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0127,ICON SBU Jawa Timur,ICON Plus,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0128,DIV STI,Kantor Pusat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0129,UP3 Malang,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0130,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,5,Tinggi
+K0131,ICON SBU Jakarta,ICON Plus,HOLDING,Engineer Transmisi,S1,Teknik Elektro,5,Sedang
+K0132,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,1,Tinggi
+K0133,UP3 Bintaro,UID Jakarta Raya,HOLDING,IT Developer,S1,Informatika,3,Sedang
+K0134,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0135,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0136,UP3 Medan,UID Sumatera Utara,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0137,UP3 Padang,UID Sumatera Barat,AP,IT Developer,S1,Informatika,1,Tinggi
+K0138,DIV HST,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0139,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0140,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0141,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0142,UBP Ombilin,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0143,UP Priok,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,3,Sedang
+K0144,UP3 Depok,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,5,Sedang
+K0145,UP Suralaya,Indonesia Power,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0146,ULTG Cawang,UPT Cawang,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0147,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0148,UP3 Bulungan,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0149,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0150,UP3 Bulungan,UID Jakarta Raya,HOLDING,Asset Management,S1,Teknik Industri,3,Tinggi
+K0151,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0152,UP3 Padang,UID Sumatera Barat,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0153,UP3 Semarang,UID Jawa Tengah,HOLDING,Asset Management,S1,Teknik Industri,4,Tinggi
+K0154,UPT Bandung,UIT Jawa Bagian Tengah,SH,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0155,UP3 Medan,UID Sumatera Utara,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0156,UP3 Cikokol,UID Banten,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0157,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,5,Tinggi
+K0158,UP3 Kediri,UID Jawa Timur,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0159,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0160,UP3 Padang,UID Sumatera Barat,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0161,UBP Gresik,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0162,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0163,ICON SBU Jawa Barat,ICON Plus,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0164,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0165,UP3 Medan,UID Sumatera Utara,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0166,UP3 Bintaro,UID Jakarta Raya,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0167,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0168,ICON SBU Jawa Barat,ICON Plus,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0169,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0170,UP Priok,Indonesia Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0171,DIV TCO,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0172,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Finance Analyst,S1,Akuntansi,3,Sedang
+K0173,UP3 Depok,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0174,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0175,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,5,Tinggi
+K0176,UP3 Madiun,UID Jawa Timur,AP,IT Developer,S1,Informatika,3,Tinggi
+K0177,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0178,ICON SBU Jakarta,ICON Plus,SH,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0179,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0180,UP3 Denpasar,UID Bali,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0181,DIV HTD,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0182,UP3 Bulungan,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0183,UP3 Bogor,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0184,UP3 Surabaya Selatan,UID Jawa Timur,AP,Business Analyst,S1,Manajemen,2,Sedang
+K0185,DIV HSC,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0186,UP3 Semarang,UID Jawa Tengah,AP,Data Analyst,S1,Statistika,1,Tinggi
+K0187,UP3 Bandung,UID Jawa Barat,AP,IT Developer,S1,Informatika,4,Tinggi
+K0188,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0189,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0190,UP3 Denpasar,UID Bali,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0191,UP3 Banda Aceh,UID Aceh,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0192,ICON SBU Jakarta,ICON Plus,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0193,DIV HSC,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0194,DIV TCO,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0195,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",AP,IT Developer,S1,Informatika,1,Tinggi
+K0196,UP3 Surakarta,UID Jawa Tengah,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0197,UP3 Madiun,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0198,DIV MDG,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0199,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Data Analyst,S1,Statistika,5,Sedang
+K0200,UP3 Depok,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,4,Tinggi
+K0201,UBP Gresik,PLN Nusantara Power,HOLDING,Finance Analyst,S1,Akuntansi,4,Tinggi
+K0202,UP3 Bulungan,UID Jakarta Raya,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0203,UP3 Denpasar,UID Bali,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0204,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0205,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0206,UP3 Bekasi,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0207,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0208,UP3 Kediri,UID Jawa Timur,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0209,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0210,UP3 Cirebon,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0211,ICON SBU Jakarta,ICON Plus,HOLDING,Asset Management,S1,Teknik Industri,3,Tinggi
+K0212,UP3 Semarang,UID Jawa Tengah,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0213,UP3 Lampung,UID Lampung,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0214,UP3 Bulungan,UID Jakarta Raya,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0215,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0216,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0217,UP3 Surakarta,UID Jawa Tengah,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0218,UP3 Denpasar,UID Bali,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0219,UP Priok,Indonesia Power,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0220,UP3 Medan,UID Sumatera Utara,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0221,ICON SBU Jawa Barat,ICON Plus,HOLDING,Engineer Distribusi,S1,Teknik Elektro,5,Sedang
+K0222,UP3 Malang,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0223,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0224,DIV STI,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0225,ICON SBU Jawa Timur,ICON Plus,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0226,UBP Ombilin,PLN Nusantara Power,SH,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0227,UP3 Kediri,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0228,UP Priok,Indonesia Power,SH,Operator Pembangkit,D3,Teknik Mesin,2,Sedang
+K0229,ULTG Cawang,UPT Cawang,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0230,UP Priok,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0231,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0232,ICON SBU Jawa Barat,ICON Plus,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0233,ULTG Cawang,UPT Cawang,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0234,ICON SBU Jawa Timur,ICON Plus,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0235,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0236,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0237,DIV HSC,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Tinggi
+K0238,UP3 Banda Aceh,UID Aceh,SH,Proteksi Sistem,S1,Teknik Elektro,4,Sedang
+K0239,UP3 Cirebon,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0240,UP3 Surakarta,UID Jawa Tengah,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0241,ULTG Cawang,UPT Cawang,HOLDING,IT Developer,S1,Informatika,3,Sedang
+K0242,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Finance Analyst,S1,Akuntansi,3,Tinggi
+K0243,UP3 Bekasi,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0244,DIV HSC,Kantor Pusat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0245,UP3 Bogor,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0246,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0247,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0248,UP3 Malang,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0249,ULTG Bandung,UPT Bandung,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0250,UPT Bandung,UIT Jawa Bagian Tengah,SH,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0251,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0252,UBP Gresik,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0253,UBP Gresik,PLN Nusantara Power,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0254,UP3 Denpasar,UID Bali,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0255,ICON SBU Jawa Timur,ICON Plus,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0256,ULTG Bandung,UPT Bandung,SH,Operator Pembangkit,D3,Teknik Mesin,3,Sedang
+K0257,ULTG Cawang,UPT Cawang,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0258,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0259,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0260,UP3 Cirebon,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0261,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0262,UP3 Medan,UID Sumatera Utara,SH,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0263,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0264,UP3 Medan,UID Sumatera Utara,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0265,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0266,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0267,UP3 Medan,UID Sumatera Utara,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0268,ULTG Cawang,UPT Cawang,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0269,UP3 Cirebon,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0270,UP Suralaya,Indonesia Power,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0271,UP3 Cirebon,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0272,UP3 Bulungan,UID Jakarta Raya,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0273,UP3 Bandung,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0274,UP3 Lampung,UID Lampung,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0275,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0276,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0277,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0278,UP3 Malang,UID Jawa Timur,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Tinggi
+K0279,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Finance Analyst,S1,Akuntansi,5,Sedang
+K0280,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Data Analyst,S1,Statistika,4,Sedang
+K0281,UP3 Surakarta,UID Jawa Tengah,AP,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0282,UP3 Bekasi,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0283,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0284,UP Suralaya,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Sedang
+K0285,UP3 Malang,UID Jawa Timur,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0286,DIV HSC,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0287,ICON SBU Jawa Barat,ICON Plus,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0288,DIV RSD,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0289,DIV HTD,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0290,UP3 Bandung,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0291,UP3 Padang,UID Sumatera Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0292,ULTG Cawang,UPT Cawang,AP,Data Analyst,S1,Statistika,4,Tinggi
+K0293,UP3 Depok,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0294,UP Priok,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0295,ULTG Cawang,UPT Cawang,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0296,UP3 Surakarta,UID Jawa Tengah,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0297,ULTG Cawang,UPT Cawang,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0298,ICON SBU Jawa Timur,ICON Plus,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0299,UP3 Lampung,UID Lampung,HOLDING,Engineer Distribusi,S1,Teknik Elektro,5,Tinggi
+K0300,UP3 Malang,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,3,Sedang
+K0301,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0302,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Sedang
+K0303,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0304,ULTG Cawang,UPT Cawang,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0305,DIV RSD,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0306,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0307,ICON SBU Jawa Barat,ICON Plus,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0308,ULTG Bandung,UPT Bandung,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0309,DIV STI,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0310,UP3 Surakarta,UID Jawa Tengah,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0311,UP Paiton,Indonesia Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0312,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0313,UP3 Malang,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Sedang
+K0314,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0315,UP Suralaya,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0316,UP3 Bogor,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0317,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0318,UP3 Bekasi,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0319,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0320,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0321,UP3 Cirebon,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0322,DIV HST,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0323,ICON SBU Jawa Barat,ICON Plus,HOLDING,Proteksi Sistem,S1,Teknik Elektro,5,Sedang
+K0324,DIV RSD,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0325,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0326,UP3 Bulungan,UID Jakarta Raya,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0327,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,4,Tinggi
+K0328,DIV STI,Kantor Pusat,AP,Business Analyst,S1,Manajemen,1,Sedang
+K0329,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0330,ULTG Bandung,UPT Bandung,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0331,UP3 Lampung,UID Lampung,SH,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0332,UP3 Depok,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0333,UP3 Medan,UID Sumatera Utara,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0334,DIV HST,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0335,UP3 Semarang,UID Jawa Tengah,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0336,UP3 Bandung,UID Jawa Barat,AP,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0337,ICON SBU Jawa Barat,ICON Plus,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0338,UP3 Madiun,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0339,UP3 Bintaro,UID Jakarta Raya,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0340,UP3 Padang,UID Sumatera Barat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0341,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0342,UP3 Banda Aceh,UID Aceh,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0343,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Tinggi
+K0344,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0345,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0346,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,SH,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0347,DIV HTD,Kantor Pusat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0348,UP3 Bintaro,UID Jakarta Raya,HOLDING,Asset Management,S1,Teknik Industri,5,Sedang
+K0349,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,IT Developer,S1,Informatika,4,Sedang
+K0350,UP3 Semarang,UID Jawa Tengah,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Tinggi
+K0351,DIV RSD,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0352,DIV RSD,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0353,ULTG Bandung,UPT Bandung,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0354,UP3 Surakarta,UID Jawa Tengah,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0355,UP3 Bekasi,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0356,UP3 Cirebon,UID Jawa Barat,AP,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0357,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0358,UBP Ombilin,PLN Nusantara Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Tinggi
+K0359,UP3 Medan,UID Sumatera Utara,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0360,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0361,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0362,UP3 Medan,UID Sumatera Utara,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0363,UP3 Malang,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,4,Sedang
+K0364,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0365,UP Priok,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0366,UP Priok,Indonesia Power,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0367,UP3 Cirebon,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0368,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Business Analyst,S1,Manajemen,5,Sedang
+K0369,DIV HTD,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0370,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0371,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0372,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Tinggi
+K0373,DIV TCO,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0374,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0375,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0376,UP3 Bogor,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Tinggi
+K0377,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",AP,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0378,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0379,DIV MDG,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0380,UP3 Medan,UID Sumatera Utara,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Tinggi
+K0381,DIV RSD,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0382,UP3 Cikokol,UID Banten,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0383,UP3 Banda Aceh,UID Aceh,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0384,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0385,UP3 Madiun,UID Jawa Timur,SH,Operator Pembangkit,D3,Teknik Mesin,4,Sedang
+K0386,ULTG Cawang,UPT Cawang,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0387,DIV HST,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,3,Tinggi
+K0388,DIV RSD,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0389,UP3 Semarang,UID Jawa Tengah,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0390,UP3 Bekasi,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0391,UBP Gresik,PLN Nusantara Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0392,DIV RSD,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0393,UP3 Banda Aceh,UID Aceh,SH,Operator Pembangkit,D3,Teknik Mesin,4,Sedang
+K0394,DIV RSD,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0395,DIV TCO,Kantor Pusat,SH,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0396,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0397,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0398,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0399,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0400,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0401,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0402,UBP Ombilin,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,3,Tinggi
+K0403,DIV MDG,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0404,UP Suralaya,Indonesia Power,HOLDING,Data Analyst,S1,Statistika,4,Tinggi
+K0405,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0406,UP3 Bulungan,UID Jakarta Raya,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0407,DIV MDG,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,4,Sedang
+K0408,UBP Gresik,PLN Nusantara Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Tinggi
+K0409,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0410,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Tinggi
+K0411,UP3 Lampung,UID Lampung,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0412,DIV HSC,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0413,UP3 Kediri,UID Jawa Timur,HOLDING,IT Developer,S1,Informatika,3,Sedang
+K0414,UP3 Cirebon,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0415,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Engineer Transmisi,S1,Teknik Elektro,5,Sedang
+K0416,DIV MDG,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0417,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0418,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0419,UP3 Bandung,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0420,DIV HST,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0421,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Tinggi
+K0422,UP Paiton,Indonesia Power,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0423,ULTG Bandung,UPT Bandung,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0424,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0425,UP Suralaya,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Tinggi
+K0426,UP3 Bintaro,UID Jakarta Raya,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0427,ICON SBU Jakarta,ICON Plus,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0428,UP3 Semarang,UID Jawa Tengah,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0429,UBP Gresik,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0430,UP3 Lampung,UID Lampung,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Tinggi
+K0431,ULTG Bandung,UPT Bandung,AP,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0432,UP3 Semarang,UID Jawa Tengah,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0433,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0434,UP3 Bintaro,UID Jakarta Raya,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0435,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0436,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,4,Tinggi
+K0437,UBP Gresik,PLN Nusantara Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0438,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0439,UP3 Bulungan,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Sedang
+K0440,UP3 Cikokol,UID Banten,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0441,DIV STI,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0442,UP3 Cirebon,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0443,UP3 Bulungan,UID Jakarta Raya,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0444,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0445,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0446,UP3 Semarang,UID Jawa Tengah,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0447,UBP Tanjung Jati B,PLN Nusantara Power,AP,Business Analyst,S1,Manajemen,1,Sedang
+K0448,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0449,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0450,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Tinggi
+K0451,UP Suralaya,Indonesia Power,HOLDING,IT Developer,S1,Informatika,3,Sedang
+K0452,DIV STI,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,5,Sedang
+K0453,DIV HSC,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0454,ICON SBU Jawa Timur,ICON Plus,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0455,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0456,DIV HSC,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0457,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0458,UBP Ombilin,PLN Nusantara Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Tinggi
+K0459,UP3 Depok,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Tinggi
+K0460,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0461,UP3 Depok,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0462,UP3 Lampung,UID Lampung,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0463,UP3 Denpasar,UID Bali,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0464,UP3 Semarang,UID Jawa Tengah,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0465,UP3 Banda Aceh,UID Aceh,HOLDING,Business Analyst,S1,Manajemen,5,Sedang
+K0466,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0467,UP Priok,Indonesia Power,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0468,DIV HST,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0469,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0470,ICON SBU Jawa Timur,ICON Plus,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0471,UP Priok,Indonesia Power,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0472,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0473,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0474,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0475,UP3 Lampung,UID Lampung,AP,Asset Management,S1,Teknik Industri,4,Sedang
+K0476,ICON SBU Jawa Barat,ICON Plus,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0477,UP3 Madiun,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0478,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Business Analyst,S1,Manajemen,3,Sedang
+K0479,UP3 Padang,UID Sumatera Barat,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0480,ICON SBU Jawa Barat,ICON Plus,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0481,UBP Ombilin,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0482,UP3 Bekasi,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0483,UP3 Cirebon,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0484,UP3 Surakarta,UID Jawa Tengah,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0485,ICON SBU Jawa Barat,ICON Plus,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0486,UP3 Lampung,UID Lampung,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0487,UP3 Malang,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0488,DIV TCO,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0489,DIV HSC,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,4,Sedang
+K0490,DIV HTD,Kantor Pusat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0491,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Asset Management,S1,Teknik Industri,3,Tinggi
+K0492,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Data Analyst,S1,Statistika,1,Tinggi
+K0493,UP Suralaya,Indonesia Power,HOLDING,Business Analyst,S1,Manajemen,3,Sedang
+K0494,UP3 Bekasi,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,4,Tinggi
+K0495,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0496,DIV STI,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0497,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0498,UP3 Kediri,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0499,DIV TCO,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0500,UP3 Bekasi,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,3,Sedang
+K0501,UP3 Semarang,UID Jawa Tengah,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0502,UP Priok,Indonesia Power,SH,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0503,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Asset Management,S1,Teknik Industri,4,Sedang
+K0504,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0505,DIV RSD,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,5,Sedang
+K0506,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",SH,Proteksi Sistem,S1,Teknik Elektro,5,Sedang
+K0507,UP3 Medan,UID Sumatera Utara,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0508,DIV HSC,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,4,Sedang
+K0509,ULTG Bandung,UPT Bandung,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0510,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0511,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,4,Tinggi
+K0512,UP3 Padang,UID Sumatera Barat,AP,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0513,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0514,UP3 Medan,UID Sumatera Utara,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0515,DIV TCO,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0516,UP3 Bandung,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0517,UBP Ombilin,PLN Nusantara Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0518,UPT Surabaya,UIT Jawa Bagian Timur,SH,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0519,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0520,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0521,DIV TCO,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0522,DIV TCO,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0523,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Tinggi
+K0524,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0525,ICON SBU Jawa Barat,ICON Plus,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0526,DIV MDG,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0527,DIV STI,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0528,DIV HSC,Kantor Pusat,AP,Asset Management,S1,Teknik Industri,3,Sedang
+K0529,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0530,UP3 Cikokol,UID Banten,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0531,UP3 Surakarta,UID Jawa Tengah,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0532,ULTG Bandung,UPT Bandung,HOLDING,Finance Analyst,S1,Akuntansi,4,Tinggi
+K0533,UBP Ombilin,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0534,UP3 Cirebon,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0535,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0536,ICON SBU Jawa Timur,ICON Plus,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0537,UP3 Bandung,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0538,DIV STI,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Tinggi
+K0539,UP3 Padang,UID Sumatera Barat,SH,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0540,DIV MDG,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0541,UP3 Malang,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,5,Sedang
+K0542,UP Paiton,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0543,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0544,UP3 Cikokol,UID Banten,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0545,UP3 Padang,UID Sumatera Barat,SH,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0546,UP Suralaya,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Sedang
+K0547,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0548,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,4,Tinggi
+K0549,UP3 Denpasar,UID Bali,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Sedang
+K0550,UP3 Cirebon,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,4,Sedang
+K0551,UP3 Depok,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Tinggi
+K0552,UP3 Bintaro,UID Jakarta Raya,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0553,UBP Ombilin,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0554,UP3 Kediri,UID Jawa Timur,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0555,UP3 Medan,UID Sumatera Utara,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0556,UBP Ombilin,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0557,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,IT Developer,S1,Informatika,5,Sedang
+K0558,UBP Ombilin,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0559,UP3 Madiun,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,5,Sedang
+K0560,UP3 Bogor,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0561,UP3 Kediri,UID Jawa Timur,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0562,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0563,UP3 Lampung,UID Lampung,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0564,UP3 Denpasar,UID Bali,HOLDING,Data Analyst,S1,Statistika,5,Sedang
+K0565,UBP Gresik,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0566,UP3 Bogor,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0567,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0568,UP Paiton,Indonesia Power,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0569,UBP Tanjung Jati B,PLN Nusantara Power,AP,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0570,ULTG Cawang,UPT Cawang,HOLDING,Proteksi Sistem,S1,Teknik Elektro,5,Sedang
+K0571,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0572,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Engineer Distribusi,S1,Teknik Elektro,5,Sedang
+K0573,DIV RSD,Kantor Pusat,AP,Asset Management,S1,Teknik Industri,1,Sedang
+K0574,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0575,UP3 Semarang,UID Jawa Tengah,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0576,UBP Gresik,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0577,UP Paiton,Indonesia Power,AP,Business Analyst,S1,Manajemen,3,Sedang
+K0578,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0579,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0580,UP3 Denpasar,UID Bali,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0581,UP3 Lampung,UID Lampung,HOLDING,Business Analyst,S1,Manajemen,4,Sedang
+K0582,UP Suralaya,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,4,Sedang
+K0583,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0584,UP3 Bekasi,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0585,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0586,DIV TCO,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0587,UP3 Tasikmalaya,UID Jawa Barat,SH,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0588,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Finance Analyst,S1,Akuntansi,4,Tinggi
+K0589,UP3 Semarang,UID Jawa Tengah,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0590,UP3 Padang,UID Sumatera Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0591,DIV HTD,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0592,DIV STI,Kantor Pusat,SH,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0593,DIV HTD,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0594,UBP Ombilin,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0595,DIV RSD,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,1,Tinggi
+K0596,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0597,UP3 Kediri,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0598,UBP Tanjung Jati B,PLN Nusantara Power,AP,Data Analyst,S1,Statistika,2,Tinggi
+K0599,ULTG Bandung,UPT Bandung,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Tinggi
+K0600,UP3 Kediri,UID Jawa Timur,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0601,UP Suralaya,Indonesia Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0602,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0603,UP3 Depok,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0604,UP3 Bandung,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0605,ULTG Bandung,UPT Bandung,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0606,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0607,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0608,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0609,UP3 Semarang,UID Jawa Tengah,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0610,DIV HST,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0611,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,5,Tinggi
+K0612,UP3 Medan,UID Sumatera Utara,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0613,DIV MDG,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0614,UP3 Banda Aceh,UID Aceh,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0615,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",SH,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0616,DIV HSC,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0617,UP3 Kediri,UID Jawa Timur,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0618,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0619,UP3 Medan,UID Sumatera Utara,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0620,UP3 Mataram,UID Nusa Tenggara Barat,AP,IT Developer,S1,Informatika,2,Tinggi
+K0621,UBP Gresik,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0622,UBP Ombilin,PLN Nusantara Power,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Tinggi
+K0623,UP Suralaya,Indonesia Power,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0624,UP3 Kediri,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0625,ICON SBU Jawa Barat,ICON Plus,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0626,UP3 Surabaya Selatan,UID Jawa Timur,AP,Finance Analyst,S1,Akuntansi,3,Tinggi
+K0627,DIV STI,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,1,Tinggi
+K0628,DIV RSD,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0629,UP3 Madiun,UID Jawa Timur,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0630,UP3 Bintaro,UID Jakarta Raya,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0631,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0632,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0633,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0634,UP3 Banda Aceh,UID Aceh,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0635,UP3 Depok,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,4,Sedang
+K0636,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0637,ULTG Cawang,UPT Cawang,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,4,Sedang
+K0638,ICON SBU Jawa Timur,ICON Plus,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0639,UP3 Lampung,UID Lampung,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0640,UBP Ombilin,PLN Nusantara Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0641,UP3 Bogor,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0642,ULTG Bandung,UPT Bandung,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0643,DIV RSD,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0644,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,5,Tinggi
+K0645,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0646,UP3 Bulungan,UID Jakarta Raya,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0647,ULTG Cawang,UPT Cawang,HOLDING,IT Developer,S1,Informatika,3,Sedang
+K0648,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0649,UP3 Cirebon,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0650,UP3 Bekasi,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0651,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0652,UP3 Cirebon,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0653,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,5,Sedang
+K0654,UP3 Bogor,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0655,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0656,UP3 Bekasi,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0657,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0658,UBP Ombilin,PLN Nusantara Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0659,UP3 Surakarta,UID Jawa Tengah,AP,IT Developer,S1,Informatika,2,Tinggi
+K0660,UP3 Padang,UID Sumatera Barat,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0661,UP3 Bekasi,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0662,UP3 Depok,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0663,UP3 Bulungan,UID Jakarta Raya,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Tinggi
+K0664,DIV HST,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,5,Tinggi
+K0665,UP3 Semarang,UID Jawa Tengah,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0666,ICON SBU Jawa Barat,ICON Plus,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0667,UP3 Bintaro,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0668,UP3 Surakarta,UID Jawa Tengah,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0669,UP3 Cirebon,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,2,Tinggi
+K0670,UP Suralaya,Indonesia Power,AP,IT Developer,S1,Informatika,1,Tinggi
+K0671,UP3 Depok,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0672,UBP Ombilin,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0673,UP3 Bulungan,UID Jakarta Raya,AP,Finance Analyst,S1,Akuntansi,4,Tinggi
+K0674,UP Suralaya,Indonesia Power,HOLDING,Asset Management,S1,Teknik Industri,4,Tinggi
+K0675,UP Suralaya,Indonesia Power,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0676,UP3 Lampung,UID Lampung,HOLDING,Data Analyst,S1,Statistika,4,Tinggi
+K0677,ICON SBU Jakarta,ICON Plus,AP,IT Developer,S1,Informatika,2,Tinggi
+K0678,UP3 Bandung,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0679,DIV HST,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0680,ULTG Bandung,UPT Bandung,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0681,UP Priok,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,2,Sedang
+K0682,DIV STI,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0683,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0684,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0685,DIV STI,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0686,UP Priok,Indonesia Power,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0687,ICON SBU Jawa Timur,ICON Plus,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0688,DIV HST,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0689,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0690,DIV HSC,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0691,UP3 Madiun,UID Jawa Timur,AP,Data Analyst,S1,Statistika,4,Tinggi
+K0692,UP3 Bintaro,UID Jakarta Raya,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0693,UP3 Semarang,UID Jawa Tengah,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0694,UP3 Bulungan,UID Jakarta Raya,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0695,DIV RSD,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0696,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0697,UP3 Pontianak,UID Kalimantan Barat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0698,DIV STI,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0699,ULTG Cawang,UPT Cawang,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0700,UP3 Kediri,UID Jawa Timur,HOLDING,Business Analyst,S1,Manajemen,3,Tinggi
+K0701,UP3 Bulungan,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0702,ICON SBU Jawa Timur,ICON Plus,SH,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0703,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0704,ULTG Cawang,UPT Cawang,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0705,DIV MDG,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Tinggi
+K0706,UP3 Medan,UID Sumatera Utara,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0707,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0708,UP Priok,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0709,ICON SBU Jawa Timur,ICON Plus,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0710,DIV STI,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0711,DIV HSC,Kantor Pusat,AP,Business Analyst,S1,Manajemen,4,Sedang
+K0712,UP3 Bandung,UID Jawa Barat,SH,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0713,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Tinggi
+K0714,UP3 Pontianak,UID Kalimantan Barat,AP,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0715,DIV HSC,Kantor Pusat,AP,Business Analyst,S1,Manajemen,3,Sedang
+K0716,UP3 Madiun,UID Jawa Timur,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0717,ULTG Cawang,UPT Cawang,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,5,Tinggi
+K0718,UBP Ombilin,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0719,DIV MDG,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0720,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0721,UP3 Madiun,UID Jawa Timur,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Tinggi
+K0722,UP3 Semarang,UID Jawa Tengah,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0723,DIV TCO,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,5,Sedang
+K0724,UP Priok,Indonesia Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0725,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0726,UP3 Bogor,UID Jawa Barat,AP,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0727,DIV HST,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0728,UP3 Bekasi,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0729,DIV HST,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0730,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,IT Developer,S1,Informatika,4,Sedang
+K0731,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0732,ICON SBU Jawa Timur,ICON Plus,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0733,DIV HST,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,3,Tinggi
+K0734,UP Priok,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0735,DIV HTD,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0736,DIV STI,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0737,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Asset Management,S1,Teknik Industri,3,Tinggi
+K0738,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0739,DIV MDG,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0740,DIV MDG,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0741,DIV HSC,Kantor Pusat,AP,Asset Management,S1,Teknik Industri,3,Sedang
+K0742,DIV HTD,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,2,Sedang
+K0743,UP3 Semarang,UID Jawa Tengah,AP,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0744,DIV TCO,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,4,Tinggi
+K0745,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0746,UP3 Bandung,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0747,ULTG Cawang,UPT Cawang,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Tinggi
+K0748,UP Paiton,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Tinggi
+K0749,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0750,UP Suralaya,Indonesia Power,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0751,UP3 Madiun,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0752,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0753,UP Suralaya,Indonesia Power,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0754,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0755,UP3 Malang,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0756,UP3 Padang,UID Sumatera Barat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0757,DIV STI,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0758,UP3 Denpasar,UID Bali,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Tinggi
+K0759,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0760,DIV MDG,Kantor Pusat,AP,Business Analyst,S1,Manajemen,3,Sedang
+K0761,UP3 Bandung,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0762,DIV STI,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0763,UBP Tanjung Jati B,PLN Nusantara Power,AP,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0764,DIV STI,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,2,Tinggi
+K0765,ULTG Bandung,UPT Bandung,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0766,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0767,UP3 Medan,UID Sumatera Utara,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0768,ICON SBU Jawa Barat,ICON Plus,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0769,UP3 Malang,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0770,UP Priok,Indonesia Power,HOLDING,IT Developer,S1,Informatika,5,Sedang
+K0771,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0772,UP3 Kediri,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,4,Tinggi
+K0773,DIV HST,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,4,Tinggi
+K0774,UP Suralaya,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0775,UP3 Bulungan,UID Jakarta Raya,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0776,DIV MDG,Kantor Pusat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0777,ULTG Cawang,UPT Cawang,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0778,UP3 Depok,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0779,UP Paiton,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Tinggi
+K0780,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0781,UP3 Lampung,UID Lampung,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0782,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,4,Sedang
+K0783,ULTG Cawang,UPT Cawang,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0784,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0785,UP3 Pontianak,UID Kalimantan Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,4,Sedang
+K0786,UP Paiton,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0787,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0788,UP3 Bintaro,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0789,UP3 Bogor,UID Jawa Barat,HOLDING,Asset Management,S1,Teknik Industri,3,Sedang
+K0790,DIV MDG,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0791,UP3 Bogor,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Tinggi
+K0792,UP3 Medan,UID Sumatera Utara,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0793,UP3 Malang,UID Jawa Timur,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0794,DIV RSD,Kantor Pusat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Tinggi
+K0795,DIV HSC,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0796,UP3 Semarang,UID Jawa Tengah,HOLDING,Finance Analyst,S1,Akuntansi,5,Sedang
+K0797,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0798,DIV HSC,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0799,UP3 Cikokol,UID Banten,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0800,ICON SBU Jawa Timur,ICON Plus,HOLDING,IT Developer,S1,Informatika,5,Sedang
+K0801,UBP Gresik,PLN Nusantara Power,SH,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0802,UPT Bandung,UIT Jawa Bagian Tengah,AP,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0803,ULTG Cawang,UPT Cawang,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Tinggi
+K0804,UBP Gresik,PLN Nusantara Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0805,DIV MDG,Kantor Pusat,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0806,UP3 Denpasar,UID Bali,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0807,UP3 Padang,UID Sumatera Barat,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0808,ICON SBU Jawa Barat,ICON Plus,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0809,UP3 Bogor,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0810,UP3 Banda Aceh,UID Aceh,HOLDING,Engineer Transmisi,S1,Teknik Elektro,5,Tinggi
+K0811,UP3 Kediri,UID Jawa Timur,AP,Finance Analyst,S1,Akuntansi,3,Tinggi
+K0812,UP3 Padang,UID Sumatera Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0813,UP3 Bulungan,UID Jakarta Raya,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0814,UP3 Madiun,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0815,ICON SBU Jawa Timur,ICON Plus,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0816,UP3 Semarang,UID Jawa Tengah,SH,Operator Pembangkit,D3,Teknik Mesin,5,Sedang
+K0817,UP3 Bulungan,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,4,Tinggi
+K0818,ULTG Cawang,UPT Cawang,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0819,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0820,UP3 Semarang,UID Jawa Tengah,HOLDING,Finance Analyst,S1,Akuntansi,1,Tinggi
+K0821,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0822,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,5,Sedang
+K0823,UP3 Lampung,UID Lampung,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Tinggi
+K0824,UP3 Bulungan,UID Jakarta Raya,HOLDING,IT Developer,S1,Informatika,3,Sedang
+K0825,UP3 Kediri,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0826,UP3 Bandung,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0827,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0828,UP3 Bekasi,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,4,Sedang
+K0829,UP3 Bekasi,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0830,UP Priok,Indonesia Power,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0831,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Data Analyst,S1,Statistika,2,Tinggi
+K0832,ICON SBU Jakarta,ICON Plus,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0833,UP3 Depok,UID Jawa Barat,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0834,UP3 Surabaya Selatan,UID Jawa Timur,AP,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0835,UP3 Kediri,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0836,UBP Ombilin,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0837,UP3 Banda Aceh,UID Aceh,HOLDING,Data Analyst,S1,Statistika,3,Tinggi
+K0838,DIV STI,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,2,Sedang
+K0839,UP3 Malang,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0840,UP3 Cikokol,UID Banten,AP,Asset Management,S1,Teknik Industri,1,Sedang
+K0841,UP3 Denpasar,UID Bali,AP,IT Developer,S1,Informatika,1,Tinggi
+K0842,UP3 Lampung,UID Lampung,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0843,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0844,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Business Analyst,S1,Manajemen,2,Sedang
+K0845,UP3 Surakarta,UID Jawa Tengah,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0846,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Sedang
+K0847,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0848,UP Paiton,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,3,Sedang
+K0849,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0850,ICON SBU Jakarta,ICON Plus,HOLDING,Data Analyst,S1,Statistika,1,Tinggi
+K0851,UP3 Kediri,UID Jawa Timur,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0852,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Tinggi
+K0853,UP3 Surabaya Utara,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0854,UP3 Padang,UID Sumatera Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0855,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Asset Management,S1,Teknik Industri,1,Tinggi
+K0856,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0857,UP3 Lampung,UID Lampung,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0858,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0859,UP Priok,Indonesia Power,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0860,UP3 Banda Aceh,UID Aceh,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0861,UP Priok,Indonesia Power,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0862,UP3 Semarang,UID Jawa Tengah,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0863,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0864,UP3 Denpasar,UID Bali,HOLDING,Asset Management,S1,Teknik Industri,1,Sedang
+K0865,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0866,DIV HST,Kantor Pusat,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0867,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0868,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Data Analyst,S1,Statistika,1,Sedang
+K0869,UP3 Surabaya Selatan,UID Jawa Timur,SH,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0870,UP Paiton,Indonesia Power,HOLDING,Asset Management,S1,Teknik Industri,4,Sedang
+K0871,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0872,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,IT Developer,S1,Informatika,1,Sedang
+K0873,UP3 Bulungan,UID Jakarta Raya,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0874,UP3 Cirebon,UID Jawa Barat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0875,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Finance Analyst,S1,Akuntansi,3,Sedang
+K0876,ICON SBU Jawa Timur,ICON Plus,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Sedang
+K0877,UP3 Cikokol,UID Banten,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0878,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0879,UP3 Semarang,UID Jawa Tengah,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0880,UBP Gresik,PLN Nusantara Power,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Sedang
+K0881,ICON SBU Jakarta,ICON Plus,HOLDING,IT Developer,S1,Informatika,5,Sedang
+K0882,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Tinggi
+K0883,UP Priok,Indonesia Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0884,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0885,UP3 Denpasar,UID Bali,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Sedang
+K0886,DIV MDG,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,2,Sedang
+K0887,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0888,UP3 Banda Aceh,UID Aceh,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Tinggi
+K0889,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0890,UP3 Malang,UID Jawa Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0891,UP3 Bekasi,UID Jawa Barat,AP,IT Developer,S1,Informatika,3,Tinggi
+K0892,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0893,UP3 Yogyakarta,UID Jawa Tengah dan DI Yogyakarta,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0894,UP3 Medan,UID Sumatera Utara,HOLDING,Operator Pembangkit,D3,Teknik Mesin,4,Tinggi
+K0895,ULTG Bandung,UPT Bandung,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Tinggi
+K0896,UP3 Bandung,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0897,UP3 Cirebon,UID Jawa Barat,HOLDING,Data Analyst,S1,Statistika,4,Tinggi
+K0898,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Tinggi
+K0899,UP3 Cirebon,UID Jawa Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,5,Tinggi
+K0900,DIV MDG,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0901,DIV HST,Kantor Pusat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Tinggi
+K0902,UP3 Bekasi,UID Jawa Barat,HOLDING,IT Developer,S1,Informatika,2,Sedang
+K0903,UP3 Bogor,UID Jawa Barat,AP,Network Engineer,S1,Teknik Telekomunikasi,3,Sedang
+K0904,UP3 Padang,UID Sumatera Barat,HOLDING,Operator Pembangkit,D3,Teknik Mesin,3,Tinggi
+K0905,UP3 Madiun,UID Jawa Timur,SH,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0906,UP3 Cirebon,UID Jawa Barat,HOLDING,Business Analyst,S1,Manajemen,1,Sedang
+K0907,UP3 Padang,UID Sumatera Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Tinggi
+K0908,UP3 Banda Aceh,UID Aceh,HOLDING,Engineer Distribusi,S1,Teknik Elektro,4,Sedang
+K0909,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Asset Management,S1,Teknik Industri,3,Tinggi
+K0910,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Tinggi
+K0911,UP Suralaya,Indonesia Power,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0912,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0913,DIV HSC,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,2,Tinggi
+K0914,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0915,UP Paiton,Indonesia Power,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0916,UP3 Semarang,UID Jawa Tengah,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0917,ULTG Bandung,UPT Bandung,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang
+K0918,UBP Tanjung Jati B,PLN Nusantara Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0919,DIV HSC,Kantor Pusat,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,3,Tinggi
+K0920,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0921,UP3 Cikokol,UID Banten,HOLDING,Finance Analyst,S1,Akuntansi,1,Sedang
+K0922,UP3 Semarang,UID Jawa Tengah,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0923,UP Suralaya,Indonesia Power,HOLDING,Finance Analyst,S1,Akuntansi,5,Tinggi
+K0924,ICON SBU Jakarta,ICON Plus,AP,Asset Management,S1,Teknik Industri,1,Sedang
+K0925,UPT Surabaya,UIT Jawa Bagian Timur,HOLDING,Operator Pembangkit,D3,Teknik Mesin,2,Tinggi
+K0926,UP3 Lampung,UID Lampung,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0927,DIV HST,Kantor Pusat,HOLDING,Data Analyst,S1,Statistika,3,Sedang
+K0928,UPT Bandung,UIT Jawa Bagian Tengah,HOLDING,Engineer Distribusi,S1,Teknik Elektro,5,Tinggi
+K0929,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Sedang
+K0930,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0931,UP3 Pekanbaru,UID Riau dan Kepulauan Riau,SH,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0932,UP3 Medan,UID Sumatera Utara,HOLDING,Operator Pembangkit,D3,Teknik Mesin,5,Tinggi
+K0933,UP3 Makassar Selatan,"UID Sulawesi Selatan, Sulawesi Tenggara dan Sulawesi Barat",HOLDING,Data Analyst,S1,Statistika,4,Sedang
+K0934,UP3 Cikokol,UID Banten,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0935,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Operator Pembangkit,D3,Teknik Mesin,1,Tinggi
+K0936,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Engineer Distribusi,S1,Teknik Elektro,3,Sedang
+K0937,ULTG Cawang,UPT Cawang,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0938,UP3 Bekasi,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,3,Tinggi
+K0939,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Asset Management,S1,Teknik Industri,2,Tinggi
+K0940,ICON SBU Jawa Timur,ICON Plus,AP,Business Analyst,S1,Manajemen,2,Sedang
+K0941,UP Priok,Indonesia Power,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,2,Sedang
+K0942,UP3 Bandung,UID Jawa Barat,HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0943,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Tinggi
+K0944,UP3 Cikokol,UID Banten,HOLDING,Proteksi Sistem,S1,Teknik Elektro,2,Sedang
+K0945,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,1,Tinggi
+K0946,DIV HTD,Kantor Pusat,HOLDING,IT Developer,S1,Informatika,1,Tinggi
+K0947,UP3 Bintaro,UID Jakarta Raya,HOLDING,Business Analyst,S1,Manajemen,1,Tinggi
+K0948,DIV RSD,Kantor Pusat,HOLDING,Finance Analyst,S1,Akuntansi,3,Sedang
+K0949,UP3 Surabaya Selatan,UID Jawa Timur,HOLDING,Network Engineer,S1,Teknik Telekomunikasi,1,Tinggi
+K0950,UP3 Tasikmalaya,UID Jawa Barat,HOLDING,Proteksi Sistem,S1,Teknik Elektro,1,Sedang
+K0951,UP3 Jayapura,UID Papua dan Papua Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,3,Sedang
+K0952,UP3 Lampung,UID Lampung,AP,Finance Analyst,S1,Akuntansi,3,Tinggi
+K0953,ULTG Cawang,UPT Cawang,HOLDING,Data Analyst,S1,Statistika,4,Sedang
+K0954,UP3 Palembang,"UID Sumatera Selatan, Jambi dan Bengkulu",HOLDING,Engineer Distribusi,S1,Teknik Elektro,1,Sedang
+K0955,UP3 Balikpapan,UID Kalimantan Timur dan Kalimantan Utara,HOLDING,Proteksi Sistem,S1,Teknik Elektro,4,Tinggi
+K0956,UP3 Mataram,UID Nusa Tenggara Barat,HOLDING,Engineer Transmisi,S1,Teknik Elektro,2,Sedang

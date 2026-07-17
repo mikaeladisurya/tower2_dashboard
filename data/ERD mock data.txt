@@ -1,0 +1,296 @@
+ini konten ERDnya.
+
+kandidat_biodata
+id_kandidat	nama_kandidat	gender	dob	AGAMA	STATUS	NO_KTP	NO_PONSEL	EMAIL	TEMPAT_LAHIR	KOTA_KTP	ALAMAT_KTP	KODE POS	UK_BAJU	UK_SEPATU	UK_CELANA	TAHUN_LULUS_SMA	SMA
+C000001	Manah Pranowo	L	3/12/2001	Islam	Belum Kawin	2.9688E+15	+62 (053) 678 9673	manahprano394@pln.co.id	Cilegon	Cilegon	Gg. M.T Haryono No. 81	24373	XXL	44	40	2019	SMA Negeri 2 Depok
+C000002	Kezia Puspasari	L	11/8/2000	Islam	Belum Kawin	7.75077E+15	-5488	keziapuspa991@yahoo.com	Pekanbaru	Pekanbaru	Jalan Rungkut Industri No. 822	25606	S	39	42	2021	SMA Negeri 3 Gorontalo
+C000003	Talia Utami	P	1/14/2002	Islam	Belum Kawin	3.3476E+15	+62 (048) 254-1852	taliautami23@yahoo.com	Solok	Solok	Gg. HOS. Cokroaminoto No. 454	42691	M	36	32	2020	SMA Negeri 5 Tangerang
+
+kandidat_biodata_pendidikan
+pendidikan_id	candidate_id	JENJANG	PRODI	PERGURUAN_TINGGI	IPK	GELAR	TERAKHIR
+EDU000001	C000001	S2	Sastra Inggris	Universitas Muhammadiyah Yogyakarta	3.91	M.M.	Y
+EDU000002	C000002	D3	MANAJEMEN	Universitas Indonesia	3.76	S.E.	T
+EDU000003	C000003	S1	KONVERSI ENERGI	Universitas Udayana	3.47	S.E.	Y
+EDU000004	C000004	S2	TEKNIK BIOENERGI	Telkom University	3.01	M.M.	Y
+EDU000005	C000005	S1	ENERGI BARU TERBARUKAN	Universitas Sumatera Utara	3.18	S.E.	Y
+
+kandidat_biodata_sertifikat
+sertifikat_id	kandidat_id	nama_sertifikat	provider_sertifikat	tanggal_sertifikat
+CERT000001	C000001	TOEFL ITP 603	ETS	1/15/2025
+CERT000002	C000001	Google Data Analytics Professional Certificate	Google	8/20/2024
+CERT000003	C000003	Ahli K3 Umum	Kemnaker RI	5/18/2024
+CERT000004	C000004	Microsoft Azure Fundamentals (AZ-900)	Microsoft	3/12/2025
+CERT000005	C000004	AWS Certified Cloud Practitioner	Amazon Web Services	5/21/2025
+CERT000006	C000005	Brevet Pajak A & B	Ikatan Konsultan Pajak Indonesia	10/14/2023
+
+rekrutmen_angkatan
+id_angkatan	angkatan	nama_angkatan	jenjang_rekrutmen	jenis_rekrutmen	sumber_rekrutmen	tahun_angkatan	tgl_buka	tgl_tutup	target_hc	status
+A004	89	Rekrutmen PLN Group Tingkat S2 Fresh Graduate	S2	S2 FG PLN	PLN	2026	6/1/2026	6/30/2026	150	Selesai
+A005	90	REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3	S1 D4 D3	S1 D4 D3 PLN	PLN	2026	7/1/2026	7/31/2026	1200	OJT
+A006	91	Rekrutmen PLN Group Tingkat S2 Pro Hire	S2	S2 PRO PLN	PLN	2026	8/15/2026	9/15/2026	40	OJT
+A007	92	REKRUTMEN PLN GROUP DIRECT SHOPPING	S1	S1 DIRECT PLN	PLN	2026	10/1/2026	10/31/2026	250	Tes Bahasa
+A008	93	REKRUTMEN PLN GROUP TINGKAT S2 DIASPORA EXPERIENCED	S2	S2 EXP DIASPORA PLN	PLN	2026	11/15/2026	12/15/2026	100	Perencanaan
+A009	94	REKRUTMEN PUTRA-PUTRI ASLI PAPUA	SMA	SMA ASPIRASI PLN	PLN	2026	11/15/2026	12/15/2026	350	Perencanaan
+
+rekrutmen_syarat
+id_syarat_rekrutmen	id_angkatan	JENIS_SYARAT	KETERANGAN_SYARAT
+SY00003	A-86	UMUR	35
+SY00004	A-86	BELUM NIKAH	T
+SY00005	A-86	IPK	3
+SY00006	A-86	FRESH_GRADUATE	Y
+SY00007	A-87	UMUR	28
+SY00008	A-87	BELUM NIKAH	Y
+SY00009	A-87	IPK	3
+SY00010	A-87	FRESH_GRADUATE	Y
+SY00011	A-88	UMUR	26
+SY00012	A-88	BELUM NIKAH	Y
+
+rekrutmen_kebutuhan
+id_kebutuhan	unit	unit_induk	HOLDING AP SH	jabatan	jenjang_pendidikan	jurusan	jumlah_pagu	prioritas
+K0001	UP3 Surabaya Selatan	UID Jawa Timur	HOLDING	Operator Pembangkit	D3	Teknik Mesin	5	Tinggi
+K0002	UP3 Madiun	UID Jawa Timur	SH	Engineer Transmisi	S1	Teknik Elektro	1	Sedang
+K0003	UP3 Bulungan	UID Jakarta Raya	HOLDING	Finance Analyst	S1	Akuntansi	1	Sedang
+K0004	UP3 Balikpapan	UID Kalimantan Timur dan Kalimantan Utara	HOLDING	Operator Pembangkit	D3	Teknik Mesin	1	Sedang
+K0005	UP3 Surabaya Utara	UID Jawa Timur	HOLDING	Data Analyst	S1	Statistika	1	Sedang
+K0006	ICON SBU Jawa Timur	ICON Plus	HOLDING	Data Analyst	S1	Statistika	3	Tinggi
+K0007	DIV RSD	Kantor Pusat	HOLDING	Business Analyst	S1	Manajemen	5	Sedang
+K0008	UP3 Yogyakarta	UID Jawa Tengah dan DI Yogyakarta	HOLDING	Data Analyst	S1	Statistika	1	Tinggi
+K0009	UP3 Bekasi	UID Jawa Barat	HOLDING	Finance Analyst	S1	Akuntansi	4	Tinggi
+
+rekrutmen_pendaftaran
+ID_PENDAFTARAN	ID ANGKATAN	id_kandidat	tanggal_pendaftaran
+REG-2026-00001	A005	C000003	1/19/2026
+REG-2026-00002	A005	C000152	1/19/2026
+REG-2026-00003	A005	C000091	1/21/2026
+
+tes_administrasi
+id_tesadministrasi	id_pendaftaran	UMUR	STATUS_NIKAH	IPK	JURUSAN	KTP	AKTA	IJAZAH	TRANSKRIP	KEPUTUSAN
+tes-adm-2026-92-00002	REG-2026-00012	1	1	1	1	1	1	1	1	LULUS
+tes-adm-2026-92-00003	REG-2026-00013	1	1	1	1	1	1	1	1	GAGAL
+tes-adm-2026-92-00004	REG-2026-00014	1	1	1	1	1	1	1	1	LULUS
+
+tes_adaptif
+id_tesadaptif	id_pendaftaran	KATEGORI	ABSTRACT_REASONING	VERBAL_REASONING	NUMERICAL_REASONING	TOTAL	KEPUTUSAN
+tes-akd-2026-92-00024	REG-2026-00012	I	7	7	6	20	LULUS
+tes-akd-2026-92-00025	REG-2026-00013	I	8	4	7	19	GAGAL
+tes-akd-2026-92-00026	REG-2026-00014	I	10	5	7	22	LULUS
+
+tes_akademik_inggris
+id_tesakding	id_pendaftaran	Ak_Jawaban_Benar	Ak_Jawaban_Salah	Ak_Jawaban_Kosong	Ak_Skor	En_Jawaban_Benar	En_Jawaban_Salah	En_Jawaban_Kosong	En_Skor	TOTAL SKOR_AKDING	KEPUTUSAN
+tes-akding-2026-92-00012	REG-2026-00121	30	17	3	103	29	21	0	95	198	LULUS
+tes-akding-2026-92-00013	REG-2026-00074	22	26	2	62	32	16	2	112	174	GAGAL
+tes-akding-2026-92-00014	REG-2026-00165	41	5	4	159	40	8	2	152	311	LULUS
+tes-akding-2026-92-00015	REG-2026-00005	29	20	1	96	35	11	4	129	225	LULUS
+tes-akding-2026-92-00016	REG-2026-00117	39	8	3	148	32	14	4	114	262	LULUS
+
+tes_mcu
+id_tesmcu	id_pendaftaran	Kesimpulan	KEPUTUSAN
+tes-mcu-2026-92-00012	REG-2026-00121	Berisi semua hasil pemeriksaan	LULUS
+tes-mcu-2026-92-00014	REG-2026-00005	Berisi semua hasil pemeriksaan	LULUS
+tes-mcu-2026-92-00015	REG-2026-00117	Berisi semua hasil pemeriksaan	LULUS
+tes-mcu-2026-92-00016	REG-2026-00211	Berisi semua hasil pemeriksaan	GAGAL
+tes-mcu-2026-92-00017	REG-2026-01248	Berisi semua hasil pemeriksaan	LULUS
+
+tes_wawancara
+id_teswawancara	id_pendaftaran	SKOR	REKOMENDASI	KEPUTUSAN	id_prajabatan
+tes-wan-2026-92-00266	REG-2026-00121	15	DISARANKAN DENGAN PERTIMBANGAN	LULUS	pj-2026-92-0001
+tes-wan-2026-92-00267	REG-2026-00005	11	TIDAK DISARANKAN	GAGAL	pj-2026-92-0002
+tes-wan-2026-92-00268	REG-2026-00117	20	DISARANKAN DENGAN PERTIMBANGAN	LULUS	pj-2026-92-0003
+tes-wan-2026-92-00269	REG-2026-01248	9	TIDAK DISARANKAN	GAGAL	pj-2026-92-0004
+tes-wan-2026-92-00270	REG-2026-01444	13	TIDAK DISARANKAN	GAGAL	pj-2026-92-0005
+
+prajabatan
+id_prajabatan	id_pendaftaran	PEMBIDANGAN	LOKASI_PEMBIDANGAN	TGL_MULAI_PEMBIDANGAN	NILAI_PEMBIDANGAN	LOKASI_OJT	POSISI_OJT	TGL_MULAI_OJT	JABATAN_PROYEKSI	UNIT_PROYEKSI	UNIT_INDUK_PROYEKSI
+pj-2026-92-0001	REG-2026-00121	NIAGA	UPDL Bogor	7/1/2026	BAIK	UID Sumatera Barat	JUNIOR TECHNICIAN TEKNIK LAYANAN PELANGGAN	9/1/2026	JUNIOR TECHNICIAN TEKNIK LAYANAN PELANGGAN	UP3 Padang	UID Sumatera Barat
+pj-2026-92-0002	REG-2026-00005	MESIN	UPDL Suralaya	3/1/2026	BAIK	UP Paiton	JUNIOR TECHNICIAN OPERASI	5/1/2026	JUNIOR TECHNICIAN OPERASI	UP Priok	Indonesia Power
+pj-2026-92-0003	REG-2026-00117	MESIN	UPDL Suralaya	3/1/2026	BAIK	UP Paiton	JUNIOR TECHNICIAN PEMELIHARAAN LISTRIK	5/1/2026	JUNIOR TECHNICIAN PEMELIHARAAN	UP Priok	Indonesia Power
+pj-2026-92-0004	REG-2026-01248	MESIN	UPDL Suralaya	3/1/2026	BAIK	UP Priok	JUNIOR TECHNICIAN OPERASI	5/1/2026	JUNIOR TECHNICIAN OPERASI	UP Priok	Indonesia Power
+pj-2026-92-0005	REG-2026-01444	KEUANGAN	UPDL Bogor	7/1/2026	BAIK	UID Jawa Barat	OFFICER AKUNTANSI	9/1/2026	OFFICER KEUANGAN	UP3 Bandung	UID Jawa Barat
+
+tes_prajabatan
+id_tes_prajabatan	id_prajabatan	REKOMENDASI_UNIT	NILAI_TUGAS_AKHIR	KEPUTUSAN
+tes-pj-2026-92-00001	pj-2026-92-0001	BAIK	80	LULUS
+tes-pj-2026-92-00002	pj-2026-92-0002	BAIK	55	GAGAL
+tes-pj-2026-92-00003	pj-2026-92-0003	BAIK	75	LULUS
+tes-pj-2026-92-00004	pj-2026-92-0004	BAIK	90	LULUS
+tes-pj-2026-92-00005	pj-2026-92-0005	BAIK	90	LULUS
+
+
+
+Koding:
+classDiagram
+    class kandidat_biodata {
+        String id_kandidat
+        String nama_kandidat
+        String gender
+        Date dob
+        String AGAMA
+        String STATUS
+        String NO_KTP
+        String NO_PONSEL
+        String EMAIL
+        String TEMPAT_LAHIR
+        String KOTA_KTP
+        String ALAMAT_KTP
+        String KODE_POS
+        String UK_BAJU
+        Integer UK_SEPATU
+        Integer UK_CELANA
+        Integer TAHUN_LULUS_SMA
+        String SMA
+    }
+
+    class kandidat_biodata_pendidikan {
+        String pendidikan_id
+        String candidate_id
+        String JENJANG
+        String PRODI
+        String PERGURUAN_TINGGI
+        Float IPK
+        String GELAR
+        String TERAKHIR
+    }
+
+    class kandidat_biodata_sertifikat {
+        String sertifikat_id
+        String kandidat_id
+        String nama_sertifikat
+        String provider_sertifikat
+        Date tanggal_sertifikat
+    }
+
+    class rekrutmen_angkatan {
+        String id_angkatan
+        Integer angkatan
+        String nama_angkatan
+        String jenjang_rekrutmen
+        String jenis_rekrutmen
+        String sumber_rekrutmen
+        Integer tahun_angkatan
+        Date tgl_buka
+        Date tgl_tutup
+        Integer target_hc
+        String status
+    }
+
+    class rekrutmen_syarat {
+        String id_syarat_rekrutmen
+        String id_angkatan
+        String JENIS_SYARAT
+        String KETERANGAN_SYARAT
+    }
+
+    class rekrutmen_kebutuhan {
+        String id_kebutuhan
+        String unit
+        String unit_induk
+        String HOLDING_AP_SH
+        String jabatan
+        String jenjang_pendidikan
+        String jurusan
+        Integer jumlah_pagu
+        String prioritas
+    }
+
+    class pendaftaran {
+        String ID_PENDAFTARAN
+        String ID_ANGKATAN
+        String id_kandidat
+        Date tanggal_pendaftaran
+    }
+
+    class tes_administrasi {
+        String id_tesadministrasi
+        String id_pendaftaran
+        Integer UMUR
+        Integer STATUS_NIKAH
+        Integer IPK
+        Integer JURUSAN
+        Integer KTP
+        Integer AKTA
+        Integer IJAZAH
+        Integer TRANSKRIP
+        String KEPUTUSAN
+    }
+
+    class tes_adaptif {
+        String id_tesadaptif
+        String id_pendaftaran
+        String KATEGORI
+        Integer ABSTRACT_REASONING
+        Integer VERBAL_REASONING
+        Integer NUMERICAL_REASONING
+        Integer TOTAL
+        String KEPUTUSAN
+    }
+
+    class tes_akademik_inggris {
+        String id_tesakding
+        String id_pendaftaran
+        Integer Ak_Jawaban_Benar
+        Integer Ak_Jawaban_Salah
+        Integer Ak_Jawaban_Kosong
+        Integer Ak_Skor
+        Integer En_Jawaban_Benar
+        Integer En_Jawaban_Salah
+        Integer En_Jawaban_Kosong
+        Integer En_Skor
+        Integer TOTAL_SKOR_AKDING
+        String KEPUTUSAN
+    }
+
+    class tes_mcu {
+        String id_tesmcu
+        String id_pendaftaran
+        String Kesimpulan
+        String KEPUTUSAN
+    }
+
+    class tes_wawancara {
+        String id_teswawancara
+        String id_pendaftaran
+        Integer SKOR
+        String REKOMENDASI
+        String KEPUTUSAN
+        String id_prajabatan
+    }
+
+    class prajabatan {
+        String id_prajabatan
+        String id_pendaftaran
+        String PEMBIDANGAN
+        String LOKASI_PEMBIDANGAN
+        Date TGL_MULAI_PEMBIDANGAN
+        String NILAI_PEMBIDANGAN
+        String LOKASI_OJT
+        String POSISI_OJT
+        Date TGL_MULAI_OJT
+        String JABATAN_PROYEKSI
+        String UNIT_PROYEKSI
+        String UNIT_INDUK_PROYEKSI
+    }
+
+    class tes_prajabatan {
+        String id_tes_prajabatan
+        String id_prajabatan
+        String REKOMENDASI_UNIT
+        Integer NILAI_TUGAS_AKHIR
+        String KEPUTUSAN
+    }
+
+    kandidat_biodata "1" -- "*" kandidat_biodata_pendidikan : has
+    kandidat_biodata "1" -- "*" kandidat_biodata_sertifikat : possesses
+    kandidat_biodata "1" -- "*" pendaftaran : registers
+    rekrutmen_angkatan "1" -- "*" pendaftaran : opens
+    rekrutmen_angkatan "1" -- "*" rekrutmen_kebutuhan : plans
+    rekrutmen_angkatan "1" -- "*" rekrutmen_syarat : requires
+    
+    pendaftaran "1" -- "0..1" tes_administrasi : undergoes
+    pendaftaran "1" -- "0..1" tes_adaptif : undergoes
+    pendaftaran "1" -- "0..1" tes_akademik_inggris : undergoes
+    pendaftaran "1" -- "0..1" tes_mcu : undergoes
+    pendaftaran "1" -- "0..1" tes_wawancara : undergoes
+    pendaftaran "1" -- "0..1" prajabatan : assigned_to
+    
+    prajabatan "1" -- "1" tes_wawancara : refers_to
+    prajabatan "1" -- "0..1" tes_prajabatan : evaluated_by

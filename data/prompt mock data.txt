@@ -1,0 +1,35 @@
+prompt mock data
+
+ada 14 tabel/csv yg mau kubuat data mocknya. coba cek di ERD mock data txt disitu ada model masing2 tabelnya.
+1. kandidat_biodata
+2. kandidat_biodata_pendidikan
+3. kandidat_biodata_sertifikat
+4. rekrutmen_kebutuhan
+5. rekrutmen_angkatan
+6. rekrutmen_syarat
+7. rekrutmen_pendaftaran
+8. tes_administratif
+9. tes_adaptif
+10. tes_akademik_inggris
+11. tes_mcu
+12. tes_wawancara
+13. prajabatan
+14. tes_prajabatan
+
+aturan selama kita membuat mock data: 
+>> tahapan seleksi ada dari:
+0. daftar sebagai kandidat (mengisi profil biodata)
+1. pendaftaran seleksi (saat ada pembukaan maka kandidat yg sudah ada bioadatanya bisa melakukan pendaftaran)
+2. tes administrasi
+3. tes akademik inggris
+4. tes adaptif
+5. tes mcu
+6. tes wawancara
+7. pembidangan
+8. ojt
+Tahap terakhir di OJT akan ada ujiannya, kalau sudah melalui tes ojt dan hasilnya bagus, maka tahapannya sudah selesai dan akan penempatan. Jika mendapat nilai jelek, diberi kesempatan lagi untuk mengulang ujiannya sebulan setelah itu hingga 3 kali percobaan (kalau tetap ngga lolos maka nggajadi di angkat pegawai).
+>> saat ini datanya ada dari 4 angkatan seleksi. angkatan 89 yg sudah selesai, angkatan 90 & 91 yg sudah selesai tahapan tes seleksinya tapi masih pada ojt, dan angkatan 92 yg sedang seleksi tahap tes akademi & inggris(sudah keluar hasilnya & menunggu panggilan tes adaptif).
+
+
+Okay, beberapa tabel yg sementara sudah ada data mocknya yaitu rekrutmen_kebutuhan, rekrutmen angkatan, dan rekrutmen syarat. kukasih filenya untuk 3 data ini. selanjutnya kita langsung coba buat mock data paling utama untuk dashboard ini, yaitu data kandidat_biodata, kandidat_biodata_pendidikan dan kandidat_biodata_sertifikat, 3 data ini saling berhubungan, jadi coba buatkan langsung mocknya supaya keterkaitannya bagus. kuberi 3 file ini juga, sebagai contoh isi datanya. ohya, kita buat mock nya sekitar 5000-10ribu pendaftar, tiap pendaftar inii bisa isi biodatanya dan nantinya dapat join ke salah satu seleksi yg dibuka. yg perlu di take note karna mock sekarang dari 4 angkatan, berarti misal ada 500an yg daftar untuk angkatan 89 dengan yg lolos sesuai target_hc di 150, sisanya berguguran nanti di tahapan seleksi. terus misal ada 5000an yg daftar ke webnya karna melihat ada pembukaan angkatan 90, terus yg nantinya bakal daftar ke seleksinya 4000an, kemudian bakal gugur tiap tahap dst sampai diterima sekitar 1200an yg sekarang sedang ojt. gitu seterusnya untuk angkatan 91 dan 92 juga.
+kalau ini semua ada yg kurang jelas, bisa kamu tanyakan dulu sebelum kamu kasih file csv dari 3 file kandidat_biodata ini. kalau sudah jelas boleh langsung kasih aku 3 filenya yaitu data kandidat_biodata, kandidat_biodata_pendidikan dan kandidat_biodata_sertifikat.

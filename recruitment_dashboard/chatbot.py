@@ -141,15 +141,191 @@ def llm_answer(question: str, context: dict[str, Any]) -> str | None:
         return f"Koneksi chatbot belum berhasil: {exc}"
 
 
-def answer_question(question: str, context: dict[str, Any]) -> str:
+_FORBIDDEN_SQL = re.compile(
+    r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|ATTACH|DETACH|COPY|PRAGMA|CREATE|CALL|"
+    r"EXPORT|IMPORT|INSTALL|LOAD|GRANT|VACUUM)\b",
+    re.IGNORECASE,
+)
+
+SQL_FEW_SHOT = """
+Contoh 1:
+Pertanyaan: Berapa kandidat prodi Teknik Elektro dengan IPK di atas 3.5 yang lolos wawancara di wilayah Jawa Barat?
+SQL: SELECT COUNT(*) AS jumlah FROM applications WHERE PRODI = 'Teknik Elektro' AND GPA > 3.5 AND INTERVIEW_RESULT = 'LOLOS' AND REGION_PLAN = 'Jawa Barat';
+
+Contoh 2:
+Pertanyaan: Berapa rata-rata durasi tiap tahap pipeline untuk metode rekrutmen 'Kampus'?
+SQL: SELECT STAGE_CODE, AVG(DURATION_DAYS) AS rata_rata_durasi FROM pipeline WHERE RECRUITMENT_METHOD = 'Kampus' GROUP BY STAGE_CODE ORDER BY rata_rata_durasi DESC;
+
+Contoh 3:
+Pertanyaan: Tampilkan 5 vacancy prioritas CRITICAL dengan kuota terbesar.
+SQL: SELECT VACANCY_ID, POSITION_NAME, LOCATION_PLAN, QUOTA FROM vacancies WHERE VACANCY_PRIORITY = 'CRITICAL' ORDER BY QUOTA DESC LIMIT 5;
+
+Contoh 4 (kolom dengan spasi harus dibungkus tanda kutip dua):
+Pertanyaan: Berapa rata-rata TOTAL SKOR AKDING untuk pendaftar program 'Officer Development Program'?
+SQL: SELECT AVG("TOTAL SKOR AKDING") AS rata_rata_skor FROM applications WHERE "NAMA REKRUTMEN" = 'Officer Development Program';
+""".strip()
+
+SQL_SYSTEM_PROMPT = """Anda adalah generator SQL untuk analitik data rekrutmen PLN memakai dialek DuckDB.
+Tugas anda HANYA menghasilkan satu query SQL SELECT yang menjawab pertanyaan user berdasarkan skema tabel berikut.
+
+Aturan:
+- Hanya gunakan tabel dan kolom yang benar-benar ada pada skema di bawah, jangan mengarang nama kolom/tabel.
+- Nama kolom yang mengandung spasi HARUS dibungkus tanda kutip dua, misal "NAMA REKRUTMEN".
+- Hanya boleh satu statement, berupa SELECT (boleh diawali WITH untuk CTE). Dilarang keras INSERT/UPDATE/DELETE/DROP/ALTER/CREATE/ATTACH/COPY/PRAGMA atau statement lain.
+- Jangan tambahkan penjelasan apapun, kembalikan SQL murni saja (boleh dibungkus code block ```sql ... ```).
+- Batasi hasil ke maksimal 200 baris (tambahkan LIMIT jika query berpotensi mengembalikan banyak baris).
+
+Skema tabel:
+{schema}
+
+Contoh pertanyaan dan SQL:
+{examples}
+"""
+
+
+def _describe_table(name: str, df: pd.DataFrame, max_categories: int = 12) -> str:
+    lines = [f"Tabel: {name}"]
+    for col in df.columns:
+        dtype = str(df[col].dtype)
+        note = ""
+        if dtype == "object" or dtype.startswith("string"):
+            uniques = df[col].dropna().unique()
+            if 0 < len(uniques) <= max_categories:
+                sample = ", ".join(sorted(str(v) for v in uniques))
+                note = f" - nilai: {sample}"
+        col_ident = f'"{col}"' if " " in col or "/" in col else col
+        lines.append(f"  - {col_ident} ({dtype}){note}")
+    return "\n".join(lines)
+
+
+def _build_schema_prompt(dataframes: dict[str, pd.DataFrame]) -> str:
+    return "\n\n".join(_describe_table(name, df) for name, df in dataframes.items())
+
+
+def _extract_sql(raw: str) -> str:
+    text = raw.strip()
+    fence = re.search(r"```(?:sql)?\s*(.*?)```", text, re.IGNORECASE | re.DOTALL)
+    if fence:
+        text = fence.group(1).strip()
+    return text.strip()
+
+
+def _is_safe_select(sql: str) -> bool:
+    stripped = sql.strip().rstrip(";").strip()
+    if not stripped or ";" in stripped:
+        return False
+    first_word = re.match(r"^\s*([A-Za-z]+)", stripped)
+    if not first_word or first_word.group(1).upper() not in {"SELECT", "WITH"}:
+        return False
+    if _FORBIDDEN_SQL.search(stripped):
+        return False
+    return True
+
+
+def _execute_sql(sql: str, dataframes: dict[str, pd.DataFrame], row_limit: int = 200) -> pd.DataFrame:
+    import duckdb
+
+    con = duckdb.connect(database=":memory:")
+    try:
+        for name, df in dataframes.items():
+            con.register(name, df)
+        result = con.execute(sql).df()
+    finally:
+        con.close()
+    return result.head(row_limit)
+
+
+def _generate_sql(question: str, schema_prompt: str) -> str | None:
+    try:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=_secret("LLM_API_KEY"), base_url=_secret("LLM_BASE_URL"))
+        response = client.chat.completions.create(
+            model=_secret("LLM_MODEL"),
+            messages=[
+                {
+                    "role": "system",
+                    "content": SQL_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
+                },
+                {"role": "user", "content": question},
+            ],
+        )
+        raw = response.choices[0].message.content or ""
+        return _extract_sql(raw)
+    except Exception:
+        return None
+
+
+def _narrate_result(question: str, sql: str, table: pd.DataFrame) -> str:
+    try:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=_secret("LLM_API_KEY"), base_url=_secret("LLM_BASE_URL"))
+        preview = table.head(20).to_dict(orient="records")
+        response = client.chat.completions.create(
+            model=_secret("LLM_MODEL"),
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Anda asisten analitik rekrutmen PLN. Ringkas hasil query SQL berikut jadi "
+                        "1-2 kalimat Bahasa Indonesia yang menjawab pertanyaan user. Gunakan hanya "
+                        "angka yang ada pada hasil query, jangan mengarang."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"Pertanyaan: {question}\nSQL: {sql}\n"
+                        f"Hasil (JSON, maksimal 20 baris): {json.dumps(preview, default=str)}"
+                    ),
+                },
+            ],
+        )
+        return (response.choices[0].message.content or "").strip()
+    except Exception:
+        return ""
+
+
+def sql_answer(question: str, dataframes: dict[str, pd.DataFrame] | None) -> dict[str, Any] | None:
+    if not llm_is_configured() or not dataframes:
+        return None
+    schema_prompt = _build_schema_prompt(dataframes)
+    sql = _generate_sql(question, schema_prompt)
+    if not sql or not _is_safe_select(sql):
+        return None
+    try:
+        table = _execute_sql(sql, dataframes)
+    except Exception as exc:
+        return {"text": f"Query SQL gagal dieksekusi: {exc}", "sql": sql, "table": None}
+    narration = _narrate_result(question, sql, table)
+    return {"text": narration or "Berikut hasil query.", "sql": sql, "table": table}
+
+
+def answer_question(
+    question: str,
+    context: dict[str, Any],
+    dataframes: dict[str, pd.DataFrame] | None = None,
+) -> dict[str, Any]:
     deterministic = local_answer(question, context)
     if deterministic:
-        return deterministic
+        return {"kind": "local", "text": deterministic, "sql": None, "table": None}
+
+    sql_result = sql_answer(question, dataframes)
+    if sql_result:
+        return {"kind": "sql", **sql_result}
+
     llm_response = llm_answer(question, context)
     if llm_response:
-        return llm_response
-    return (
-        "Untuk demo tanpa API, saya dapat menjawab pertanyaan tentang konversi kontrak, bottleneck, "
-        "perbandingan metode, kesesuaian penempatan, vacancy kritis, dan sebaran wilayah. "
-        "Konfigurasikan kredensial LLM untuk pertanyaan yang lebih fleksibel."
-    )
+        return {"kind": "llm", "text": llm_response, "sql": None, "table": None}
+
+    return {
+        "kind": "fallback",
+        "text": (
+            "Untuk demo tanpa API, saya dapat menjawab pertanyaan tentang konversi kontrak, bottleneck, "
+            "perbandingan metode, kesesuaian penempatan, vacancy kritis, dan sebaran wilayah. "
+            "Konfigurasikan kredensial LLM untuk pertanyaan yang lebih fleksibel."
+        ),
+        "sql": None,
+        "table": None,
+    }

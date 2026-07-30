@@ -131,6 +131,13 @@ apps = data["applications"]
 vacancies = data["vacancies"]
 pipeline = data["pipeline"]
 
+sql_dataframes = {
+    "applications": apps,
+    "vacancies": vacancies,
+    "pipeline": pipeline,
+    "contracts": data["contracts"],
+}
+
 
 with st.sidebar:
     st.markdown("## ⚡ PLN Recruitment")
@@ -229,11 +236,16 @@ with st.sidebar:
         )
         if st.button("Tanyakan", type="primary", use_container_width=True):
             if typed_question.strip():
-                response = answer_question(typed_question, chat_context)
+                response = answer_question(typed_question, chat_context, sql_dataframes)
                 st.session_state.setdefault("chat_history", []).append((typed_question, response))
         for question, response in st.session_state.get("chat_history", [])[-2:]:
             st.markdown(f"**Anda:** {question}")
-            st.markdown(response)
+            if response.get("sql"):
+                st.caption("🔍 SQL")
+                st.code(response["sql"], language="sql")
+                if response.get("table") is not None:
+                    st.dataframe(response["table"], use_container_width=True, hide_index=True)
+            st.markdown(response["text"])
 
 
 if page == "Ringkasan":

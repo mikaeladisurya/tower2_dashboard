@@ -215,22 +215,32 @@ chat_context = build_chat_context(
 with st.sidebar:
     st.divider()
     with st.expander("💬 Recruitment Copilot", expanded=False):
+        status_icon = "🟢" if llm_is_configured() else "⚪"
         status = "LLM aktif" if llm_is_configured() else "Mode demo tanpa API"
-        st.caption(status)
+        st.caption(f"{status_icon} {status}")
+
+        PLACEHOLDER_SUGGESTION = "Pilih dari pertanyaan contoh..."
         suggestions = [
             "Berapa persen pendaftar sampai kontrak?",
             "Tahap mana yang menjadi bottleneck?",
             "Metode mana yang paling efektif?",
             "Vacancy kritis mana yang belum terpenuhi?",
         ]
-        selected_suggestion = st.selectbox(
-            "Pertanyaan contoh",
-            ["Tulis pertanyaan sendiri..."] + suggestions,
-            label_visibility="collapsed",
+
+        def _apply_suggestion():
+            choice = st.session_state.get("copilot_suggestion")
+            if choice and choice != PLACEHOLDER_SUGGESTION:
+                st.session_state["copilot_question"] = choice
+
+        st.selectbox(
+            "Pertanyaan Contoh",
+            [PLACEHOLDER_SUGGESTION] + suggestions,
+            key="copilot_suggestion",
+            on_change=_apply_suggestion,
         )
         typed_question = st.text_area(
-            "Pertanyaan",
-            value="" if selected_suggestion.startswith("Tulis") else selected_suggestion,
+            "Pertanyaan Anda",
+            key="copilot_question",
             height=90,
             placeholder="Tanyakan funnel, SLA, metode, penempatan...",
         )
@@ -238,14 +248,18 @@ with st.sidebar:
             if typed_question.strip():
                 response = answer_question(typed_question, chat_context, sql_dataframes)
                 st.session_state.setdefault("chat_history", []).append((typed_question, response))
-        for question, response in st.session_state.get("chat_history", [])[-2:]:
-            st.markdown(f"**Anda:** {question}")
-            if response.get("sql"):
-                st.caption("🔍 SQL")
-                st.code(response["sql"], language="sql")
-                if response.get("table") is not None:
-                    st.dataframe(response["table"], use_container_width=True, hide_index=True)
-            st.markdown(response["text"])
+        history = st.session_state.get("chat_history", [])
+        recent = list(enumerate(history))[-2:]
+        for idx, (question, response) in reversed(recent):
+            with st.chat_message("user"):
+                st.markdown(question)
+            with st.chat_message("assistant"):
+                if response.get("sql"):
+                    if st.checkbox("🔍 SQL", key=f"copilot_show_sql_{idx}"):
+                        st.code(response["sql"], language="sql")
+                    if response.get("table") is not None:
+                        st.dataframe(response["table"], use_container_width=True, hide_index=True)
+                st.markdown(response["text"])
 
 
 if page == "Ringkasan":

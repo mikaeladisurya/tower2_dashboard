@@ -142,8 +142,13 @@ def llm_answer(question: str, context: dict[str, Any]) -> str | None:
 
 
 _FORBIDDEN_SQL = re.compile(
-    r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|ATTACH|DETACH|COPY|PRAGMA|CREATE|CALL|"
-    r"EXPORT|IMPORT|INSTALL|LOAD|GRANT|VACUUM)\b",
+    r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|ATTACH|DETACH|COPY|CREATE|CALL|"
+    r"EXPORT|IMPORT|INSTALL|LOAD|GRANT|VACUUM|SET|RESET)\b"
+    # DuckDB catalog/metadata access (schema probing beyond the registered tables)
+    r"|PRAGMA\w*|INFORMATION_SCHEMA|DUCKDB_\w*|SQLITE_MASTER"
+    # table functions that read the local filesystem or network, bypassing the app's dataframes
+    r"|READ_CSV\w*|READ_PARQUET\w*|READ_JSON\w*|READ_TEXT\w*|SNIFF_CSV\w*|"
+    r"GLOB\s*\(|ICEBERG_SCAN|DELTA_SCAN|HTTPFS",
     re.IGNORECASE,
 )
 
@@ -171,7 +176,8 @@ Tugas anda HANYA menghasilkan satu query SQL SELECT yang menjawab pertanyaan use
 Aturan:
 - Hanya gunakan tabel dan kolom yang benar-benar ada pada skema di bawah, jangan mengarang nama kolom/tabel.
 - Nama kolom yang mengandung spasi HARUS dibungkus tanda kutip dua, misal "NAMA REKRUTMEN".
-- Hanya boleh satu statement, berupa SELECT (boleh diawali WITH untuk CTE). Dilarang keras INSERT/UPDATE/DELETE/DROP/ALTER/CREATE/ATTACH/COPY/PRAGMA atau statement lain.
+- Hanya boleh satu statement, berupa SELECT (boleh diawali WITH untuk CTE). Dilarang keras INSERT/UPDATE/DELETE/DROP/ALTER/CREATE/ATTACH/COPY/PRAGMA/SET atau statement lain.
+- Jangan query metadata/katalog (information_schema, duckdb_*, sqlite_master) atau table function pembaca file/URL (read_csv, read_parquet, read_json, glob, httpfs). Hanya tabel pada skema di bawah yang boleh diakses.
 - Jangan tambahkan penjelasan apapun, kembalikan SQL murni saja (boleh dibungkus code block ```sql ... ```).
 - Batasi hasil ke maksimal 200 baris (tambahkan LIMIT jika query berpotensi mengembalikan banyak baris).
 
@@ -229,6 +235,10 @@ def _execute_sql(sql: str, dataframes: dict[str, pd.DataFrame], row_limit: int =
     try:
         for name, df in dataframes.items():
             con.register(name, df)
+        # Lock the connection down before running untrusted, LLM-generated SQL: no filesystem/network
+        # access, and the query itself cannot re-enable it since SET/RESET are already blocked upstream.
+        con.execute("SET enable_external_access = false")
+        con.execute("SET lock_configuration = true")
         result = con.execute(sql).df()
     finally:
         con.close()
@@ -307,10 +317,6 @@ def answer_question(
     context: dict[str, Any],
     dataframes: dict[str, pd.DataFrame] | None = None,
 ) -> dict[str, Any]:
-    deterministic = local_answer(question, context)
-    if deterministic:
-        return {"kind": "local", "text": deterministic, "sql": None, "table": None}
-
     sql_result = sql_answer(question, dataframes)
     if sql_result:
         return {"kind": "sql", **sql_result}
@@ -318,6 +324,10 @@ def answer_question(
     llm_response = llm_answer(question, context)
     if llm_response:
         return {"kind": "llm", "text": llm_response, "sql": None, "table": None}
+
+    deterministic = local_answer(question, context)
+    if deterministic:
+        return {"kind": "local", "text": deterministic, "sql": None, "table": None}
 
     return {
         "kind": "fallback",

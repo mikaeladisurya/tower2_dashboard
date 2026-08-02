@@ -256,10 +256,11 @@ with st.sidebar:
 
         PLACEHOLDER_SUGGESTION = "Pilih dari pertanyaan contoh..."
         suggestions = [
-            "Berapa persen pendaftar sampai kontrak?",
-            "Tahap mana yang menjadi bottleneck?",
-            "Metode mana yang paling efektif?",
-            "Vacancy kritis mana yang belum terpenuhi?",
+            "Bagaimana tren pendaftaran per bulan?",
+            "Tahap mana yang paling banyak menggagalkan kandidat?",
+            "Sebutkan 5 unit dengan kebutuhan tambahan pekerja terbanyak",
+            "Sebutkan 3 wilayah dengan proporsi kandidat gagal tertinggi dibanding jumlah pendaftarnya",
+            "Sebutkan 3 wilayah dengan proporsi kandidat tandatangan kontrak tertinggi dibanding jumlah pendaftarnya",
         ]
 
         def _apply_suggestion():
@@ -282,13 +283,19 @@ with st.sidebar:
         if st.button("Tanyakan", type="primary", use_container_width=True):
             if typed_question.strip():
                 response = answer_question(typed_question, chat_context, sql_dataframes, profile=selected_profile)
-                st.session_state.setdefault("chat_history", []).append((typed_question, response))
+                # Only credit the selected model's icon when it actually produced the answer (kind
+                # "sql"/"llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
+                if response.get("kind") in {"sql", "llm"} and selected_profile:
+                    answer_icon = selected_profile["icon"]
+                else:
+                    answer_icon = "🤖"
+                st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
         history = st.session_state.get("chat_history", [])
         recent = list(enumerate(history))[-2:]
-        for idx, (question, response) in reversed(recent):
+        for idx, (question, response, answer_icon) in reversed(recent):
             with st.chat_message("user"):
                 st.markdown(question)
-            with st.chat_message("assistant"):
+            with st.chat_message("assistant", avatar=answer_icon):
                 if response.get("sql"):
                     if st.checkbox("🔍 SQL", key=f"copilot_show_sql_{idx}"):
                         st.code(response["sql"], language="sql")

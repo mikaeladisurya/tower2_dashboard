@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from pathlib import Path
 
 import numpy as np
@@ -8,7 +9,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from chatbot import answer_question, build_chat_context, llm_is_configured
+from chatbot import answer_question, build_chat_context, check_llm_connection, list_llm_profiles
 from data_layer import (
     STAGE_LABELS,
     STAGE_ORDER,
@@ -215,9 +216,43 @@ chat_context = build_chat_context(
 with st.sidebar:
     st.divider()
     with st.expander("💬 Recruitment Copilot", expanded=False):
-        status_icon = "🟢" if llm_is_configured() else "⚪"
-        status = "LLM aktif" if llm_is_configured() else "Mode demo tanpa API"
-        st.caption(f"{status_icon} {status}")
+        LLM_STATUS_TTL_SECONDS = 300
+
+        llm_profiles = list_llm_profiles()
+        selected_profile = None
+        if llm_profiles:
+            profile_by_id = {p["id"]: p for p in llm_profiles}
+            status_col, recheck_col = st.columns([5, 1])
+            with status_col:
+                selected_id = st.selectbox(
+                    "Model LLM",
+                    list(profile_by_id.keys()),
+                    format_func=lambda pid: f"{profile_by_id[pid]['icon']} {profile_by_id[pid]['label']}",
+                    key="copilot_llm_profile",
+                )
+            selected_profile = profile_by_id[selected_id]
+
+            status_cache = st.session_state.setdefault("copilot_llm_status", {})
+            cached = status_cache.get(selected_id)
+            stale = cached is None or (time.time() - cached["checked_at"] > LLM_STATUS_TTL_SECONDS)
+            with recheck_col:
+                st.write("")
+                force_recheck = st.button("🔄", key=f"copilot_recheck_{selected_id}", help="Cek ulang koneksi")
+
+            if stale or force_recheck:
+                with st.spinner("Mengecek koneksi..."):
+                    ok, detail = check_llm_connection(selected_profile)
+                status_cache[selected_id] = {"ok": ok, "detail": detail, "checked_at": time.time()}
+                cached = status_cache[selected_id]
+
+            status_icon = "🟢" if cached["ok"] else "🔴"
+            status_text = "Aktif" if cached["ok"] else "Gagal terhubung"
+            note = f" · {selected_profile['note']}" if selected_profile.get("note") else ""
+            st.caption(f"{status_icon} {status_text}{note}")
+            if not cached["ok"]:
+                st.caption(f"⚠️ {cached['detail'][:150]}")
+        else:
+            st.caption("⚪ Mode demo tanpa API")
 
         PLACEHOLDER_SUGGESTION = "Pilih dari pertanyaan contoh..."
         suggestions = [
@@ -246,7 +281,7 @@ with st.sidebar:
         )
         if st.button("Tanyakan", type="primary", use_container_width=True):
             if typed_question.strip():
-                response = answer_question(typed_question, chat_context, sql_dataframes)
+                response = answer_question(typed_question, chat_context, sql_dataframes, profile=selected_profile)
                 st.session_state.setdefault("chat_history", []).append((typed_question, response))
         history = st.session_state.get("chat_history", [])
         recent = list(enumerate(history))[-2:]

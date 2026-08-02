@@ -104,23 +104,98 @@ def _secret(name: str) -> str | None:
         return None
 
 
-def llm_is_configured() -> bool:
-    key = _secret("LLM_API_KEY")
-    base_url = _secret("LLM_BASE_URL")
-    model = _secret("LLM_MODEL")
-    values = [key, base_url, model]
+def list_llm_profiles() -> list[dict[str, str]]:
+    profiles: list[dict[str, str]] = []
+    try:
+        import streamlit as st
+
+        raw = st.secrets.get("llm")
+    except Exception:
+        raw = None
+    if raw:
+        for profile_id, cfg in raw.items():
+            profiles.append(
+                {
+                    "id": profile_id,
+                    "label": cfg.get("label", profile_id),
+                    "icon": cfg.get("icon", "🤖"),
+                    "note": cfg.get("note", ""),
+                    "api_key": cfg.get("api_key"),
+                    "base_url": cfg.get("base_url"),
+                    "model": cfg.get("model"),
+                }
+            )
+    if not profiles:
+        key, base_url, model = _secret("LLM_API_KEY"), _secret("LLM_BASE_URL"), _secret("LLM_MODEL")
+        if key and base_url and model:
+            profiles.append(
+                {
+                    "id": "default",
+                    "label": model,
+                    "icon": "🤖",
+                    "note": "",
+                    "api_key": key,
+                    "base_url": base_url,
+                    "model": model,
+                }
+            )
+    return profiles
+
+
+def profile_is_configured(profile: dict[str, str] | None) -> bool:
+    if not profile:
+        return False
+    values = [profile.get("api_key"), profile.get("base_url"), profile.get("model")]
     return all(values) and not any("YOUR_" in str(value) for value in values)
 
 
-def llm_answer(question: str, context: dict[str, Any]) -> str | None:
-    if not llm_is_configured():
+LLM_REQUEST_TIMEOUT = 30.0
+LLM_PING_TIMEOUT = 10.0
+
+
+def check_llm_connection(profile: dict[str, str] | None, timeout: float = LLM_PING_TIMEOUT) -> tuple[bool, str]:
+    """Send one minimal request to verify the endpoint responds and the key is valid."""
+    if not profile_is_configured(profile):
+        return False, "Kredensial belum lengkap"
+    try:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=timeout)
+        # Reasoning models (gpt-5.x, o1, ...) spend some of the token budget on hidden reasoning
+        # tokens before producing visible output, so a budget of 1 fails even when the call itself
+        # is valid - give it enough headroom to actually answer "ping".
+        ping_budget = 16
+        try:
+            client.chat.completions.create(
+                model=profile["model"],
+                messages=[{"role": "user", "content": "ping"}],
+                max_tokens=ping_budget,
+            )
+        except Exception as exc:
+            # Newer OpenAI reasoning models reject `max_tokens` and require `max_completion_tokens`
+            # instead; other OpenAI-compatible endpoints accept the old name.
+            if "max_completion_tokens" in str(exc):
+                client.chat.completions.create(
+                    model=profile["model"],
+                    messages=[{"role": "user", "content": "ping"}],
+                    max_completion_tokens=ping_budget,
+                )
+            else:
+                raise
+        return True, "Terhubung"
+    except Exception as exc:
+        return False, str(exc)
+
+
+def llm_answer(question: str, context: dict[str, Any], profile: dict[str, str] | None) -> str | None:
+    if not profile_is_configured(profile):
         return None
     try:
         from openai import OpenAI
 
-        client = OpenAI(api_key=_secret("LLM_API_KEY"), base_url=_secret("LLM_BASE_URL"))
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
         response = client.chat.completions.create(
-            model=_secret("LLM_MODEL"),
+            model=profile["model"],
             messages=[
                 {
                     "role": "system",
@@ -245,13 +320,13 @@ def _execute_sql(sql: str, dataframes: dict[str, pd.DataFrame], row_limit: int =
     return result.head(row_limit)
 
 
-def _generate_sql(question: str, schema_prompt: str) -> str | None:
+def _generate_sql(question: str, schema_prompt: str, profile: dict[str, str]) -> str | None:
     try:
         from openai import OpenAI
 
-        client = OpenAI(api_key=_secret("LLM_API_KEY"), base_url=_secret("LLM_BASE_URL"))
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
         response = client.chat.completions.create(
-            model=_secret("LLM_MODEL"),
+            model=profile["model"],
             messages=[
                 {
                     "role": "system",
@@ -266,14 +341,14 @@ def _generate_sql(question: str, schema_prompt: str) -> str | None:
         return None
 
 
-def _narrate_result(question: str, sql: str, table: pd.DataFrame) -> str:
+def _narrate_result(question: str, sql: str, table: pd.DataFrame, profile: dict[str, str]) -> str:
     try:
         from openai import OpenAI
 
-        client = OpenAI(api_key=_secret("LLM_API_KEY"), base_url=_secret("LLM_BASE_URL"))
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
         preview = table.head(20).to_dict(orient="records")
         response = client.chat.completions.create(
-            model=_secret("LLM_MODEL"),
+            model=profile["model"],
             messages=[
                 {
                     "role": "system",
@@ -297,18 +372,20 @@ def _narrate_result(question: str, sql: str, table: pd.DataFrame) -> str:
         return ""
 
 
-def sql_answer(question: str, dataframes: dict[str, pd.DataFrame] | None) -> dict[str, Any] | None:
-    if not llm_is_configured() or not dataframes:
+def sql_answer(
+    question: str, dataframes: dict[str, pd.DataFrame] | None, profile: dict[str, str] | None
+) -> dict[str, Any] | None:
+    if not profile_is_configured(profile) or not dataframes:
         return None
     schema_prompt = _build_schema_prompt(dataframes)
-    sql = _generate_sql(question, schema_prompt)
+    sql = _generate_sql(question, schema_prompt, profile)
     if not sql or not _is_safe_select(sql):
         return None
     try:
         table = _execute_sql(sql, dataframes)
     except Exception as exc:
         return {"text": f"Query SQL gagal dieksekusi: {exc}", "sql": sql, "table": None}
-    narration = _narrate_result(question, sql, table)
+    narration = _narrate_result(question, sql, table, profile)
     return {"text": narration or "Berikut hasil query.", "sql": sql, "table": table}
 
 
@@ -316,12 +393,13 @@ def answer_question(
     question: str,
     context: dict[str, Any],
     dataframes: dict[str, pd.DataFrame] | None = None,
+    profile: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-    sql_result = sql_answer(question, dataframes)
+    sql_result = sql_answer(question, dataframes, profile)
     if sql_result:
         return {"kind": "sql", **sql_result}
 
-    llm_response = llm_answer(question, context)
+    llm_response = llm_answer(question, context, profile)
     if llm_response:
         return {"kind": "llm", "text": llm_response, "sql": None, "table": None}
 

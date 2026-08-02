@@ -372,6 +372,88 @@ def _narrate_result(question: str, sql: str, table: pd.DataFrame, profile: dict[
         return ""
 
 
+CHART_SYSTEM_PROMPT = """Anda menentukan apakah hasil tabel SQL berikut layak divisualisasikan sebagai chart, dan jika ya, spesifikasi chart apa yang paling sesuai.
+
+Balas HANYA dengan satu objek JSON, tanpa teks atau code fence lain, persis bentuk ini:
+{{"should_plot": true/false, "chart_type": "bar", "x": "<nama_kolom>", "y": "<nama_kolom>", "color": null, "title": "<judul_singkat>"}}
+
+Aturan:
+- chart_type HARUS salah satu dari: bar, line, pie, scatter.
+- should_plot = false jika hasil hanya 1 baris, hanya 1 kolom, atau berupa angka tunggal/ringkasan yang tidak bermakna sebagai chart.
+- "x", "y" HARUS persis salah satu nama kolom berikut (case-sensitive); "color" salah satu nama kolom itu atau null: {columns}
+- Untuk "pie", "x" adalah kolom kategori dan "y" adalah kolom nilai/jumlah.
+- Gunakan "line" hanya jika kolom x berurutan waktu/bulan/tanggal.
+- Gunakan "pie" hanya untuk proporsi dari kategori (maksimal 8 kategori).
+- Jika ragu antara beberapa tipe, gunakan "bar".
+"""
+
+ALLOWED_CHART_TYPES = {"bar", "line", "pie", "scatter"}
+
+
+def _generate_chart_spec(question: str, table: pd.DataFrame, profile: dict[str, str]) -> dict[str, Any] | None:
+    if table.shape[0] < 2 or table.shape[1] < 2:
+        return None
+    try:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
+        preview = table.head(20).to_dict(orient="records")
+        response = client.chat.completions.create(
+            model=profile["model"],
+            messages=[
+                {"role": "system", "content": CHART_SYSTEM_PROMPT.format(columns=list(table.columns))},
+                {
+                    "role": "user",
+                    "content": (
+                        f"Pertanyaan: {question}\nData (JSON, maksimal 20 baris): "
+                        f"{json.dumps(preview, default=str)}"
+                    ),
+                },
+            ],
+        )
+        raw = (response.choices[0].message.content or "").strip()
+        fence = re.search(r"```(?:json)?\s*(.*?)```", raw, re.IGNORECASE | re.DOTALL)
+        if fence:
+            raw = fence.group(1).strip()
+        spec = json.loads(raw)
+    except Exception:
+        return None
+    return spec if isinstance(spec, dict) else None
+
+
+def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
+    """Render a chart from a validated LLM-provided spec. Only whitelisted chart types and
+    columns that actually exist on `table` are ever passed to Plotly - the LLM never supplies
+    code, just a declarative spec, so there's nothing here to execute or inject."""
+    if not spec.get("should_plot"):
+        return None
+    chart_type = spec.get("chart_type")
+    if chart_type not in ALLOWED_CHART_TYPES:
+        return None
+    columns = set(table.columns)
+    x, y = spec.get("x"), spec.get("y")
+    if x not in columns or y not in columns:
+        return None
+    color = spec.get("color")
+    if color not in columns:
+        color = None
+    title = spec.get("title") or None
+    try:
+        import plotly.express as px
+
+        if chart_type == "bar":
+            return px.bar(table, x=x, y=y, color=color, title=title)
+        if chart_type == "line":
+            return px.line(table, x=x, y=y, color=color, title=title)
+        if chart_type == "scatter":
+            return px.scatter(table, x=x, y=y, color=color, title=title)
+        if chart_type == "pie":
+            return px.pie(table, names=x, values=y, title=title)
+    except Exception:
+        return None
+    return None
+
+
 def sql_answer(
     question: str, dataframes: dict[str, pd.DataFrame] | None, profile: dict[str, str] | None
 ) -> dict[str, Any] | None:
@@ -384,9 +466,11 @@ def sql_answer(
     try:
         table = _execute_sql(sql, dataframes)
     except Exception as exc:
-        return {"text": f"Query SQL gagal dieksekusi: {exc}", "sql": sql, "table": None}
+        return {"text": f"Query SQL gagal dieksekusi: {exc}", "sql": sql, "table": None, "chart": None}
     narration = _narrate_result(question, sql, table, profile)
-    return {"text": narration or "Berikut hasil query.", "sql": sql, "table": table}
+    chart_spec = _generate_chart_spec(question, table, profile)
+    chart = _build_chart(chart_spec, table) if chart_spec else None
+    return {"text": narration or "Berikut hasil query.", "sql": sql, "table": table, "chart": chart}
 
 
 def answer_question(
@@ -401,11 +485,11 @@ def answer_question(
 
     llm_response = llm_answer(question, context, profile)
     if llm_response:
-        return {"kind": "llm", "text": llm_response, "sql": None, "table": None}
+        return {"kind": "llm", "text": llm_response, "sql": None, "table": None, "chart": None}
 
     deterministic = local_answer(question, context)
     if deterministic:
-        return {"kind": "local", "text": deterministic, "sql": None, "table": None}
+        return {"kind": "local", "text": deterministic, "sql": None, "table": None, "chart": None}
 
     return {
         "kind": "fallback",
@@ -416,4 +500,5 @@ def answer_question(
         ),
         "sql": None,
         "table": None,
+        "chart": None,
     }

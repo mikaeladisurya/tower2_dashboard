@@ -87,6 +87,29 @@ st.markdown(
         font-weight: 700;
       }}
       .small-note {{ color: {GREY}; font-size: .83rem; }}
+
+      .st-key-floating_chatbot {{
+        position: fixed;
+        right: 28px;
+        bottom: 28px;
+        z-index: 999999;
+      }}
+      .st-key-floating_chatbot button {{
+        border-radius: 999px !important;
+        background: linear-gradient(110deg, {PLN_DARK}, {PLN_BLUE}) !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 22px !important;
+        box-shadow: 0 10px 28px rgba(16, 58, 93, 0.4) !important;
+      }}
+      [data-testid="stPopoverBody"] {{
+        width: 560px;
+        max-width: 92vw;
+        max-height: 82vh;
+        overflow-y: auto;
+        border-radius: 16px;
+        box-shadow: 0 16px 44px rgba(16, 58, 93, 0.28);
+      }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -213,95 +236,93 @@ chat_context = build_chat_context(
 )
 
 
-with st.sidebar:
-    st.divider()
-    with st.expander("💬 Recruitment Copilot", expanded=False):
-        LLM_STATUS_TTL_SECONDS = 300
+with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
+    LLM_STATUS_TTL_SECONDS = 300
 
-        llm_profiles = list_llm_profiles()
-        selected_profile = None
-        if llm_profiles:
-            profile_by_id = {p["id"]: p for p in llm_profiles}
-            status_col, recheck_col = st.columns([5, 1])
-            with status_col:
-                selected_id = st.selectbox(
-                    "Model LLM",
-                    list(profile_by_id.keys()),
-                    format_func=lambda pid: f"{profile_by_id[pid]['icon']} {profile_by_id[pid]['label']}",
-                    key="copilot_llm_profile",
-                )
-            selected_profile = profile_by_id[selected_id]
+    llm_profiles = list_llm_profiles()
+    selected_profile = None
+    if llm_profiles:
+        profile_by_id = {p["id"]: p for p in llm_profiles}
+        status_col, recheck_col = st.columns([5, 1])
+        with status_col:
+            selected_id = st.selectbox(
+                "Model LLM",
+                list(profile_by_id.keys()),
+                format_func=lambda pid: f"{profile_by_id[pid]['icon']} {profile_by_id[pid]['label']}",
+                key="copilot_llm_profile",
+            )
+        selected_profile = profile_by_id[selected_id]
 
-            status_cache = st.session_state.setdefault("copilot_llm_status", {})
-            cached = status_cache.get(selected_id)
-            stale = cached is None or (time.time() - cached["checked_at"] > LLM_STATUS_TTL_SECONDS)
-            with recheck_col:
-                st.write("")
-                force_recheck = st.button("🔄", key=f"copilot_recheck_{selected_id}", help="Cek ulang koneksi")
+        status_cache = st.session_state.setdefault("copilot_llm_status", {})
+        cached = status_cache.get(selected_id)
+        stale = cached is None or (time.time() - cached["checked_at"] > LLM_STATUS_TTL_SECONDS)
+        with recheck_col:
+            st.write("")
+            force_recheck = st.button("🔄", key=f"copilot_recheck_{selected_id}", help="Cek ulang koneksi")
 
-            if stale or force_recheck:
-                with st.spinner("Mengecek koneksi..."):
-                    ok, detail = check_llm_connection(selected_profile)
-                status_cache[selected_id] = {"ok": ok, "detail": detail, "checked_at": time.time()}
-                cached = status_cache[selected_id]
+        if stale or force_recheck:
+            with st.spinner("Mengecek koneksi..."):
+                ok, detail = check_llm_connection(selected_profile)
+            status_cache[selected_id] = {"ok": ok, "detail": detail, "checked_at": time.time()}
+            cached = status_cache[selected_id]
 
-            status_icon = "🟢" if cached["ok"] else "🔴"
-            status_text = "Aktif" if cached["ok"] else "Gagal terhubung"
-            note = f" · {selected_profile['note']}" if selected_profile.get("note") else ""
-            st.caption(f"{status_icon} {status_text}{note}")
-            if not cached["ok"]:
-                st.caption(f"⚠️ {cached['detail'][:150]}")
-        else:
-            st.caption("⚪ Mode demo tanpa API")
+        status_icon = "🟢" if cached["ok"] else "🔴"
+        status_text = "Aktif" if cached["ok"] else "Gagal terhubung"
+        note = f" · {selected_profile['note']}" if selected_profile.get("note") else ""
+        st.caption(f"{status_icon} {status_text}{note}")
+        if not cached["ok"]:
+            st.caption(f"⚠️ {cached['detail'][:150]}")
+    else:
+        st.caption("⚪ Mode demo tanpa API")
 
-        PLACEHOLDER_SUGGESTION = "Pilih dari pertanyaan contoh..."
-        suggestions = [
-            "Bagaimana tren pendaftaran per bulan?",
-            "Tahap mana yang paling banyak menggagalkan kandidat?",
-            "Sebutkan 5 unit dengan kebutuhan tambahan pekerja terbanyak",
-            "Sebutkan 3 wilayah dengan proporsi kandidat gagal tertinggi dibanding jumlah pendaftarnya",
-            "Sebutkan 3 wilayah dengan proporsi kandidat tandatangan kontrak tertinggi dibanding jumlah pendaftarnya",
-        ]
+    PLACEHOLDER_SUGGESTION = "Pilih dari pertanyaan contoh..."
+    suggestions = [
+        "Bagaimana tren pendaftaran per bulan?",
+        "Tahap mana yang paling banyak menggagalkan kandidat?",
+        "Sebutkan 5 unit dengan kebutuhan tambahan pekerja terbanyak",
+        "Sebutkan 3 wilayah dengan proporsi kandidat gagal tertinggi dibanding jumlah pendaftarnya",
+        "Sebutkan 3 wilayah dengan proporsi kandidat tandatangan kontrak tertinggi dibanding jumlah pendaftarnya",
+    ]
 
-        def _apply_suggestion():
-            choice = st.session_state.get("copilot_suggestion")
-            if choice and choice != PLACEHOLDER_SUGGESTION:
-                st.session_state["copilot_question"] = choice
+    def _apply_suggestion():
+        choice = st.session_state.get("copilot_suggestion")
+        if choice and choice != PLACEHOLDER_SUGGESTION:
+            st.session_state["copilot_question"] = choice
 
-        st.selectbox(
-            "Pertanyaan Contoh",
-            [PLACEHOLDER_SUGGESTION] + suggestions,
-            key="copilot_suggestion",
-            on_change=_apply_suggestion,
-        )
-        typed_question = st.text_area(
-            "Pertanyaan Anda",
-            key="copilot_question",
-            height=90,
-            placeholder="Tanyakan funnel, SLA, metode, penempatan...",
-        )
-        if st.button("Tanyakan", type="primary", use_container_width=True):
-            if typed_question.strip():
-                response = answer_question(typed_question, chat_context, sql_dataframes, profile=selected_profile)
-                # Only credit the selected model's icon when it actually produced the answer (kind
-                # "sql"/"llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
-                if response.get("kind") in {"sql", "llm"} and selected_profile:
-                    answer_icon = selected_profile["icon"]
-                else:
-                    answer_icon = "🤖"
-                st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
-        history = st.session_state.get("chat_history", [])
-        recent = list(enumerate(history))[-2:]
-        for idx, (question, response, answer_icon) in reversed(recent):
-            with st.chat_message("user"):
-                st.markdown(question)
-            with st.chat_message("assistant", avatar=answer_icon):
-                if response.get("sql"):
-                    if st.checkbox("🔍 SQL", key=f"copilot_show_sql_{idx}"):
-                        st.code(response["sql"], language="sql")
-                    if response.get("table") is not None:
-                        st.dataframe(response["table"], use_container_width=True, hide_index=True)
-                st.markdown(response["text"])
+    st.selectbox(
+        "Pertanyaan Contoh",
+        [PLACEHOLDER_SUGGESTION] + suggestions,
+        key="copilot_suggestion",
+        on_change=_apply_suggestion,
+    )
+    typed_question = st.text_area(
+        "Pertanyaan Anda",
+        key="copilot_question",
+        height=90,
+        placeholder="Tanyakan funnel, SLA, metode, penempatan...",
+    )
+    if st.button("Tanyakan", type="primary", width="stretch"):
+        if typed_question.strip():
+            response = answer_question(typed_question, chat_context, sql_dataframes, profile=selected_profile)
+            # Only credit the selected model's icon when it actually produced the answer (kind
+            # "sql"/"llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
+            if response.get("kind") in {"sql", "llm"} and selected_profile:
+                answer_icon = selected_profile["icon"]
+            else:
+                answer_icon = "🤖"
+            st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
+    history = st.session_state.get("chat_history", [])
+    recent = list(enumerate(history))[-2:]
+    for idx, (question, response, answer_icon) in reversed(recent):
+        with st.chat_message("user"):
+            st.markdown(question)
+        with st.chat_message("assistant", avatar=answer_icon):
+            if response.get("sql"):
+                if st.checkbox("🔍 SQL", key=f"copilot_show_sql_{idx}"):
+                    st.code(response["sql"], language="sql")
+                if response.get("table") is not None:
+                    st.dataframe(response["table"], width="stretch", hide_index=True)
+            st.markdown(response["text"])
 
 
 if page == "Ringkasan":

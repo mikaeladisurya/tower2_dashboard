@@ -312,7 +312,10 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
                 answer_icon = "🤖"
             st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
     history = st.session_state.get("chat_history", [])
-    recent = list(enumerate(history))[-2:]
+    indexed_history = list(enumerate(history))
+    recent = indexed_history[-2:]
+    older = indexed_history[:-2]
+
     for idx, (question, response, answer_icon) in reversed(recent):
         with st.chat_message("user"):
             st.markdown(question)
@@ -323,6 +326,19 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
                 if response.get("table") is not None:
                     st.dataframe(response["table"], width="stretch", hide_index=True)
             st.markdown(response["text"])
+
+    if older:
+        with st.expander(f"🕑 Riwayat sebelumnya ({len(older)})"):
+            for idx, (question, response, answer_icon) in reversed(older):
+                with st.chat_message("user"):
+                    st.markdown(question)
+                with st.chat_message("assistant", avatar=answer_icon):
+                    if response.get("sql"):
+                        if st.checkbox("🔍 SQL", key=f"copilot_show_sql_{idx}"):
+                            st.code(response["sql"], language="sql")
+                        if response.get("table") is not None:
+                            st.dataframe(response["table"], width="stretch", hide_index=True)
+                    st.markdown(response["text"])
 
 
 if page == "Ringkasan":

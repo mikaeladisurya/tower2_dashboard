@@ -325,6 +325,8 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
                     st.code(response["sql"], language="sql")
                 if response.get("table") is not None:
                     st.dataframe(response["table"], width="stretch", hide_index=True)
+            if response.get("chart") is not None:
+                st.plotly_chart(response["chart"], width="stretch", key=f"copilot_chart_{idx}")
             st.markdown(response["text"])
 
     if older:
@@ -338,6 +340,8 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
                             st.code(response["sql"], language="sql")
                         if response.get("table") is not None:
                             st.dataframe(response["table"], width="stretch", hide_index=True)
+                    if response.get("chart") is not None:
+                        st.plotly_chart(response["chart"], width="stretch", key=f"copilot_chart_{idx}")
                     st.markdown(response["text"])
 
 

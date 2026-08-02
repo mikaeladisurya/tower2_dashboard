@@ -187,9 +187,47 @@ def check_llm_connection(profile: dict[str, str] | None, timeout: float = LLM_PI
         return False, str(exc)
 
 
-def llm_answer(question: str, context: dict[str, Any], profile: dict[str, str] | None) -> str | None:
+def _format_turn(question: str, response: dict[str, Any]) -> str:
+    parts = [f"User: {question}"]
+    text = (response.get("text") or "").strip()
+    if text:
+        parts.append(f"Asisten: {text}")
+    if response.get("sql"):
+        parts.append(f"SQL: {response['sql']}")
+    return "\n".join(parts)
+
+
+def _format_turns(turns: list[tuple[str, dict[str, Any]]]) -> str:
+    return "\n\n".join(_format_turn(question, response) for question, response in turns)
+
+
+def build_conversation_context(summary: str, buffer_turns: list[tuple[str, dict[str, Any]]]) -> str:
+    """Combine the rolling summary with the last few turns verbatim, so follow-up questions
+    ("itu gimana kalau...") can resolve references to earlier turns without resending the
+    whole transcript."""
+    parts = []
+    if summary:
+        parts.append(f"Ringkasan percakapan sebelumnya: {summary}")
+    if buffer_turns:
+        parts.append("Percakapan beberapa giliran terakhir:\n" + _format_turns(buffer_turns))
+    return "\n\n".join(parts)
+
+
+SUMMARY_SYSTEM_PROMPT = """Anda merangkum riwayat percakapan chatbot analitik rekrutmen PLN menjadi satu ringkasan singkat.
+Gabungkan ringkasan sebelumnya dengan giliran percakapan baru menjadi SATU ringkasan Bahasa Indonesia,
+maksimal 4 kalimat. Fokus pada topik, filter (wilayah/prodi/metode/dsb), dan angka penting yang mungkin
+direferensikan kembali oleh user pada pertanyaan berikutnya. Jangan mengarang informasi yang tidak ada."""
+
+
+def update_chat_summary(
+    existing_summary: str, new_turns: list[tuple[str, dict[str, Any]]], profile: dict[str, str] | None
+) -> str:
+    """Fold turns that just fell out of the recent-turns buffer into the rolling summary, so
+    older context survives without resending the full transcript on every question."""
+    if not new_turns:
+        return existing_summary
     if not profile_is_configured(profile):
-        return None
+        return existing_summary
     try:
         from openai import OpenAI
 
@@ -197,20 +235,54 @@ def llm_answer(question: str, context: dict[str, Any], profile: dict[str, str] |
         response = client.chat.completions.create(
             model=profile["model"],
             messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Anda adalah asisten analitik rekrutmen PLN. Jawab singkat dalam Bahasa Indonesia. "
-                        "Gunakan hanya data JSON yang diberikan. Jangan mengarang angka atau data kandidat. "
-                        "Jika data tidak tersedia, sampaikan keterbatasannya."
-                    ),
-                },
+                {"role": "system", "content": SUMMARY_SYSTEM_PROMPT},
                 {
                     "role": "user",
-                    "content": f"Konteks dashboard:\n{json.dumps(context, default=str)}\n\nPertanyaan: {question}",
+                    "content": (
+                        f"Ringkasan sebelumnya: {existing_summary or '(belum ada)'}\n\n"
+                        f"Giliran percakapan baru:\n{_format_turns(new_turns)}"
+                    ),
                 },
             ],
         )
+        return (response.choices[0].message.content or "").strip() or existing_summary
+    except Exception:
+        return existing_summary
+
+
+def llm_answer(
+    question: str,
+    context: dict[str, Any],
+    profile: dict[str, str] | None,
+    conversation_context: str = "",
+) -> str | None:
+    if not profile_is_configured(profile):
+        return None
+    try:
+        from openai import OpenAI
+
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "Anda adalah asisten analitik rekrutmen PLN. Jawab singkat dalam Bahasa Indonesia. "
+                    "Gunakan hanya data JSON yang diberikan. Jangan mengarang angka atau data kandidat. "
+                    "Jika data tidak tersedia, sampaikan keterbatasannya."
+                ),
+            }
+        ]
+        if conversation_context:
+            messages.append(
+                {"role": "user", "content": f"Konteks percakapan sebelumnya:\n{conversation_context}"}
+            )
+        messages.append(
+            {
+                "role": "user",
+                "content": f"Konteks dashboard:\n{json.dumps(context, default=str)}\n\nPertanyaan: {question}",
+            }
+        )
+        response = client.chat.completions.create(model=profile["model"], messages=messages)
         return response.choices[0].message.content
     except Exception as exc:
         return f"Koneksi chatbot belum berhasil: {exc}"
@@ -320,21 +392,31 @@ def _execute_sql(sql: str, dataframes: dict[str, pd.DataFrame], row_limit: int =
     return result.head(row_limit)
 
 
-def _generate_sql(question: str, schema_prompt: str, profile: dict[str, str]) -> str | None:
+def _generate_sql(
+    question: str, schema_prompt: str, profile: dict[str, str], conversation_context: str = ""
+) -> str | None:
     try:
         from openai import OpenAI
 
         client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
-        response = client.chat.completions.create(
-            model=profile["model"],
-            messages=[
+        messages = [
+            {
+                "role": "system",
+                "content": SQL_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
+            }
+        ]
+        if conversation_context:
+            messages.append(
                 {
-                    "role": "system",
-                    "content": SQL_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
-                },
-                {"role": "user", "content": question},
-            ],
-        )
+                    "role": "user",
+                    "content": (
+                        "Konteks percakapan sebelumnya (gunakan hanya untuk resolusi referensi seperti "
+                        f"'itu'/'nya' atau filter yang masih relevan):\n{conversation_context}"
+                    ),
+                }
+            )
+        messages.append({"role": "user", "content": question})
+        response = client.chat.completions.create(model=profile["model"], messages=messages)
         raw = response.choices[0].message.content or ""
         return _extract_sql(raw)
     except Exception:
@@ -455,12 +537,15 @@ def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
 
 
 def sql_answer(
-    question: str, dataframes: dict[str, pd.DataFrame] | None, profile: dict[str, str] | None
+    question: str,
+    dataframes: dict[str, pd.DataFrame] | None,
+    profile: dict[str, str] | None,
+    conversation_context: str = "",
 ) -> dict[str, Any] | None:
     if not profile_is_configured(profile) or not dataframes:
         return None
     schema_prompt = _build_schema_prompt(dataframes)
-    sql = _generate_sql(question, schema_prompt, profile)
+    sql = _generate_sql(question, schema_prompt, profile, conversation_context)
     if not sql or not _is_safe_select(sql):
         return None
     try:
@@ -478,12 +563,13 @@ def answer_question(
     context: dict[str, Any],
     dataframes: dict[str, pd.DataFrame] | None = None,
     profile: dict[str, str] | None = None,
+    conversation_context: str = "",
 ) -> dict[str, Any]:
-    sql_result = sql_answer(question, dataframes, profile)
+    sql_result = sql_answer(question, dataframes, profile, conversation_context)
     if sql_result:
         return {"kind": "sql", **sql_result}
 
-    llm_response = llm_answer(question, context, profile)
+    llm_response = llm_answer(question, context, profile, conversation_context)
     if llm_response:
         return {"kind": "llm", "text": llm_response, "sql": None, "table": None, "chart": None}
 

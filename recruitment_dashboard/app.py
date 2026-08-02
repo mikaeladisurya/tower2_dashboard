@@ -9,7 +9,14 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from chatbot import answer_question, build_chat_context, check_llm_connection, list_llm_profiles
+from chatbot import (
+    answer_question,
+    build_chat_context,
+    build_conversation_context,
+    check_llm_connection,
+    list_llm_profiles,
+    update_chat_summary,
+)
 from data_layer import (
     STAGE_LABELS,
     STAGE_ORDER,
@@ -303,7 +310,17 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
     )
     if st.button("Tanyakan", type="primary", width="stretch"):
         if typed_question.strip():
-            response = answer_question(typed_question, chat_context, sql_dataframes, profile=selected_profile)
+            history_before = st.session_state.get("chat_history", [])
+            buffer_turns = [(q, r) for q, r, _icon in history_before[-2:]]
+            summary = st.session_state.get("chat_summary", "")
+            conversation_context = build_conversation_context(summary, buffer_turns)
+            response = answer_question(
+                typed_question,
+                chat_context,
+                sql_dataframes,
+                profile=selected_profile,
+                conversation_context=conversation_context,
+            )
             # Only credit the selected model's icon when it actually produced the answer (kind
             # "sql"/"llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
             if response.get("kind") in {"sql", "llm"} and selected_profile:
@@ -311,6 +328,16 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
             else:
                 answer_icon = "🤖"
             st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
+
+            # Fold turns that just fell out of the 2-turn buffer into the rolling summary, so
+            # older context survives without resending the full transcript every question.
+            history_after = st.session_state["chat_history"]
+            summarized_upto = st.session_state.get("chat_summary_upto", 0)
+            foldable_end = len(history_after) - 2
+            if foldable_end > summarized_upto:
+                new_turns = [(q, r) for q, r, _icon in history_after[summarized_upto:foldable_end]]
+                st.session_state["chat_summary"] = update_chat_summary(summary, new_turns, selected_profile)
+                st.session_state["chat_summary_upto"] = foldable_end
     history = st.session_state.get("chat_history", [])
     indexed_history = list(enumerate(history))
     recent = indexed_history[-2:]

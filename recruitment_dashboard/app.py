@@ -250,35 +250,36 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
     selected_profile = None
     if llm_profiles:
         profile_by_id = {p["id"]: p for p in llm_profiles}
-        status_col, recheck_col = st.columns([5, 1])
-        with status_col:
-            selected_id = st.selectbox(
-                "Model LLM",
-                list(profile_by_id.keys()),
-                format_func=lambda pid: f"{profile_by_id[pid]['icon']} {profile_by_id[pid]['label']}",
-                key="copilot_llm_profile",
-            )
-        selected_profile = profile_by_id[selected_id]
+        with st.container(border=True):
+            status_col, recheck_col = st.columns([5, 1], vertical_alignment="bottom")
+            with status_col:
+                selected_id = st.selectbox(
+                    "Model LLM",
+                    list(profile_by_id.keys()),
+                    format_func=lambda pid: f"{profile_by_id[pid]['icon']} {profile_by_id[pid]['label']}",
+                    key="copilot_llm_profile",
+                    label_visibility="collapsed",
+                )
+            selected_profile = profile_by_id[selected_id]
 
-        status_cache = st.session_state.setdefault("copilot_llm_status", {})
-        cached = status_cache.get(selected_id)
-        stale = cached is None or (time.time() - cached["checked_at"] > LLM_STATUS_TTL_SECONDS)
-        with recheck_col:
-            st.write("")
-            force_recheck = st.button("🔄", key=f"copilot_recheck_{selected_id}", help="Cek ulang koneksi")
+            status_cache = st.session_state.setdefault("copilot_llm_status", {})
+            cached = status_cache.get(selected_id)
+            stale = cached is None or (time.time() - cached["checked_at"] > LLM_STATUS_TTL_SECONDS)
+            with recheck_col:
+                force_recheck = st.button("🔄", key=f"copilot_recheck_{selected_id}", help="Cek ulang koneksi")
 
-        if stale or force_recheck:
-            with st.spinner("Mengecek koneksi..."):
-                ok, detail = check_llm_connection(selected_profile)
-            status_cache[selected_id] = {"ok": ok, "detail": detail, "checked_at": time.time()}
-            cached = status_cache[selected_id]
+            if stale or force_recheck:
+                with st.spinner("Mengecek koneksi..."):
+                    ok, detail = check_llm_connection(selected_profile)
+                status_cache[selected_id] = {"ok": ok, "detail": detail, "checked_at": time.time()}
+                cached = status_cache[selected_id]
 
-        status_icon = "🟢" if cached["ok"] else "🔴"
-        status_text = "Aktif" if cached["ok"] else "Gagal terhubung"
-        note = f" · {selected_profile['note']}" if selected_profile.get("note") else ""
-        st.caption(f"{status_icon} {status_text}{note}")
-        if not cached["ok"]:
-            st.caption(f"⚠️ {cached['detail'][:150]}")
+            note = f" · {selected_profile['note']}" if selected_profile.get("note") else ""
+            if cached["ok"]:
+                st.badge(f"Aktif{note}", icon="🟢", color="green")
+            else:
+                st.badge(f"Gagal terhubung{note}", icon="🔴", color="red")
+                st.caption(f"⚠️ {cached['detail'][:150]}")
     else:
         st.caption("⚪ Mode demo tanpa API")
 
@@ -301,43 +302,41 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
         [PLACEHOLDER_SUGGESTION] + suggestions,
         key="copilot_suggestion",
         on_change=_apply_suggestion,
+        label_visibility="collapsed",
     )
-    typed_question = st.text_area(
-        "Pertanyaan Anda",
+    typed_question = st.chat_input(
+        "Tanya mengenai rekrutmen...",
         key="copilot_question",
-        height=90,
-        placeholder="Tanyakan funnel, SLA, metode, penempatan...",
     )
-    if st.button("Tanyakan", type="primary", width="stretch"):
-        if typed_question.strip():
-            history_before = st.session_state.get("chat_history", [])
-            buffer_turns = [(q, r) for q, r, _icon in history_before[-2:]]
-            summary = st.session_state.get("chat_summary", "")
-            conversation_context = build_conversation_context(summary, buffer_turns)
-            response = answer_question(
-                typed_question,
-                chat_context,
-                sql_dataframes,
-                profile=selected_profile,
-                conversation_context=conversation_context,
-            )
-            # Only credit the selected model's icon when it actually produced the answer (kind
-            # "sql"/"llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
-            if response.get("kind") in {"sql", "llm"} and selected_profile:
-                answer_icon = selected_profile["icon"]
-            else:
-                answer_icon = "🤖"
-            st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
+    if typed_question and typed_question.strip():
+        history_before = st.session_state.get("chat_history", [])
+        buffer_turns = [(q, r) for q, r, _icon in history_before[-2:]]
+        summary = st.session_state.get("chat_summary", "")
+        conversation_context = build_conversation_context(summary, buffer_turns)
+        response = answer_question(
+            typed_question,
+            chat_context,
+            sql_dataframes,
+            profile=selected_profile,
+            conversation_context=conversation_context,
+        )
+        # Only credit the selected model's icon when it actually produced the answer (kind
+        # "sql"/"llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
+        if response.get("kind") in {"sql", "llm"} and selected_profile:
+            answer_icon = selected_profile["icon"]
+        else:
+            answer_icon = "🤖"
+        st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
 
-            # Fold turns that just fell out of the 2-turn buffer into the rolling summary, so
-            # older context survives without resending the full transcript every question.
-            history_after = st.session_state["chat_history"]
-            summarized_upto = st.session_state.get("chat_summary_upto", 0)
-            foldable_end = len(history_after) - 2
-            if foldable_end > summarized_upto:
-                new_turns = [(q, r) for q, r, _icon in history_after[summarized_upto:foldable_end]]
-                st.session_state["chat_summary"] = update_chat_summary(summary, new_turns, selected_profile)
-                st.session_state["chat_summary_upto"] = foldable_end
+        # Fold turns that just fell out of the 2-turn buffer into the rolling summary, so
+        # older context survives without resending the full transcript every question.
+        history_after = st.session_state["chat_history"]
+        summarized_upto = st.session_state.get("chat_summary_upto", 0)
+        foldable_end = len(history_after) - 2
+        if foldable_end > summarized_upto:
+            new_turns = [(q, r) for q, r, _icon in history_after[summarized_upto:foldable_end]]
+            st.session_state["chat_summary"] = update_chat_summary(summary, new_turns, selected_profile)
+            st.session_state["chat_summary_upto"] = foldable_end
     history = st.session_state.get("chat_history", [])
     indexed_history = list(enumerate(history))
     recent = indexed_history[-2:]

@@ -8,6 +8,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit.components.v1 as components
 
 from chatbot import (
     answer_question,
@@ -242,6 +243,53 @@ chat_context = build_chat_context(
     vacancy_summary,
 )
 
+
+components.html(
+    """
+    <script>
+    (function() {
+        const doc = window.parent.document;
+        if (doc.__copilotShortcutBound) return;
+        doc.__copilotShortcutBound = true;
+
+        function focusChatInput() {
+            let attempts = 0;
+            const tryFocus = () => {
+                const textarea = Array.from(doc.querySelectorAll('textarea')).find(
+                    (el) => el.placeholder === 'Tanya mengenai rekrutmen...'
+                );
+                if (textarea && textarea.offsetParent !== null) {
+                    textarea.focus();
+                    return;
+                }
+                attempts += 1;
+                if (attempts < 20) {
+                    setTimeout(tryFocus, 50);
+                }
+            };
+            tryFocus();
+        }
+
+        doc.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && e.key === '/') {
+                const btn = doc.querySelector('.st-key-floating_chatbot button');
+                if (btn) {
+                    e.preventDefault();
+                    btn.click();
+                }
+            }
+        });
+
+        doc.addEventListener('click', function(e) {
+            if (e.target.closest && e.target.closest('.st-key-floating_chatbot button')) {
+                focusChatInput();
+            }
+        }, true);
+    })();
+    </script>
+    """,
+    height=0,
+)
 
 with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
     LLM_STATUS_TTL_SECONDS = 300

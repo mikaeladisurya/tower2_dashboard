@@ -54,19 +54,25 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+is_dark = (st.context.theme.type or "light") == "dark"
+CARD_BG = "#132C42" if is_dark else "#FFFFFF"
+CARD_BORDER = "#1E3A52" if is_dark else "#E7ECF2"
+CARD_SHADOW = "rgba(0, 0, 0, 0.35)" if is_dark else "rgba(16, 58, 93, 0.05)"
+HEADING_COLOR = "#EAF4FF" if is_dark else PLN_DARK
+BADGE_BG = "#173A57" if is_dark else LIGHT_BLUE
+BADGE_TEXT = "#BFE3FF" if is_dark else PLN_DARK
+
 st.markdown(
     f"""
     <style>
-      .stApp {{ background: #F5F8FB; }}
-      [data-testid="stSidebar"] {{ background: #FFFFFF; border-right: 1px solid #E5EAF0; }}
       .block-container {{ padding-top: 1.5rem; padding-bottom: 2rem; }}
-      h1, h2, h3 {{ color: {PLN_DARK}; }}
+      h1, h2, h3 {{ color: {HEADING_COLOR}; }}
       [data-testid="stMetric"] {{
-        background: white;
-        border: 1px solid #E7ECF2;
+        background: {CARD_BG};
+        border: 1px solid {CARD_BORDER};
         border-radius: 14px;
         padding: 14px 16px;
-        box-shadow: 0 3px 12px rgba(16, 58, 93, 0.05);
+        box-shadow: 0 3px 12px {CARD_SHADOW};
       }}
       .hero {{
         background: linear-gradient(110deg, {PLN_DARK}, {PLN_BLUE});
@@ -78,17 +84,17 @@ st.markdown(
       .hero h1 {{ color: white; margin: 0; font-size: 1.8rem; }}
       .hero p {{ margin: 6px 0 0 0; opacity: .88; }}
       .insight {{
-        background: white;
+        background: {CARD_BG};
         border-left: 5px solid {PLN_YELLOW};
         border-radius: 10px;
         padding: 13px 15px;
         margin-bottom: 10px;
-        box-shadow: 0 2px 10px rgba(16, 58, 93, 0.05);
+        box-shadow: 0 2px 10px {CARD_SHADOW};
       }}
       .demo-badge {{
         display: inline-block;
-        background: {LIGHT_BLUE};
-        color: {PLN_DARK};
+        background: {BADGE_BG};
+        color: {BADGE_TEXT};
         padding: 5px 10px;
         border-radius: 999px;
         font-size: .78rem;
@@ -116,7 +122,7 @@ st.markdown(
         max-height: 82vh;
         overflow-y: auto;
         border-radius: 16px;
-        box-shadow: 0 16px 44px rgba(16, 58, 93, 0.28);
+        box-shadow: 0 16px 44px {CARD_SHADOW};
       }}
     </style>
     """,

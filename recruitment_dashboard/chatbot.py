@@ -279,16 +279,21 @@ Pertanyaan: Berapa rata-rata TOTAL SKOR AKDING untuk pendaftar program 'Officer 
 SQL: SELECT AVG("TOTAL SKOR AKDING") AS rata_rata_skor FROM applications WHERE "NAMA REKRUTMEN" = 'Officer Development Program';
 """.strip()
 
-SQL_SYSTEM_PROMPT = """Anda adalah generator SQL untuk analitik data rekrutmen PLN memakai dialek DuckDB.
-Tugas anda HANYA menghasilkan satu query SQL SELECT yang menjawab pertanyaan user berdasarkan skema tabel berikut.
+ALLOWED_CHART_TYPES = {"bar", "line", "pie", "scatter"}
+
+AGENTIC_SYSTEM_PROMPT = """Anda adalah asisten analitik rekrutmen PLN. Jawab dalam Bahasa Indonesia, singkat dan jelas.
+
+Anda punya akses ke tool berikut:
+- run_sql_query: jalankan satu query SQL SELECT (dialek DuckDB) ke tabel data di bawah untuk mengambil angka/data nyata.
+- render_chart: buat chart dari hasil run_sql_query sebelumnya (dirujuk lewat result_id), kalau memang membantu menjawab.
 
 Aturan:
-- Hanya gunakan tabel dan kolom yang benar-benar ada pada skema di bawah, jangan mengarang nama kolom/tabel.
-- Nama kolom yang mengandung spasi HARUS dibungkus tanda kutip dua, misal "NAMA REKRUTMEN".
-- Hanya boleh satu statement, berupa SELECT (boleh diawali WITH untuk CTE). Dilarang keras INSERT/UPDATE/DELETE/DROP/ALTER/CREATE/ATTACH/COPY/PRAGMA/SET atau statement lain.
-- Jangan query metadata/katalog (information_schema, duckdb_*, sqlite_master) atau table function pembaca file/URL (read_csv, read_parquet, read_json, glob, httpfs). Hanya tabel pada skema di bawah yang boleh diakses.
-- Jangan tambahkan penjelasan apapun, kembalikan SQL murni saja (boleh dibungkus code block ```sql ... ```).
-- Batasi hasil ke maksimal 200 baris (tambahkan LIMIT jika query berpotensi mengembalikan banyak baris).
+- Kalau pertanyaan butuh angka/data spesifik dari tabel, WAJIB panggil run_sql_query dulu - jangan pernah mengarang angka.
+- Kalau pertanyaan bersifat umum/definisi/sapaan yang tidak butuh data tabel, jawab langsung tanpa memanggil tool apapun.
+- SQL: hanya gunakan tabel & kolom yang benar-benar ada pada skema di bawah, jangan mengarang nama kolom/tabel. Nama kolom berspasi HARUS dibungkus tanda kutip dua, misal "NAMA REKRUTMEN". Hanya satu statement SELECT (boleh diawali WITH untuk CTE), tanpa titik koma ganda. Batasi hasil ke maksimal 200 baris (tambahkan LIMIT jika query berpotensi mengembalikan banyak baris).
+- Kalau run_sql_query gagal (error atau ditolak), coba perbaiki query sekali berdasarkan pesan errornya; kalau masih gagal, jelaskan keterbatasannya ke user alih-alih mengarang jawaban.
+- Setelah dapat hasil query, jawab pertanyaan user berdasarkan hasil (preview) itu saja.
+- render_chart bersifat opsional - panggil hanya kalau chart benar-benar menambah nilai (hasil query lebih dari 1 baris dan ada kolom kategori/nilai yang bermakna divisualisasikan).
 
 Skema tabel:
 {schema}
@@ -296,6 +301,56 @@ Skema tabel:
 Contoh pertanyaan dan SQL:
 {examples}
 """
+
+TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "run_sql_query",
+            "description": (
+                "Jalankan satu query SQL SELECT (dialek DuckDB) terhadap tabel data rekrutmen PLN untuk "
+                "mendapatkan angka/data yang dibutuhkan menjawab pertanyaan user."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "sql": {
+                        "type": "string",
+                        "description": "Satu statement SQL SELECT (boleh diawali WITH untuk CTE).",
+                    }
+                },
+                "required": ["sql"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "render_chart",
+            "description": (
+                "Render chart dari hasil run_sql_query sebelumnya. Panggil hanya kalau user butuh "
+                "visualisasi dan datanya cocok divisualisasikan."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "result_id": {
+                        "type": "string",
+                        "description": "result_id dari hasil run_sql_query yang mau divisualisasikan.",
+                    },
+                    "chart_type": {"type": "string", "enum": sorted(ALLOWED_CHART_TYPES)},
+                    "x": {"type": "string", "description": "Nama kolom untuk sumbu x (kategori untuk pie)."},
+                    "y": {"type": "string", "description": "Nama kolom untuk sumbu y (nilai untuk pie)."},
+                    "color": {"type": "string", "description": "Nama kolom untuk pengelompokan warna (opsional)."},
+                    "title": {"type": "string", "description": "Judul singkat chart (opsional)."},
+                },
+                "required": ["result_id", "chart_type", "x", "y"],
+            },
+        },
+    },
+]
+
+MAX_TOOL_ITERATIONS = 4
 
 
 def _describe_table(name: str, df: pd.DataFrame, max_categories: int = 12) -> str:
@@ -354,117 +409,6 @@ def _execute_sql(sql: str, dataframes: dict[str, pd.DataFrame], row_limit: int =
     return result.head(row_limit)
 
 
-def _generate_sql(
-    question: str, schema_prompt: str, profile: dict[str, str], conversation_context: str = ""
-) -> str | None:
-    try:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
-        messages = [
-            {
-                "role": "system",
-                "content": SQL_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
-            }
-        ]
-        if conversation_context:
-            messages.append(
-                {
-                    "role": "user",
-                    "content": (
-                        "Konteks percakapan sebelumnya (gunakan hanya untuk resolusi referensi seperti "
-                        f"'itu'/'nya' atau filter yang masih relevan):\n{conversation_context}"
-                    ),
-                }
-            )
-        messages.append({"role": "user", "content": question})
-        response = client.chat.completions.create(model=profile["model"], messages=messages)
-        raw = response.choices[0].message.content or ""
-        return _extract_sql(raw)
-    except Exception:
-        return None
-
-
-def _narrate_result(question: str, sql: str, table: pd.DataFrame, profile: dict[str, str]) -> str:
-    try:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
-        preview = table.head(20).to_dict(orient="records")
-        response = client.chat.completions.create(
-            model=profile["model"],
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Anda asisten analitik rekrutmen PLN. Ringkas hasil query SQL berikut jadi "
-                        "1-2 kalimat Bahasa Indonesia yang menjawab pertanyaan user. Gunakan hanya "
-                        "angka yang ada pada hasil query, jangan mengarang."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        f"Pertanyaan: {question}\nSQL: {sql}\n"
-                        f"Hasil (JSON, maksimal 20 baris): {json.dumps(preview, default=str)}"
-                    ),
-                },
-            ],
-        )
-        return (response.choices[0].message.content or "").strip()
-    except Exception:
-        return ""
-
-
-CHART_SYSTEM_PROMPT = """Anda menentukan apakah hasil tabel SQL berikut layak divisualisasikan sebagai chart, dan jika ya, spesifikasi chart apa yang paling sesuai.
-
-Balas HANYA dengan satu objek JSON, tanpa teks atau code fence lain, persis bentuk ini:
-{{"should_plot": true/false, "chart_type": "bar", "x": "<nama_kolom>", "y": "<nama_kolom>", "color": null, "title": "<judul_singkat>"}}
-
-Aturan:
-- chart_type HARUS salah satu dari: bar, line, pie, scatter.
-- should_plot = false jika hasil hanya 1 baris, hanya 1 kolom, atau berupa angka tunggal/ringkasan yang tidak bermakna sebagai chart.
-- "x", "y" HARUS persis salah satu nama kolom berikut (case-sensitive); "color" salah satu nama kolom itu atau null: {columns}
-- Untuk "pie", "x" adalah kolom kategori dan "y" adalah kolom nilai/jumlah.
-- Gunakan "line" hanya jika kolom x berurutan waktu/bulan/tanggal.
-- Gunakan "pie" hanya untuk proporsi dari kategori (maksimal 8 kategori).
-- Jika ragu antara beberapa tipe, gunakan "bar".
-"""
-
-ALLOWED_CHART_TYPES = {"bar", "line", "pie", "scatter"}
-
-
-def _generate_chart_spec(question: str, table: pd.DataFrame, profile: dict[str, str]) -> dict[str, Any] | None:
-    if table.shape[0] < 2 or table.shape[1] < 2:
-        return None
-    try:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
-        preview = table.head(20).to_dict(orient="records")
-        response = client.chat.completions.create(
-            model=profile["model"],
-            messages=[
-                {"role": "system", "content": CHART_SYSTEM_PROMPT.format(columns=list(table.columns))},
-                {
-                    "role": "user",
-                    "content": (
-                        f"Pertanyaan: {question}\nData (JSON, maksimal 20 baris): "
-                        f"{json.dumps(preview, default=str)}"
-                    ),
-                },
-            ],
-        )
-        raw = (response.choices[0].message.content or "").strip()
-        fence = re.search(r"```(?:json)?\s*(.*?)```", raw, re.IGNORECASE | re.DOTALL)
-        if fence:
-            raw = fence.group(1).strip()
-        spec = json.loads(raw)
-    except Exception:
-        return None
-    return spec if isinstance(spec, dict) else None
-
-
 def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
     """Render a chart from a validated LLM-provided spec. Only whitelisted chart types and
     columns that actually exist on `table` are ever passed to Plotly - the LLM never supplies
@@ -498,26 +442,186 @@ def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
     return None
 
 
+def _dispatch_tool_call(
+    name: str,
+    args: dict[str, Any],
+    dataframes: dict[str, pd.DataFrame],
+    results: dict[str, pd.DataFrame],
+) -> tuple[dict[str, Any], pd.DataFrame | None, Any | None]:
+    """Execute one tool call. Returns (payload sent back to the LLM, table produced, chart produced)."""
+    if name == "run_sql_query":
+        sql = _extract_sql(str(args.get("sql", "")))
+        if not _is_safe_select(sql):
+            return (
+                {"error": "Query ditolak: hanya satu statement SELECT/WITH ke tabel yang tersedia yang diperbolehkan."},
+                None,
+                None,
+            )
+        try:
+            table = _execute_sql(sql, dataframes)
+        except Exception as exc:
+            return {"error": f"Query SQL gagal dieksekusi: {exc}", "sql": sql}, None, None
+        result_id = f"result_{len(results) + 1}"
+        results[result_id] = table
+        payload = {
+            "result_id": result_id,
+            "sql": sql,
+            "row_count": int(table.shape[0]),
+            "columns": list(table.columns),
+            "preview": table.head(20).to_dict(orient="records"),
+        }
+        return payload, table, None
+
+    if name == "render_chart":
+        result_id = args.get("result_id")
+        table = results.get(result_id)
+        if table is None:
+            return (
+                {"error": f"result_id '{result_id}' tidak ditemukan. Panggil run_sql_query dulu sebelum render_chart."},
+                None,
+                None,
+            )
+        spec = {
+            "should_plot": True,
+            "chart_type": args.get("chart_type"),
+            "x": args.get("x"),
+            "y": args.get("y"),
+            "color": args.get("color") or None,
+            "title": args.get("title") or None,
+        }
+        chart = _build_chart(spec, table)
+        if chart is None:
+            return (
+                {
+                    "error": (
+                        "Parameter chart tidak valid: pastikan chart_type salah satu dari "
+                        f"{sorted(ALLOWED_CHART_TYPES)} dan x/y adalah nama kolom hasil query."
+                    )
+                },
+                None,
+                None,
+            )
+        return {"chart_ready": True}, None, chart
+
+    return {"error": f"Tool '{name}' tidak dikenal."}, None, None
+
+
+# Tool identifiers should never appear in a legitimate natural-language answer. Some
+# OpenAI-compatible endpoints accept the `tools` param but don't actually implement function
+# calling - they just fold the tool definitions into the prompt, and the model echoes them back
+# (sometimes with hallucinated code) instead of returning structured tool_calls. Surfacing that
+# leaked internal prompt to the user would be worse than an honest error.
+_TOOL_LEAK_MARKERS = ("run_sql_query", "render_chart")
+
+
+def _create_chat_completion(client: Any, **kwargs: Any) -> Any:
+    try:
+        return client.chat.completions.create(**kwargs)
+    except Exception as exc:
+        # Some reasoning models (e.g. gpt-5.x variants) apply a default reasoning_effort that's
+        # incompatible with function calling on /v1/chat/completions; retry once with it disabled.
+        if "reasoning_effort" in str(exc) and "reasoning_effort" not in kwargs:
+            return client.chat.completions.create(**kwargs, reasoning_effort="none")
+        raise
+
+
 def llm_answer(
     question: str,
     dataframes: dict[str, pd.DataFrame] | None,
     profile: dict[str, str] | None,
     conversation_context: str = "",
 ) -> dict[str, Any] | None:
+    """Agentic loop: the model decides whether/when to call run_sql_query and render_chart,
+    can see tool errors (e.g. a failed query) and retry, and writes the final answer itself
+    once it has what it needs - no separate generate-SQL/narrate/chart-spec calls."""
     if not profile_is_configured(profile) or not dataframes:
         return None
-    schema_prompt = _build_schema_prompt(dataframes)
-    sql = _generate_sql(question, schema_prompt, profile, conversation_context)
-    if not sql or not _is_safe_select(sql):
-        return None
     try:
-        table = _execute_sql(sql, dataframes)
+        from openai import OpenAI
+
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
+        schema_prompt = _build_schema_prompt(dataframes)
+        messages: list[dict[str, Any]] = [
+            {
+                "role": "system",
+                "content": AGENTIC_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
+            }
+        ]
+        if conversation_context:
+            messages.append(
+                {"role": "user", "content": f"Konteks percakapan sebelumnya:\n{conversation_context}"}
+            )
+        messages.append({"role": "user", "content": question})
+
+        results: dict[str, pd.DataFrame] = {}
+        last_sql: str | None = None
+        last_table: pd.DataFrame | None = None
+        last_chart: Any | None = None
+
+        for _ in range(MAX_TOOL_ITERATIONS):
+            response = _create_chat_completion(
+                client, model=profile["model"], messages=messages, tools=TOOLS, tool_choice="auto"
+            )
+            message = response.choices[0].message
+            tool_calls = message.tool_calls or []
+            if not tool_calls:
+                text = (message.content or "").strip()
+                if any(marker in text for marker in _TOOL_LEAK_MARKERS):
+                    return {
+                        "text": (
+                            "Model ini sepertinya belum mendukung tool-calling dengan baik (definisi "
+                            "tool internal bocor ke jawaban, bukan benar-benar dipanggil). Coba pilih "
+                            "model lain."
+                        ),
+                        "sql": None,
+                        "table": None,
+                        "chart": None,
+                    }
+                return {
+                    "text": text or "Maaf, saya tidak berhasil menyusun jawaban.",
+                    "sql": last_sql,
+                    "table": last_table,
+                    "chart": last_chart,
+                }
+
+            messages.append(
+                {
+                    "role": "assistant",
+                    "content": message.content or "",
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": "function",
+                            "function": {"name": tc.function.name, "arguments": tc.function.arguments},
+                        }
+                        for tc in tool_calls
+                    ],
+                }
+            )
+
+            for tc in tool_calls:
+                try:
+                    args = json.loads(tc.function.arguments or "{}")
+                except json.JSONDecodeError:
+                    args = {}
+                payload, table, chart = _dispatch_tool_call(tc.function.name, args, dataframes, results)
+                if table is not None:
+                    last_sql = payload.get("sql", last_sql)
+                    last_table = table
+                if chart is not None:
+                    last_chart = chart
+                messages.append(
+                    {"role": "tool", "tool_call_id": tc.id, "content": json.dumps(payload, default=str)}
+                )
+
+        return {
+            "text": "Maaf, permintaan ini butuh terlalu banyak langkah untuk dijawab. Coba pertanyaan yang lebih spesifik.",
+            "sql": last_sql,
+            "table": last_table,
+            "chart": last_chart,
+        }
     except Exception as exc:
-        return {"text": f"Query SQL gagal dieksekusi: {exc}", "sql": sql, "table": None, "chart": None}
-    narration = _narrate_result(question, sql, table, profile)
-    chart_spec = _generate_chart_spec(question, table, profile)
-    chart = _build_chart(chart_spec, table) if chart_spec else None
-    return {"text": narration or "Berikut hasil query.", "sql": sql, "table": table, "chart": chart}
+        return {"text": f"Koneksi chatbot belum berhasil: {exc}", "sql": None, "table": None, "chart": None}
 
 
 def answer_question(
@@ -527,9 +631,10 @@ def answer_question(
     profile: dict[str, str] | None = None,
     conversation_context: str = "",
 ) -> dict[str, Any]:
-    llm_result = llm_answer(question, dataframes, profile, conversation_context)
-    if llm_result:
-        return {"kind": "llm", **llm_result}
+    if profile_is_configured(profile):
+        llm_result = llm_answer(question, dataframes, profile, conversation_context)
+        if llm_result:
+            return {"kind": "llm", **llm_result}
 
     deterministic = local_answer(question, context)
     if deterministic:

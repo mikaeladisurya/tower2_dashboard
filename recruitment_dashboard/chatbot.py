@@ -250,44 +250,6 @@ def update_chat_summary(
         return existing_summary
 
 
-def llm_answer(
-    question: str,
-    context: dict[str, Any],
-    profile: dict[str, str] | None,
-    conversation_context: str = "",
-) -> str | None:
-    if not profile_is_configured(profile):
-        return None
-    try:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
-        messages = [
-            {
-                "role": "system",
-                "content": (
-                    "Anda adalah asisten analitik rekrutmen PLN. Jawab singkat dalam Bahasa Indonesia. "
-                    "Gunakan hanya data JSON yang diberikan. Jangan mengarang angka atau data kandidat. "
-                    "Jika data tidak tersedia, sampaikan keterbatasannya."
-                ),
-            }
-        ]
-        if conversation_context:
-            messages.append(
-                {"role": "user", "content": f"Konteks percakapan sebelumnya:\n{conversation_context}"}
-            )
-        messages.append(
-            {
-                "role": "user",
-                "content": f"Konteks dashboard:\n{json.dumps(context, default=str)}\n\nPertanyaan: {question}",
-            }
-        )
-        response = client.chat.completions.create(model=profile["model"], messages=messages)
-        return response.choices[0].message.content
-    except Exception as exc:
-        return f"Koneksi chatbot belum berhasil: {exc}"
-
-
 _FORBIDDEN_SQL = re.compile(
     r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|ATTACH|DETACH|COPY|CREATE|CALL|"
     r"EXPORT|IMPORT|INSTALL|LOAD|GRANT|VACUUM|SET|RESET)\b"
@@ -536,7 +498,7 @@ def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
     return None
 
 
-def sql_answer(
+def llm_answer(
     question: str,
     dataframes: dict[str, pd.DataFrame] | None,
     profile: dict[str, str] | None,
@@ -565,13 +527,9 @@ def answer_question(
     profile: dict[str, str] | None = None,
     conversation_context: str = "",
 ) -> dict[str, Any]:
-    sql_result = sql_answer(question, dataframes, profile, conversation_context)
-    if sql_result:
-        return {"kind": "sql", **sql_result}
-
-    llm_response = llm_answer(question, context, profile, conversation_context)
-    if llm_response:
-        return {"kind": "llm", "text": llm_response, "sql": None, "table": None, "chart": None}
+    llm_result = llm_answer(question, dataframes, profile, conversation_context)
+    if llm_result:
+        return {"kind": "llm", **llm_result}
 
     deterministic = local_answer(question, context)
     if deterministic:

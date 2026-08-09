@@ -1,20 +1,14 @@
 from __future__ import annotations
 
-import time
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
-from chatbot import (
-    answer_question,
-    build_chat_context,
-    build_conversation_context,
-    check_llm_connection,
-    list_llm_profiles,
-    update_chat_summary,
-)
+import chat_store
+import chat_ui
+from chatbot import build_chat_context, list_llm_profiles
 from dashboard_common import GREY, LIGHT_BLUE, PLN_BLUE, PLN_DARK, PLN_YELLOW
 from data_layer import (
     build_funnel,
@@ -52,7 +46,7 @@ POPOVER_BORDER = "#3A3F46" if is_dark else "#E7ECF2"
 st.markdown(
     f"""
     <style>
-      .block-container {{ padding-top: 1.5rem; padding-bottom: 2rem; }}
+      .block-container {{ padding-bottom: 2rem; }}
       h1, h2, h3 {{ color: {HEADING_COLOR}; }}
       [data-testid="stMetric"] {{
         background: {CARD_BG};
@@ -222,7 +216,26 @@ st.session_state["dashboard_ctx"] = {
     "programs": programs,
     "regions": regions,
     "methods": methods,
+    "sql_dataframes": sql_dataframes,
+    "chat_context": chat_context,
 }
+
+if "active_conversation_id" not in st.session_state:
+    # Every fresh session starts in draft mode (None), like ChatGPT/Claude's "New chat" -
+    # a conversation row is only ever created lazily, on the first actual question asked.
+    st.session_state["active_conversation_id"] = None
+active_conversation_id = st.session_state["active_conversation_id"]
+
+nav = st.navigation(
+    [
+        st.Page("app_pages/ringkasan.py", title="Ringkasan", icon=":material/dashboard:"),
+        st.Page("app_pages/pipeline_metode.py", title="Pipeline & Metode", icon=":material/timeline:"),
+        st.Page("app_pages/sebaran_penempatan.py", title="Sebaran & Penempatan", icon=":material/map:"),
+        st.Page("app_pages/kecocokan_kandidat.py", title="Kecocokan Kandidat", icon=":material/person_search:"),
+        st.Page("app_pages/chatbot.py", title="RecruitMan", icon=":material/forum:"),
+    ],
+    position="top",
+)
 
 
 components.html(
@@ -272,141 +285,36 @@ components.html(
     height=0,
 )
 
-with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
-    LLM_STATUS_TTL_SECONDS = 300
-
-    llm_profiles = list_llm_profiles()
-    selected_profile = None
-    if llm_profiles:
-        profile_by_id = {p["id"]: p for p in llm_profiles}
-        with st.container(border=True):
-            status_col, recheck_col = st.columns([5, 1], vertical_alignment="bottom")
-            with status_col:
-                selected_id = st.selectbox(
-                    "Model LLM",
-                    list(profile_by_id.keys()),
-                    format_func=lambda pid: f"{profile_by_id[pid]['icon']} {profile_by_id[pid]['label']}",
-                    key="copilot_llm_profile",
-                    label_visibility="collapsed",
-                )
-            selected_profile = profile_by_id[selected_id]
-
-            status_cache = st.session_state.setdefault("copilot_llm_status", {})
-            cached = status_cache.get(selected_id)
-            stale = cached is None or (time.time() - cached["checked_at"] > LLM_STATUS_TTL_SECONDS)
-            with recheck_col:
-                force_recheck = st.button("🔄", key=f"copilot_recheck_{selected_id}", help="Cek ulang koneksi")
-
-            if stale or force_recheck:
-                with st.spinner("Mengecek koneksi..."):
-                    ok, detail = check_llm_connection(selected_profile)
-                status_cache[selected_id] = {"ok": ok, "detail": detail, "checked_at": time.time()}
-                cached = status_cache[selected_id]
-
-            note = f" · {selected_profile['note']}" if selected_profile.get("note") else ""
-            if cached["ok"]:
-                st.badge(f"Aktif{note}", icon="🟢", color="green")
-            else:
-                st.badge(f"Gagal terhubung{note}", icon="🔴", color="red")
-                st.caption(f"⚠️ {cached['detail'][:150]}")
-    else:
-        st.caption("⚪ Mode demo tanpa API")
-
-    PLACEHOLDER_SUGGESTION = "FAQ"
-    suggestions = [
-        "Bagaimana tren pendaftaran per bulan?",
-        "Tahap mana yang paling banyak menggagalkan kandidat?",
-        "Sebutkan 5 unit dengan kebutuhan tambahan pekerja terbanyak",
-        "Sebutkan 3 wilayah dengan proporsi kandidat gagal tertinggi dibanding jumlah pendaftarnya",
-        "Sebutkan 3 wilayah dengan proporsi kandidat tandatangan kontrak tertinggi dibanding jumlah pendaftarnya",
-    ]
-
-    def _apply_suggestion():
-        choice = st.session_state.get("copilot_suggestion")
-        if choice and choice != PLACEHOLDER_SUGGESTION:
-            st.session_state["copilot_question"] = choice
-
-    st.selectbox(
-        "Pertanyaan Contoh",
-        [PLACEHOLDER_SUGGESTION] + suggestions,
-        key="copilot_suggestion",
-        on_change=_apply_suggestion,
-        label_visibility="collapsed",
-    )
-    typed_question = st.chat_input(
-        "Tanya mengenai rekrutmen...",
-        key="copilot_question",
-    )
-    if typed_question and typed_question.strip():
-        history_before = st.session_state.get("chat_history", [])
-        buffer_turns = [(q, r) for q, r, _icon in history_before[-2:]]
-        summary = st.session_state.get("chat_summary", "")
-        conversation_context = build_conversation_context(summary, buffer_turns)
-        response = answer_question(
-            typed_question,
-            chat_context,
-            sql_dataframes,
-            profile=selected_profile,
-            conversation_context=conversation_context,
-        )
-        # Only credit the selected model's icon when it actually produced the answer (kind
-        # "llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
-        if response.get("kind") == "llm" and selected_profile:
-            answer_icon = selected_profile["icon"]
+if nav.title != "RecruitMan":
+    with st.popover("💬 RecruitMan", key="floating_chatbot"):
+        llm_profiles = list_llm_profiles()
+        if llm_profiles:
+            with st.container(border=True):
+                selected_profile = chat_ui.render_model_status_selector(llm_profiles)
         else:
-            answer_icon = "😊"
-        st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
+            selected_profile = None
+            st.caption("⚪ Mode demo tanpa API")
 
-        # Fold turns that just fell out of the 2-turn buffer into the rolling summary, so
-        # older context survives without resending the full transcript every question.
-        history_after = st.session_state["chat_history"]
-        summarized_upto = st.session_state.get("chat_summary_upto", 0)
-        foldable_end = len(history_after) - 2
-        if foldable_end > summarized_upto:
-            new_turns = [(q, r) for q, r, _icon in history_after[summarized_upto:foldable_end]]
-            st.session_state["chat_summary"] = update_chat_summary(summary, new_turns, selected_profile)
-            st.session_state["chat_summary_upto"] = foldable_end
-    history = st.session_state.get("chat_history", [])
-    indexed_history = list(enumerate(history))
-    recent = indexed_history[-2:]
-    older = indexed_history[:-2]
+        typed_question = st.chat_input(
+            "Tanya mengenai rekrutmen...",
+            key="copilot_question",
+        )
+        if typed_question and typed_question.strip():
+            active_conversation_id = chat_ui.submit_question(
+                active_conversation_id, typed_question, sql_dataframes, chat_context, selected_profile
+            )
 
-    for idx, (question, response, answer_icon) in reversed(recent):
-        with st.chat_message("user"):
-            st.markdown(question)
-        with st.chat_message("assistant", avatar=answer_icon):
-            if response.get("sql"):
-                if st.checkbox("🔍 SQL", key=f"copilot_show_sql_{idx}"):
-                    st.code(response["sql"], language="sql")
-                if response.get("table") is not None:
-                    st.dataframe(response["table"], width="stretch", hide_index=True)
-            if response.get("chart") is not None:
-                st.plotly_chart(response["chart"], width="stretch", key=f"copilot_chart_{idx}")
-            st.markdown(response["text"])
+        history = chat_store.load_turns(active_conversation_id)
+        indexed_history = list(enumerate(history))
+        recent = indexed_history[-2:]
+        older = indexed_history[:-2]
 
-    if older:
-        with st.expander(f"🕑 Riwayat sebelumnya ({len(older)})"):
-            for idx, (question, response, answer_icon) in reversed(older):
-                with st.chat_message("user"):
-                    st.markdown(question)
-                with st.chat_message("assistant", avatar=answer_icon):
-                    if response.get("sql"):
-                        if st.checkbox("🔍 SQL", key=f"copilot_show_sql_{idx}"):
-                            st.code(response["sql"], language="sql")
-                        if response.get("table") is not None:
-                            st.dataframe(response["table"], width="stretch", hide_index=True)
-                    if response.get("chart") is not None:
-                        st.plotly_chart(response["chart"], width="stretch", key=f"copilot_chart_{idx}")
-                    st.markdown(response["text"])
+        for idx, (question, response, answer_icon) in reversed(recent):
+            chat_ui.render_turn(question, response, answer_icon, idx, key_prefix="popover")
 
+        if older:
+            with st.expander(f"🕑 Riwayat sebelumnya ({len(older)})"):
+                for idx, (question, response, answer_icon) in reversed(older):
+                    chat_ui.render_turn(question, response, answer_icon, idx, key_prefix="popover")
 
-nav = st.navigation(
-    [
-        st.Page("app_pages/ringkasan.py", title="Ringkasan", icon=":material/dashboard:"),
-        st.Page("app_pages/pipeline_metode.py", title="Pipeline & Metode", icon=":material/timeline:"),
-        st.Page("app_pages/sebaran_penempatan.py", title="Sebaran & Penempatan", icon=":material/map:"),
-        st.Page("app_pages/kecocokan_kandidat.py", title="Kecocokan Kandidat", icon=":material/person_search:"),
-    ],
-    position="top",
-)
 nav.run()

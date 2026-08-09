@@ -31,15 +31,24 @@ def get_selected_profile(llm_profiles: list[dict[str, str]]) -> dict[str, str] |
     return profile_by_id[selected_id]
 
 
-def render_model_status_selector(llm_profiles: list[dict[str, str]]) -> dict[str, str] | None:
+def render_model_status_selector(
+    llm_profiles: list[dict[str, str]],
+    show_new_chat_button: bool = False,
+) -> dict[str, str] | None:
     """Selectbox + connection status/recheck, shared between the popover (other pages) and
-    the Chatbot page's own model-settings popover - one source of truth for the active model."""
+    the Chatbot page's own model card - one source of truth for the active model. The popover
+    additionally gets a compact "New Chat" icon button next to the recheck button (the full
+    RecruitMan page already has its own full-width "New Chat" button in the sidebar, so it
+    doesn't need a second one here)."""
     if not llm_profiles:
         st.caption("⚪ Mode demo tanpa API")
         return None
 
     profile_by_id = {p["id"]: p for p in llm_profiles}
-    status_col, recheck_col = st.columns([5, 1], vertical_alignment="bottom")
+    if show_new_chat_button:
+        status_col, recheck_col, new_chat_col = st.columns([4, 1, 1], vertical_alignment="bottom")
+    else:
+        status_col, recheck_col = st.columns([5, 1], vertical_alignment="bottom")
     with status_col:
         selected_id = st.selectbox(
             "Model LLM",
@@ -55,6 +64,13 @@ def render_model_status_selector(llm_profiles: list[dict[str, str]]) -> dict[str
     stale = cached is None or (time.time() - cached["checked_at"] > LLM_STATUS_TTL_SECONDS)
     with recheck_col:
         force_recheck = st.button("🔄", key=f"copilot_recheck_{selected_id}", help="Cek ulang koneksi")
+    if show_new_chat_button:
+        with new_chat_col:
+            if st.button(
+                "", icon=":material/add:", key="popover_new_chat", help="Percakapan baru"
+            ):
+                st.session_state["active_conversation_id"] = None
+                st.rerun()
 
     if stale or force_recheck:
         with st.spinner("Mengecek koneksi..."):

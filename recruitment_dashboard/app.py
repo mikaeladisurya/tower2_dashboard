@@ -290,7 +290,9 @@ if nav.title != "RecruitMan":
         llm_profiles = list_llm_profiles()
         if llm_profiles:
             with st.container(border=True):
-                selected_profile = chat_ui.render_model_status_selector(llm_profiles)
+                selected_profile = chat_ui.render_model_status_selector(
+                    llm_profiles, show_new_chat_button=True
+                )
         else:
             selected_profile = None
             st.caption("⚪ Mode demo tanpa API")

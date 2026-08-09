@@ -395,20 +395,11 @@ def _is_safe_select(sql: str) -> bool:
     return True
 
 
-def _execute_sql(sql: str, dataframes: dict[str, pd.DataFrame], row_limit: int = 200) -> pd.DataFrame:
-    import duckdb
-
-    con = duckdb.connect(database=":memory:")
-    try:
-        for name, df in dataframes.items():
-            con.register(name, df)
-        # Lock the connection down before running untrusted, LLM-generated SQL: no filesystem/network
-        # access, and the query itself cannot re-enable it since SET/RESET are already blocked upstream.
-        con.execute("SET enable_external_access = false")
-        con.execute("SET lock_configuration = true")
-        result = con.execute(sql).df()
-    finally:
-        con.close()
+def _execute_sql(con: Any, sql: str, row_limit: int = 200) -> pd.DataFrame:
+    """Run `sql` on a connection the caller already opened, registered dataframes on, and
+    locked down (see llm_answer) - one connection is reused for the whole agentic loop
+    instead of reopening/re-registering per tool call."""
+    result = con.execute(sql).df()
     return result.head(row_limit)
 
 
@@ -446,9 +437,9 @@ def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
 
 
 def _dispatch_tool_call(
+    con: Any,
     name: str,
     args: dict[str, Any],
-    dataframes: dict[str, pd.DataFrame],
     results: dict[str, pd.DataFrame],
 ) -> tuple[dict[str, Any], pd.DataFrame | None, Any | None]:
     """Execute one tool call. Returns (payload sent back to the LLM, table produced, chart produced)."""
@@ -461,7 +452,7 @@ def _dispatch_tool_call(
                 None,
             )
         try:
-            table = _execute_sql(sql, dataframes)
+            table = _execute_sql(con, sql)
         except Exception as exc:
             return {"error": f"Query SQL gagal dieksekusi: {exc}", "sql": sql}, None, None
         result_id = f"result_{len(results) + 1}"
@@ -540,6 +531,7 @@ def llm_answer(
     if not profile_is_configured(profile) or not dataframes:
         return None
     try:
+        import duckdb
         from openai import OpenAI
 
         client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
@@ -563,67 +555,83 @@ def llm_answer(
         result_blocks: list[dict[str, Any]] = []
         block_by_result_id: dict[str, dict[str, Any]] = {}
 
-        for _ in range(MAX_TOOL_ITERATIONS):
-            response = _create_chat_completion(
-                client, model=profile["model"], messages=messages, tools=TOOLS, tool_choice="auto"
-            )
-            message = response.choices[0].message
-            tool_calls = message.tool_calls or []
-            if not tool_calls:
-                text = (message.content or "").strip()
-                if any(marker in text for marker in _TOOL_LEAK_MARKERS):
-                    return {
-                        "text": (
-                            "Model ini sepertinya belum mendukung tool-calling dengan baik (definisi "
-                            "tool internal bocor ke jawaban, bukan benar-benar dipanggil). Coba pilih "
-                            "model lain."
-                        ),
-                        "results": [],
-                    }
-                return {
-                    "text": text or "Maaf, saya tidak berhasil menyusun jawaban.",
-                    "results": result_blocks,
-                }
+        # One DuckDB connection for the whole agentic loop (reused across every
+        # run_sql_query call in this turn) instead of reopening + re-registering the
+        # same dataframes on every single tool call.
+        con = duckdb.connect(database=":memory:")
+        try:
+            for name, df in dataframes.items():
+                con.register(name, df)
+            # Lock the connection down before running untrusted, LLM-generated SQL: no
+            # filesystem/network access, and the query itself cannot re-enable it since
+            # SET/RESET are already blocked upstream. Applied once here, before the first
+            # tool call, and stays locked for every query in this turn.
+            con.execute("SET enable_external_access = false")
+            con.execute("SET lock_configuration = true")
 
-            messages.append(
-                {
-                    "role": "assistant",
-                    "content": message.content or "",
-                    "tool_calls": [
-                        {
-                            "id": tc.id,
-                            "type": "function",
-                            "function": {"name": tc.function.name, "arguments": tc.function.arguments},
+            for _ in range(MAX_TOOL_ITERATIONS):
+                response = _create_chat_completion(
+                    client, model=profile["model"], messages=messages, tools=TOOLS, tool_choice="auto"
+                )
+                message = response.choices[0].message
+                tool_calls = message.tool_calls or []
+                if not tool_calls:
+                    text = (message.content or "").strip()
+                    if any(marker in text for marker in _TOOL_LEAK_MARKERS):
+                        return {
+                            "text": (
+                                "Model ini sepertinya belum mendukung tool-calling dengan baik (definisi "
+                                "tool internal bocor ke jawaban, bukan benar-benar dipanggil). Coba pilih "
+                                "model lain."
+                            ),
+                            "results": [],
                         }
-                        for tc in tool_calls
-                    ],
-                }
-            )
+                    return {
+                        "text": text or "Maaf, saya tidak berhasil menyusun jawaban.",
+                        "results": result_blocks,
+                    }
 
-            for tc in tool_calls:
-                try:
-                    args = json.loads(tc.function.arguments or "{}")
-                except json.JSONDecodeError:
-                    args = {}
-                payload, table, chart = _dispatch_tool_call(tc.function.name, args, dataframes, results)
-                if table is not None:
-                    block = {"sql": payload.get("sql"), "table": table, "chart": None}
-                    result_blocks.append(block)
-                    block_by_result_id[payload.get("result_id")] = block
-                if chart is not None:
-                    target = block_by_result_id.get(args.get("result_id"))
-                    if target is not None:
-                        target["chart"] = chart
-                    else:
-                        result_blocks.append({"sql": None, "table": None, "chart": chart})
                 messages.append(
-                    {"role": "tool", "tool_call_id": tc.id, "content": json.dumps(payload, default=str)}
+                    {
+                        "role": "assistant",
+                        "content": message.content or "",
+                        "tool_calls": [
+                            {
+                                "id": tc.id,
+                                "type": "function",
+                                "function": {"name": tc.function.name, "arguments": tc.function.arguments},
+                            }
+                            for tc in tool_calls
+                        ],
+                    }
                 )
 
-        return {
-            "text": "Maaf, permintaan ini butuh terlalu banyak langkah untuk dijawab. Coba pertanyaan yang lebih spesifik.",
-            "results": result_blocks,
-        }
+                for tc in tool_calls:
+                    try:
+                        args = json.loads(tc.function.arguments or "{}")
+                    except json.JSONDecodeError:
+                        args = {}
+                    payload, table, chart = _dispatch_tool_call(con, tc.function.name, args, results)
+                    if table is not None:
+                        block = {"sql": payload.get("sql"), "table": table, "chart": None}
+                        result_blocks.append(block)
+                        block_by_result_id[payload.get("result_id")] = block
+                    if chart is not None:
+                        target = block_by_result_id.get(args.get("result_id"))
+                        if target is not None:
+                            target["chart"] = chart
+                        else:
+                            result_blocks.append({"sql": None, "table": None, "chart": chart})
+                    messages.append(
+                        {"role": "tool", "tool_call_id": tc.id, "content": json.dumps(payload, default=str)}
+                    )
+
+            return {
+                "text": "Maaf, permintaan ini butuh terlalu banyak langkah untuk dijawab. Coba pertanyaan yang lebih spesifik.",
+                "results": result_blocks,
+            }
+        finally:
+            con.close()
     except Exception as exc:
         return {"text": f"Koneksi chatbot belum berhasil: {exc}", "results": []}
 

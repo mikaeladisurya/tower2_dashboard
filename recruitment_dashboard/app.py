@@ -61,6 +61,8 @@ CARD_SHADOW = "rgba(0, 0, 0, 0.35)" if is_dark else "rgba(16, 58, 93, 0.05)"
 HEADING_COLOR = "#EAF4FF" if is_dark else PLN_DARK
 BADGE_BG = "#173A57" if is_dark else LIGHT_BLUE
 BADGE_TEXT = "#BFE3FF" if is_dark else PLN_DARK
+POPOVER_BG = "#24272C" if is_dark else "#FFFFFF"
+POPOVER_BORDER = "#3A3F46" if is_dark else "#E7ECF2"
 
 st.markdown(
     f"""
@@ -122,6 +124,8 @@ st.markdown(
         max-height: 82vh;
         overflow-y: auto;
         border-radius: 16px;
+        background: {POPOVER_BG};
+        border: 1px solid {POPOVER_BORDER};
         box-shadow: 0 16px 44px {CARD_SHADOW};
       }}
     </style>
@@ -337,7 +341,7 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
     else:
         st.caption("⚪ Mode demo tanpa API")
 
-    PLACEHOLDER_SUGGESTION = "Pilih dari pertanyaan contoh..."
+    PLACEHOLDER_SUGGESTION = "FAQ"
     suggestions = [
         "Bagaimana tren pendaftaran per bulan?",
         "Tahap mana yang paling banyak menggagalkan kandidat?",

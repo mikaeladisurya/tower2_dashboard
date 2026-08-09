@@ -192,8 +192,9 @@ def _format_turn(question: str, response: dict[str, Any]) -> str:
     text = (response.get("text") or "").strip()
     if text:
         parts.append(f"Asisten: {text}")
-    if response.get("sql"):
-        parts.append(f"SQL: {response['sql']}")
+    for block in response.get("results") or []:
+        if block.get("sql"):
+            parts.append(f"SQL: {block['sql']}")
     return "\n".join(parts)
 
 
@@ -293,7 +294,9 @@ Aturan:
 - SQL: hanya gunakan tabel & kolom yang benar-benar ada pada skema di bawah, jangan mengarang nama kolom/tabel. Nama kolom berspasi HARUS dibungkus tanda kutip dua, misal "NAMA REKRUTMEN". Hanya satu statement SELECT (boleh diawali WITH untuk CTE), tanpa titik koma ganda. Batasi hasil ke maksimal 200 baris (tambahkan LIMIT jika query berpotensi mengembalikan banyak baris).
 - Kalau run_sql_query gagal (error atau ditolak), coba perbaiki query sekali berdasarkan pesan errornya; kalau masih gagal, jelaskan keterbatasannya ke user alih-alih mengarang jawaban.
 - Setelah dapat hasil query, jawab pertanyaan user berdasarkan hasil (preview) itu saja.
-- render_chart bersifat opsional - panggil hanya kalau chart benar-benar menambah nilai (hasil query lebih dari 1 baris dan ada kolom kategori/nilai yang bermakna divisualisasikan).
+- render_chart: panggil kalau hasil query lebih dari 1 baris dan ada kolom kategori/nilai yang bermakna divisualisasikan - jangan lewatkan chart hanya karena ingin menjawab lebih singkat.
+- Kalau user minta beberapa plot/breakdown sekaligus (misal "buatkan beberapa plot untuk laporan ini" atau "bandingkan A, B, dan C"): JANGAN gabungkan semua topik jadi satu query UNION lalu satu chart campur (skalanya beda-beda, jadi tidak terbaca), dan JANGAN cuma jelaskan sebagian topik lewat teks tanpa chart. Panggil run_sql_query + render_chart TERPISAH SATU KALI PER TOPIK - kalau ada 3 topik yang diminta, itu harus jadi 3 kali run_sql_query dan 3 kali render_chart (satu pasang per topik yang datanya lebih dari 1 baris), baru tulis satu narasi penutup yang merujuk ke semua chart itu. Batasi maksimal 4 topik/plot per jawaban - kalau user tidak menyebut jumlah spesifik atau memintanya lebih dari itu, pilih sendiri 4 breakdown yang paling relevan/bermakna, jangan mencoba membuat lebih dari itu dalam satu jawaban.
+  Contoh: user minta "buatkan plot untuk status kontrak, hasil wawancara, dan sebaran wilayah" -> panggil run_sql_query untuk status kontrak, lalu render_chart untuk hasil itu; panggil run_sql_query lagi untuk hasil wawancara, lalu render_chart lagi untuk hasil itu; panggil run_sql_query lagi untuk sebaran wilayah, lalu render_chart lagi untuk hasil itu - total 3 pasang run_sql_query+render_chart terpisah, bukan digabung jadi 1.
 
 Skema tabel:
 {schema}
@@ -350,7 +353,7 @@ TOOLS = [
     },
 ]
 
-MAX_TOOL_ITERATIONS = 4
+MAX_TOOL_ITERATIONS = 10
 
 
 def _describe_table(name: str, df: pd.DataFrame, max_categories: int = 12) -> str:
@@ -554,9 +557,11 @@ def llm_answer(
         messages.append({"role": "user", "content": question})
 
         results: dict[str, pd.DataFrame] = {}
-        last_sql: str | None = None
-        last_table: pd.DataFrame | None = None
-        last_chart: Any | None = None
+        # One block per run_sql_query call (in order), each optionally paired with the
+        # chart rendered for it - a question like "buatkan beberapa plot" can trigger
+        # several query+chart pairs in one answer, so nothing here may be overwritten.
+        result_blocks: list[dict[str, Any]] = []
+        block_by_result_id: dict[str, dict[str, Any]] = {}
 
         for _ in range(MAX_TOOL_ITERATIONS):
             response = _create_chat_completion(
@@ -573,15 +578,11 @@ def llm_answer(
                             "tool internal bocor ke jawaban, bukan benar-benar dipanggil). Coba pilih "
                             "model lain."
                         ),
-                        "sql": None,
-                        "table": None,
-                        "chart": None,
+                        "results": [],
                     }
                 return {
                     "text": text or "Maaf, saya tidak berhasil menyusun jawaban.",
-                    "sql": last_sql,
-                    "table": last_table,
-                    "chart": last_chart,
+                    "results": result_blocks,
                 }
 
             messages.append(
@@ -606,22 +607,25 @@ def llm_answer(
                     args = {}
                 payload, table, chart = _dispatch_tool_call(tc.function.name, args, dataframes, results)
                 if table is not None:
-                    last_sql = payload.get("sql", last_sql)
-                    last_table = table
+                    block = {"sql": payload.get("sql"), "table": table, "chart": None}
+                    result_blocks.append(block)
+                    block_by_result_id[payload.get("result_id")] = block
                 if chart is not None:
-                    last_chart = chart
+                    target = block_by_result_id.get(args.get("result_id"))
+                    if target is not None:
+                        target["chart"] = chart
+                    else:
+                        result_blocks.append({"sql": None, "table": None, "chart": chart})
                 messages.append(
                     {"role": "tool", "tool_call_id": tc.id, "content": json.dumps(payload, default=str)}
                 )
 
         return {
             "text": "Maaf, permintaan ini butuh terlalu banyak langkah untuk dijawab. Coba pertanyaan yang lebih spesifik.",
-            "sql": last_sql,
-            "table": last_table,
-            "chart": last_chart,
+            "results": result_blocks,
         }
     except Exception as exc:
-        return {"text": f"Koneksi chatbot belum berhasil: {exc}", "sql": None, "table": None, "chart": None}
+        return {"text": f"Koneksi chatbot belum berhasil: {exc}", "results": []}
 
 
 def answer_question(
@@ -638,7 +642,7 @@ def answer_question(
 
     deterministic = local_answer(question, context)
     if deterministic:
-        return {"kind": "local", "text": deterministic, "sql": None, "table": None, "chart": None}
+        return {"kind": "local", "text": deterministic, "results": []}
 
     return {
         "kind": "fallback",
@@ -647,7 +651,5 @@ def answer_question(
             "perbandingan metode, kesesuaian penempatan, vacancy kritis, dan sebaran wilayah. "
             "Konfigurasikan kredensial LLM untuk pertanyaan yang lebih fleksibel."
         ),
-        "sql": None,
-        "table": None,
-        "chart": None,
+        "results": [],
     }

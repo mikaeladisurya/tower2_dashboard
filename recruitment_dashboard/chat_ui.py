@@ -81,13 +81,14 @@ def render_turn(
     with st.chat_message("user"):
         st.markdown(question)
     with st.chat_message("assistant", avatar=answer_icon):
-        if response.get("sql"):
-            if st.checkbox("🔍 SQL", key=f"{key_prefix}_sql_{idx}"):
-                st.code(response["sql"], language="sql")
-            if response.get("table") is not None:
-                st.dataframe(response["table"], width="stretch", hide_index=True)
-        if response.get("chart") is not None:
-            st.plotly_chart(response["chart"], width="stretch", key=f"{key_prefix}_chart_{idx}")
+        for block_idx, block in enumerate(response.get("results") or []):
+            if block.get("sql"):
+                if st.checkbox("🔍 SQL", key=f"{key_prefix}_sql_{idx}_{block_idx}"):
+                    st.code(block["sql"], language="sql")
+            if block.get("table") is not None:
+                st.dataframe(block["table"], width="stretch", hide_index=True)
+            if block.get("chart") is not None:
+                st.plotly_chart(block["chart"], width="stretch", key=f"{key_prefix}_chart_{idx}_{block_idx}")
         st.markdown(response["text"])
 
 

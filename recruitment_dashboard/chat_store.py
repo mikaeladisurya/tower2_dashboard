@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import json
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -45,10 +46,16 @@ def _init_db(con: sqlite3.Connection) -> None:
             sql TEXT,
             table_json TEXT,
             chart_json TEXT,
+            results_json TEXT,
             created_at TEXT NOT NULL
         )
         """
     )
+    # Older DBs (before multi-chart support) were created without results_json - add it
+    # in place so existing conversation history keeps working via the legacy columns.
+    existing_columns = {row[1] for row in con.execute("PRAGMA table_info(messages)").fetchall()}
+    if "results_json" not in existing_columns:
+        con.execute("ALTER TABLE messages ADD COLUMN results_json TEXT")
     con.commit()
 
 
@@ -131,14 +138,40 @@ def _deserialize_chart(raw: str | None) -> Any | None:
     return pio.from_json(raw)
 
 
+def _serialize_results(results: list[dict[str, Any]]) -> str:
+    return json.dumps(
+        [
+            {
+                "sql": block.get("sql"),
+                "table": _serialize_table(block.get("table")),
+                "chart": _serialize_chart(block.get("chart")),
+            }
+            for block in results
+        ]
+    )
+
+
+def _deserialize_results(raw: str | None) -> list[dict[str, Any]]:
+    if not raw:
+        return []
+    return [
+        {
+            "sql": block.get("sql"),
+            "table": _deserialize_table(block.get("table")),
+            "chart": _deserialize_chart(block.get("chart")),
+        }
+        for block in json.loads(raw)
+    ]
+
+
 def append_turn(conversation_id: int, question: str, response: dict[str, Any], answer_icon: str) -> None:
     now = _now()
     with _connect() as con:
         con.execute(
             """
             INSERT INTO messages
-                (conversation_id, question, answer_text, answer_kind, answer_icon, sql, table_json, chart_json, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (conversation_id, question, answer_text, answer_kind, answer_icon, results_json, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 conversation_id,
@@ -146,9 +179,7 @@ def append_turn(conversation_id: int, question: str, response: dict[str, Any], a
                 response.get("text") or "",
                 response.get("kind") or "",
                 answer_icon,
-                response.get("sql"),
-                _serialize_table(response.get("table")),
-                _serialize_chart(response.get("chart")),
+                _serialize_results(response.get("results") or []),
                 now,
             ),
         )
@@ -173,7 +204,7 @@ def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], s
     with _connect() as con:
         rows = con.execute(
             """
-            SELECT question, answer_text, answer_kind, sql, table_json, chart_json, answer_icon
+            SELECT question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon
             FROM messages
             WHERE conversation_id = ?
             ORDER BY id ASC
@@ -181,14 +212,17 @@ def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], s
             (conversation_id,),
         ).fetchall()
     turns = []
-    for question, answer_text, answer_kind, sql, table_json, chart_json, answer_icon in rows:
-        response = {
-            "kind": answer_kind,
-            "text": answer_text,
-            "sql": sql,
-            "table": _deserialize_table(table_json),
-            "chart": _deserialize_chart(chart_json),
-        }
+    for question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon in rows:
+        if results_json:
+            results = _deserialize_results(results_json)
+        elif sql or table_json or chart_json:
+            # Row written before multi-chart support (single sql/table/chart columns).
+            results = [
+                {"sql": sql, "table": _deserialize_table(table_json), "chart": _deserialize_chart(chart_json)}
+            ]
+        else:
+            results = []
+        response = {"kind": answer_kind, "text": answer_text, "results": results}
         turns.append((question, response, answer_icon))
     return turns
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 import traceback
 from typing import Any
 
@@ -355,6 +356,10 @@ TOOLS = [
 ]
 
 MAX_TOOL_ITERATIONS = 10
+# Upper bound on total wall-clock time for one agentic loop, independent of
+# MAX_TOOL_ITERATIONS - each iteration can take up to LLM_REQUEST_TIMEOUT (30s) on its own,
+# so without this a slow (not failing) endpoint could block one Streamlit rerun for minutes.
+AGENT_TIME_BUDGET_SECONDS = 90.0
 
 
 def _describe_table(name: str, df: pd.DataFrame, max_categories: int = 12) -> str:
@@ -570,7 +575,16 @@ def llm_answer(
             con.execute("SET enable_external_access = false")
             con.execute("SET lock_configuration = true")
 
+            loop_started_at = time.monotonic()
             for _ in range(MAX_TOOL_ITERATIONS):
+                if time.monotonic() - loop_started_at > AGENT_TIME_BUDGET_SECONDS:
+                    return {
+                        "text": (
+                            "Maaf, permintaan ini butuh waktu terlalu lama untuk dijawab. "
+                            "Coba pertanyaan yang lebih spesifik."
+                        ),
+                        "results": result_blocks,
+                    }
                 try:
                     response = _create_chat_completion(
                         client, model=profile["model"], messages=messages, tools=TOOLS, tool_choice="auto"

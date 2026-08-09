@@ -352,19 +352,17 @@ def score_candidates_for_vacancy(applications: pd.DataFrame, vacancy: pd.Series,
         right=False,
     ).astype("string")
 
-    gaps = []
-    for idx in candidates.index:
-        row_gaps = []
-        if not level_match.loc[idx]:
-            row_gaps.append("Jenjang")
-        if not prodi_match.loc[idx]:
-            row_gaps.append("Prodi")
-        if pd.isna(gpa.loc[idx]) or gpa.loc[idx] < vacancy["MIN_IPK"]:
-            row_gaps.append("IPK")
-        if pd.isna(akding.loc[idx]) or akding.loc[idx] < vacancy["MIN_AKDING_SCORE"]:
-            row_gaps.append("Akding")
-        if pd.isna(adaptive.loc[idx]) or adaptive.loc[idx] < vacancy["MIN_ADAPTIVE_SCORE"]:
-            row_gaps.append("Adaptif")
-        gaps.append(", ".join(row_gaps) if row_gaps else "Tidak ada gap utama")
-    result["MATCH_GAPS"] = gaps
+    gap_checks = [
+        (~level_match, "Jenjang"),
+        (~prodi_match, "Prodi"),
+        (gpa.isna() | (gpa < vacancy["MIN_IPK"]), "IPK"),
+        (akding.isna() | (akding < vacancy["MIN_AKDING_SCORE"]), "Akding"),
+        (adaptive.isna() | (adaptive < vacancy["MIN_ADAPTIVE_SCORE"]), "Adaptif"),
+    ]
+    gaps = pd.Series("", index=candidates.index)
+    has_gap = pd.Series(False, index=candidates.index)
+    for mask, label in gap_checks:
+        gaps = gaps + np.where(has_gap & mask, ", ", "") + np.where(mask, label, "")
+        has_gap = has_gap | mask
+    result["MATCH_GAPS"] = gaps.mask(~has_gap, "Tidak ada gap utama")
     return result.sort_values(["MATCH_SCORE", "ID_PENDAFTARAN"], ascending=[False, True])

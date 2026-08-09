@@ -59,12 +59,27 @@ def _init_db(con: sqlite3.Connection) -> None:
     con.commit()
 
 
+_schema_ready = False
+
+
+def _ensure_schema(con: sqlite3.Connection) -> None:
+    """Run _init_db() at most once per process - it only ever needs to create the tables
+    and apply the results_json migration the first time, but _connect() is called on
+    nearly every rerun (e.g. the floating chatbot popover loads turns on every page), so
+    redoing the CREATE TABLE/PRAGMA table_info checks every time was pure waste."""
+    global _schema_ready
+    if _schema_ready:
+        return
+    _init_db(con)
+    _schema_ready = True
+
+
 @contextmanager
 def _connect() -> Iterator[sqlite3.Connection]:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(DB_PATH)
     try:
-        _init_db(con)
+        _ensure_schema(con)
         yield con
     finally:
         con.close()

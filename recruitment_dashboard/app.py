@@ -350,11 +350,11 @@ with st.popover("💬 Recruitment Copilot", key="floating_chatbot"):
             conversation_context=conversation_context,
         )
         # Only credit the selected model's icon when it actually produced the answer (kind
-        # "sql"/"llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
-        if response.get("kind") in {"sql", "llm"} and selected_profile:
+        # "llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
+        if response.get("kind") == "llm" and selected_profile:
             answer_icon = selected_profile["icon"]
         else:
-            answer_icon = "🤖"
+            answer_icon = "😊"
         st.session_state.setdefault("chat_history", []).append((typed_question, response, answer_icon))
 
         # Fold turns that just fell out of the 2-turn buffer into the rolling summary, so

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import traceback
 from typing import Any
 
 import pandas as pd
@@ -570,9 +571,14 @@ def llm_answer(
             con.execute("SET lock_configuration = true")
 
             for _ in range(MAX_TOOL_ITERATIONS):
-                response = _create_chat_completion(
-                    client, model=profile["model"], messages=messages, tools=TOOLS, tool_choice="auto"
-                )
+                try:
+                    response = _create_chat_completion(
+                        client, model=profile["model"], messages=messages, tools=TOOLS, tool_choice="auto"
+                    )
+                except Exception as exc:
+                    # The actual network/API boundary - a failure here really is a connection
+                    # problem (bad key, timeout, rate limit, etc.), so this message stays accurate.
+                    return {"text": f"Koneksi chatbot belum berhasil: {exc}", "results": result_blocks}
                 message = response.choices[0].message
                 tool_calls = message.tool_calls or []
                 if not tool_calls:
@@ -633,7 +639,12 @@ def llm_answer(
         finally:
             con.close()
     except Exception as exc:
-        return {"text": f"Koneksi chatbot belum berhasil: {exc}", "results": []}
+        # Anything other than the LLM API call itself failing (that path already returns its
+        # own accurate "connection" message above) - most likely a bug in our own tool-dispatch
+        # or parsing logic, not a connection problem. Log the real traceback server-side so it's
+        # debuggable, but still degrade gracefully for the user instead of crashing the rerun.
+        traceback.print_exc()
+        return {"text": f"Terjadi kesalahan saat memproses pertanyaan: {exc}", "results": []}
 
 
 def answer_question(

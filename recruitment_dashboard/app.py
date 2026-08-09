@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 import streamlit as st
@@ -118,6 +119,37 @@ def get_data() -> dict[str, pd.DataFrame]:
     return load_demo_data(DATA_DIR)
 
 
+@st.cache_data(show_spinner="Menghitung ringkasan rekrutmen...")
+def compute_scoped_context(
+    apps: pd.DataFrame,
+    vacancies: pd.DataFrame,
+    pipeline: pd.DataFrame,
+    programs: tuple[str, ...],
+    regions: tuple[str, ...],
+    methods: tuple[str, ...],
+) -> dict[str, Any] | None:
+    """All per-filter aggregates in one place, cached on (data, filters) so switching
+    pages, asking the chatbot a question, etc. reuses this instead of recomputing six
+    pandas aggregations on every rerun that doesn't actually change the filters."""
+    ids = selected_application_ids(apps, list(programs), list(regions), list(methods))
+    if not ids:
+        return None
+    scoped_apps = apps[apps["ID_PENDAFTARAN"].isin(ids)].copy()
+    scoped_pipeline = pipeline[pipeline["ID_PENDAFTARAN"].isin(ids)].copy()
+    vacancy_summary = vacancy_fulfilment(vacancies, apps, ids, list(programs), list(regions))
+    return {
+        "ids": ids,
+        "scoped_apps": scoped_apps,
+        "scoped_pipeline": scoped_pipeline,
+        "funnel": build_funnel(pipeline, ids),
+        "stage_summary": stage_performance(pipeline, ids),
+        "method_summary": method_performance(apps, pipeline, ids),
+        "vacancy_summary": vacancy_summary,
+        "region_summary": region_fulfilment(vacancy_summary),
+        "placements": placement_detail(apps, ids),
+    }
+
+
 data = get_data()
 apps = data["applications"]
 vacancies = data["vacancies"]
@@ -152,18 +184,21 @@ with st.sidebar:
         placeholder="Semua metode",
     )
 
-ids = selected_application_ids(apps, programs, regions, methods)
-if not ids:
+scoped = compute_scoped_context(
+    apps, vacancies, pipeline, tuple(sorted(programs)), tuple(sorted(regions)), tuple(sorted(methods))
+)
+if scoped is None:
     st.warning("Tidak ada data yang sesuai dengan kombinasi filter yang dipilih.")
     st.stop()
-scoped_apps = apps[apps["ID_PENDAFTARAN"].isin(ids)].copy()
-scoped_pipeline = pipeline[pipeline["ID_PENDAFTARAN"].isin(ids)].copy()
-funnel = build_funnel(pipeline, ids)
-stage_summary = stage_performance(pipeline, ids)
-method_summary = method_performance(apps, pipeline, ids)
-vacancy_summary = vacancy_fulfilment(vacancies, apps, ids, programs, regions)
-region_summary = region_fulfilment(vacancy_summary)
-placements = placement_detail(apps, ids)
+ids = scoped["ids"]
+scoped_apps = scoped["scoped_apps"]
+scoped_pipeline = scoped["scoped_pipeline"]
+funnel = scoped["funnel"]
+stage_summary = scoped["stage_summary"]
+method_summary = scoped["method_summary"]
+vacancy_summary = scoped["vacancy_summary"]
+region_summary = scoped["region_summary"]
+placements = scoped["placements"]
 
 applicants = len(scoped_apps)
 interview_passed = int(scoped_apps["INTERVIEW_RESULT"].eq("LOLOS").sum())

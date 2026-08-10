@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import time
+from datetime import datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import streamlit as st
 
@@ -87,15 +89,38 @@ def render_model_status_selector(
     return selected_profile
 
 
+def _format_turn_time(created_at: str | None) -> str:
+    """Best-effort local-time label for a turn. created_at is stored in UTC and marks when
+    the turn finished saving (right after the answer was ready), not the exact instant the
+    question was typed - close enough for a rough timestamp, not precise to the second."""
+    if not created_at:
+        return ""
+    try:
+        dt = datetime.fromisoformat(created_at)
+    except ValueError:
+        return ""
+    tz_name = st.context.timezone
+    if tz_name:
+        try:
+            dt = dt.astimezone(ZoneInfo(tz_name))
+        except Exception:
+            pass
+    return dt.strftime("%d/%m/%Y %H:%M")
+
+
 def render_turn(
     question: str,
     response: dict[str, Any],
     answer_icon: str,
     idx: int,
     key_prefix: str,
+    created_at: str | None = None,
 ) -> None:
     with st.chat_message("user"):
         st.markdown(question)
+        time_label = _format_turn_time(created_at)
+        if time_label:
+            st.caption(time_label)
     with st.chat_message("assistant", avatar=answer_icon):
         for block_idx, block in enumerate(response.get("results") or []):
             if block.get("sql"):
@@ -126,7 +151,7 @@ def submit_question(
 
     conv = chat_store.get_conversation(conversation_id) or {"chat_summary": "", "summary_upto": 0}
     history_before = chat_store.load_turns(conversation_id)
-    buffer_turns = [(q, r) for q, r, _icon in history_before[-2:]]
+    buffer_turns = [(q, r) for q, r, _icon, _created_at in history_before[-2:]]
     summary = conv.get("chat_summary") or ""
     conversation_context = build_conversation_context(summary, buffer_turns)
 
@@ -151,7 +176,7 @@ def submit_question(
     summarized_upto = conv.get("summary_upto") or 0
     foldable_end = len(history_after) - 2
     if foldable_end > summarized_upto:
-        new_turns = [(q, r) for q, r, _icon in history_after[summarized_upto:foldable_end]]
+        new_turns = [(q, r) for q, r, _icon, _created_at in history_after[summarized_upto:foldable_end]]
         new_summary = update_chat_summary(summary, new_turns, profile)
         chat_store.update_summary(conversation_id, new_summary, foldable_end)
 

@@ -346,12 +346,14 @@ if nav.title != "RecruitMan":
         recent = indexed_history[-2:]
         older = indexed_history[:-2]
 
-        for idx, (question, response, answer_icon) in reversed(recent):
-            chat_ui.render_turn(question, response, answer_icon, idx, key_prefix="popover")
+        for idx, (question, response, answer_icon, created_at) in reversed(recent):
+            chat_ui.render_turn(question, response, answer_icon, idx, key_prefix="popover", created_at=created_at)
 
         if older:
             with st.expander(f"🕑 Riwayat sebelumnya ({len(older)})"):
-                for idx, (question, response, answer_icon) in reversed(older):
-                    chat_ui.render_turn(question, response, answer_icon, idx, key_prefix="popover")
+                for idx, (question, response, answer_icon, created_at) in reversed(older):
+                    chat_ui.render_turn(
+                        question, response, answer_icon, idx, key_prefix="popover", created_at=created_at
+                    )
 
 nav.run()

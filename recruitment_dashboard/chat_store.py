@@ -213,13 +213,13 @@ def append_turn(conversation_id: int, question: str, response: dict[str, Any], a
         con.commit()
 
 
-def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], str]]:
+def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], str, str]]:
     if conversation_id is None:
         return []
     with _connect() as con:
         rows = con.execute(
             """
-            SELECT question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon
+            SELECT question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon, created_at
             FROM messages
             WHERE conversation_id = ?
             ORDER BY id ASC
@@ -227,7 +227,7 @@ def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], s
             (conversation_id,),
         ).fetchall()
     turns = []
-    for question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon in rows:
+    for question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon, created_at in rows:
         if results_json:
             results = _deserialize_results(results_json)
         elif sql or table_json or chart_json:
@@ -238,7 +238,7 @@ def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], s
         else:
             results = []
         response = {"kind": answer_kind, "text": answer_text, "results": results}
-        turns.append((question, response, answer_icon))
+        turns.append((question, response, answer_icon, created_at))
     return turns
 
 

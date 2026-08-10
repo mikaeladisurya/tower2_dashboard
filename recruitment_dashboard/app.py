@@ -273,52 +273,58 @@ nav = st.navigation(
 )
 
 
-components.html(
-    """
-    <script>
-    (function() {
-        const doc = window.parent.document;
-        if (doc.__copilotShortcutBound) return;
-        doc.__copilotShortcutBound = true;
+if "keyboard_shortcut_script_injected" not in st.session_state:
+    # The listener below binds to window.parent.document (the main page, not this
+    # component's own iframe) and stays active for the life of the browser tab regardless
+    # of how many Streamlit reruns happen - so the whole components.html() call, iframe
+    # and all, only needs to run once per session instead of on every single rerun.
+    st.session_state["keyboard_shortcut_script_injected"] = True
+    components.html(
+        """
+        <script>
+        (function() {
+            const doc = window.parent.document;
+            if (doc.__copilotShortcutBound) return;
+            doc.__copilotShortcutBound = true;
 
-        function focusChatInput() {
-            let attempts = 0;
-            const tryFocus = () => {
-                const textarea = Array.from(doc.querySelectorAll('textarea')).find(
-                    (el) => el.placeholder === 'Tanya mengenai rekrutmen...'
-                );
-                if (textarea && textarea.offsetParent !== null) {
-                    textarea.focus();
-                    return;
-                }
-                attempts += 1;
-                if (attempts < 20) {
-                    setTimeout(tryFocus, 50);
-                }
-            };
-            tryFocus();
-        }
-
-        doc.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && e.key === '/') {
-                const btn = doc.querySelector('.st-key-floating_chatbot button');
-                if (btn) {
-                    e.preventDefault();
-                    btn.click();
-                }
+            function focusChatInput() {
+                let attempts = 0;
+                const tryFocus = () => {
+                    const textarea = Array.from(doc.querySelectorAll('textarea')).find(
+                        (el) => el.placeholder === 'Tanya mengenai rekrutmen...'
+                    );
+                    if (textarea && textarea.offsetParent !== null) {
+                        textarea.focus();
+                        return;
+                    }
+                    attempts += 1;
+                    if (attempts < 20) {
+                        setTimeout(tryFocus, 50);
+                    }
+                };
+                tryFocus();
             }
-        });
 
-        doc.addEventListener('click', function(e) {
-            if (e.target.closest && e.target.closest('.st-key-floating_chatbot button')) {
-                focusChatInput();
-            }
-        }, true);
-    })();
-    </script>
-    """,
-    height=0,
-)
+            doc.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && e.key === '/') {
+                    const btn = doc.querySelector('.st-key-floating_chatbot button');
+                    if (btn) {
+                        e.preventDefault();
+                        btn.click();
+                    }
+                }
+            });
+
+            doc.addEventListener('click', function(e) {
+                if (e.target.closest && e.target.closest('.st-key-floating_chatbot button')) {
+                    focusChatInput();
+                }
+            }, true);
+        })();
+        </script>
+        """,
+        height=0,
+    )
 
 if nav.title != "RecruitMan":
     with st.popover("💬 RecruitMan", key="floating_chatbot"):

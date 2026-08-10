@@ -12,7 +12,7 @@ ctx = get_ctx()
 scoped_pipeline = ctx["scoped_pipeline"]
 method_summary = ctx["method_summary"]
 stage_summary = ctx["stage_summary"]
-pipeline = ctx["pipeline"]
+all_pipeline = ctx["all_pipeline"]
 ids = ctx["ids"]
 
 hero(
@@ -73,7 +73,7 @@ method_display["Median Total Hari"] = method_display["Median Total Hari"].round(
 st.dataframe(method_display, width="stretch", hide_index=True)
 
 metric = st.selectbox("Metric heatmap", ["SLA Compliance", "Median Hari", "Pass Rate"])
-matrix = method_stage_matrix(pipeline, ids, metric)
+matrix = method_stage_matrix(all_pipeline, ids, metric)
 z = matrix.values * 100 if metric in {"SLA Compliance", "Pass Rate"} else matrix.values
 suffix = "%" if metric in {"SLA Compliance", "Pass Rate"} else " hari"
 fig = go.Figure(

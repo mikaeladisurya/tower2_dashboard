@@ -7,7 +7,7 @@ from dashboard_common import GREEN, PLN_YELLOW, RED, chart_layout, get_ctx, hero
 from data_layer import score_candidates_for_vacancy
 
 ctx = get_ctx()
-apps = ctx["apps"]
+all_apps = ctx["all_apps"]
 vacancies = ctx["vacancies"]
 scoped_apps = ctx["scoped_apps"]
 programs = ctx["programs"]
@@ -47,7 +47,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-candidate_source = scoped_apps if (programs or regions or methods) else apps
+candidate_source = scoped_apps if (programs or regions or methods) else all_apps
 scores = score_candidates_for_vacancy(candidate_source, selected_vacancy, pool)
 category_counts = scores["MATCH_CATEGORY"].value_counts()
 cols = st.columns(4)

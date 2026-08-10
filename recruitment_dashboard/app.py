@@ -228,9 +228,9 @@ chat_context = build_chat_context(
 )
 
 st.session_state["dashboard_ctx"] = {
-    "apps": apps,
+    "all_apps": apps,
     "vacancies": vacancies,
-    "pipeline": pipeline,
+    "all_pipeline": pipeline,
     "ids": ids,
     "scoped_apps": scoped_apps,
     "scoped_pipeline": scoped_pipeline,

@@ -10,7 +10,7 @@ import streamlit.components.v1 as components
 import chat_store
 import chat_ui
 from chatbot import build_chat_context, list_llm_profiles
-from dashboard_common import GREY, LIGHT_BLUE, PLN_BLUE, PLN_DARK, PLN_YELLOW
+from dashboard_common import GREY, PLN_BLUE, PLN_DARK, PLN_YELLOW, get_palette
 from data_layer import (
     build_funnel,
     load_demo_data,
@@ -34,15 +34,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-is_dark = (st.context.theme.type or "light") == "dark"
-CARD_BG = "#132C42" if is_dark else "#FFFFFF"
-CARD_BORDER = "#1E3A52" if is_dark else "#E7ECF2"
-CARD_SHADOW = "rgba(0, 0, 0, 0.35)" if is_dark else "rgba(16, 58, 93, 0.05)"
-HEADING_COLOR = "#EAF4FF" if is_dark else PLN_DARK
-BADGE_BG = "#173A57" if is_dark else LIGHT_BLUE
-BADGE_TEXT = "#BFE3FF" if is_dark else PLN_DARK
-POPOVER_BG = "#24272C" if is_dark else "#FFFFFF"
-POPOVER_BORDER = "#3A3F46" if is_dark else "#E7ECF2"
+palette = get_palette()
+CARD_BG = palette["card_bg"]
+CARD_BORDER = palette["card_border"]
+CARD_SHADOW = palette["card_shadow"]
+HEADING_COLOR = palette["heading"]
+BADGE_BG = palette["badge_bg"]
+BADGE_TEXT = palette["badge_text"]
+POPOVER_BG = palette["popover_bg"]
+POPOVER_BORDER = palette["popover_border"]
 
 st.markdown(
     f"""

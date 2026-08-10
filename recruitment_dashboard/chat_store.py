@@ -20,6 +20,33 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _migrate_legacy_message_columns(con: sqlite3.Connection) -> None:
+    """One-time migration: backfill results_json for any pre-multi-chart rows (written only
+    to the old single sql/table_json/chart_json columns), then drop those columns - fully
+    superseded by results_json since multi-chart support landed. Idempotent: a DB that's
+    already migrated (or was never on the old schema) has none of these columns, so this
+    is a no-op."""
+    existing_columns = {row[1] for row in con.execute("PRAGMA table_info(messages)").fetchall()}
+    legacy_columns = {"sql", "table_json", "chart_json"} & existing_columns
+    if not legacy_columns:
+        return
+
+    rows = con.execute(
+        "SELECT id, sql, table_json, chart_json FROM messages "
+        "WHERE (results_json IS NULL OR results_json = '') "
+        "AND (sql IS NOT NULL OR table_json IS NOT NULL OR chart_json IS NOT NULL)"
+    ).fetchall()
+    for row_id, sql, table_json, chart_json in rows:
+        # table_json/chart_json are already-serialized JSON strings (same shape _serialize_table/
+        # _serialize_chart produce) - just wrap them in results_json's outer list-of-blocks shape.
+        backfilled = json.dumps([{"sql": sql, "table": table_json, "chart": chart_json}])
+        con.execute("UPDATE messages SET results_json = ? WHERE id = ?", (backfilled, row_id))
+
+    for column in ("sql", "table_json", "chart_json"):
+        if column in existing_columns:
+            con.execute(f"ALTER TABLE messages DROP COLUMN {column}")
+
+
 def _init_db(con: sqlite3.Connection) -> None:
     con.execute("PRAGMA foreign_keys = ON")
     con.execute(
@@ -43,19 +70,17 @@ def _init_db(con: sqlite3.Connection) -> None:
             answer_text TEXT NOT NULL,
             answer_kind TEXT NOT NULL,
             answer_icon TEXT NOT NULL,
-            sql TEXT,
-            table_json TEXT,
-            chart_json TEXT,
             results_json TEXT,
             created_at TEXT NOT NULL
         )
         """
     )
     # Older DBs (before multi-chart support) were created without results_json - add it
-    # in place so existing conversation history keeps working via the legacy columns.
+    # in place so existing conversation history keeps working.
     existing_columns = {row[1] for row in con.execute("PRAGMA table_info(messages)").fetchall()}
     if "results_json" not in existing_columns:
         con.execute("ALTER TABLE messages ADD COLUMN results_json TEXT")
+    _migrate_legacy_message_columns(con)
     con.commit()
 
 
@@ -219,7 +244,7 @@ def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], s
     with _connect() as con:
         rows = con.execute(
             """
-            SELECT question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon, created_at
+            SELECT question, answer_text, answer_kind, results_json, answer_icon, created_at
             FROM messages
             WHERE conversation_id = ?
             ORDER BY id ASC
@@ -227,17 +252,8 @@ def load_turns(conversation_id: int | None) -> list[tuple[str, dict[str, Any], s
             (conversation_id,),
         ).fetchall()
     turns = []
-    for question, answer_text, answer_kind, sql, table_json, chart_json, results_json, answer_icon, created_at in rows:
-        if results_json:
-            results = _deserialize_results(results_json)
-        elif sql or table_json or chart_json:
-            # Row written before multi-chart support (single sql/table/chart columns).
-            results = [
-                {"sql": sql, "table": _deserialize_table(table_json), "chart": _deserialize_chart(chart_json)}
-            ]
-        else:
-            results = []
-        response = {"kind": answer_kind, "text": answer_text, "results": results}
+    for question, answer_text, answer_kind, results_json, answer_icon, created_at in rows:
+        response = {"kind": answer_kind, "text": answer_text, "results": _deserialize_results(results_json)}
         turns.append((question, response, answer_icon, created_at))
     return turns
 

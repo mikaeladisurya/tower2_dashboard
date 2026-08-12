@@ -422,12 +422,41 @@ def _is_safe_select(sql: str) -> bool:
     return True
 
 
-def _execute_sql(con: Any, sql: str, row_limit: int = 200) -> pd.DataFrame:
+def _execute_sql(con: Any, sql: str, row_limit: int = 200) -> tuple[pd.DataFrame, int]:
     """Run `sql` on a connection the caller already opened, registered dataframes on, and
     locked down (see llm_answer) - one connection is reused for the whole agentic loop
-    instead of reopening/re-registering per tool call."""
+    instead of reopening/re-registering per tool call. Returns (preview capped at row_limit,
+    total row count before truncation) so callers can tell the UI when a result was cut off."""
     result = con.execute(sql).df()
-    return result.head(row_limit)
+    return result.head(row_limit), len(result)
+
+
+# Safety ceiling for the on-demand "download all rows" export (see run_sql_for_export) -
+# much higher than the in-chat preview cap since it's never rendered in the UI or sent to
+# the LLM, just streamed straight to a CSV download, but still bounded against a pathological
+# query blowing up memory.
+EXPORT_ROW_LIMIT = 50_000
+
+
+def run_sql_for_export(sql: str, dataframes: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    """Re-run a SQL string saved on a past chat turn to get the full (unpreviewed) result for
+    on-demand CSV export - used by chat_ui when a result was truncated to the in-chat preview
+    cap. Opens its own short-lived connection rather than reusing the agentic loop's (which is
+    already closed by the time a user clicks "download all" later), and re-validates the SQL
+    since it may be re-run long after it was first approved."""
+    import duckdb
+
+    if not _is_safe_select(sql):
+        raise ValueError("Query tidak lolos validasi keamanan untuk dijalankan ulang.")
+    con = duckdb.connect(database=":memory:")
+    try:
+        for name, df in dataframes.items():
+            con.register(name, df)
+        con.execute("SET enable_external_access = false")
+        con.execute("SET lock_configuration = true")
+        return con.execute(sql).df().head(EXPORT_ROW_LIMIT)
+    finally:
+        con.close()
 
 
 def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
@@ -479,7 +508,7 @@ def _dispatch_tool_call(
                 None,
             )
         try:
-            table = _execute_sql(con, sql)
+            table, total_rows = _execute_sql(con, sql)
         except Exception as exc:
             return {"error": f"Query SQL gagal dieksekusi: {exc}", "sql": sql}, None, None
         result_id = f"result_{len(results) + 1}"
@@ -488,6 +517,7 @@ def _dispatch_tool_call(
             "result_id": result_id,
             "sql": sql,
             "row_count": int(table.shape[0]),
+            "total_rows": total_rows,
             "columns": list(table.columns),
             "preview": table.head(20).to_dict(orient="records"),
         }
@@ -654,7 +684,12 @@ def llm_answer(
                         args = {}
                     payload, table, chart = _dispatch_tool_call(con, tc.function.name, args, results)
                     if table is not None:
-                        block = {"sql": payload.get("sql"), "table": table, "chart": None}
+                        block = {
+                            "sql": payload.get("sql"),
+                            "table": table,
+                            "chart": None,
+                            "total_rows": payload.get("total_rows"),
+                        }
                         result_blocks.append(block)
                         block_by_result_id[payload.get("result_id")] = block
                     if chart is not None:
@@ -662,7 +697,9 @@ def llm_answer(
                         if target is not None:
                             target["chart"] = chart
                         else:
-                            result_blocks.append({"sql": None, "table": None, "chart": chart})
+                            result_blocks.append(
+                                {"sql": None, "table": None, "chart": chart, "total_rows": None}
+                            )
                     messages.append(
                         {"role": "tool", "tool_call_id": tc.id, "content": json.dumps(payload, default=str)}
                     )

@@ -72,4 +72,12 @@ with right:
                 st.rerun()  # session_state["active_conversation_id"] is already updated by submit_question
     else:
         for idx, (question, response, answer_icon, created_at) in reversed(list(enumerate(turns))):
-            chat_ui.render_turn(question, response, answer_icon, idx, key_prefix="chatpage", created_at=created_at)
+            chat_ui.render_turn(
+                question,
+                response,
+                answer_icon,
+                idx,
+                key_prefix="chatpage",
+                created_at=created_at,
+                dataframes=sql_dataframes,
+            )

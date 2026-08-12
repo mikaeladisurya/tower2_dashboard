@@ -8,7 +8,13 @@ from zoneinfo import ZoneInfo
 import streamlit as st
 
 import chat_store
-from chatbot import answer_question, build_conversation_context, check_llm_connection, update_chat_summary
+from chatbot import (
+    answer_question,
+    build_conversation_context,
+    check_llm_connection,
+    run_sql_for_export,
+    update_chat_summary,
+)
 
 LLM_STATUS_TTL_SECONDS = 300
 
@@ -108,6 +114,45 @@ def _format_turn_time(created_at: str | None) -> str:
     return dt.strftime("%d/%m/%Y %H:%M")
 
 
+def _render_export_button(
+    block: dict[str, Any],
+    dataframes: dict[str, Any] | None,
+    export_key: str,
+) -> None:
+    """Offer a "download all rows" button only when the displayed table was actually
+    truncated to the in-chat preview cap - if total_rows is unknown (older saved turns) or
+    not greater than what's already shown, the native download icon on st.dataframe already
+    covers it, so a second button would just be a confusing duplicate."""
+    total_rows = block.get("total_rows")
+    table = block.get("table")
+    if not total_rows or table is None or total_rows <= len(table) or not block.get("sql"):
+        return
+    if not dataframes:
+        return
+
+    if export_key not in st.session_state:
+        if st.button(
+            f"⬇️ Siapkan semua {total_rows:,} baris (CSV)".replace(",", "."),
+            key=f"{export_key}_prepare",
+        ):
+            with st.spinner("Menyiapkan file..."):
+                try:
+                    full_table = run_sql_for_export(block["sql"], dataframes)
+                    st.session_state[export_key] = full_table.to_csv(index=False).encode("utf-8")
+                except Exception as exc:
+                    st.error(f"Gagal menyiapkan file: {exc}")
+                    return
+            st.rerun()
+    else:
+        st.download_button(
+            f"⬇️ Download semua {total_rows:,} baris (CSV)".replace(",", "."),
+            data=st.session_state[export_key],
+            file_name=f"{export_key}.csv",
+            mime="text/csv",
+            key=f"{export_key}_download",
+        )
+
+
 def render_turn(
     question: str,
     response: dict[str, Any],
@@ -115,6 +160,7 @@ def render_turn(
     idx: int,
     key_prefix: str,
     created_at: str | None = None,
+    dataframes: dict[str, Any] | None = None,
 ) -> None:
     with st.chat_message("user"):
         st.markdown(question)
@@ -128,6 +174,7 @@ def render_turn(
                     st.code(block["sql"], language="sql")
             if block.get("table") is not None:
                 st.dataframe(block["table"], width="stretch", hide_index=True)
+                _render_export_button(block, dataframes, f"{key_prefix}_export_{idx}_{block_idx}")
             if block.get("chart") is not None:
                 st.plotly_chart(block["chart"], width="stretch", key=f"{key_prefix}_chart_{idx}_{block_idx}")
         st.markdown(response["text"])

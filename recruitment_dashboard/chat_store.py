@@ -185,6 +185,7 @@ def _serialize_results(results: list[dict[str, Any]]) -> str:
                 "sql": block.get("sql"),
                 "table": _serialize_table(block.get("table")),
                 "chart": _serialize_chart(block.get("chart")),
+                "total_rows": block.get("total_rows"),
             }
             for block in results
         ]
@@ -199,6 +200,10 @@ def _deserialize_results(raw: str | None) -> list[dict[str, Any]]:
             "sql": block.get("sql"),
             "table": _deserialize_table(block.get("table")),
             "chart": _deserialize_chart(block.get("chart")),
+            # Older rows saved before this field existed - None means "unknown", not
+            # "not truncated", so render_turn's export button only offers itself when it
+            # can positively confirm more rows exist.
+            "total_rows": block.get("total_rows"),
         }
         for block in json.loads(raw)
     ]

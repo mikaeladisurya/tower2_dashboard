@@ -53,8 +53,12 @@ with right:
     # opening a past conversation shows the latest answer immediately without scrolling,
     # and the two surfaces feel consistent.
     typed_question = st.chat_input("Tanya mengenai rekrutmen...", key="chatpage_question")
+    just_answered = False
     if typed_question and typed_question.strip():
-        active_id = chat_ui.submit_question(active_id, typed_question, sql_dataframes, chat_context, selected_profile)
+        active_id = chat_ui.submit_question(
+            active_id, typed_question, sql_dataframes, chat_context, selected_profile, key_prefix="chatpage"
+        )
+        just_answered = True
 
     turns = chat_store.load_turns(active_id)
     if not turns:
@@ -68,10 +72,21 @@ with right:
         suggestion_row = st.container(horizontal=True, horizontal_alignment="center")
         for i, suggestion in enumerate(chat_ui.SUGGESTIONS):
             if suggestion_row.button(suggestion, key=f"chatpage_suggestion_{i}"):
-                chat_ui.submit_question(active_id, suggestion, sql_dataframes, chat_context, selected_profile)
+                chat_ui.submit_question(
+                    active_id,
+                    suggestion,
+                    sql_dataframes,
+                    chat_context,
+                    selected_profile,
+                    key_prefix="chatpage",
+                    render_live=False,
+                )
                 st.rerun()  # session_state["active_conversation_id"] is already updated by submit_question
     else:
-        for idx, (question, response, answer_icon, created_at) in reversed(list(enumerate(turns))):
+        # The just-answered turn (if any) was already drawn live by submit_question, right
+        # above this loop, in exactly this spot - skip it here so it isn't drawn twice.
+        history_to_draw = turns[:-1] if just_answered else turns
+        for idx, (question, response, answer_icon, created_at) in reversed(list(enumerate(history_to_draw))):
             chat_ui.render_turn(
                 question,
                 response,

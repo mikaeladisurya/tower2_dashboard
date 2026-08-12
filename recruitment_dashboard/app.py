@@ -342,13 +342,24 @@ if nav.title != "RecruitMan":
             "Tanya mengenai rekrutmen...",
             key="copilot_question",
         )
+        just_answered = False
         if typed_question and typed_question.strip():
             active_conversation_id = chat_ui.submit_question(
-                active_conversation_id, typed_question, sql_dataframes, chat_context, selected_profile
+                active_conversation_id,
+                typed_question,
+                sql_dataframes,
+                chat_context,
+                selected_profile,
+                key_prefix="popover",
             )
+            just_answered = True
 
         history = chat_store.load_turns(active_conversation_id)
         indexed_history = list(enumerate(history))
+        # The just-answered turn (if any) was already drawn live by submit_question, right
+        # above, in exactly this spot - drop it here so it isn't drawn twice.
+        if just_answered:
+            indexed_history = indexed_history[:-1]
         recent = indexed_history[-2:]
         older = indexed_history[:-2]
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from datetime import datetime
-from typing import Any
+from typing import Any, Iterator
 from zoneinfo import ZoneInfo
 
 import streamlit as st
@@ -153,6 +153,40 @@ def _render_export_button(
         )
 
 
+def _render_result_blocks(
+    response: dict[str, Any],
+    idx: int,
+    key_prefix: str,
+    dataframes: dict[str, Any] | None,
+) -> None:
+    """SQL checkbox + table (+ export button) + chart for every block in a turn - shared
+    between the normal static render (render_turn) and the live render (submit_question),
+    so the two never drift out of sync."""
+    for block_idx, block in enumerate(response.get("results") or []):
+        if block.get("sql"):
+            if st.checkbox("🔍 SQL", key=f"{key_prefix}_sql_{idx}_{block_idx}"):
+                st.code(block["sql"], language="sql")
+        if block.get("table") is not None:
+            st.dataframe(block["table"], width="stretch", hide_index=True)
+            _render_export_button(block, dataframes, f"{key_prefix}_export_{idx}_{block_idx}")
+        if block.get("chart") is not None:
+            st.plotly_chart(block["chart"], width="stretch", key=f"{key_prefix}_chart_{idx}_{block_idx}")
+
+
+def _typewriter_chunks(text: str, target_chunks: int = 60, delay: float = 0.02) -> Iterator[str]:
+    """Split already-complete text into ~target_chunks pieces for st.write_stream, so it
+    plays back as a typing effect regardless of length - this is pure post-hoc replay (the
+    text is already fully in hand), not real token streaming from the model."""
+    words = text.split(" ")
+    if not words:
+        return
+    chunk_size = max(1, len(words) // target_chunks)
+    for i in range(0, len(words), chunk_size):
+        piece = " ".join(words[i : i + chunk_size])
+        yield piece + (" " if i + chunk_size < len(words) else "")
+        time.sleep(delay)
+
+
 def render_turn(
     question: str,
     response: dict[str, Any],
@@ -168,15 +202,7 @@ def render_turn(
         if time_label:
             st.caption(time_label)
     with st.chat_message("assistant", avatar=answer_icon):
-        for block_idx, block in enumerate(response.get("results") or []):
-            if block.get("sql"):
-                if st.checkbox("🔍 SQL", key=f"{key_prefix}_sql_{idx}_{block_idx}"):
-                    st.code(block["sql"], language="sql")
-            if block.get("table") is not None:
-                st.dataframe(block["table"], width="stretch", hide_index=True)
-                _render_export_button(block, dataframes, f"{key_prefix}_export_{idx}_{block_idx}")
-            if block.get("chart") is not None:
-                st.plotly_chart(block["chart"], width="stretch", key=f"{key_prefix}_chart_{idx}_{block_idx}")
+        _render_result_blocks(response, idx, key_prefix, dataframes)
         st.markdown(response["text"])
 
 
@@ -186,12 +212,24 @@ def submit_question(
     dataframes: dict[str, Any],
     chat_context: dict[str, Any],
     profile: dict[str, str] | None,
+    key_prefix: str = "live",
+    render_live: bool = True,
 ) -> int:
     """Answer `question` and persist the turn. Lazily creates a conversation on first use
     (conversation_id is None until then, e.g. right after "New Chat") so clicking New Chat
     or opening the page fresh never leaves an empty conversation behind on its own - only an
     actual question does. Returns the conversation id the turn was saved under, so callers
-    can update `st.session_state["active_conversation_id"]`."""
+    can update `st.session_state["active_conversation_id"]`.
+
+    When `render_live` (default), renders the user bubble and the answer live, right here,
+    instead of waiting for the caller's normal chat_store.load_turns()+render_turn() pass:
+    a st.status() box shows each agentic-loop step as it genuinely happens (query running,
+    chart being made - real progress, since each iteration is already a separate blocking
+    call), then the finished text plays back with a typewriter effect. Callers doing this
+    must exclude the newly-appended turn from their own render pass afterward (it's already
+    drawn, in the right spot) - see app.py / app_pages/chatbot.py. Pass render_live=False
+    when the caller reruns immediately after anyway (e.g. a suggestion-chip click), since
+    anything drawn here would just be thrown away by that rerun."""
     if conversation_id is None:
         conversation_id = chat_store.create_conversation()
         st.session_state["active_conversation_id"] = conversation_id
@@ -201,14 +239,49 @@ def submit_question(
     buffer_turns = [(q, r) for q, r, _icon, _created_at in history_before[-2:]]
     summary = conv.get("chat_summary") or ""
     conversation_context = build_conversation_context(summary, buffer_turns)
+    new_turn_idx = len(history_before)
 
-    response = answer_question(
-        question,
-        chat_context,
-        dataframes,
-        profile=profile,
-        conversation_context=conversation_context,
-    )
+    if render_live:
+        with st.chat_message("user"):
+            st.markdown(question)
+
+        # The real answer_icon depends on response["kind"], only known after answer_question
+        # returns - but the bubble has to open before that so the status box can show live
+        # progress. Guess with the selected profile's icon upfront instead of Streamlit's
+        # generic default: correct in effectively every case, since a configured profile
+        # only ever *not* end up as the "llm" kind if llm_answer itself fails outright.
+        with st.chat_message("assistant", avatar=profile["icon"] if profile else "😊"):
+            steps: list[str] = []
+            status_box = st.status("🤖 Memproses pertanyaan...", expanded=True)
+            with status_box:
+                def on_step(msg: str) -> None:
+                    steps.append(msg)
+                    st.write(msg)
+
+                response = answer_question(
+                    question,
+                    chat_context,
+                    dataframes,
+                    profile=profile,
+                    conversation_context=conversation_context,
+                    on_step=on_step,
+                )
+            status_box.update(
+                label="✅ Selesai" if steps else "✅ Jawaban siap",
+                state="complete",
+                expanded=False,
+            )
+            _render_result_blocks(response, new_turn_idx, key_prefix, dataframes)
+            st.write_stream(_typewriter_chunks(response["text"]))
+    else:
+        response = answer_question(
+            question,
+            chat_context,
+            dataframes,
+            profile=profile,
+            conversation_context=conversation_context,
+        )
+
     # Only credit the selected model's icon when it actually produced the answer (kind
     # "llm") - "local"/"fallback" answers come from the rule engine, not the LLM.
     if response.get("kind") == "llm" and profile:

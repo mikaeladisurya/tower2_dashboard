@@ -5,7 +5,7 @@ import os
 import re
 import time
 import traceback
-from typing import Any
+from typing import Any, Callable
 
 import pandas as pd
 
@@ -581,10 +581,16 @@ def llm_answer(
     dataframes: dict[str, pd.DataFrame] | None,
     profile: dict[str, str] | None,
     conversation_context: str = "",
+    on_step: Callable[[str], None] | None = None,
 ) -> dict[str, Any] | None:
     """Agentic loop: the model decides whether/when to call run_sql_query and render_chart,
     can see tool errors (e.g. a failed query) and retry, and writes the final answer itself
-    once it has what it needs - no separate generate-SQL/narrate/chart-spec calls."""
+    once it has what it needs - no separate generate-SQL/narrate/chart-spec calls.
+
+    `on_step`, if given, is called synchronously right after each tool call actually
+    completes (not simulated/replayed later) - each iteration of this loop is already a
+    separate blocking API call, so this is genuine progress, just coarser-grained than
+    real token streaming. Purely optional/cosmetic: never affects what gets answered."""
     if not profile_is_configured(profile) or not dataframes:
         return None
     try:
@@ -648,6 +654,23 @@ def llm_answer(
                 tool_calls = message.tool_calls or []
                 if not tool_calls:
                     text = (message.content or "").strip()
+                    if not text:
+                        # Diagnostic only (no behavior change): capture the raw message shape
+                        # when the model finishes with neither a tool call nor visible text, so
+                        # we can see whether it put the answer somewhere non-standard - e.g. some
+                        # "thinking"/reasoning-style OpenAI-compatible endpoints (observed with a
+                        # Qwen profile) return a `reasoning_content` field instead of `content` on
+                        # this turn. model_dump() surfaces any such extra field even though it
+                        # isn't part of the OpenAI SDK's typed schema.
+                        try:
+                            raw_message = message.model_dump() if hasattr(message, "model_dump") else vars(message)
+                        except Exception:
+                            raw_message = repr(message)
+                        finish_reason = getattr(response.choices[0], "finish_reason", None)
+                        print(
+                            f"[chatbot] Empty final message.content - model={profile.get('model')!r} "
+                            f"finish_reason={finish_reason!r} raw_message={raw_message!r}"
+                        )
                     if any(marker in text for marker in _TOOL_LEAK_MARKERS):
                         return {
                             "text": (
@@ -683,6 +706,11 @@ def llm_answer(
                     except json.JSONDecodeError:
                         args = {}
                     payload, table, chart = _dispatch_tool_call(con, tc.function.name, args, results)
+                    if on_step:
+                        if tc.function.name == "run_sql_query":
+                            on_step("⚠️ Query gagal, mencoba lagi..." if payload.get("error") else "🔍 Menjalankan query...")
+                        elif tc.function.name == "render_chart":
+                            on_step("⚠️ Chart gagal dibuat" if payload.get("error") else "📊 Membuat chart...")
                     if table is not None:
                         block = {
                             "sql": payload.get("sql"),
@@ -725,9 +753,10 @@ def answer_question(
     dataframes: dict[str, pd.DataFrame] | None = None,
     profile: dict[str, str] | None = None,
     conversation_context: str = "",
+    on_step: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     if profile_is_configured(profile):
-        llm_result = llm_answer(question, dataframes, profile, conversation_context)
+        llm_result = llm_answer(question, dataframes, profile, conversation_context, on_step=on_step)
         if llm_result:
             return {"kind": "llm", **llm_result}
 

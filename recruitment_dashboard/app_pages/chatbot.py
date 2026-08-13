@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import json
+
 import streamlit as st
+import streamlit.components.v1 as components
 
 import chat_store
 import chat_ui
@@ -69,6 +72,45 @@ with right:
     typed_question = st.chat_input("Tanya mengenai rekrutmen...", key="chatpage_question")
     just_answered = False
 
+    prefill = st.session_state.pop("chatpage_prefill", None)
+    if prefill:
+        # st.chat_input has no `value`/default param (unsupported by the widget itself), so
+        # a suggestion click can't natively pre-fill it - this drops the text into the
+        # underlying textarea via JS instead, same window.parent.document technique already
+        # used for the Ctrl+/ shortcut in app.py, leaving it editable for the user to tweak
+        # before pressing Enter themselves (nothing is submitted here).
+        components.html(
+            """
+            <script>
+            (function() {
+                const doc = window.parent.document;
+                const text = __TEXT_JSON__;
+                let attempts = 0;
+                function trySet() {
+                    const textarea = Array.from(doc.querySelectorAll('textarea')).find(
+                        (el) => el.placeholder === 'Tanya mengenai rekrutmen...'
+                    );
+                    if (textarea) {
+                        const setter = Object.getOwnPropertyDescriptor(
+                            window.parent.HTMLTextAreaElement.prototype, 'value'
+                        ).set;
+                        setter.call(textarea, text);
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                        textarea.focus();
+                        return;
+                    }
+                    attempts += 1;
+                    if (attempts < 20) {
+                        setTimeout(trySet, 50);
+                    }
+                }
+                trySet();
+            })();
+            </script>
+            """.replace("__TEXT_JSON__", json.dumps(prefill)),
+            height=0,
+        )
+
     # Bounded + independently scrollable (CSS in app.py, .st-key-chatpage_answers_box), same
     # pattern as the Riwayat box - only the answers scroll, the page itself never does.
     with st.container(key="chatpage_answers_box", border=True):
@@ -90,16 +132,10 @@ with right:
             suggestion_row = st.container(horizontal=True, horizontal_alignment="center")
             for i, suggestion in enumerate(chat_ui.SUGGESTIONS):
                 if suggestion_row.button(suggestion, key=f"chatpage_suggestion_{i}"):
-                    chat_ui.submit_question(
-                        active_id,
-                        suggestion,
-                        sql_dataframes,
-                        chat_context,
-                        selected_profile,
-                        key_prefix="chatpage",
-                        render_live=False,
-                    )
-                    st.rerun()  # session_state["active_conversation_id"] is already updated by submit_question
+                    # Prefill only - the question isn't asked until the user reviews/edits
+                    # it in the chat input and presses Enter themselves.
+                    st.session_state["chatpage_prefill"] = suggestion
+                    st.rerun()
         else:
             # The just-answered turn (if any) was already drawn live by submit_question, right
             # above this loop, in exactly this spot - skip it here so it isn't drawn twice.

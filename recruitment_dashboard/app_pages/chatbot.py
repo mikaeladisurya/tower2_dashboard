@@ -32,7 +32,7 @@ with left:
     with st.container(key="chatpage_history_box", border=True):
         for conv in chat_store.list_conversations():
             is_active = conv["id"] == active_id
-            label_col, delete_col = st.columns([5, 1], vertical_alignment="center")
+            label_col, menu_col = st.columns([5, 1], vertical_alignment="center")
             label = conv["title"] or "Percakapan baru"
             with label_col:
                 if st.button(
@@ -43,12 +43,24 @@ with left:
                 ):
                     st.session_state["active_conversation_id"] = conv["id"]
                     st.rerun()
-            with delete_col:
-                if st.button("🗑", key=f"chatpage_del_{conv['id']}", help="Hapus percakapan"):
-                    chat_store.delete_conversation(conv["id"])
-                    if is_active:
-                        st.session_state["active_conversation_id"] = None
-                    st.rerun()
+            with menu_col:
+                with st.popover("", key=f"chatpage_menu_{conv['id']}"):
+                    new_title = st.text_input(
+                        "Ubah judul",
+                        value=label,
+                        key=f"chatpage_rename_{conv['id']}",
+                        label_visibility="collapsed",
+                    )
+                    if st.button("Simpan judul", key=f"chatpage_rename_save_{conv['id']}", width="stretch"):
+                        chat_store.update_title(conv["id"], new_title.strip() or "Percakapan baru")
+                        st.rerun()
+                    if st.button(
+                        "🗑 Hapus percakapan", key=f"chatpage_del_{conv['id']}", width="stretch"
+                    ):
+                        chat_store.delete_conversation(conv["id"])
+                        if is_active:
+                            st.session_state["active_conversation_id"] = None
+                        st.rerun()
 
 with right:
     # Input first, then turns newest-first below it - same pattern as the popover, so

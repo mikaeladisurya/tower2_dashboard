@@ -143,6 +143,12 @@ def get_conversation(conversation_id: int) -> dict[str, Any] | None:
     return {"id": row[0], "title": row[1], "chat_summary": row[2], "summary_upto": row[3]}
 
 
+def update_title(conversation_id: int, title: str) -> None:
+    with _connect() as con:
+        con.execute("UPDATE conversations SET title = ? WHERE id = ?", (title, conversation_id))
+        con.commit()
+
+
 def update_summary(conversation_id: int, summary: str, summary_upto: int) -> None:
     with _connect() as con:
         con.execute(

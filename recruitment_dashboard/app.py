@@ -98,6 +98,18 @@ st.markdown(
         padding: 12px 22px !important;
         box-shadow: 0 10px 28px rgba(16, 58, 93, 0.4) !important;
       }}
+      .st-key-chatpage_history_box {{
+        max-height: calc(100vh - 520px);
+        min-height: 160px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }}
+      .st-key-chatpage_answers_box {{
+        max-height: calc(100vh - 300px);
+        min-height: 300px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }}
       [data-testid="stPopoverBody"] {{
         width: 560px;
         max-width: 92vw;

@@ -63,13 +63,6 @@ teman angkatan 15 = SMA thn 2016):
 Sumber: R1 + info HTD informal · Keyakinan: sedang-tinggi (aturan pasti perlu konfirmasi R4) ·
 Dampak: **mockdb pakai nomor angkatan asli & model multi-seri**, bukan tebakan "S1 70an/SMA 20an/S2 belasan".
 
-### F-011 · [IDE RISET] Kemungkinan ada angkatan yang dihapus dari web
-Klaim: katalog situs (31 program) mungkin **tidak lengkap** — pengumuman angkatan bisa dihapus
-setelah selesai. Tahun 2021 & 2024 kosong di situs; bisa jadi memang tak ada gelombang, atau sudah
-dihapus. Rencana verifikasi (nanti): telusuri socmed PLN yang dulu dipakai announce pembukaan
-(IG @pln, @pln_corpu, @pln_persero, dll) untuk menemukan gelombang yang pernah dibuka tapi hilang dari web.
-Sumber: usul user · Keyakinan: hipotesis · Status: **belum dieksekusi** · Dampak: kelengkapan daftar angkatan historis.
-
 ### F-009 · Struktur kode profesi
 Klaim: profesi 2025 berkode `{SUBHOLDING}.{TIPE}.{JENJANG}[.varian]`:
 SUBHOLDING = IP (Indonesia Power), NP (Nusantara Power), ND (Nusa Daya), ES (Electricity Services),
@@ -83,6 +76,15 @@ Klaim: 31 program → **128 profesi**. Tiap profesi = (jenjang × rumpun jurusan
 tanggal, kota, angkatan, kode, program studi, dan **minimal IPK per jurusan** sendiri (mis. Teknik
 min 3, non-teknik/OAP min 2.5). Data di `profesi.csv`.
 Sumber: R1 · Keyakinan: tinggi · Dampak: unit granular pendaftaran = profesi, bukan program. Min IPK per jurusan → rules administrasi mockdb.
+
+### F-011 · Angkatan lama dihapus dari web — ✅ TERJAWAB
+Hipotesis awal (usul user): katalog situs (31 program) tidak lengkap karena pengumuman angkatan
+dihapus setelah selesai; 2021 & 2024 kosong di situs. Rencana verifikasi semula: telusuri socmed PLN.
+**Status: TERBUKTI** — diverifikasi bukan lewat socmed melainkan **Wayback Machine** (lihat **F-030**):
+153 snapshot arsip 2017–2026 memulihkan 111 judul program, **80 di antaranya tidak ada di web live**.
+Diperkuat **F-021** (sistem HTD mencatat 222 rekrutmen vs 31 tampil publik).
+Sumber: usul user → dieksekusi via R1c · Keyakinan: tinggi · Dampak: daftar angkatan historis mock
+pakai judul asli hasil pemulihan. Penelusuran socmed jadi **tidak perlu** (nilai tambahnya kecil).
 
 ### F-012 · Cakupan resmi = PLN Group (PLN + Anak Perusahaan) [R2]
 Klaim: Perdir 0056.E-DIR-2023 def 1.5.17 "PLN Group adalah PLN dan Anak Perusahaan"; 1.5.1 Anak

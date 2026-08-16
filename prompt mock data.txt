@@ -1,0 +1,114 @@
+Dashboard Rekrutmen yg kita buat ini belum sempurna. Tujuanmu adalah untuk membantu aku membuat database mock untuk dashboard rekrutmen ini, karena aku mau rebuild ulang database mock ini dari awal supaya hasil dari dashboardnya lebih menggambarkan kondisi real di lapangan nantinya.
+
+Di folder data sintetis ada tabel2 referensi, file2 dengan nama awal Sample- bisa dijadikan acuan karena didapat dari tim rekrutmen yg ditarik dari sistem, dan file2 dengan nama awal Rekrutmen_ mempunyai kolom2 yg bisa dijadikan acuan juga karena ini dari tim rekrutmen lainnya meskipun datanya mock juga, file lainnya kurang akurat karna dibuat mengira2 skemanya (mirip dengan yg kita pake di dashboard sekarang).
+Di folder data mockup, ada juga tabel/csv yg pernah kubuat data mocknya. coba cek di ERD mock data txt disitu ada model masing2 tabelnya, tapi ini ngga terlalu akurat juga karna kemarin buatnya mengira2 juga skemanya.
+Di folder referensi ada beberapa file untuk bisa dicek sebagai referensi, mulai dari alur, requirement gathering, contoh2 nama posisi di pln, pembagian bidang saat pembidangan, dst (ignore app_ref.py).
+Kabarin aku kalau ada file yg tidak bisa kamu cek skema/nama kolomnya.
+
+Aturan selama kita membuat mock data: 
+>> Kita buat dulu dari ujungnya supaya saat membuat data mocknya lebih mendekati kondisi real.
+Aku kebayang urutannya sbb: 
+- tabel Unit2 di pln (bisa lihat dari Sample-03-Realisasi Pemenuhan FTK di kolom UNIT itu merupakan nama2 unit induk pln, untuk mock ini sementara kita sampai level unit induk saja ngga perlu unit pelaksana)
+- data posisi pegawai (posisi2 apa saja yg ada di pln, bisa dilihat contohnya di sample-02-contoh format pagu ftk atau di sample-04-penetapan pagu dikolom jabatan, biasanya ada beberapa jenjang Junior officer, officer, senior officer, terus ada yg judulnya officer, analyst, specialist atau engineer)
+- posisi x unit (posisi2 apa saja yg ada di tiap unit induk, bisa coba diterka2 atau bantu cari di internet (bisa langsung tanya google nanti dijawab gemini) kemungkinan apa2 aja yg ada di masing2 unit)
+- posisi x unit x jumlah kebutuhan x jumlah approved oleh tim HR / Penetapan pagu rekrutmen(dibuat oleh tim perencanaan HR, 1 file yg dikumpulin dari beberapa unit2, contohnya seperti di sample-04-penetapan pagu)
+
+- data program rekrutmen:
+program yg dilaksanakan, 
+jenjang yg ingin direkrut, 
+lokasi2 dan tanggal buka pendaftaran, 
+target jumlah penerimaan > dari beberapa kebutuhan unit yg dikumpulkan (dalam 1 program biasanya dikumpulin dari beberapa kebutuhan yg disesuaikan dengan jurusan, misal ada 1000 kebutuhan posisi teknis, 400 posisi nonteknis, maka misal dibuka 300 dulu angkatan teknik(ambil jurusan2 teknik), terus buka 200 untuk posisi nonteknis, kemudian di angkatan selanjutnya buka gabungan posisi nonteknis 300 & nonteknis 100, dst)
+- data pengumuman rekrutmen (untuk tracking program tsb sudah dishare di channel publik pln di mana saja)
+- data vendor (biasanya 1 program rekrutmen akan menggandeng vendor rekrutmen, bisa jadi dari universitas atau vendor, mereka dan tim rekrutmen hr akan menentukan pelaksanaan tiap tahapannya)
+- data vendor pelaksana masing2 program (yg eksekusi tiap angkatan, tiap tahapan seleksi, tiap kota pelaksana), biasanya yg bisa dilakukan secara online akan didapat oleh vendor yg sama, misal akding oleh tim UI, adaptif dari internal PLN (ada tes adaptif PLN sendiri), MCU sesuai kotanya misal Prodia ada disemua kota bisa jadi prodia ambil semua tapi misal ngga ada di salah 1 kota bisa pilih vendor lain
+
+- data akun peserta (pengguna mendaftar sebagai kandidat/peserta ke website rekrutmen dan mengisi biodata, riwayat pendidikan(sma/d1/d3/d4/s1/s2/s3), sertifikasi(pemberi, judul, masa berlaku, keterangan sertifikasi) nb: sertifikat ini opsional, jadi kebanyakan akun/pendaftar ngga punya sama sekali)
+- data peserta rekrutmen
+data peserta yang mendaftar per program rekrutmen
+ada id_test & id_akun,
+nomor test (bisa lihat contoh dari sample-05-Penempatan OJT), 
+lokasi seleksi karena pelaksanaan tes tiap tahapan seleksi biasanya dilakukan di 1 kota, jika cakupannya 1 Indonesia biasanya ada beberapa lokasi yang bisa dipilih oleh peserta untuk mengikutinya.
+Contohnya:
+REKRUTMEN PLN HOLDING S1/D4 DAN D3 > ambil se Indonesia, tempat seleksi dibuka di 5 kota (Jakarta, Bandung, Surabaya, Medan & Makassar)
+REKRUTMEN PLN HOLDING S1 > ambil se Indonesia, tempat seleksi dibuka di 8 kota (Jakarta, Bandung, Surabaya, Medan, Pekanbaru, Pontianak, Denpasar & Makassar)
+
+- tabel syarat/grade rekrutmen
+passing grade untuk tiap tahap seleksi di tiap program rekrutmen (atau tiap tahap dibuat beda tabelnya?): 
+administrasi > untuk program rekrutmen xx/angkatan xx (S1):UMUR memenuhi max 30, BELUM NIKAH Y/T, IPK di atas 3, AKREDITASI UNIVERSITAS, FRESH_GRADUATE Y/T; program xy (SMA): UMUR max 19, BELUM NIKAH, NEM rata2 7, AKREDITASI SMA, dst
+tes akding > program xx: ak 70, inggris 60; program xy: ak 78, inggris toefl 75
+tes adaptif > gimana penilaiannya?
+tes mcu > gimana? sehat gigi? fisik? jantung?
+tes wawancara > ??
+
+- tabel data tes tiap angkatan (kepikiranku di isi tiap tahapan tes akan gimana dan siapa yg eksekusi, dan dimana, tapi apakah ini sudah ada di tabel data vendor?)
+
+- data hasil tes administrasi, (ada nomor peserta, nomor tes administrasi, peserta yang lolos atau tidak)
+- data hasil tes akademik inggris, (ada nomor peserta, nomor tes administrasi, peserta yang lolos atau tidak)
+- data hasil tes adaptif, (ada nomor peserta, nomor tes administrasi, peserta yang lolos atau tidak)
+- data hasil tes mcu, (ada nomor peserta, nomor tes administrasi, peserta yang lolos atau tidak)
+- data hasil tes wawancara (wawancara oleh tim hr regional & vendor pelaksana), (ada nomor peserta, nomor tes administrasi, peserta yang lolos atau tidak)
+- data prajabatan (data tentang proses setelah diterima wawancara, semua peserta yg lolos akan melewati SAMAPTA dan Pembidangan):
+SAMAPTA di lokasi yg dipilih biasanya di markas tentara atau polisi, 1 angkatan bareng2, kemudian dilanjutkan dengan pembidangan untuk memberikan peserta lebih banyak ilmu/info tentang PLN dan bidang dimana mereka akan ditempatkan, bidang sesuai dengan kandidat mendaftar teknik atau tidak, misal yg berhubungan dengan teknis lapangan biasanya langsung ke Pembangkitan(UPDL Suralaya), transmisi, distribusi, atau perencanaan sistem (UPDL Semarang), kalau yg support biasanya keuangan, niaga, atau pengadaan/konstruksi (UPDL Bogor atau UPDL Pandan), tempat pembidangan ini disesuaikan juga di salah satu Unit Pelaksana didik dan latihan yang dimiliki PLN.
+- data ojt (setelah pembidangan, peserta akan diberikan sk pertama, tapi masih sk penempatan OJT, penempatan ini setidaknya 90% akan mengikuti penempatan yg sebenarnya saat mendapatkan sk pegawai, jadi misal ada peserta yg mendapat penempatan ojt di Unit induk Distribusi Lampung, maka kemungkinan besar mereka akan mendapat sk pegawai penempatan di unit2 di bawah UID Lampung)
+- data penempatan (supaya traceable, no akun di web rekrutmen/id_akun, nomor pendaftaran/id_tes/nomor_tes, penempatan dimana, posisi apa, tanggal & nomor sk, dst)
+
+>> tahapan seleksi (kita asumsikan urutan tahapan selalu sama, karna secara real bisa saja ada yg berubah):
+0. daftar sebagai kandidat (mengisi profil biodata), disini pendaftar bisa melihat info2 seleksi yang dibuka, dan memilih yg mereka sesuai dan ingin ikut
+1. pendaftaran seleksi (saat ada pembukaan maka kandidat yg sudah ada bioadatanya bisa melakukan pendaftaran)
+2. tes administrasi
+3. tes akademik inggris
+4. tes adaptif
+5. tes mcu
+6. tes wawancara, semua yg lolos tahap wawancara ini akan diberi pengumuman untuk berkumpul di masing2 kota untuk proses ttd kontrak (yg setuju untuk ttd akan lanjut ke proses selanjutnya)
+
+Semua yg lolos akan dikumpulkan ke 1 lokasi yg sama untuk melakukan pembekalan samapta dan pembidangan, jika proses seleksi tes administrasi sampai wawancara di 
+7. SAMAPTA (10 hari)
+8. pembidangan (~2 bulan)
+9. ojt (min 3 bulan)
+Tahap terakhir di OJT akan ada ujiannya, kalau sudah melalui tes ojt dan hasilnya bagus, maka tahapannya sudah selesai dan akan penempatan. Jika mendapat nilai jelek, diberi kesempatan lagi untuk mengulang ujiannya sebulan setelah itu hingga 3 kali percobaan (kalau tetap ngga lolos maka nggajadi di angkat pegawai).
+
+>> kita buat datanya ada sekitar 30an angkatan seleksi
+- ceritanya cuma punya data dari thn 2023 sampai 2026:
+20an yg sudah selesai
+~2 angkatan sedang ojt
+~2 angkatan sedang pembidangan
+~2 angkatan sedang berjalan (ada yg sedang seleksi tahap tes akademi & inggris(sudah keluar hasilnya & menunggu panggilan tes adaptif))
+3 angkatan baru akan dimulai dalam waktu kedepan (1 sudah mulai dishare pengumumannya) 
+- Nomor angkatan akan increment apabila dari program di jenjang yang sama. Jenjang SMA/D1, Jenjang D3/D4/S1, Jenjang S2/S3/ProHire. Untuk programnya juga ada bisa terdiri dari program normal, program Pro hire, program diaspora, program program khusus untuk 3T (afirmasi putra putri asli maluku, papua, ntt, dst).
+
+contoh: 
+judul rekrutmen >> angkatan
+REKRUTMEN PLN HOLDING S1/D4 DAN D3 >> angkatan 72 >> teknik
+REKRUTMEN PLN HOLDING S2/PRO HIRE >> angkatan 15
+REKRUTMEN PLN HOLDING S1 DIASPORA >> angkatan 73 >> gabungan
+REKRUTMEN PLN HOLDING SMA PUTRA-PUTRI ASLI PAPUA >> angkatan 24
+REKRUTMEN PLN HOLDING SMA PUTRA-PUTRI ASLI MALUKU >> angkatan 25
+REKRUTMEN PLN HOLDING S1/D4 DAN D3 >> angkatan 74 >> gabungan
+REKRUTMEN PLN HOLDING S1/D4 DAN D3 >> angkatan 74 >> teknik
+REKRUTMEN PLN HOLDING SMA >> angkatan 26
+REKRUTMEN PLN HOLDING S2 DIASPORA >> angkatan 16
+* kita buat jadi 3 jenis angkatan saja biar gampang, kalau ngga ada sebutan daerahnya berarti yg bisa daftar di seluruh Indonesia.
+
+>> Sebenarnya rekrutmen di PLN ngga hanya yg diselanggarakan langsung oleh tim rekrutmen terpusat, ada jg yg dari program BUMN bersama, ada juga dari masing2 Subholding/anak perusahaan membuka lowongan, ada juga yg selain PLN holding yg sedang kita buat ini rekrutmennya dilakukan untuk PLN Group yg nantinya kandidat tidak hanya bisa ditempatkan di holding namun bisa juga di anak perusahaan dan subholding. Namun untuk case kali ini kita hanya akan coba fokus ke program rekrutmen PLN Holding.
+
+>> Program rekrutmen pln ini juga tidak membuka hiring per satu posisi seperti pada umumnya perusahaan. PLN melakukannya dalam batch, yg disebut angkatan. Sehingga untuk waktu pelaksanaan tiap tahapan akan identik antar semua peserta di angkatannya masing2.
+
+>> ohya, diingat juga tentang logika2 dasar ya:
+- akunnya cuma SMA tapi bisa daftar ke S2 (ini sudah di atasi oleh sistem di awal, kalau bioadata tidak menyertakan ijazah yg sesuai maka tidak akan bisa mendaftar di program dengan jenjang berbeda)
+- akun SMA tapi banyak sertifikat (1 atau 2 bisa, kalau akun S1 atau S2 masuk akal jika punya banyak sertifikat)
+- akun sudah daftar di program angkatan 70 tapi daftar lagi di angkatan 71 (dicek ulang, kalau memang tidak lolos angkatan 70 terus ada waktu untuk ikut pendaftaran angkatan 71 nggapapa)
+- pasti ada pendaftar/kandidat yang tidak datang tahapan seleksinya dan ini langsung tidak lolos ke tahap selanjutnya(nggatau alasannya apa karna pasti langsung lost contact, atau mungkin ada feedback saat di follow up oleh tim saat peserta tidak datang di salah satu tahapan yg membuat dia tidak lolos dan nggabisa lanjut)
+- akun daftar di S2 tiba2 muncul juga di program SMA
+- kebutuhan tiap unit induk bisa dikira2 contohnya dari file Sample-03-Realisasi Pemenuhan FTK, disitu ada kolom "FTK 2025" dan "Realisasi Desember 2025", disitu ada gapnya bisa dari memang kekurangan atau ada yang pensiun, nah ini yang perlu di isi oleh tim HR > ada beberapa cara mengisinya, bisa dari mutasi atau penambahan karyawan melalui program rekrutmen ini. Jadi angka kebutuhannya jangan sporadis ya, jangan tiba2 "UID ACEH > posisi Junior Technician Electronic > butuh 100" karna ini kurang masuk akal.
+- pelaksanaan tes tiap tahapan seleksi biasanya dilakukan di 1 kota, jika cakupannya 1 Indonesia biasanya ada. Contoh ya:
+
+Rencana untuk membuat database ini kita buat folder data baru, lalu kita buat satu persatu tabelnya, mulai dari tabel unit, kebutuhan, program rekrutmen, pelaksanaan tes2, prajabatan, ojt, hasil tes ojt, penempatan akhir dst.
+Dalam menuju tujuanmu, kamu bisa cari2 di internet untuk referensi tentang pln atau tahapan2nya atau pelaksanaan2 seleksi selama ini atau info2 lainnya yg berguna untuk membuat database mock ini.
+coba analisa dulu,
+berikan tanggapanmu dan tanyakan apabila ada detail2 yg perlu diketahui dan belum kushare disini,
+kasih saran juga untuk rencanamu gimana, siapa tau lebih bagus?
+kasih saran juga mungkin ada tabel yg kurang atau kelebihan.
+
+ohya, ini untuk diskusi sebelum eksekusinya nanti, kepikiran juga jika aku suruh kamu ngerjainnya pakai agent subagent, misal ada subagent yg bertindak jadi tim hr lapangan, tim hr perencana, admin web, pengawas tahapan seleksi, dst. Misal kita sudah buat tabel2 unit, kebutuhan sampai program rekrutmennya, lalu tiap peserta adalah subagent yg pura2 jadi pengguna yg mendaftar ke website rekrutmen karena melihat program rekrutmen yg ditampilkan di sosmed, kemudian mencoba mengisi data sesuai yg mereka punya lalu melakukan pendaftaran ke program yg sesuai dengan kualifikasi mereka, lalu kandidat selanjutnya mengikuti tiap tahapan hingga lolos/tidak lolos. Di tiap tahapannya bakal diases oleh subagent yg mengawas tiap tahapan tersebut sesuai dengan kondisi untuk meloloskan atau tidak. apakah ini feasible? karna mungkin jika dilakukan seperti ini untuk ~50ribuan pendaftar maka data mocknya bisa setidaknya lebih akurat, dibandingkan generate tiap table independently (yg mana bisa jadi muncul hidden distribution dari random number?)
+
+----------------------------------

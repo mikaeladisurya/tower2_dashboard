@@ -1,0 +1,44 @@
+# ============================================================
+#  tower2_dashboard — project-wide gitignore
+# ============================================================
+
+# ---- Data sensitif / internal PLN — JANGAN commit ----
+# DAPEG & sampel asli berisi PII (nama, NIP, KTP, email pegawai).
+# Catatan: file2 ini SUDAH terlanjur masuk history git (lihat catatan tim);
+# di-untrack dari sini agar tidak ikut commit berikutnya.
+data sintetis/
+
+# Bahan referensi mentah: PDF perdir/SK berukuran besar + screenshot
+# yang memuat nama pegawai. Hasil sulingannya masuk ke knowledge/ (yang di-track).
+referensi/
+
+# ---- Setting lokal Claude Code (mesin-spesifik) ----
+.claude/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# ---- Streamlit / app runtime ----
+.streamlit/secrets.toml
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- File kerja Excel (lock) ----
+~$*.xls
+~$*.xlsx
+
+# ---- Scratch / sementara ----
+*.tmp
+*.log
+
+# ---- OS ----
+Thumbs.db
+desktop.ini
+.DS_Store

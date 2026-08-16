@@ -1,0 +1,5 @@
+# Dependensi skrip riset knowledge base (dipasang di venv recruitment_dashboard/.venv)
+httpx
+beautifulsoup4
+lxml
+pymupdf

@@ -42,3 +42,11 @@ env/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# ---- Knowledge base: material MENTAH riset (lokal saja) ----
+# Yang di-track: findings.md, RESEARCH_PLAN.md, build/ (skrip), + katalog program publik
+# (programs.csv/json, profesi.csv). Sisanya di bawah ini bulky/sensitif/regenerable → lokal.
+knowledge/sources/**/raw/
+knowledge/sources/rekrutmen_pln/pdf/
+knowledge/sources/perdir/
+knowledge/sources/htd_chat/

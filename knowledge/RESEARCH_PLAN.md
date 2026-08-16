@@ -101,8 +101,22 @@ kanal resmi/nota dinas ke VP HTD/HST. Fallback ini sudah disetujui: "lanjut paka
 - [ ] Konfirmasi nama folder `knowledge/` (atau usul lain)
 - [ ] Greenlight mulai R1 setelah review plan ini
 
-## 8. Status log
+## 8. Sumber tambahan yang ditemukan di tengah riset
+
+| Kode | Sumber | Kenapa berharga | Status |
+|---|---|---|---|
+| **R1c** | **Wayback Machine** (web.archive.org) | Situs PLN menghapus pengumuman angkatan lama. Arsip 2017–2026 memulihkan judul program yang hilang | ✅ 111 program (80 baru) |
+| **R1-login** | Area member rekrutmen.pln.co.id | Satu-satunya sumber **skema biodata/CV asli** | ✅ selesai; PII dibersihkan |
+| **R3-situs** | Halaman FAQ + Info Rekrutmen/artikel | Mekanisme akun, cancel lamaran, jalur campus hiring | ✅ |
+| **R6** | Laporan **Statistik PLN** 2014–2025, Annual Report 2014–2025, Sustainability Report 2022–2025 | Runtun waktu jumlah pegawai → kalibrasi attrition & kebutuhan rekrutmen | 🔄 berjalan |
+| — | Socmed PLN (IG) | Sebagian besar sudah terjawab Wayback | ⬜ prioritas rendah |
+| — | Situs karier subholding | Subholding dimodelkan ringkas (DECISION-01) | ⬜ prioritas rendah |
+
+## 9. Status log
 
 | Tgl | Kejadian |
 |---|---|
-| 2026-08-16 | Plan dibuat. Probe R1 sukses (situs server-rendered, bisa di-scrape). Tooling dicek: Playwright+Chromium ADA, library PDF BELUM (perlu pymupdf). Chat WA belum di-share. |
+| 2026-08-16 | Plan dibuat. Probe R1 sukses (situs server-rendered). Tooling: Playwright+Chromium ADA, pymupdf dipasang. |
+| 2026-08-16 | **R1** 31 program + 128 profesi + 30 PDF. **R2** triage 9 perdir, ekstrak 0056 & 0050. **R4** chat HTD (peta ketersediaan data, funnel asli). **DECISION-01** dikunci: PLN Group. |
+| 2026-08-16 | **R2c** Juknis 0048 (via subagent Sonnet) — ternyata dok *employee experience*, bukan SOP rekrutmen. **R1c** Wayback: 111 program historis. **R1b** brosur: kuota TIDAK ada di sumber manapun → wajib dimodelkan. |
+| 2026-08-16 | **R1-login**: skema biodata/CV asli didapat (termasuk field fisik: BMI, visus, tatto). Akun ternyata milik pihak ketiga → dump HTML/PNG & profil browser **dihapus**, nama disensor; hanya `skema_form.md` disimpan. |

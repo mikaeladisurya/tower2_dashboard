@@ -50,3 +50,11 @@ knowledge/sources/**/raw/
 knowledge/sources/rekrutmen_pln/pdf/
 knowledge/sources/perdir/
 knowledge/sources/htd_chat/
+# Area akun: blokir SEMUA dump (html/png berisi PII pihak ketiga),
+# kecuali skema_form.md yang sudah disensor & memang jadi acuan desain tabel.
+knowledge/sources/rekrutmen_pln/akun/*
+!knowledge/sources/rekrutmen_pln/akun/skema_form.md
+# Profil browser (menyimpan cookie sesi login) — jangan pernah di-commit.
+knowledge/sources/rekrutmen_pln/.browser_profile/
+# PDF laporan resmi PLN (publik tapi besar & bisa diunduh ulang kapan saja).
+knowledge/sources/laporan_pln/pdf/

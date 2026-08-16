@@ -213,6 +213,145 @@ Sumber: R1b · Keyakinan: tinggi · Dampak: mapping jurusan→profesi sudah terc
 (tambahan: usia S2≤30, Pro Hire≥5th). **Kuota per posisi wajib DIMODELKAN** (gap FTK + attrition) —
 menguatkan F-017. OCR flyer 2025 di-skip (ROI rendah; data 2025 sudah ada di profesi.csv).
 
+### F-028 · Juknis 0048-2025 BUKAN SOP rekrutmen [R2c]
+Klaim: judul resminya **"Implementasi Kebijakan Strategis Human Experience Management System
+Berbasis Moment That Matter"** — dokumen employee-experience sepanjang siklus hidup pegawai;
+rekrutmen hanya satu sub-bagian (Tabel 3, hal 21–22). **Tidak memuat passing grade, vendor,
+maupun durasi tahapan.** Kata "Prajabatan" tidak muncul; yang dipakai "OJT – First OJT".
+Sumber: R2c (`sources/perdir/0048-PTs-DIR-2025/text.md`, transkrip 18 hal via OCR-vision) ·
+Keyakinan: tinggi · Dampak: **passing grade TIDAK ADA di regulasi manapun yang kita punya** →
+wajib dimodelkan (konsisten F-017/F-027).
+
+### F-029 · Journey rekrutmen-seleksi resmi + kanal pengumuman [R2c]
+Klaim (Tabel 3 Juknis 0048): **Rekrutmen**: Awareness → Interest & Consideration → Action (apply).
+**Seleksi**: Seleksi Awal *Online Test* (contoh: **Tes Akademik, Bahasa Inggris**) → Seleksi Awal
+*Offline Test* (contoh: **wawancara, tes kesehatan**) → Seleksi Akhir **OJT (First OJT)** →
+Pemberitahuan Hasil Seleksi. Lalu Tabel 4 Pengangkatan Pegawai → Tabel 5 Onboarding.
+**Kanal informasi rekrutmen**: Website, Job Fair, Iklan, Career Website eksternal, **Media Sosial**.
+**Kanal notifikasi hasil**: email, SMS, website. Fitur disebut: *tracking status lamaran*, *real-time confirmation*.
+Sumber: R2c · Keyakinan: tinggi · Dampak: **mengonfirmasi F-024 (online→offline) dari sumber regulasi**;
+kanal di atas = isi tabel `pengumuman rekrutmen`; notifikasi = atribut tahapan.
+
+### F-030 · Katalog historis PULIH dari Wayback: 111 program (80 baru) ⭐ [R1c]
+Klaim: 153 snapshot arsip `rekrutmen.pln.co.id/vacancy/site/index` (2017–2026) memulihkan
+**111 judul program unik**, di mana **80 tidak ada di web live**. Menegaskan F-011/F-021
+(222 rekrutmen di sistem vs 31 tampil publik).
+Jenis: Reguler S1/D3 **49** · **SMK 25** · Afirmasi Papua 17 · Pro Hire 6 · Diaspora 3 ·
+Afirmasi Maluku/Nusra 3 · Campus/Career Fair 2 · Career Event 2 · Bidang Hukum 2 · S2 1 · Matematika 1.
+Sumber: R1c (`sources/rekrutmen_pln/wayback/programs_historis.csv`) · Keyakinan: tinggi ·
+Dampak: **daftar angkatan historis mock pakai judul asli**, bukan karangan.
+
+### F-031 · Rekrutmen SMK/Pelaksana dulu masif & per-kota [R1c]
+Klaim: 2017 ada **25 program tingkat SMK/Pelaksana**, dibuka **per kota**: Banda Aceh, Jayapura,
+Mamuju, Banjarmasin, Ternate, Ambon, Medan, Palu, Gorontalo, Timika, Bandung, Kupang, Ende,
+Tanjung Pinang, Pekanbaru, Pontianak, Yogyakarta, Padang, Jakarta, Balikpapan, Makassar, dst.
+Setelah 2019 praktis hilang dari katalog.
+Sumber: R1c · Keyakinan: tinggi · Dampak: **membuktikan pernyataan user** bahwa SMA/D1 dulu ada
+dan kini mengecil (F-020: SMK tinggal 6%). Tren menurun ini harus tercermin di mock 2023–2026.
+
+### F-032 · Jalur campus hiring & evolusi penamaan [R1c]
+Klaim: ada jalur **campus/career fair**: "REKRUTMEN UMUM TINGKAT S1/D3 MELALUI AIRLANGGA CAREER FAIR"
+(2017), "REKRUTMEN UMUM MELALUI TITIAN KARIR ITB OKTOBER 2017", "Indonesia Career Evening/Excellence"
+(S2), plus dari halaman artikel: **D3 Kelas Kerjasama** (15 universitas) & **D4 Ikatan Dinas**
+(5 universitas). Reguler 2019 juga dibuka **per kota** (Pontianak, Pekanbaru, Manado, Lampung,
+Ambon, Aceh, Kupang, Medan, Bandung, Surabaya, Yogyakarta, Balikpapan, Palembang, Banjarmasin).
+Penamaan berevolusi: "REKRUTMEN UMUM" (2017–2019) → "REKRUTMEN PLN GROUP" (2020+).
+Sumber: R1c + halaman artikel · Keyakinan: tinggi · Dampak: jenis program mock bertambah
+(campus hiring, ikatan dinas, kelas kerjasama) — cocok dgn ReqGathering#3 "campus hiring/BUMN".
+
+### F-033 · FAQ situs: mekanisme akun & lamaran [R3]
+Klaim: **lifetime member** (konfirmasi F-025); menu **Rekap Lamaran**; lamaran **bisa di-CANCEL**
+selama periode masih buka, lalu perbaiki CV & lamar ulang; aktivasi email ± **3 jam** (menjelaskan
+"45.080 akun belum aktivasi email" di F-019); dokumen fisik tidak diminta di awal, tapi wajib pada
+tahap tes tertentu; **lokasi tes terkunci** pada yang dipilih saat daftar (konfirmasi F-024);
+pengumuman via www.pln.co.id + aplikasi. Tidak dipungut biaya (banyak peringatan penipuan).
+Sumber: R3 (halaman FAQ resmi) · Keyakinan: tinggi · Dampak: aturan siklus pendaftaran mock
+(cancel/re-apply, akun belum aktivasi, lokasi terkunci).
+
+### F-034 · SKEMA biodata/CV asli dari area member ⭐ [R1-login]
+Klaim: struktur field halaman **Pratayang CV** (sumber utk tabel kandidat). Hanya nama field —
+tanpa nilai. Sumber: R1-login (`sources/rekrutmen_pln/akun/skema_form.md`, GITIGNORED) · Keyakinan: tinggi.
+
+**Identitas & domisili:** Nama Lengkap · Email · No KTP · Tempat Lahir · Tanggal Lahir · Jenis Kelamin ·
+Agama · Status · No. Handphone · Alamat/Kota/Propinsi/Kode Pos **Domisili** · Alamat/Kota/Propinsi **Asal**
+(dua alamat terpisah — domisili vs asal).
+
+**Ukuran & fisik (BARU, tak ada di mock lama):** Ukuran Baju/Celana/Sepatu · `body_height` ·
+`body_weight` · **BMI** · **Ketajaman Visus Mata Kiri & Kanan** (+ Tingkat Ketajaman + Silinder) ·
+`abdominal_circumference` · **`tatto`**.
+→ Menjelaskan kaitan ke tahap MCU/tes fisik (F-023: BMI, buta warna, THT) — kandidat sudah mengisi
+data fisik sejak biodata.
+
+**Kontak keluarga (tabel terpisah):** Hubungan Keluarga · Alamat · No Telp · Pekerjaan.
+
+**Pendidikan (multi-baris):** Degree · Sekolah/Universitas · Program Studi · SKHU/IPK ·
+Pendidikan Terakhir · Tahun Masuk · Tahun Lulus. Validasi sistem mewajibkan jenjang
+**SD, SMP, SMA/SMK** diisi juga (bukan cuma pendidikan tinggi).
+
+**Sertifikasi (multi-baris):** Kategori/Sertifikasi · Tahun · **Skor**.
+
+**Berkas wajib unggah:** Akta Kelahiran · Surat Keterangan Belum Menikah · **Swafoto** ·
+**Foto Full Body** (+ pasfoto profil).
+
+**Rekap Lamaran (= tabel pendaftaran):** No · Nama Rekrutmen · **Posisi** · Tgl Lamar · Tgl Tutup · Opsi
+(Opsi = tombol CANCEL selama periode buka, lih. F-033).
+
+**Akun:** ID Member (numerik) · Alamat Email · No. Handphone.
+
+Dampak: **mengganti tebakan skema `kandidat_biodata`/`pendidikan`/`sertifikat`/`pendaftaran`** di mock
+lama. Field fisik & visus adalah temuan baru yang menyambungkan biodata → tahap MCU.
+
+⚠️ **Catatan privasi:** dump mentah (html/png) memuat PII nyata pihak ketiga (NIK, HP, email, foto).
+Folder `akun/` di-gitignore. Untuk kebutuhan proyek cukup `skema_form.md`; dump mentah sebaiknya dihapus.
+
+### F-035 · Ukuran kohort rekrutmen ASLI per tahun ⭐⭐ [R6] — MENGOREKSI KALIBRASI
+Klaim (Sustainability Report, PLN Induk): **peserta diklat prajabatan** = ukuran kohort rekrutmen
+sebenarnya → **2022: 689 · 2023: 689 · 2024: 1.277 · 2025: 1.098**.
+Sedangkan **"pegawai baru direkrut"** (= resmi diangkat/SK tahun berjalan) → **2024: 663** (494P/169W);
+**2025: 76** (57P/19W). Laporan tidak menjelaskan selisihnya, tapi cocok dengan **jeda pipeline** kita:
+seleksi thn N → prajabatan → OJT → SK thn N+1 (mis. gelombang Okt-2025 baru diangkat 2026).
+Sumber: R6 (SR-2024 hal. 239; SR-2025 hal. 203) · Keyakinan: tinggi (angka), sedang (tafsir selisih) ·
+Dampak: **asumsi lama "~2.000 diterima/tahun" ±2x terlalu tinggi.** Angka realistis PLN Induk
+**±700–1.300/tahun**. Dengan 3–4 angkatan/tahun → **±200–400 per angkatan** (batas atas ~500 dari user tetap masuk akal).
+
+### F-036 · Attrition ASLI: 2,7%/tahun & headcount MENURUN [R6]
+Klaim (PLN Induk): turnover **2024: 1.031 orang (2,69%)** · **2025: 1.016 orang (2,71%)**.
+Rincian 2024: pensiun normal 731P/146W, pensiun dini 5P/2W (sisanya meninggal, mengundurkan diri, PHK).
+Headcount PLN Induk: 2022 **42.151** → 2023 **38.542** → 2024 **38.289** → 2025 **37.423**.
+Sumber: R6 · Keyakinan: tinggi · Dampak: **model attrition pakai 2,7%/tahun, didominasi pensiun** —
+memvalidasi perkiraan awal 2–3%. Penting: **rekrutmen < attrition → headcount menyusut**; mock harus
+mencerminkan ini, bukan pertumbuhan. (Terjun 2022→2023 sebesar −3.609 adalah *carve-out* ke anak
+perusahaan, bukan attrition: anak perusahaan naik 9.326 → 12.703.)
+
+### F-037 · Validasi silang DAPEG vs laporan publik [R6]
+Klaim: DAPEG internal (April 2026) = **37.072** pegawai; SR-2025 (PLN Induk, Des 2025) = **37.423**;
+sheet FTK realisasi Des-2025 = **37.067**; FTK 2025 = 37.854. Semua konsisten di kisaran ~37rb dengan
+selisih wajar akibat beda tanggal potong & definisi.
+Sumber: R6 + Sample-03 · Keyakinan: tinggi · Dampak: **data internal kita tervalidasi sumber publik** —
+master unit & headcount mockdb berpijak pada angka yang benar.
+
+### F-038 · Demografi pegawai PLN Induk (untuk profil kandidat) [R6]
+Klaim (SR-2024 hal. 42, PLN Induk 2024): **gender 78,89% pria / 21,11% wanita** (30.205/8.084).
+**Pendidikan**: S3 20 · S2 1.806 · S1 17.232 · D3 8.645 · ≤D2 10.586.
+**Usia** (ringkasan hal. 244): <30 th 27,31% · 30–50 th 63,65% · >50 th 9,05%. Usia minimum kerja 20 th.
+Rekrutmen baru 2024 juga timpang gender: 74,5% pria. Prajabatan 2024 bahkan 86,45% pria.
+Sumber: R6 · Keyakinan: tinggi (tabel rinci) · Dampak: distribusi gender & pendidikan kandidat mock —
+**jangan 50:50**, tapi ~75:25 pria:wanita di kohort rekrutmen.
+
+### F-039 · Rasio seleksi jauh lebih ketat dari perkiraan [R6]
+Klaim: rekrutmen umum PLN Group 2025 = **245.217 pelamar**; kohort prajabatan PLN Induk 2025 = 1.098.
+Rasio kasar ≈ **1:200** (perkiraan awal kita 1:60–80 terlalu longgar). Catatan: pembilang cakupan Group,
+penyebut cakupan Induk — jadi rasio Group sesungguhnya agak lebih longgar, tapi tetap ≫ 1:80.
+Sumber: R6 · Keyakinan: sedang (beda cakupan pembilang/penyebut) · Dampak: rasio funnel mock;
+bandingkan juga dgn funnel HTD (F-019): 598.395 pelamar → 12.248 lulus wawancara → 2.453 lulus diklat.
+
+### F-040 · Inkonsistensi di dokumen sumber PLN (dicatat, tidak diperbaiki) [R6]
+Ada ≥6 ketidakcocokan angka **di dalam laporan resmi PLN sendiri**, mis.: ringkasan usia <30 th 2024
+(10.455) ≠ penjumlahan tabel rinci (13.198); wanita 2024 tertulis 8.804 di satu tabel vs 8.084 di tabel
+lain; total anak perusahaan 13.146 vs 13.061; peserta purnabakti 1.107 (narasi) vs 1.280 (tabel).
+Sumber: R6 · Dampak: **jangan perlakukan angka laporan sebagai mutlak konsisten**; untuk mock pilih satu
+sumber per metrik & catat pilihannya. Juga pengingat: dashboard nanti sebaiknya menampilkan sumber angka.
+
 ### Catatan R5 (seleksi.pln.co.id)
 3 gambar di `referensi/seleksi pln co id/` = **duplikat WA0026/0028/0029** (view admin
 rekrutmen.pln.co.id), bukan seleksi.pln.co.id. Per Willy (F-018) seleksi.pln.co.id hanya modul tes

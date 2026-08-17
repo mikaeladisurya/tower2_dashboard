@@ -513,6 +513,90 @@ data kosong. Alasannya kuat:
 - Memperkuat tema **"data apa yang ada vs belum"** (F-017): kandidat RBB memang punya lebih sedikit
   jejak di sistem PLN
 
+### F-056 · Larangan struktural BOCOR di langkah 05 — dan kenapa 161 cek tidak melihatnya ⭐⭐
+Klaim: `pagu_rekrutmen.csv` versi pertama memuat **143 orang di jabatan struktural**
+(134 TEAM LEADER + 9 ASSISTANT MANAGER), melanggar `larangan_struktural` di `jabatan.yaml` —
+aturan yang file-nya sendiri tandai *"paling keras di seluruh mockdb"*.
+
+**Penyebabnya persis jebakan yang diperingatkan aturan itu.** Langkah 05 menyaring kandidat
+posisi pakai `level`, bukan `kelompok_jabatan`. Data DAPEG membuktikan saringan grade memang
+mustahil memisahkan keduanya:
+
+| kelompok_jabatan | grade | struktural? |
+|---|---|---|
+| OFFICER | G2 | tidak |
+| **TEAM LEADER** | **G2** | **ya** |
+| SENIOR OFFICER | G3 | tidak |
+| **ASSISTANT MANAGER** | **G3** | **ya** |
+
+Cacat kedua di keluarga yang sama: **level 4 (SPC/SSP) ikut terbawa** (10 orang). Satu-satunya
+jalur masuk ke SPC menurut `jabatan.yaml` adalah `PRO_HIRE`, dan user memutuskan pro hire di
+luar cakupan ("fokus di rekrutmen pegawai non jabatan").
+
+**Temuan yang lebih penting dari cacatnya sendiri: celah verifikasi.** `00_verifikasi_rules.py`
+menjalankan ±161 cek dan semuanya lulus — karena skrip itu memverifikasi **isi `rules/`**, tak
+pernah membuka satu pun CSV keluaran. *Aturan yang benar tidak menjamin generator menaatinya.*
+→ dibuat `build/00b_verifikasi_keluaran.py` (22 cek atas `out/master/*.csv`), termasuk penjaga
+PII yang memindai kolom & nilai berpola NIP/NIK/email. Cek-nya diuji-negatif dengan lima cacat
+suntikan; kelimanya tertangkap.
+
+Perbaikan: saringan dibaca **dari** `jabatan.yaml` (bukan ditulis ulang di generator), kekosongan
+struktural **tetap** dihitung dan tetap masuk kaskade promosi — yang dilarang cuma menjadikannya
+tujuan rekrutmen luar. Total pagu tetap 6.221; 143 orang teralokasi ulang ke posisi non-struktural.
+Sisa rekrutmen luar level 4+ (112 orang lintas horison) dibuang eksplisit & dilaporkan.
+Sumber: audit langkah 05 (2026-08-17) · Keyakinan: **tinggi** (terukur langsung) ·
+Dampak: **kelas cacat "aturan benar, generator melanggar" kini punya penangkap otomatis** —
+jalankan `00b` tiap kali menyentuh `build/`.
+
+### F-055 · Skema administrasi & tes seleksi — panen dari Sample-01/02/05 + berkas mock lama ⭐
+Klaim: sepuluh berkas rujukan di `data sintetis/` memuat skema yang belum pernah masuk knowledge.
+Sample-03 (F-053) & Sample-04 (F-054) sudah terdokumentasi; **enam sisanya belum**.
+
+**(a) `Rekrutment_{Administrasi,Tes_Adaptif,Akademik_English,MCU,Wawancara}.csv` — mock lama
+(16 Juli 2026), BUKAN data HR.** Bukti: ID berurutan `REG-2026-00001`; `VERIFIKATOR` cuma 10 nama
+stok berulang ~1.000× masing-masing; `ENGLISH SKILL` = 1 untuk seluruh 10.000 baris; kolom
+`Kesimpulan` MCU harfiah berisi teks placeholder *"Berisi semua hasil pemeriksaan"*; satu orang
+tercatat SD Pariaman → SMP Pematangsiantar → SMA Depok.
+
+**Tapi kerangka kolomnya layak dipanen**, dan terkorroborasi: skema `Administrasi` beririsan kuat
+dengan `skema_form.md` (hasil scrape situs asli) — Ukuran Baju/Celana/Sepatu, No KTP, Tempat &
+Tanggal Lahir, Agama, Status, IPK, Program Studi, Nama Rekrutmen semuanya cocok. Tiga hal yang
+**belum ada padanannya** di knowledge:
+
+1. **Kolom sisi verifikator.** Administrasi bukan lulus/gagal gelondongan melainkan **checklist
+   per-kriteria**: 9 kolom flag 0/1 (`UMUR`, `STATUS NIKAH`, `IPK`, `JURUSAN`, `KTP`, `AKTA`,
+   `IJAZAH`, `TRANSKRIP`, `ENGLISH SKILL`) + kolom `VERIFIKATOR` sebagai peran. → menyambung
+   langsung ke `alasan_gagal` di `funnel.yaml`, yang selama ini cuma bobot tanpa bentuk kolom.
+2. **Kunci join berganti di tengah proses.** Administrasi berkunci `ID_PENDAFTARAN`; kelima
+   berkas tes berkunci `NO TES`. Digabung Sample-05 (di mana `NO TES` masih jadi identitas sampai
+   penempatan OJT), polanya: **pendaftaran → lulus administrasi → terbit NO TES → NO TES dipakai
+   sampai SK.** Ini mekanika nyata untuk langkah 08/09.
+3. **Kosakata kategorikal.** `KATEGORI` I/II/III (adaptif) · `REKOMENDASI` DISARANKAN /
+   DISARANKAN DENGAN PERTIMBANGAN / TIDAK DISARANKAN (wawancara).
+
+⚠️ **Angkanya JANGAN dipakai.** Akademik (8.981) > adaptif (8.967) — mustahil. MCU gagal 65% vs
+18% di aturan kita. Ujung-ke-ujung ~17% vs jangkar keras **2,05%** (F-019) — meleset ~8×. Format
+`NO TES`-nya (`TES-AKD-2026-00007`) juga keliru; yang asli `2511/ES/92/D3-ELE/135615` (F-009).
+
+✅ Konfirmasi: kelima berkas memetakan **5 dari 6 tahap** `funnel_mandiri` dengan nama sama (hanya
+`psikologi` tak berberkas), dan akademik + English berada dalam **satu** berkas dengan sub-skor
+terpisah — membenarkan keputusan menjadikan `akademik_inggris` satu tahap, bukan dua.
+
+**(b) Sample-02 — deskripsi di F-054 keliru.** Bukan sekadar "format FTK per unit pelaksana",
+melainkan dokumen **bertingkat**: blok ringkasan (Kantor Induk 150 + unit pelaksana 78/88 = 316),
+lalu blok rinci per unit yang memecah FTK jadi `NAMA JABATAN × SEBUTAN JABATAN × JENJANG JABATAN ×
+FTK` — sampai baris `Officer | Logistik | G2 | 2`. Dua konsekuensi diterapkan ke langkah 05:
+ketiga kolom itu kini dipancarkan, dan **baris ber-FTK 0 dipertahankan** ("posisi ada, formasinya
+nol" ≠ "posisi tidak ada").
+
+**(c) Sample-01 (DTPEG) sudah TERANONIMKAN** — 12 baris, `FULAN` / `1234567ZY` /
+`fulanfulan@pln.co.id` / `JALAN MERDEKA`. Aman dibedah. 133 kolom dengan **dua baris judul**
+(label Indonesia + nama teknis SAP). Ini kamus kolom DAPEG yang selama ini cuma kita akses lewat
+Sample-03 yang ber-PII.
+Sumber: `data sintetis/` (2026-08-17) · Keyakinan: **sedang** untuk skema mock lama (terkorroborasi
+sebagian lewat `skema_form.md`), **tinggi** untuk Sample-01/02/05 · Dampak: bahan skema langkah
+08–09; mengoreksi F-054 soal Sample-02.
+
 ### F-054 · SKEMA Penetapan Pagu Rekrutmen ditemukan ⭐⭐ [Sample-04, referensi tim HR]
 Klaim: `data sintetis/Sample-04-Penetapan Pagu Rekrutmen_2026.xlsx` adalah **format asli
 dokumen pagu rekrutmen dari tim HR** (dikonfirmasi user 2026-08-17). Ini persis kelas data
@@ -555,6 +639,9 @@ angka gelondongan per unit.
 Berkas rujukan HR lain yang relevan: **Sample-02** (format FTK per unit pelaksana),
 **Sample-05** (Penempatan OJT PLN Group 2026 → bahan langkah 11), **Sample-01** (DTPEG
 133 kolom, sudah teranonimkan di sampel).
+> **⚠️ DIKOREKSI oleh F-055:** deskripsi Sample-02 di atas keliru. Isinya dokumen bertingkat
+> yang memecah FTK sampai `NAMA JABATAN × SEBUTAN JABATAN × JENJANG JABATAN`, bukan rekap
+> per unit pelaksana. Lihat F-055(b).
 Sumber: `data sintetis/Sample-04...xlsx` · Keyakinan: **tinggi** (dokumen HR langsung) ·
 Dampak: mengunci skema keluaran langkah 05; menaikkan keyakinan F-042.
 

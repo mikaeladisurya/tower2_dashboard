@@ -210,95 +210,6 @@ Klaim: 1–2×/tahun. Mandiri (Nasional PLN Group) ~1×/th di Q3/Q4 (Sep–Okt);
 BUMN via FHCI) ~1×/th; plus kondisional (SMK/pelaksana, putra-putri daerah, S2 khusus spt hukum).
 Sumber: R3 · Keyakinan: sedang-tinggi · Dampak: kalibrasi jumlah & jadwal angkatan/tahun di mock.
 
-### F-041 · Jalur PPB/RBB menjelaskan tahun kosong 2021 & 2024 [R1c+R3]
-Klaim: **2021 = PPB (Program Perekrutan Bersama)**, **2022–2024 = RBB (Rekrutmen Bersama BUMN)**
-diselenggarakan **FHCI**, dan PLN ikut serta bersama Pertamina/Mandiri/BRI/KAI dll. Pengumuman RBB
-ada di `rekrutmenbersama.fhcibumn.id`, **bukan** di situs rekrutmen PLN → karena itu 2021 & 2024
-kosong di katalog PLN. Jejaknya tetap terlihat: arsip memuat *"REKRUTMEN PPB BUMN KHUSUS PUTRA
-PUTRI PAPUA"*. RBB 2024 secara total (semua BUMN) merekrut 5.900 pegawai reguler + 231 disabilitas.
-Sumber: R1c (bukti negatif dari 153 snapshot) + R3 (FHCI/berita) · Keyakinan: tinggi (adanya jalur RBB),
-sedang (bahwa itu satu-satunya sebab kekosongan) · Dampak: menjelaskan kenapa kohort prajabatan tetap
-terisi di tahun tanpa program PLN (mis. prajabatan 2025 = 1.098). **Catatan scope:** user sejak awal
-memutuskan mock fokus ke program rekrutmen PLN sendiri, jadi RBB **di luar cakupan** — tapi wajib
-diketahui agar timeline & angka kohort tidak salah tafsir.
-
-### F-042 · Rekrutmen TIDAK langsung ke jabatan struktural ⭐ [aturan bisnis, tervalidasi DAPEG]
-Klaim (dari user, diverifikasi ke DAPEG): pegawai baru **tidak mungkin** langsung menempati jabatan
-struktural — Team Leader, Assistant Manager, Manager, Senior Manager, GM, VP, EVP. Jalurnya harus
-lewat jenjang pelaksana dulu.
-Verifikasi di `jabatan_klasifikasi.csv`:
-- **Struktural (dikecualikan dari target rekrutmen):** 3.979 posisi / 14.907 pegawai —
-  TEAM LEADER (G2), ASSISTANT MANAGER (G3), MANAGER (MD/G3), SENIOR MANAGER (MM), VP (MM), GM & EVP (MA).
-- **Non-struktural G1/G2 (target sah):** 1.493 posisi / 16.973 pegawai.
-- **Entry level fresh graduate = G1:** JUNIOR TECHNICIAN (4.968 pegawai) + JUNIOR OFFICER (1.198) — 383 posisi.
-⚠️ **Penting:** jenjang saja tidak cukup untuk memfilter — **TEAM LEADER juga G2**, sama dengan
-OFFICER/TECHNICIAN. Filter harus pakai `kelompok_jabatan`, bukan `jenjang`.
-Keyakinan: tinggi · Dampak: aturan wajib di generator penempatan OJT & SK — hanya JUNIOR OFFICER/
-JUNIOR TECHNICIAN (dan OFFICER/TECHNICIAN untuk Pro Hire/experienced), **tidak pernah** struktural.
-
-### F-043 · Lowongan PLN di RBB 2024 berhasil dipanen dari arsip ⭐ [R7]
-Situs RBB sudah mati (SSL error), tapi Wayback mengarsipkan endpoint datanya
-`rekrutmenbersama2024.fhcibumn.id/job/loadRecord/` (JSON 2,5 MB, 663 lowongan seluruh BUMN).
-**20 lowongan milik PLN Group** (`sources/rbb_fhci/lowongan_pln_rbb.csv`).
-
-**Entitas:** PLN ICON Plus 7 · PLN (Persero) 5 · PLN Batam 5 · Haleyora Power 3.
-**Stream:** Digitalisasi & IT **7** · Engineering & Maintenance 6 · Keuangan 2 ·
-Operasi/Produksi/Proyek 2 · Pengembangan Usaha/R&D 2 · Bisnis Niaga/Pemasaran 1.
-**Syarat:** semua `vacancy_type` = **Fresh Graduate**; **umur maks D3 27 / S1 30**; **IPK min 3,00**;
-`check_certificate` = 0. Tersedia juga daftar jurusan granular asli (`major_non_sma_custom`,
-mis. "Instrumentasi Fisik, Teknik Biomedika, Teknik Elektro, …").
-
-⚠️ **`total_job_available` BUKAN kuota.** Jumlahnya 1.777.000 untuk seluruh BUMN (RBB 2024 nyatanya
-merekrut ~5.900) dan semua nilainya kelipatan 1.000 → kemungkinan bobot tampilan internal. Sudah
-dikecualikan dari ekstraksi. **Kuota per posisi tetap tidak ditemukan di sumber manapun** (konsisten F-017/F-027).
-
-**Dua kontras penting vs rekrutmen PLN sendiri:**
-1. **Batas umur beda per jalur** — RBB: S1 ≤30; rekrutmen PLN sendiri: S1 ≤27 (F-022). Aturan
-   administrasi mock harus per-jalur, bukan satu angka global.
-2. **Bauran posisi beda** — RBB didominasi IT/Digital & subholding (Icon Plus/Batam/Haleyora),
-   sedangkan rekrutmen PLN sendiri didominasi Distribusi/Transmisi (F-038, DAPEG).
-Sumber: R7 · Keyakinan: tinggi · Dampak: kalau RBB dimasukkan ke mock, perlakukan sebagai **jalur
-terpisah** dengan aturan & bauran posisi sendiri.
-> Catatan cakupan: user sejak awal menetapkan mock fokus ke program rekrutmen PLN sendiri, jadi RBB
-> tetap **opsional/di luar cakupan inti** — tapi datanya kini tersedia bila mau dipakai.
-> **Belum terpanen:** PPB 2021 & edisi RBB lain — percobaan CDX berikutnya kena *rate limit*
-> archive.org (respons kosong), **bukan** bukti arsipnya tak ada. Bisa dicoba ulang lain waktu.
-
-### F-044 · Runtun waktu headcount 2020–2025 lengkap (2020 diturunkan) ⭐ [R6b]
-**Cek silang antar edisi SR**: seluruh metrik yang beririsan (total pegawai induk & anak, prajabatan,
-pendidikan, usia rinci, ringkasan 3-bucket, dana pensiun) **cocok persis angka-per-angka** antara
-SR-2023 dan SR-2024 untuk tahun 2022 & 2023 → keyakinan tinggi pada data ini.
-
-**Identitas terverifikasi:** `Statistik PLN (Group) = SR (Induk) + SR (Anak & Afiliasi)` —
-selisih **0** untuk 2022 & 2023, **3** untuk 2024. Identitas ini dipakai menurunkan angka yang hilang.
-
-| Tahun | Group (Statistik) | Induk (SR) | Anak & Afiliasi | Kohort prajabatan |
-|---|---:|---:|---:|---:|
-| 2020 | 53.385 | **~44.000** *(diturunkan)* | ~9.350 *(diturunkan)* | tidak tersedia |
-| 2021 | 52.116 | 42.755 | 9.361 *(diturunkan)* | 337 |
-| 2022 | 51.477 | 42.151 | 9.326 | 689 |
-| 2023 | 51.245 | 38.542 | 12.703 | 689 |
-| 2024 | 51.438 | 38.289 | 13.146 | 1.277 |
-| 2025 | tidak tersedia | 37.423 | 12.535 | 1.098 |
-
-Turunan 2020: Anak Perusahaan stabil ~9,3rb di 2021 (9.361 turunan) & 2022 (9.326 dilaporkan),
-sehingga Induk 2020 ≈ 53.385 − ~9.350 ≈ **44.024–44.059**. Ini **estimasi berdasar identitas
-terverifikasi**, bukan tebakan — tapi tetap tandai sebagai turunan di data dictionary.
-
-**Gagal diperoleh:** SR-2022 (63,9 MB) — server PLN mengabaikan HTTP Range dan memutus koneksi
-berulang (5 percobaan sah); tidak ada arsip Wayback untuk PDF ini. Dampaknya kecil karena 2020
-sudah tertutup lewat identitas di atas.
-Sumber: R6b · Keyakinan: tinggi (2021–2025), sedang (2020 turunan) · Dampak: **horison 2020–2026
-kini berjangkar data nyata**, sesuai keputusan horison hibrida.
-
-### F-045 · Lonjakan/penurunan headcount bukan attrition murni [R6b]
-Klaim: penurunan besar 2022→2023 (42.151 → 38.542, −3.609) **bukan** attrition — di periode sama
-Anak Perusahaan naik 9.326 → 12.703 (+3.377). Ini ***carve-out*** pemindahan pegawai ke subholding.
-Sebaliknya 2021→2022 hanya −604 (attrition wajar). Kohort 2021 juga kecil (337) — konsisten dengan
-2021 sebagai tahun jalur PPB (F-041), bukan rekrutmen mandiri PLN.
-Sumber: R6b · Keyakinan: tinggi · Dampak: model mock **jangan** menafsirkan semua penurunan headcount
-sebagai keluar/pensiun; sediakan mekanisme *carve-out/tugas karya* terpisah (sejalan F-015).
-
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/
@@ -457,6 +368,95 @@ Ada ≥6 ketidakcocokan angka **di dalam laporan resmi PLN sendiri**, mis.: ring
 lain; total anak perusahaan 13.146 vs 13.061; peserta purnabakti 1.107 (narasi) vs 1.280 (tabel).
 Sumber: R6 · Dampak: **jangan perlakukan angka laporan sebagai mutlak konsisten**; untuk mock pilih satu
 sumber per metrik & catat pilihannya. Juga pengingat: dashboard nanti sebaiknya menampilkan sumber angka.
+
+### F-041 · Jalur PPB/RBB menjelaskan tahun kosong 2021 & 2024 [R1c+R3]
+Klaim: **2021 = PPB (Program Perekrutan Bersama)**, **2022–2024 = RBB (Rekrutmen Bersama BUMN)**
+diselenggarakan **FHCI**, dan PLN ikut serta bersama Pertamina/Mandiri/BRI/KAI dll. Pengumuman RBB
+ada di `rekrutmenbersama.fhcibumn.id`, **bukan** di situs rekrutmen PLN → karena itu 2021 & 2024
+kosong di katalog PLN. Jejaknya tetap terlihat: arsip memuat *"REKRUTMEN PPB BUMN KHUSUS PUTRA
+PUTRI PAPUA"*. RBB 2024 secara total (semua BUMN) merekrut 5.900 pegawai reguler + 231 disabilitas.
+Sumber: R1c (bukti negatif dari 153 snapshot) + R3 (FHCI/berita) · Keyakinan: tinggi (adanya jalur RBB),
+sedang (bahwa itu satu-satunya sebab kekosongan) · Dampak: menjelaskan kenapa kohort prajabatan tetap
+terisi di tahun tanpa program PLN (mis. prajabatan 2025 = 1.098). **Catatan scope:** user sejak awal
+memutuskan mock fokus ke program rekrutmen PLN sendiri, jadi RBB **di luar cakupan** — tapi wajib
+diketahui agar timeline & angka kohort tidak salah tafsir.
+
+### F-042 · Rekrutmen TIDAK langsung ke jabatan struktural ⭐ [aturan bisnis, tervalidasi DAPEG]
+Klaim (dari user, diverifikasi ke DAPEG): pegawai baru **tidak mungkin** langsung menempati jabatan
+struktural — Team Leader, Assistant Manager, Manager, Senior Manager, GM, VP, EVP. Jalurnya harus
+lewat jenjang pelaksana dulu.
+Verifikasi di `jabatan_klasifikasi.csv`:
+- **Struktural (dikecualikan dari target rekrutmen):** 3.979 posisi / 14.907 pegawai —
+  TEAM LEADER (G2), ASSISTANT MANAGER (G3), MANAGER (MD/G3), SENIOR MANAGER (MM), VP (MM), GM & EVP (MA).
+- **Non-struktural G1/G2 (target sah):** 1.493 posisi / 16.973 pegawai.
+- **Entry level fresh graduate = G1:** JUNIOR TECHNICIAN (4.968 pegawai) + JUNIOR OFFICER (1.198) — 383 posisi.
+⚠️ **Penting:** jenjang saja tidak cukup untuk memfilter — **TEAM LEADER juga G2**, sama dengan
+OFFICER/TECHNICIAN. Filter harus pakai `kelompok_jabatan`, bukan `jenjang`.
+Keyakinan: tinggi · Dampak: aturan wajib di generator penempatan OJT & SK — hanya JUNIOR OFFICER/
+JUNIOR TECHNICIAN (dan OFFICER/TECHNICIAN untuk Pro Hire/experienced), **tidak pernah** struktural.
+
+### F-043 · Lowongan PLN di RBB 2024 berhasil dipanen dari arsip ⭐ [R7]
+Situs RBB sudah mati (SSL error), tapi Wayback mengarsipkan endpoint datanya
+`rekrutmenbersama2024.fhcibumn.id/job/loadRecord/` (JSON 2,5 MB, 663 lowongan seluruh BUMN).
+**20 lowongan milik PLN Group** (`sources/rbb_fhci/lowongan_pln_rbb.csv`).
+
+**Entitas:** PLN ICON Plus 7 · PLN (Persero) 5 · PLN Batam 5 · Haleyora Power 3.
+**Stream:** Digitalisasi & IT **7** · Engineering & Maintenance 6 · Keuangan 2 ·
+Operasi/Produksi/Proyek 2 · Pengembangan Usaha/R&D 2 · Bisnis Niaga/Pemasaran 1.
+**Syarat:** semua `vacancy_type` = **Fresh Graduate**; **umur maks D3 27 / S1 30**; **IPK min 3,00**;
+`check_certificate` = 0. Tersedia juga daftar jurusan granular asli (`major_non_sma_custom`,
+mis. "Instrumentasi Fisik, Teknik Biomedika, Teknik Elektro, …").
+
+⚠️ **`total_job_available` BUKAN kuota.** Jumlahnya 1.777.000 untuk seluruh BUMN (RBB 2024 nyatanya
+merekrut ~5.900) dan semua nilainya kelipatan 1.000 → kemungkinan bobot tampilan internal. Sudah
+dikecualikan dari ekstraksi. **Kuota per posisi tetap tidak ditemukan di sumber manapun** (konsisten F-017/F-027).
+
+**Dua kontras penting vs rekrutmen PLN sendiri:**
+1. **Batas umur beda per jalur** — RBB: S1 ≤30; rekrutmen PLN sendiri: S1 ≤27 (F-022). Aturan
+   administrasi mock harus per-jalur, bukan satu angka global.
+2. **Bauran posisi beda** — RBB didominasi IT/Digital & subholding (Icon Plus/Batam/Haleyora),
+   sedangkan rekrutmen PLN sendiri didominasi Distribusi/Transmisi (F-038, DAPEG).
+Sumber: R7 · Keyakinan: tinggi · Dampak: kalau RBB dimasukkan ke mock, perlakukan sebagai **jalur
+terpisah** dengan aturan & bauran posisi sendiri.
+> Catatan cakupan: user sejak awal menetapkan mock fokus ke program rekrutmen PLN sendiri, jadi RBB
+> tetap **opsional/di luar cakupan inti** — tapi datanya kini tersedia bila mau dipakai.
+> **Belum terpanen:** PPB 2021 & edisi RBB lain — percobaan CDX berikutnya kena *rate limit*
+> archive.org (respons kosong), **bukan** bukti arsipnya tak ada. Bisa dicoba ulang lain waktu.
+
+### F-044 · Runtun waktu headcount 2020–2025 lengkap (2020 diturunkan) ⭐ [R6b]
+**Cek silang antar edisi SR**: seluruh metrik yang beririsan (total pegawai induk & anak, prajabatan,
+pendidikan, usia rinci, ringkasan 3-bucket, dana pensiun) **cocok persis angka-per-angka** antara
+SR-2023 dan SR-2024 untuk tahun 2022 & 2023 → keyakinan tinggi pada data ini.
+
+**Identitas terverifikasi:** `Statistik PLN (Group) = SR (Induk) + SR (Anak & Afiliasi)` —
+selisih **0** untuk 2022 & 2023, **3** untuk 2024. Identitas ini dipakai menurunkan angka yang hilang.
+
+| Tahun | Group (Statistik) | Induk (SR) | Anak & Afiliasi | Kohort prajabatan |
+|---|---:|---:|---:|---:|
+| 2020 | 53.385 | **~44.000** *(diturunkan)* | ~9.350 *(diturunkan)* | tidak tersedia |
+| 2021 | 52.116 | 42.755 | 9.361 *(diturunkan)* | 337 |
+| 2022 | 51.477 | 42.151 | 9.326 | 689 |
+| 2023 | 51.245 | 38.542 | 12.703 | 689 |
+| 2024 | 51.438 | 38.289 | 13.146 | 1.277 |
+| 2025 | tidak tersedia | 37.423 | 12.535 | 1.098 |
+
+Turunan 2020: Anak Perusahaan stabil ~9,3rb di 2021 (9.361 turunan) & 2022 (9.326 dilaporkan),
+sehingga Induk 2020 ≈ 53.385 − ~9.350 ≈ **44.024–44.059**. Ini **estimasi berdasar identitas
+terverifikasi**, bukan tebakan — tapi tetap tandai sebagai turunan di data dictionary.
+
+**Gagal diperoleh:** SR-2022 (63,9 MB) — server PLN mengabaikan HTTP Range dan memutus koneksi
+berulang (5 percobaan sah); tidak ada arsip Wayback untuk PDF ini. Dampaknya kecil karena 2020
+sudah tertutup lewat identitas di atas.
+Sumber: R6b · Keyakinan: tinggi (2021–2025), sedang (2020 turunan) · Dampak: **horison 2020–2026
+kini berjangkar data nyata**, sesuai keputusan horison hibrida.
+
+### F-045 · Lonjakan/penurunan headcount bukan attrition murni [R6b]
+Klaim: penurunan besar 2022→2023 (42.151 → 38.542, −3.609) **bukan** attrition — di periode sama
+Anak Perusahaan naik 9.326 → 12.703 (+3.377). Ini ***carve-out*** pemindahan pegawai ke subholding.
+Sebaliknya 2021→2022 hanya −604 (attrition wajar). Kohort 2021 juga kecil (337) — konsisten dengan
+2021 sebagai tahun jalur PPB (F-041), bukan rekrutmen mandiri PLN.
+Sumber: R6b · Keyakinan: tinggi · Dampak: model mock **jangan** menafsirkan semua penurunan headcount
+sebagai keluar/pensiun; sediakan mekanisme *carve-out/tugas karya* terpisah (sejalan F-015).
 
 ### Catatan R5 (seleksi.pln.co.id)
 3 gambar di `referensi/seleksi pln co id/` = **duplikat WA0026/0028/0029** (view admin

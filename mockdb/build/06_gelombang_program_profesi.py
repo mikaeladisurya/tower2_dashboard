@@ -197,6 +197,17 @@ def kumpulkan_judul(gelombang: list[dict]) -> tuple[list[dict], dict[str, int]]:
         elif not bulan.startswith("2019"):
             hitung["wayback_di_luar_horison"] += 1
             continue
+        elif re.match(r"REKRUTMEN UMUM", r["judul"].strip(), re.I):
+            # Judul tanpa tahun DAN berpenamaan lama "REKRUTMEN UMUM" -> tidak bisa
+            # ditanggalkan. F-032: konvensi itu dipakai 2017-2019; F-063 membuktikan
+            # "Bursa Karir ITS ke-33" di dalamnya sebenarnya April 2017. Kelompok ini
+            # memuat KOTA BERULANG dalam tiga gaya penulisan berbeda (Manado, Pekanbaru,
+            # Lampung, Kupang masing-masing dua kali) -- ciri beberapa tahun rekrutmen
+            # yang menumpuk di katalog, bukan satu gelombang. Karena `pertama_terlihat`
+            # cuma batas ATAS (kapan crawler pertama menangkap, bukan kapan dibuka),
+            # tidak ada cara memisahkannya. Dibuang daripada menggemukkan 2019.
+            hitung["wayback_tak_bertanggal"] += 1
+            continue
         # Jaring pengaman kedua: angkatan.yaml -> smk_pelaksana.dimodelkan = false.
         if re.search(r"\bSMK\b|TINGKAT SMA", r["judul"].upper()):
             hitung["wayback_smk_ditolak"] += 1
@@ -323,7 +334,7 @@ def main() -> int:
     entri, hitung = kumpulkan_judul(gelombang)
     print("\n  Asal-usul judul program (tidak satu pun dikarang):")
     for k in ("dari_programs", "dari_wayback", "dari_rbb", "tanpa_judul",
-              "wayback_duplikat", "wayback_di_luar_horison", "programs_tak_tertempel",
+              "wayback_duplikat", "wayback_di_luar_horison", "wayback_tak_bertanggal", "wayback_smk_ditolak", "programs_tak_tertempel",
               "wayback_tak_tertempel"):
         if hitung.get(k):
             print(f"    {k:26s} {hitung[k]:4d}")

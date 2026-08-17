@@ -339,10 +339,21 @@ Empat gelombang yang tidak punya judul sama sekali memakai penanda eksplisit
 **Total diterima mendarat persis di 8.851** (kohort Group), dan bauran pendidikan tiap tahun
 mengikuti `demografi.yaml` — mis. 2022: D3 27% / S1 64% / S2 9%, tepat sasaran.
 
-⚠️ **`pertama_terlihat` di arsip Wayback adalah tanggal SNAPSHOT, bukan tanggal program dibuka.**
-Menyaring dengannya menyeret 12 program SMK 2017 dan 4 program 2018 ke gelombang 2019 — dan SMK
-justru dinyatakan tidak dimodelkan di horison ini. Yang menentukan adalah **tahun di judul**;
-snapshot hanya dipakai untuk judul yang tidak mencantumkan tahun.
+⚠️ **`pertama_terlihat` di arsip Wayback adalah tanggal SNAPSHOT, bukan tanggal program dibuka** —
+ia cuma batas *atas*. Jebakan ini menggigit **dua kali**:
+
+1. Menyaring dengannya menyeret 12 program SMK 2017 dan 4 program 2018 ke gelombang 2019 — dan SMK
+   justru dinyatakan tidak dimodelkan di horison ini. → yang menentukan **tahun di judul**.
+2. Judul *tanpa* tahun tetap lolos. 21 judul berpenamaan lama `REKRUTMEN UMUM` (konvensi 2017–2019,
+   F-032) menumpuk di gelombang 70 dan menggelembungkannya jadi "~19 kota". Di dalamnya ada **kota
+   berulang dalam tiga gaya penulisan** — Manado, Pekanbaru, Lampung, Kupang masing-masing dua kali
+   — ciri beberapa tahun rekrutmen yang mengendap di katalog, bukan satu gelombang. → judul tak
+   bertahun **dan** berpenamaan lama sekarang dibuang sebagai tak-bertanggal.
+
+Hasilnya 2019 menyusut dari 42 ke **21 program**, dan bentuknya jadi cocok dengan bukti luar:
+gelombang 72 menghasilkan **tepat 7 kota** (Medan, Palembang, Kupang, Banjarmasin, Jakarta,
+Yogyakarta, Makassar) — persis siaran pers *"PLN Buka Rekrutmen di 7 Kota"* (F-063), dari dua
+sumber yang tidak saling bergantung.
 
 **Kursi induk & subholding dibagi di kolam terpisah.** `sub_diterima` di `kohort.yaml`
 *diturunkan dari* jumlah entri penempatan subholding per gelombang (F-003) — jadi kursi itu

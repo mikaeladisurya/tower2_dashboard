@@ -63,18 +63,75 @@ seri:
       2025: [91, 92]
 
     gelombang:
-      70: {tahun: 2019, buka: "2019-07", sumber_nomor: inferensi,
-           nama: "Reguler S1/D4 & D3 2019 gelombang I", entri: "~19 kota + Unsyiah Career Day + Bursa Karir ITS ke-33"}
-      71: {tahun: 2019, buka: "2019-08", sumber_nomor: inferensi,
-           nama: "Reguler S1/D4 & D3 2019 gelombang II", entri: "~8 kota + Airlangga Career Fair"}
-      72: {tahun: 2019, buka: "2019-09", sumber_nomor: inferensi,
-           nama: "Reguler S1/D4 & D3 2019 gelombang III", entri: "~7 kota"}
+      70:
+        tahun: 2019
+        buka: "2019-07"
+        sumber_nomor: inferensi
+        nama: "Reguler S1/D4 & D3 2019 gelombang I"
+        entri: "3 kota (Denpasar, Makassar, Padang)"
+        koreksi_f063: >
+             Semula tertulis "~19 kota + Unsyiah Career Day + Bursa Karir ITS ke-33". SALAH pada
+             dua hal. (a) F-063: Bursa Karir ITS ke-33 terjadi April 2017, bukan 2019 -- sitasi itu
+             dibuang. (b) Angka "~19 kota" berasal dari menghitung judul arsip Wayback lewat
+             `pertama_terlihat`, padahal itu tanggal SNAPSHOT (kapan crawler pertama menangkap),
+             bukan tanggal program dibuka. 21 judul berpenamaan lama "REKRUTMEN UMUM" ikut terhitung
+             ke sini; di dalamnya ada KOTA BERULANG dalam tiga gaya penulisan (Manado, Pekanbaru,
+             Lampung, Kupang masing-masing dua kali) -- ciri beberapa tahun rekrutmen menumpuk di
+             katalog. Kelompok itu kini dibuang oleh generator sebagai tak-bertanggal.
+      71:
+        tahun: 2019
+        buka: "2019-08"
+        sumber_nomor: inferensi
+        nama: "Reguler S1/D4 & D3 2019 gelombang II"
+        entri: "7 kota + Airlangga Career Fair"
+        catatan_airlangga: >
+             F-063 menemukan Airlangga Career Fair ke-31 berlangsung 13-14 Mar 2019 (pendaftaran
+             13-22 Mar), bukan Agustus. Arsip Wayback baru menangkapnya Agu-2019, tapi
+             `pertama_terlihat` cuma batas ATAS -- program Maret bisa saja baru ter-crawl Agustus.
+             Jadi entri Airlangga MUNGKIN milik gelombang Maret yang tidak punya nomor di peta ini.
+             Dibiarkan di 71 karena tidak ada dasar memindahkannya; ditandai supaya tidak dipakai
+             sebagai fakta presisi bulan.
+      72:
+        tahun: 2019
+        buka: "2019-09"
+        sumber_nomor: inferensi
+        nama: "Reguler S1/D4 & D3 2019 gelombang III"
+        entri: "7 kota"
+        konfirmasi_berita: >
+             DIKUATKAN F-063. Siaran pers PLN berjudul "Cari Talenta Unggul, PLN Buka Rekrutmen di
+             7 Kota", pendaftaran 7-20 Sep 2019 -- dan katalog kita memang menghasilkan TEPAT 7 kota
+             untuk gelombang ini (Medan, Palembang, Kupang, Banjarmasin, Jakarta, Yogyakarta,
+             Makassar). Cocok persis, dari dua sumber yang tidak saling bergantung.
+             Nomor 72 sendiri TETAP `inferensi` -- yang dikuatkan gelombangnya, bukan nomornya.
       73: {tahun: 2019, buka: "2019-11", sumber_nomor: inferensi,
            nama: "S2 Indonesia Career Evening 2019", entri: "1"}
       74: {tahun: 2020, buka: "2020-12-30", sumber_nomor: nyata,
            nama: "REKRUTMEN PPB BUMN KHUSUS PUTRA PUTRI PAPUA", entri: "1", jalur: rbb}
-      75: {tahun: 2021, buka: "2021", sumber_nomor: inferensi,
-           nama: "PPB/RBB nasional 2021", entri: "0 -- tidak ada di katalog PLN", jalur: rbb}
+      75:
+        tahun: 2021
+        buka: "2021-12-23"
+        sumber_nomor: inferensi
+        nama: "Perekrutan Bersama BUMN Papua & Papua Barat 2021"
+        entri: "0 -- tidak ada di katalog PLN"
+        jalur: rbb
+        target_orang: 200
+        kuota_posisi: 250
+        pendaftaran: "2021-12-23 s/d 2022-01-14"
+        koreksi_f063: >
+             Semula tertulis "PPB/RBB nasional 2021" tanpa tanggal. F-063 menemukan satu-satunya
+             program PPB 2021 yang terdokumentasi ternyata KHUSUS Papua & Papua Barat, dengan
+             target eksplisit 200 orang (kuota 250 posisi) dan pendaftaran melintasi pergantian
+             tahun. Sumber: Kompas & Tribun, 24 Des 2021.
+        kekurangan_belum_tertutup: >
+             ⚠️ Kohort 2021 = 689 orang (NYATA, SR-2024), tapi program di atas cuma menargetkan 200.
+             Sekitar 489 orang belum punya gelombang. Polanya sama dengan 2022 sebelum 79/80 diisi.
+             BELUM ditambal karena ada masalah kronologi yang belum terpecahkan: gelombang RBB
+             nasional 2021 -- kalau ada -- besar kemungkinan dibuka SEBELUM Desember, sehingga
+             nomornya mestinya lebih kecil dari 75; padahal 74 sudah terpakai (Des 2020) dan tidak
+             ada nomor bebas di antaranya. Tiga kemungkinan: (a) penomoran tidak ketat kronologis
+             lintas jalur, (b) 75 sebenarnya milik RBB nasional dan program Papua ini bernomor lain,
+             (c) 489 orang itu masuk lewat gelombang 2020 yang panen keterlambatannya jatuh di 2022.
+             Perlu keputusan sebelum ditambal -- jangan diisi diam-diam.
       78: {tahun: 2022, buka: "2022-10-07", sumber_nomor: nyata,
            nama: "Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022", entri: "1"}
       79: {tahun: 2022, buka: "2022-11", sumber_nomor: inferensi,
@@ -87,10 +144,29 @@ seri:
            nama: "REKRUTMEN PLN GROUP DIASPORA TAHUN 2023", entri: "3 (S1 Fresh, S2 Fresh, S2 Experienced)"}
       86: {tahun: 2023, buka: "2023-10-16", sumber_nomor: nyata,
            nama: "REKRUTMEN PLN GROUP PUTRA-PUTRI ASLI MALUKU DAN NUSA TENGGARA", entri: "3"}
-      87: {tahun: 2024, buka: "2024-03", sumber_nomor: inferensi,
-           nama: "RBB 2024 batch I", entri: "0 di katalog PLN -- 20 lowongan di portal FHCI", jalur: rbb}
-      88: {tahun: 2024, buka: "2024-08", sumber_nomor: inferensi,
-           nama: "RBB 2024 batch II", entri: "0 di katalog PLN", jalur: rbb}
+      87:
+        tahun: 2024
+        buka: "2024-03-23"
+        sumber_nomor: inferensi
+        nama: "RBB 2024 batch I"
+        entri: "0 di katalog PLN -- 20 lowongan di portal FHCI"
+        jalur: rbb
+        pendaftaran: "2024-03-23 s/d 2024-04-01"
+      88:
+        tahun: 2024
+        buka: "2024-08"
+        sumber_nomor: inferensi
+        nama: "RBB 2024 batch II"
+        entri: "0 di katalog PLN"
+        jalur: rbb
+        catatan_f063: >
+             ⚠️ BELUM TERBUKTI. F-063 mencari eksplisit dan hanya menemukan SATU jendela
+             pendaftaran RBB 2024 (23 Mar - 1 Apr 2024); proses seleksinya memang berjalan sampai
+             ~Agustus 2024, tapi itu SELEKSI, bukan pendaftaran kedua. BUMN lain (Pertamina, BRI,
+             Telkom) kadang membuka batch 2, tapi tidak ada konfirmasi PLN ikut. Cukup masuk akal
+             kalau 87 dan 88 sebenarnya satu proses Maret 2024, bukan dua pendaftaran terpisah.
+             Dibiarkan terpecah dua supaya kursi 2024 tidak menumpuk di satu gelombang, tapi
+             JANGAN dipakai sebagai fakta.
       91: {tahun: 2025, buka: "2025-09-08", sumber_nomor: nyata,
            nama: "REKRUTMEN PUTRA-PUTRI ASLI PAPUA PLN GROUP TAHUN 2025", entri: "6 kota"}
       92: {tahun: 2025, buka: "2025-10-01", sumber_nomor: nyata,

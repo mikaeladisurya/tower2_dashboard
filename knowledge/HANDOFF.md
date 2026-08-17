@@ -67,11 +67,42 @@ sendiri (F-041). Teknisnya (F-046): **FHCI** mengerjakan administrasi + tes onli
 + tes online 2 (Inggris/Learning Agility); **PLN baru masuk di Tahap 3/TKB** (kompetensi bidang +
 psikotes + wawancara + MCU). PLN hanya menetapkan syarat di tahap awal.
 
-→ Modelkan RBB sebagai **jalur (`sumber_rekrutmen`) terpisah** dengan pipeline PLN lebih pendek:
-kandidat masuk di tahap TKB, tahap awal ditandai `dilaksanakan FHCI`/kosong. Ini memberi dashboard
-perbandingan antar-jalur (*recruitment source effectiveness*, ReqGathering#3) sekaligus memperkuat
-tema "data apa yang ada vs belum".
-⚠️ Keyakinan **sedang** (sumber pemberitaan). 3 pertanyaan terbuka untuk tim HTD tercatat di F-046.
+→ Modelkan RBB sebagai **jalur (`sumber_rekrutmen`) terpisah** dengan pipeline PLN lebih pendek.
+Ini memberi dashboard perbandingan antar-jalur (*recruitment source effectiveness*, ReqGathering#3)
+sekaligus memperkuat tema "data apa yang ada vs belum".
+
+**Model yang disepakati user (2026-08-17):**
+
+```
+JALUR MANDIRI  [PLN] administrasi → adaptif → akademik+inggris → psikologi
+                     → fisik/MCU → wawancara
+                     ↑ per-kandidat sejak tahap pertama
+
+JALUR RBB      [FHCI] adm → TKD/AKHLAK/TWK → inggris/Learning Agility
+                     ↑ HANYA di-TRACK: tanggal + jumlah agregat (tanpa nama)
+               [PLN] tes bidang (TKB) → psikologi → MCU → wawancara
+                     ↑ SERAH-TERIMA: nama masuk sistem PLN, lalu mengikuti
+                       ALUR & TAHAPAN PLN YANG SAMA (tiap tes = tahap sendiri,
+                       tanggal sendiri — bukan sehari borongan)
+
+KEDUANYA       ttd kontrak → SAMAPTA → pembidangan → OJT → ujian OJT → SK penempatan
+```
+
+Tiga ketentuan:
+1. **Tahap FHCI = tanggal + jumlah agregat**, bukan tanggal saja. PLN pasti tahu berapa orang yang
+   diserahkan ke TKB. Tanpa angka ini funnel tahun RBB kosong dan tak bisa dibandingkan antar-jalur.
+   Data per-kandidat memang tidak ada — itu faktanya, dan justru jadi temuan yang ditampilkan.
+2. **Setelah serah-terima, RBB memakai pipeline PLN yang identik.** Bukan "bundel TKB" yang perlu
+   diurai: kandidat RBB langsung masuk tabel tahapan yang sama dengan jalur mandiri dan menjalani
+   urutan tes PLN seperti biasa. **Satu-satunya perbedaan = titik masuk** (RBB melewatkan
+   administrasi/adaptif/akademik-inggris karena sudah dikerjakan FHCI).
+   → Konsekuensi teknis: **satu tabel `seleksi_tahap`, satu kosakata tahapan, satu set aturan.**
+     Jalur cukup jadi atribut (`sumber_rekrutmen`), bukan struktur tabel terpisah.
+3. **Pengumuman berlaku untuk kedua jalur** — PLN tetap menyebarkan info RBB ke kanal sendiri
+   (website, socmed, job fair; lih. F-029).
+
+⚠️ Keyakinan **sedang** (sumber pemberitaan). 3 pertanyaan terbuka untuk tim HTD tercatat di F-046 —
+terutama apakah kandidat RBB tercatat di `rekrutmen.pln.co.id` dan apakah skor FHCI diserahkan ke PLN.
 
 ## 5. Tiga hal yang HARUS dimodelkan (tidak ada di sumber manapun)
 

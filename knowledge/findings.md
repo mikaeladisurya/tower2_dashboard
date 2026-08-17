@@ -513,6 +513,341 @@ data kosong. Alasannya kuat:
 - Memperkuat tema **"data apa yang ada vs belum"** (F-017): kandidat RBB memang punya lebih sedikit
   jejak di sistem PLN
 
+### F-054 · SKEMA Penetapan Pagu Rekrutmen ditemukan ⭐⭐ [Sample-04, referensi tim HR]
+Klaim: `data sintetis/Sample-04-Penetapan Pagu Rekrutmen_2026.xlsx` adalah **format asli
+dokumen pagu rekrutmen dari tim HR** (dikonfirmasi user 2026-08-17). Ini persis kelas data
+yang F-017/F-027/F-043 nyatakan "tidak ditemukan di sumber manapun".
+
+**Skema (10 kolom):**
+`NO · HOLDING/AP SH · HOLDING/SUBHOLDING · DIREKTORAT/BIDANG/UNIT PELAKSANA · JABATAN ·
+JURUSAN PENDIDIKAN · JUMLAH · PENDIDIKAN · KETERANGAN · Ket PPT`
+
+Contoh baris: `HOLDING | UNIT INDUK DISTRIBUSI A | UNIT LAYANAN PELANGGAN |
+JUNIOR OFFICER PELAYANAN PELANGGAN | D3 Administrasi Bisnis/Akuntansi | 2 | D3 | 3T`
+
+**Enam hal yang dikoreksi/dikonfirmasi:**
+
+1. ⚠️ **KUOTA PER POSISI PUNYA BENTUK NYATA.** F-017 benar bahwa ini domain **HST**, bukan
+   HTD — dan inilah dokumennya. **Nilainya tetap tidak kita punya** (sampel dianonimkan:
+   "UNIT INDUK DISTRIBUSI A", "SH AP A"; hanya 20 baris). Jadi `kuota` **tetap DIMODELKAN**,
+   tapi **BENTUKNYA sekarang nyata** dan keluaran langkah 05 wajib mengikutinya.
+2. ⭐ **Pemetaan pendidikan→grade F-042 TERVALIDASI INDEPENDEN.** F-042 menandai pemetaan
+   ini "keyakinan sedang, tidak dapat diverifikasi dari DAPEG karena DAPEG tidak punya
+   kolom pendidikan". Sampel ini punya kolom pendidikan **dan** jabatan, dan 20/20 baris
+   konsisten: **D3 → JUNIOR OFFICER/JUNIOR TECHNICIAN (G1)** (15 baris),
+   **S1 → OFFICER (G2)** (5 baris). Nol pengecualian. → **naikkan F-042 ke keyakinan tinggi.**
+3. **Granularitas turun sampai UNIT LAYANAN**, bukan berhenti di unit pelaksana:
+   "ULP BOBONG", "UNIT LAYANAN PELANGGAN", "UNIT LAYANAN PUSAT LISTRIK". Ini bertabrakan
+   dengan keputusan README "tidak sampai unit layanan" — master kita (dari `BusA`) berhenti
+   di unit pelaksana. Konsekuensi dicatat, tidak dipaksakan.
+4. **Jurusan ditetapkan PER BARIS PAGU**, multi-jurusan dipisah garis miring:
+   "D3 Teknik Listrik/Teknik Elektro", "D3 Administrasi Bisnis/Akuntansi". Menyambung
+   langsung ke `rumpun_subbidang` hasil langkah 03 — sekarang punya padanan nyata.
+5. **Nama jabatan = konvensi DAPEG**, bukan Analyst/Engineer. Menguatkan `jabatan.yaml`.
+6. **Subholding ikut di dokumen pagu yang SAMA** (`AP SH`, 8 dari 20 baris) — konsisten
+   DECISION-01 bahwa cakupan resmi adalah PLN Group.
+
+**Kuirk:** `KETERANGAN` cuma dua nilai — **`3T`** untuk seluruh 12 baris holding (penempatan
+daerah Terdepan/Terluar/Tertinggal) dan **`Rekrut 2026`** untuk 8 baris subholding. Kuota per
+baris kecil (1–3 orang, total 30) — jadi dokumen pagu sesungguhnya panjang & halus, bukan
+angka gelondongan per unit.
+
+Berkas rujukan HR lain yang relevan: **Sample-02** (format FTK per unit pelaksana),
+**Sample-05** (Penempatan OJT PLN Group 2026 → bahan langkah 11), **Sample-01** (DTPEG
+133 kolom, sudah teranonimkan di sampel).
+Sumber: `data sintetis/Sample-04...xlsx` · Keyakinan: **tinggi** (dokumen HR langsung) ·
+Dampak: mengunci skema keluaran langkah 05; menaikkan keyakinan F-042.
+
+### F-053 · Runtun realisasi BULANAN dipanen — dan tiga jebakannya ⭐ [langkah 01 revisi]
+Klaim: sheet ` FTK Unit Holding` ternyata memuat **15 kolom realisasi bulanan** per unit
+(Des-2024 → Apr-2026), bukan cuma dua titik potong seperti yang diekstrak semula.
+Sekarang dipanen ke `out/master/realisasi_bulanan.csv` (665 baris).
+
+⚠️ **KOREKSI temuan sebelumnya.** Kolom yang dipakai sebagai "jangkar perencanaan 2026"
+di `kohort.yaml` — `realisasi_apr_2026` — **hanya terisi 2 dari 49 baris**; 47 sisanya
+`#VALUE!` di file sumbernya. Jangkar yang benar adalah **`realisasi_mar_2026` (49/49
+lengkap, total 37.153)**. Sudah diperbaiki di seluruh aturan & dokumen.
+
+**Tiga jebakan yang membuat runtun ini TIDAK boleh dijumlah begitu saja:**
+
+| Jebakan | Isi | Akibat kalau lalai |
+|---|---|---|
+| **Kantor Pusat kosong Jan–Agt 2025** | 8 sel `#REF!` di baris KP | total anjlok **−3.947** di Jan-2025 lalu melonjak **+3.607** di Nov-2025 — terbaca sebagai PHK massal lalu rekrutmen massal. Tidak ada satupun yang terjadi. |
+| **April 2026 rusak** | `#VALUE!` di 47/49 baris | total tampak 3.920 (cuma KP), turun 89% |
+| **September & Oktober 2025 tidak ada kolomnya** | header lompat Agt → November | runtun berlubang 2 bulan; jangan diinterpolasi diam-diam |
+
+Setelah KP dikeluarkan, runtun 46 unit sisanya mulus dan masuk akal: 33.950 (Jan-2025)
+→ 33.467 (Agt-2025), turun rata-rata **−60/bulan** — konsisten dengan attrition 2,7%/tahun.
+
+**Aturan pakai:** selalu cek **jumlah unit pelapor per bulan** sebelum menjumlahkan.
+Bulan dengan cakupan unit berbeda tidak sebanding. Ini varian keempat dari pola yang sama
+dengan F-040/F-045/F-049: **angka PLN tidak bisa dideretkan begitu saja** — kali ini
+bukan karena definisi berubah, melainkan karena cakupan pelapor berubah.
+
+Nilai tambahnya nyata: 13 titik bulanan per unit jauh lebih kaya daripada 2 titik tahunan,
+dan bisa dipakai memvalidasi laju attrition per unit di langkah 04/05.
+Sumber: `data sintetis/Sample-03...xlsx` sheet ` FTK Unit Holding` kolom 6–20 ·
+Keyakinan: **tinggi** · Dampak: `realisasi_bulanan.csv` baru; jangkar 2026 dikoreksi.
+
+### F-052 · Carve-out 2023 terukur 3.138 & PLN tak pernah mengisi kekosongannya ⭐ [langkah 04]
+
+**(a) Besaran carve-out diturunkan, lalu tervalidasi silang.**
+Identitas headcount 2023 menyisakan selisih yang tidak bisa dijelaskan attrition maupun
+rekrutmen: `42.151 + 689 − 1.160 = 41.680` vs nyata `38.542`. Selisih **3.138** itulah
+carve-out murni. Bandingkan dengan kenaikan Anak Perusahaan **+3.377** di periode sama
+(F-045) — **selisih hanya 239 orang**, besaran wajar untuk rekrutmen subholding sendiri.
+Dua jalur perhitungan yang sepenuhnya terpisah mendarat berdekatan, jadi tafsir carve-out
+naik jadi keyakinan **tinggi**.
+
+Dengan carve-out diperhitungkan, identitas headcount 2023 tertutup **persis nol**, dan
+residu rata-rata tahun lain turun ke **0,52%**.
+
+**(b) Kekosongan tidak pernah terisi penuh — itulah mekanisme penyusutan.**
+Kebutuhan rekrutmen dihitung dari kekosongan bernama (pensiun/APS/meninggal/PHK) lalu
+dikaskadekan turun lewat promosi sampai jenjang masuk:
+
+| Tahun | Butuh | Kohort nyata | Terisi |
+|---|---:|---:|---:|
+| 2021 | 1.427 | 337 | **24%** |
+| 2022 | 1.290 | 689 | 53% |
+| 2023 | 1.158 | 689 | 59% |
+| 2024 | 1.030 | 1.277 | **124%** |
+| 2025 | 1.015 | 1.098 | **108%** |
+
+⭐ **Titik baliknya 2024.** Sampai 2023 PLN merekrut jauh di bawah kekosongan yang tercipta
+— itu penjelasan aritmetis penyusutan headcount 46.062 (2017) → 38.542 (2023), bukan sekadar
+"kebijakan efisiensi". Sejak 2024 kohort justru **melampaui** kebutuhan, tapi headcount
+masih turun karena efeknya belum masuk: mereka baru ber-SK setelah OJT (F-051). Angka
+"ber-SK 2025 cuma 76 orang (7%)" karena itu **bukan kegagalan merekrut** — itu jeda pipeline.
+
+**(c) Kaskade tidak mengubah JUMLAH, hanya SEBARAN JENJANG.** Setiap kekosongan akhirnya
+diisi seseorang dan setiap rantai promosi berujung pada satu orang dari luar, jadi total
+kebutuhan = total keluar secara identik. Yang ditentukan kaskade adalah pecahannya:
+**L1 36% · L2 41% · L3 20% · L4 3%** — dan pecahan inilah yang menentukan berapa lowongan
+D3 vs S1/D4 vs S2 yang harus dibuka.
+Sumber: langkah 04 (`mockdb/build/04_attrition_proyeksi.py`) · Keyakinan: **tinggi** untuk
+(a) & (b) [aritmetika atas angka nyata], **sedang** untuk (c) [peluang promosi dimodelkan] ·
+Dampak: dasar langkah 05 (usulan kebutuhan & pagu) dan narasi utama dashboard.
+
+### F-051 · Identitas headcount MEMILAH "prajabatan" vs "direkrut" ⭐⭐ [langkah 04]
+Klaim: F-035 menggantungkan tafsir selisih antara **"peserta diklat prajabatan"** dan
+**"pegawai baru direkrut"** (keyakinan rendah-sedang). Identitas headcount menyelesaikannya.
+
+Uji: `headcount[t] = headcount[t−1] + masuk[t] − keluar[t]`
+
+| Tahun | Awal | Masuk | Keluar | Model | Nyata | Selisih | Metrik masuk |
+|---|---:|---:|---:|---:|---:|---:|---|
+| 2017 | 43.956 | +4.484 | −2.256 | 46.184 | 46.062 | **+122** | direkrut |
+| 2021 | 44.310 | +325 | −1.427 | 43.208 | 42.755 | **+453** | direkrut |
+| 2024 | 38.542 | +663 | −1.031 | 38.174 | 38.289 | **−115** | direkrut |
+| 2024 | 38.542 | +1.277 | −1.031 | 38.788 | 38.289 | +499 | prajabatan |
+| 2025 | 38.289 | +76 | −1.016 | 37.349 | 37.423 | **−74** | direkrut |
+| 2025 | 38.289 | +1.098 | −1.016 | 38.371 | 37.423 | +948 | prajabatan |
+
+**"Direkrut" menutup identitas (selisih 0,2–1,1%); "prajabatan" tidak (sampai 2,5%, dan
+selalu berlebih ke arah yang sama.)** 2024 & 2025 yang memutuskan — di situ kedua angka
+berbeda jauh (663 vs 1.277; 76 vs 1.098).
+
+⭐ **Tafsirnya justru membenarkan model pipeline kita:** peserta prajabatan **belum
+terhitung sebagai pegawai**. Mereka sudah ttd kontrak dan sedang OJT, tapi baru masuk
+headcount setelah **SK penempatan**. Persis pembedaan "diterima ≠ sudah jadi pegawai"
+yang sudah dipasang di `funnel.yaml` (status_per_15sep2026) — dan sekarang terkonfirmasi
+dari arah yang sepenuhnya berbeda, yaitu neraca headcount.
+
+**Aturan pakai:**
+- **Ukuran kohort rekrutmen** (berapa orang menjalani seleksi) → pakai **prajabatan**
+  (337 · 689 · 689 · 1.277 · 1.098). Ini yang dipakai `kohort.yaml`. **Tidak berubah.**
+- **Efek ke headcount** (berapa ber-SK tahun itu) → pakai **direkrut** (689 · 663 · 76).
+  Ini yang dipakai langkah 04 untuk menggulirkan headcount.
+
+**Residu 0,2–1,1% yang tersisa** (+122, +453, −115, −74) = perpindahan yang tidak
+dilaporkan terpisah — **tugas karya & mutasi ke anak perusahaan** (F-015 mencatat Tugas
+Karya disebut 114× di Perdir 0050, terbanyak dari semua mekanisme). Dimodelkan sebagai
+`mutasi_keluar_tak_terlapor`, bukan disembunyikan.
+Sumber: turunan dari F-036/F-044/F-048/F-035 · Keyakinan: **tinggi** (identitas aritmetis
+diuji di 4 tahun) · Dampak: menutup pertanyaan terbuka F-035; mengunci dua metrik terpisah.
+
+### F-050 · Bauran jurusan yang diundang TIDAK cocok dengan bauran kursi ⭐ [langkah 03]
+Klaim: setelah 42 prodi asli dipetakan ke 18 rumpun lalu ke 15 sub bidang jabatan,
+**dua sub bidang terbesar justru paling kekurangan pasokan**:
+
+| Sub bidang | Pasokan (bauran prodi diundang) | Kursi G1+G2 nyata | Selisih |
+|---|---:|---:|---:|
+| **Distribusi** | 13,0% | **27,8%** | **−14,8** |
+| **Transmisi dan Gardu Induk** | 9,9% | **16,2%** | **−6,3** |
+| Keuangan dan Akuntansi | 9,6% | 6,5% | +3,2 |
+| Manajemen Konstruksi dan Pengadaan | 11,9% | 8,9% | +3,0 |
+| Perencanaan dan Kinerja | 8,3% | 5,5% | +2,9 |
+| Pembangkitan | 6,4% | 3,6% | +2,8 |
+
+Dua sub bidang teknik terbesar kurang **21 poin** gabungan, sementara sub bidang
+non-teknik berlebih merata.
+
+**Penjelasannya konsisten dengan temuan lain, bukan kebetulan:** kursi Distribusi &
+Transmisi didominasi **JUNIOR TECHNICIAN** (4.968 pegawai G1, F-042) — jabatan lapangan
+yang secara historis diisi lewat **rekrutmen SMK/D3 per kota**. Rekrutmen itu **berhenti
+setelah 2019** (F-031: 25 program SMK di 2017, lalu hilang dari katalog). Yang tersisa
+adalah bauran program berat-S1 yang secara struktural tidak memasok jabatan lapangan.
+Jadi F-031 + F-042 + F-050 menceritakan satu hal yang sama dari tiga arah.
+
+⚠️ **Batas klaim:** "pasokan" di sini diproksi dari **jumlah profesi yang membuka tiap
+prodi** — jadi ia mengukur bauran jurusan yang **DIUNDANG PLN**, bukan bauran jurusan yang
+**DIMILIKI PELAMAR**. Kalau ternyata pelamar teknik jauh lebih banyak melamar daripada
+porsi undangannya, selisihnya menyempit. Keyakinan: **sedang**.
+
+**Konsekuensi wajib untuk generator (langkah 11):** JANGAN memaksa pengisian kursi
+proporsional berdasarkan kelayakan jurusan — kandidat yang sah untuk Distribusi akan habis
+di tengah jalan. Kursi harus diisi dengan pelonggaran eksplisit, dan **kekurangannya
+dilaporkan sebagai keluaran**, bukan ditutupi. Selisih inilah salah satu jawaban paling
+berguna untuk ReqGathering#1 ("kebutuhan rekrutmen sebagai fungsi kebutuhan nyata").
+
+**Kuirk sumber:** dataset RBB memuat satu jurusan bernama **`TEST MAJOR PAGI`** — data uji
+yang tertinggal di data produksi. Satu-satunya dari 546 prodi yang tidak dapat rumpun,
+sengaja dibiarkan tidak terklasifikasi supaya jejaknya terlihat.
+Sumber: langkah 03 (`mockdb/build/03_rumpun_jurusan.py`) atas profesi.csv + programs.csv +
+lowongan_pln_rbb.csv + jabatan_klasifikasi.csv · Dampak: aturan penempatan & narasi dashboard.
+
+### F-048 · SR-2021 membuka 2019–2020 & MENGONFIRMASI jeda pipeline ⭐⭐ [R6c]
+Klaim: SR-PLN-2021 (336 hal, diunduh user 2026-08-17) memuat runtun **rekrutmen & turnover
+2019–2021 PLN Induk** — periode yang sebelumnya gelap total.
+
+**Karyawan masuk (rekrutmen), hal. 193:**
+
+| | 2019 | 2020 | 2021 |
+|---|---:|---:|---:|
+| Karyawan masuk | **1.935** | **1.096** | **325** |
+| Pensiun alami | 2.122 | 1.656 | 1.216 |
+| Meninggal | 135 | 117 | 146 |
+| Mengundurkan diri | 100 | 72 | 65 |
+| Gender masuk (L:P) | 68:32 | 70:30 | 65:35 |
+
+**Usia saat masuk** (hal. 193) — 20–25 th: 2019 **87%** · 2020 **89%** · 2021 **98%**;
+26–30 th: 13% · 11% · 1%. Di atas 30 th praktis nol.
+
+⭐ **Mengonfirmasi jeda pipeline (F-035/kohort.yaml, sebelumnya keyakinan sedang).**
+Cocokkan ukuran GELOMBANG dengan rekrutmen TAHUN BERIKUTNYA:
+
+| Program | Bentuk gelombang | → Masuk thn+1 | Cocok? |
+|---|---|---:|---|
+| 2019 | ~30 entri per kota + campus fair (masif) | 1.096 (2020) | ✓ besar |
+| 2020 | **hanya PPB Papua**, buka 30 Des | **325** (2021) | ✓ terkecil |
+| 2023 | 14 entri: reguler + OAP 8 kota + Maluku + Diaspora | 1.277 (2024) | ✓ terbesar |
+
+Tiga titik ekstrem jatuh pas tanpa dipaksakan. Pemetaan tanpa-jeda tidak menghasilkan
+kecocokan ini. → **Naikkan keyakinan jeda pipeline dari sedang ke tinggi.**
+
+⚠️ **JEBAKAN — tabel "Diklat Prajabatan" SR-2021 hal. 240 BUKAN ukuran kohort.**
+Tabel itu mencatat 2019 **6.734** · 2020 **2.298** · 2021 **1.359** peserta — 3–20× lebih
+besar dari karyawan masuk di tahun yang sama. Itu tabel **kursi pelatihan seluruh pegawai**
+(satu baris di antara Diklat Profesi 91.476, Penjenjangan 22.916, dst), dan captionnya
+sendiri memperingatkan "1 orang bisa mengikuti lebih dari 1 diklat dalam 1 tahun".
+Yang benar dipakai: **"Karyawan masuk"** / **"Pegawai Baru Peserta Pelatihan Pra-Jabatan"**.
+Siapa pun yang membaca tabel diklat itu sepintas akan mengira 2019 merekrut 6.734 orang.
+
+⚠️ **Selisih antar-edisi (pola F-040):** rekrutmen 2021 = **325** (212L/113P) menurut SR-2021,
+tapi **337** (218L/119W) menurut SR-2025. Metrik sama, angka beda 12. Dipakai SR-2021
+(laporan tahun berjalan, paling dekat ke peristiwanya); selisihnya dicatat, bukan didamaikan.
+
+**Koreksi gender:** F-038 memberi 75:25 dari kohort 2024. Runtun penuh ternyata jauh lebih
+berayun: **2019 68:32 · 2020 70:30 · 2021 65:35 · 2022 72:28 · 2023 73:27 · 2024 86:14.**
+→ `demografi.yaml` harus pakai **gender per tahun**, bukan satu angka global 75:25.
+
+Sumber: R6c (`sources/laporan_pln/pdf/SR-PLN-2021.pdf` hal. 192–193, 240) ·
+Keyakinan: **tinggi** · Dampak: horison bisa mundur ke program-2019 dengan jangkar nyata;
+jeda pipeline naik jadi keyakinan tinggi; gender per tahun; usia masuk tervalidasi.
+
+**➕ Tambahan SR-2017, SR-2018 & SR-2020** (diunduh user 2026-08-17) — runtun mundur ke 2016:
+
+| Tahun | Rekrutmen Induk | Sumber | Headcount Induk | Anak |
+|---|---:|---|---:|---:|
+| 2016 | — | | 43.956 | 7.202 |
+| **2017** | **4.484** | SR-2017 hal. 8 & 211 | 46.062 | 8.758 |
+| 2018 | *tidak dilaporkan* | | 45.497 | 8.627 |
+| 2019 | **1.927** / 1.935 | SR-2020 hal. 280 / SR-2021 | — | — |
+| 2020 | **1.093** / 1.096 | SR-2020 hal. 280 / SR-2021 | **44.310** | — |
+| 2021 | 325 | SR-2021 | 42.755 | 9.361ᵈ |
+
+⭐ **Headcount 2020 = 44.310 NYATA** — menggantikan turunan F-044 (~44.024–44.059).
+Selisihnya hanya ~280, jadi metode turunan lewat identitas `Group = Induk + Anak`
+terbukti sehat. Turunan itu boleh diganti angka nyata sekarang.
+
+⭐ **Era ledakan lalu kontraksi.** 2017 merekrut **4.484** orang (proyek 35.000 MW) dengan
+headcount puncak 46.062 — lalu runtuh: 1.927 (2019) → 1.093 (2020) → **325** (2021).
+Headcount ikut turun 46.062 → 37.423 (2025). Ini busur cerita nyata untuk dashboard,
+bukan rekaan. 2017 juga persis tahun 25 program SMK per kota (F-031) — skala 4.484
+menjelaskan kenapa program sebanyak itu dibuka.
+
+Sumber lengkap: R6c (SR-2017 hal. 8/211/219 · SR-2018 hal. 244 · SR-2020 hal. 280 ·
+SR-2021 hal. 192–193/240) · Keyakinan: **tinggi**.
+> **Masih belum diperoleh:** SR-2022 (gagal lagi — server PLN mengabaikan HTTP Range,
+> kasus sama F-044) dan rekrutmen 2018 (tidak dilaporkan di SR-2018 mana pun).
+> Headcount 2019 juga belum ketemu; kandidat berikutnya `Statistik2020.pdf`.
+
+### F-049 · ⚠️ DEFINISI TURNOVER BERUBAH ANTAR EDISI — jebakan 10× [R6c]
+Klaim: laporan PLN memakai **dua definisi "pegawai keluar" yang berbeda**, dan
+menggabungkannya menghasilkan lonjakan palsu.
+
+| Edisi | Definisi | Turnover dilaporkan |
+|---|---|---|
+| SR-2017, SR-2020 | **SEMPIT** — hanya mengundurkan diri + PHK. Pensiun dilaporkan **terpisah** dan tidak dihitung | 2017 **0,34%** · 2019 0,3% · 2020 **0,2%** |
+| SR-2021 dan sesudahnya | **LUAS** — pensiun alami + meninggal + mengundurkan diri | 2021 ~3,3% · 2024 **2,69%** · 2025 2,71% |
+
+Bukti: SR-2017 menulis *"158 pegawai keluar (135 mengundurkan diri, 23 PHK) = 0,34% dari
+46.062"* lalu **secara terpisah** *"2.098 pegawai keluar karena pensiun"* — pensiun jelas
+di luar hitungan turnover. SR-2020 menulis *"total pegawai keluar 2020 adalah 82 orang …
+turn over 0,2%"*, sementara SR-2021 mencatat pengunduran diri 2020 = **72** (metrik sempit
+yang sama) tapi total keluar 2020 = **1.845** termasuk pensiun 1.656.
+
+⚠️ **Dampak kalau lalai:** dashboard yang menarik runtun turnover apa adanya dari
+2017→2025 akan menampilkan lompatan **0,2% → 2,7%** di 2021 dan terbaca sebagai krisis
+retensi. Padahal tidak terjadi apa-apa — yang berubah cuma definisinya.
+
+**Aturan untuk mockdb:** simpan `pensiun` sebagai jenis peristiwa TERSENDIRI dan hitung
+dua metrik terpisah — `turnover_sempit` (APS + PHK) dan `turnover_luas` (semua sebab).
+Jangan pernah menampilkan satu garis turnover lintas 2017–2025 tanpa menandai patahan
+definisi di 2021. Ini varian ketiga dari pola yang sama dengan F-040 dan F-045
+(carve-out): **angka PLN tidak bisa dideret begitu saja lintas tahun.**
+Sumber: R6c · Keyakinan: **tinggi** · Dampak: `attrition.yaml` butuh dua metrik + penanda patahan.
+
+### F-047 · Rasio 1:200 DITOLAK — funnel F-019 internal konsisten di 1:49 ⭐ [kalibrasi]
+Klaim: dua angka rasio seleksi yang kita punya **tidak bisa sama-sama benar**, dan yang dipakai
+mockdb adalah F-019, bukan F-039.
+
+**Ketegangan:**
+
+| Sumber | Hitungan | Rasio |
+|---|---|---:|
+| F-019 (sistem HTD, kumulatif s/d Jul-2026) | 598.395 pelamar → 12.248 lulus wawancara | **1:49** |
+| F-039 (turunan) | 245.217 pelamar Group 2025 ÷ 1.098 prajabatan Induk 2025 | 1:223 |
+
+**Tiga alasan memilih F-019:**
+1. **Internal konsisten** — pembilang & penyebut dari satu sistem, satu tarikan tanggal, satu cakupan.
+   F-039 mencampur **pembilang cakupan Group** dengan **penyebut cakupan Induk** (kelemahan yang
+   sudah dicatat sendiri di F-039, keyakinan **sedang**).
+2. **F-039 melanggar plafon F-019.** Kalau 2025 sendirian 245.217 pelamar, maka horison 2020–2026
+   saja sudah menembus 598.395 kumulatif-sejak-awal — mustahil, karena katalog memuat 222 rekrutmen
+   sejak ±2013.
+3. **Satuannya beda.** Trio angka F-019 (1.282.833 akun · 601.373 berkas lengkap · 598.395 pelamar)
+   jelas **level orang**. 245.217 kemungkinan besar **level aplikasi** — dengan akun *lifetime*
+   (F-025) satu orang melamar >1 profesi dan >1 tahun, jadi aplikasi ≈ 1,3–1,8× orang.
+   Ini menjelaskan selisihnya tanpa menyalahkan sumber manapun.
+
+**Konsekuensi kalibrasi (dipakai generator):** end-to-end pendaftaran→diterima = **2,05%**;
+lulus administrasi **64%** (keras, F-019); target diterima Group 2020–2026 = **±8.600**, dijangkar
+ke kohort prajabatan asli F-035/F-044 — bukan ke rasio.
+Silang-periksa yang meyakinkan: horison kita menyerap **70% pendaftaran** kumulatif *dan*
+**70% lulus wawancara** kumulatif — dua proporsi ini jatuh sama tanpa dipaksakan.
+
+⚠️ Rasio RBB **beda jauh & sengaja dibiarkan beda**: RBB 2024 nasional ±1,1 juta pendaftar untuk
+5.900 diterima ≈ **1:186** (portal tunggal, semua BUMN sekaligus). Kontras 1:49 vs 1:186 antar-jalur
+justru bahan *recruitment source effectiveness* (ReqGathering#3).
+Sumber: turunan dari F-019/F-039/F-035/F-044 · Keyakinan: **sedang-tinggi** (logika satuan kuat,
+tapi belum dikonfirmasi HTD) · Dampak: mengunci seluruh skala volume mockdb.
+
+**❓ Pertanyaan untuk tim HTD (Willy):** apakah angka 598.395 "pelamar" di dashboard admin
+menghitung **orang** atau **aplikasi**? Satu kalimat jawaban mengunci atau merontokkan seluruh
+kalibrasi volume di atas.
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

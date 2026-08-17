@@ -1,0 +1,138 @@
+# administrasi.yaml — syarat administrasi per jalur & alasan gagal
+# Rujukan: F-022, F-043, F-034, F-010, F-033, F-006
+#
+# Tahap administrasi adalah SATU-SATUNYA tahap yang kriterianya benar-benar terverifikasi
+# dari sumber asli (batas umur, IPK minimal, daftar berkas). Semua tahap lain passing
+# grade-nya dimodelkan (F-028). Karena itu tahap ini digarap paling detail: alasan gagal
+# per kandidat bisa diberi sebab yang sah, bukan koin acak.
+
+meta:
+  versi: 1
+  keyakinan: tinggi
+
+# ---------------------------------------------------------------------------
+# 1. BATAS UMUR — BERBEDA PER JALUR (F-043 butir kontras #1)
+# ---------------------------------------------------------------------------
+# Ini bukan detail sepele: RBB memberi kelonggaran 3 tahun untuk S1. Kalau generator
+# memakai satu angka global, perbandingan antar-jalur di dashboard jadi bohong.
+umur_maks_saat_daftar:
+  mandiri:
+    SMK:     22
+    D-III:   25
+    S1/D-IV: 27
+    S2:      30
+    rujukan: "F-022 (D3<=25, S1/D4<=27), F-027 (S2<=30)"
+  rbb:
+    D-III:   27
+    S1/D-IV: 30
+    S2:      30
+    rujukan: "F-043 -- dipanen langsung dari JSON lowongan RBB 2024"
+  pro_hire:
+    pengalaman_kerja_min_tahun: 5
+    umur_maks: 40
+    rujukan: "F-027 -- Pro Hire pengalaman >=5 th"
+    status_sumber_umur: TURUNAN
+
+# ---------------------------------------------------------------------------
+# 2. IPK MINIMAL
+# ---------------------------------------------------------------------------
+ipk_min:
+  default: 3.00
+  rujukan: "F-022, F-043 (kedua jalur sama-sama 3,00)"
+  pengecualian:
+    - {tipe: OAP,      nilai: 2.50, keterangan: "Orang Asli Papua"}
+    - {tipe: AFIRMASI, nilai: 2.50, keterangan: "Papua, Maluku & Nusa Tenggara"}
+  rujukan_pengecualian: "F-010 (min IPK per jurusan di profesi.csv), F-006"
+  catatan: >
+    IPK minimal sesungguhnya ditetapkan PER JURUSAN di dalam satu profesi (profesi.csv
+    kolom `minimal_ipk` memuat teks seperti "TEKNIK ELEKTRO minimal 3 TEKNIK MESIN minimal 3").
+    Generator membaca nilai per-jurusan itu langsung dari profesi.csv; angka di sini
+    hanya fallback kalau profesi tidak punya entri.
+  nem_min_smk: 7.00
+  status_sumber_nem: TURUNAN
+
+# ---------------------------------------------------------------------------
+# 3. SYARAT NON-NUMERIK
+# ---------------------------------------------------------------------------
+status_perkawinan:
+  wajib: "BELUM MENIKAH"
+  rujukan: "F-034 -- berkas wajib memuat 'Surat Keterangan Belum Menikah'"
+  berlaku_untuk: [SMK, D-III, S1/D-IV, S2]
+  kecuali: [pro_hire]
+
+kesesuaian_jurusan:
+  aturan: >
+    Program studi kandidat harus ada di daftar `program_studi` milik profesi yang dilamar.
+    Ada kategori payung "PROGRAM STUDI LAINNYA TEKNIK" / "... NON TEKNIK" yang menerima
+    prodi di luar daftar eksplisit, tapi hanya untuk profesi yang mencantumkannya.
+  rujukan: "F-004 (49 prodi unik), F-010"
+
+lokasi_tes:
+  terkunci_saat_daftar: true
+  boleh_diubah: false
+  rujukan: "F-024, F-033 (FAQ resmi: lokasi tes terkunci pada yang dipilih saat daftar)"
+
+# ---------------------------------------------------------------------------
+# 4. BERKAS WAJIB UNGGAH (skema asli area member — F-034)
+# ---------------------------------------------------------------------------
+berkas_wajib:
+  - {kode: ktp,             nama: "KTP",                            rujukan: F-023}
+  - {kode: akta_kelahiran,  nama: "Akta Kelahiran",                 rujukan: F-034}
+  - {kode: skbm,            nama: "Surat Keterangan Belum Menikah", rujukan: F-034}
+  - {kode: ijazah,          nama: "Ijazah",                         rujukan: F-023}
+  - {kode: transkrip,       nama: "Transkrip Nilai",                rujukan: F-023}
+  - {kode: swafoto,         nama: "Swafoto",                        rujukan: F-034}
+  - {kode: foto_full_body,  nama: "Foto Full Body",                 rujukan: F-034}
+  - {kode: pasfoto,         nama: "Pasfoto Profil",                 rujukan: F-034}
+catatan_berkas: >
+  F-033: dokumen FISIK tidak diminta di awal, tapi wajib dibawa pada tahap tes tertentu.
+  Jadi kegagalan "berkas" di tahap administrasi = unggahan tidak lengkap/tidak terbaca,
+  bukan ketiadaan dokumen fisik.
+
+# ---------------------------------------------------------------------------
+# 5. SEBARAN ALASAN GAGAL ADMINISTRASI
+# ---------------------------------------------------------------------------
+# 36% pendaftar gagal di tahap ini (F-019: 214.014 dari 598.395). Sebaran sebabnya
+# TURUNAN, tapi tiap sebab diuji ke data kandidat yang sudah dibangkitkan -- jadi
+# alasannya konsisten dengan biodatanya, bukan label tempelan.
+alasan_gagal:
+  status_sumber: TURUNAN
+  metode: >
+    Generator TIDAK mengundi alasan lalu memalsukan biodata. Sebaliknya: biodata
+    dibangkitkan lebih dulu dari demografi.yaml, lalu kriteria di file ini dijalankan
+    sungguhan. Bobot di bawah dipakai untuk MENYETEL sebaran biodata agar angka
+    kegagalan mendarat di 36% -- bukan untuk menempelkan alasan.
+  bobot_target:                      # jumlahnya HARUS 1,000
+    jurusan_tidak_sesuai:   0.30
+    ipk_di_bawah_minimum:   0.28
+    umur_melebihi_batas:    0.22
+    berkas_tidak_lengkap:   0.16
+    status_menikah:         0.04
+  boleh_lebih_dari_satu: true
+  catatan: >
+    Satu kandidat boleh gagal karena >1 sebab (mis. umur lewat DAN IPK kurang).
+    Simpan sebagai daftar, bukan satu kolom -- dashboard perlu bisa menghitung
+    "berapa yang gagal HANYA karena IPK", yang jadi masukan nyata buat HTD soal
+    apakah ambang IPK terlalu ketat.
+
+# ---------------------------------------------------------------------------
+# 6. SIKLUS PENDAFTARAN
+# ---------------------------------------------------------------------------
+siklus:
+  akun_lifetime: true
+  rujukan: "F-025, F-033"
+  boleh_cancel_lamaran: true
+  syarat_cancel: "periode pendaftaran masih buka"
+  boleh_lamar_ulang_setelah_cancel: true
+  boleh_lamar_lintas_tahun: true
+  boleh_lamar_lebih_dari_satu_profesi_dalam_satu_gelombang: true
+  maks_profesi_per_gelombang: 1
+  catatan_maks: >
+    TURUNAN. Rekap Lamaran (F-034) tidak memberi batas eksplisit. Kami batasi 1 profesi
+    per gelombang karena tanggal tesnya bentrok; lamaran berulang terjadi LINTAS gelombang.
+  aktivasi_email:
+    perlu: true
+    durasi_jam: 3
+    rujukan: "F-033 -- menjelaskan '45.080 akun belum aktivasi email' di F-019"
+  biaya: 0
+  catatan_biaya: "Tidak dipungut biaya; situs resmi penuh peringatan penipuan (F-033)."

@@ -60,3 +60,13 @@ knowledge/sources/rekrutmen_pln/.browser_profile/
 knowledge/sources/laporan_pln/pdf/
 
 knowledge/sources/rbb_fhci/raw_*.json
+
+# ---- mockdb: keluaran generator (besar & bisa dibangkitkan ulang dari rules/) ----
+# Yang TETAP di-track: out/master/ (agregat kecil dari DAPEG) + rules/ + build/ + docs/.
+mockdb/out/*.duckdb
+mockdb/out/csv/
+mockdb/out/parquet/
+# Keluaran turunan yang besar: bisa dibangkitkan ulang dari out/master + rules,
+# jadi tidak perlu ikut repo. 16 MB + 6 MB.
+mockdb/out/master/proyeksi_kekosongan.csv
+mockdb/out/master/usulan_kebutuhan.csv

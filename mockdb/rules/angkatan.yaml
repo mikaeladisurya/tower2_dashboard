@@ -1,0 +1,247 @@
+# angkatan.yaml — seri penomoran angkatan, kode profesi, nomor tes
+# Rujukan: F-008, F-009, F-003, F-010, F-030, F-031, F-032, F-001, F-048
+#
+# Semua judul program memakai DATA ASLI (programs.csv 31 + wayback 111 + RBB 20).
+# Nomor angkatan memakai seri asli, bukan tebakan "S1 70-an / SMA 20-an / S2 belasan"
+# yang tertulis di README versi lama.
+
+meta:
+  versi: 2
+  keyakinan: sedang
+  perubahan_v2: >
+    Horison mundur ke 2019. Peta angkatan disusun ulang dengan aturan "satu angkatan =
+    satu GELOMBANG", dan nomor yang tidak dibutuhkan siapa pun DIBUANG -- bukan diisi.
+    Tiap nomor kini punya `sumber_nomor` supaya yang nyata dan yang tebakan bisa dipisah.
+
+# ---------------------------------------------------------------------------
+# 1. ATURAN PENOMORAN
+# ---------------------------------------------------------------------------
+aturan:
+  satu_angkatan: "satu GELOMBANG (tanggal buka sama) -- BUKAN satu per entri penempatan"
+  bukti: >
+    OAP 2023 pecah jadi 8 entri per kota, semuanya angkatan 81.
+    Gelombang 2025 pecah jadi IP/ND/NP/ES + Hukum + Matematika + EPI, semuanya angkatan 92.
+    Jadi entri penempatan/kota BERBAGI nomor angkatan.
+  lubang_dibiarkan: true
+  alasan_lubang: >
+    Deret aslinya memang melompat: 74 -> 78 -> 81 -> 86 -> 91. Lompatan itu BUKTI bahwa
+    nomor terpakai oleh gelombang yang tidak bisa kita lihat -- F-021 mencatat sistem HTD
+    memuat 222 rekrutmen sementara publik hanya menampilkan 31. Mengisi lubang dengan
+    nomor karangan akan MENGHAPUS bukti itu. Jadi lubang dibiarkan kosong dan ditampilkan
+    di dashboard sebagai "N angkatan di rentang ini tidak terekam".
+
+sumber_nomor_arti:
+  nyata: "nomor tercatat di programs.csv / profesi.csv"
+  inferensi_kuat: "nomor tidak tercatat, tapi posisinya terkunci di antara dua jangkar nyata"
+  inferensi: "nomor tidak tercatat; tahunnya diperkirakan dari laju & kronologi"
+
+# ---------------------------------------------------------------------------
+# 2. SERI UTAMA — reguler, afirmasi, bidang khusus, diaspora
+# ---------------------------------------------------------------------------
+seri:
+  utama:
+    keterangan: >
+      Reguler S1/D4/D3, TERMASUK afirmasi Papua/Maluku, bidang khusus, dan diaspora.
+      Afirmasi ikut seri ini, BUKAN seri sendiri (F-008: Papua 2023=81, Maluku 2023=86,
+      Papua 2025=91).
+    jangkar_asli:
+      - {angkatan: 57, tahun: 2016, sumber: "info tim (user angkatan 57, S1 2016)"}
+      - {angkatan: 74, tahun: 2020, sumber: "programs.csv -- PPB BUMN Papua, buka 30 Des 2020"}
+      - {angkatan: 78, tahun: 2022, sumber: "programs.csv -- S2 Fresh Graduate ICE 2022"}
+      - {angkatan: 81, tahun: 2023, sumber: "profesi.csv -- OAP 8 kota"}
+      - {angkatan: 86, tahun: 2023, sumber: "profesi.csv -- Maluku & Nusa Tenggara"}
+      - {angkatan: 91, tahun: 2025, sumber: "profesi.csv -- Putra-Putri Papua 6 kota"}
+      - {angkatan: 92, tahun: 2025, sumber: "programs.csv -- reguler nasional 4 penempatan"}
+
+    alokasi_horison:
+      2019: [70, 71, 72, 73]
+      2020: [74]
+      2021: [75]
+      2022: [78]
+      2023: [81, 82, 86]
+      2024: [87, 88]
+      2025: [91, 92]
+
+    gelombang:
+      70: {tahun: 2019, buka: "2019-07", sumber_nomor: inferensi,
+           nama: "Reguler S1/D4 & D3 2019 gelombang I", entri: "~19 kota + Unsyiah Career Day + Bursa Karir ITS ke-33"}
+      71: {tahun: 2019, buka: "2019-08", sumber_nomor: inferensi,
+           nama: "Reguler S1/D4 & D3 2019 gelombang II", entri: "~8 kota + Airlangga Career Fair"}
+      72: {tahun: 2019, buka: "2019-09", sumber_nomor: inferensi,
+           nama: "Reguler S1/D4 & D3 2019 gelombang III", entri: "~7 kota"}
+      73: {tahun: 2019, buka: "2019-11", sumber_nomor: inferensi,
+           nama: "S2 Indonesia Career Evening 2019", entri: "1"}
+      74: {tahun: 2020, buka: "2020-12-30", sumber_nomor: nyata,
+           nama: "REKRUTMEN PPB BUMN KHUSUS PUTRA PUTRI PAPUA", entri: "1", jalur: rbb}
+      75: {tahun: 2021, buka: "2021", sumber_nomor: inferensi,
+           nama: "PPB/RBB nasional 2021", entri: "0 -- tidak ada di katalog PLN", jalur: rbb}
+      78: {tahun: 2022, buka: "2022-10-07", sumber_nomor: nyata,
+           nama: "Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022", entri: "1"}
+      81: {tahun: 2023, buka: "2023-05-22", sumber_nomor: nyata,
+           nama: "REKRUTMEN ORANG ASLI PAPUA (OAP) TAHUN 2023", entri: "8 kota"}
+      82: {tahun: 2023, buka: "2023-07-03", sumber_nomor: inferensi_kuat,
+           nama: "REKRUTMEN PLN GROUP DIASPORA TAHUN 2023", entri: "3 (S1 Fresh, S2 Fresh, S2 Experienced)"}
+      86: {tahun: 2023, buka: "2023-10-16", sumber_nomor: nyata,
+           nama: "REKRUTMEN PLN GROUP PUTRA-PUTRI ASLI MALUKU DAN NUSA TENGGARA", entri: "3"}
+      87: {tahun: 2024, buka: "2024-03", sumber_nomor: inferensi,
+           nama: "RBB 2024 batch I", entri: "0 di katalog PLN -- 20 lowongan di portal FHCI", jalur: rbb}
+      88: {tahun: 2024, buka: "2024-08", sumber_nomor: inferensi,
+           nama: "RBB 2024 batch II", entri: "0 di katalog PLN", jalur: rbb}
+      91: {tahun: 2025, buka: "2025-09-08", sumber_nomor: nyata,
+           nama: "REKRUTMEN PUTRA-PUTRI ASLI PAPUA PLN GROUP TAHUN 2025", entri: "6 kota"}
+      92: {tahun: 2025, buka: "2025-10-01", sumber_nomor: nyata,
+           nama: "REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025", entri: "7 (IP, ND, NP, ES, Hukum, Matematika, EPI)"}
+
+    lubang: [76, 77, 79, 80, 83, 84, 85, 89, 90]
+    lubang_keterangan: >
+      9 nomor di rentang 2021-2025 yang TIDAK diberi gelombang. Ini disengaja -- lihat
+      `aturan.alasan_lubang`. Dashboard menampilkannya sebagai bukti bahwa katalog publik
+      tidak lengkap, bukan sebagai data hilang.
+
+    catatan_kesinambungan: >
+      70-73 (2019) menyambung langsung ke 74 (Des 2020) tanpa lubang -- konsisten dengan
+      2020 yang hanya punya satu gelombang. Nomor 58-69 tersisa untuk 2017-2018 di luar
+      horison, pas dengan laju +-5-6 angkatan/tahun di era ledakan (2017 merekrut 4.484
+      orang, F-048).
+
+    tebakan_yang_diakui:
+      - "Pemecahan 2019 jadi 4 gelombang (Jul/Agu/Sep/Nov) berdasar bulan kemunculan di arsip. Bisa jadi 2 atau 6."
+      - "Diaspora 2023 = SATU angkatan (82) karena ketiganya buka 3 Jul. Kalau tiap jenjang dapat nomor sendiri, jadinya 82/83/84 dan lubang tinggal 85."
+      - "RBB 2024 dipecah 2 batch (87, 88). Jumlah batch sesungguhnya tidak diketahui."
+
+  khusus:
+    keterangan: >
+      Seri kecil untuk Pro Hire dan penempatan subholding. Digabung jadi SATU seri karena
+      8 dan 9 sama-sama jatuh di 2022 dan berurutan -- pola deret tunggal, bukan dua deret
+      yang kebetulan bertetangga.
+    jangkar_asli:
+      - {angkatan: 8, tahun: 2022, sumber: "F-008 / programs.csv -- Icon Plus S1/D4 (kode ICON.14)"}
+      - {angkatan: 9, tahun: 2022, sumber: "F-008 / programs.csv -- S2 Pro Hire ICE 2022"}
+    alokasi_horison:
+      2019: [7]
+      2022: [8, 9]
+    gelombang:
+      7: {tahun: 2019, buka: "2019-08", sumber_nomor: inferensi,
+          nama: "Rekrutmen Pro Hire PLN Group 2019", entri: "2 (Jakarta, Aset Properti)"}
+      8: {tahun: 2022, buka: "2022-03-30", sumber_nomor: nyata,
+          nama: "REKRUTMEN PLN GROUP PT INDONESIA COMNETS PLUS TINGKAT S1/D4 TAHUN 2022", entri: "1"}
+      9: {tahun: 2022, buka: "2022-10-07", sumber_nomor: nyata,
+          nama: "Rekrutmen PLN Group Tingkat S2 Pro Hire Indonesia Career Excellence 2022", entri: "1"}
+    catatan: >
+      Setelah 2022 penempatan subholding MELEBUR ke seri utama -- programs.csv 2025
+      menunjukkan IP.UM.D3 dan ND.UM.S1 sama-sama angkatan 92. Jadi seri ini berhenti.
+
+# ---------------------------------------------------------------------------
+# 3. SMK/PELAKSANA — SENGAJA TIDAK DIMODELKAN DI HORISON INI
+# ---------------------------------------------------------------------------
+smk_pelaksana:
+  dimodelkan: false
+  jangkar_historis: {angkatan: 15, tahun: 2016, sumber: "info tim (teman angkatan 15, SMA 2016)"}
+  alasan_tidak_dimodelkan: >
+    (a) Katalog horison 2019-2025 memuat NOL program SMK -- 25 program SMK per kota semuanya
+    di 2017 (F-031), di luar horison.
+    (b) SR-2017, SR-2020, dan SR-2021 memang mencantumkan "Rekrutmen tingkat SMA/SMK yang
+    dilaksanakan oleh unit PLN di seluruh Indonesia" -- TAPI daftar 6 butir itu muncul
+    VERBATIM SAMA di ketiga edisi, jadi boilerplate, bukan bukti pelaksanaan tahun berjalan.
+    (c) Porsi SMK 6% di F-020 adalah angka KUMULATIF sejak awal, didominasi era 2017.
+    Memodelkannya berarti mengarang nomor angkatan DAN volume tanpa satu pun jangkar.
+  konsekuensi: >
+    `demografi.yaml` -> jenjang_pelamar.per_tahun_program TIDAK memuat SMK untuk 2019-2025.
+    Kalau tim HTD memastikan rekrutmen SMK tingkat unit tetap berjalan, hidupkan kembali
+    seri ini dan tambahkan porsi SMK di demografi.
+
+# ---------------------------------------------------------------------------
+# 4. STRUKTUR PROGRAM -> PROFESI (3 level)
+# ---------------------------------------------------------------------------
+struktur:
+  level_1: gelombang               # = 1 nomor angkatan
+  level_2: program_entri           # dipecah per subholding penempatan / per kota
+  level_3: profesi                 # UNIT GRANULAR PENDAFTARAN -- F-010
+  rujukan: "F-003, F-010 (31 program -> 128 profesi)"
+  contoh:
+    gelombang: "angkatan 92 — Rekrutmen PLN Group S1/D4 & D3 Tahun 2025"
+    program_entri: "... (Penempatan : PT PLN Indonesia Power)"
+    profesi: "Proyeksi PT PLN Indonesia Power - Seluruh Indonesia (Jurusan Teknik)"
+  peringatan: >
+    Pendaftaran, tanggal buka/tutup, kota, dan IPK minimal SEMUANYA melekat di level
+    PROFESI, bukan program. Model yang menempelkannya ke program akan salah.
+
+# ---------------------------------------------------------------------------
+# 5. KODE PROFESI (F-009)
+# ---------------------------------------------------------------------------
+kode_profesi:
+  format_2024_plus: "{SUBHOLDING}.{TIPE}.{JENJANG}[.varian]"
+  format_2022_2023: "{n}.{m}"      # kode numerik, mis. 4.8, 3.1, ICON.14
+  format_2019_2021: "{n}.{m}"      # TURUNAN -- diasumsikan sama dengan era 2022-2023
+  subholding: [IP, NP, ND, ES, ICON, PLN, BTM, HLY]
+  tipe:
+    UM:   "Umum"
+    OAP:  "Orang Asli Papua"
+    HK:   "Hukum"
+    S2EX: "S2 Experienced"
+    MTK:  "Matematika"
+    DIA:  "Diaspora"
+    PH:   "Pro Hire"
+  jenjang: [D3, S1, S2]
+  contoh_asli: [IP.UM.D3, ND.UM.S1, PLN.OAP.S1, S2EX.HK, "IP.UM.S1.1", ICON.14, "4.8"]
+  rujukan: "F-009, profesi.csv"
+
+# ---------------------------------------------------------------------------
+# 6. NOMOR TES (F-009 -- teka-teki 'ES' sudah terpecahkan)
+# ---------------------------------------------------------------------------
+nomor_tes:
+  format: "{YYMM}/{KODE_SUBHOLDING}/{ANGKATAN}/{JENJANG-JURUSAN}/{NOMOR_URUT}"
+  contoh_asli: "2511/ES/92/D3-ELE/135615"
+  penjelasan_segmen:
+    YYMM: "tahun-bulan gelombang, mis. 2511 = November 2025"
+    KODE_SUBHOLDING: "subholding PENEMPATAN -- ES = PLN Electricity Services"
+    ANGKATAN: "nomor angkatan dari seri di atas"
+    JENJANG-JURUSAN: "mis. D3-ELE, S1-MES, S1-AKT"
+    NOMOR_URUT: "6 digit, unik per gelombang"
+  koreksi_keputusan_lama: >
+    README lama memutuskan MENGHILANGKAN segmen `ES` karena dikira kode misterius.
+    F-009 memecahkannya: itu kode subholding penempatan. Segmen ini DIPAKAI.
+  singkatan_jurusan:
+    ELE: "Teknik Elektro"
+    MES: "Teknik Mesin"
+    SIP: "Teknik Sipil"
+    IND: "Teknik Industri"
+    INF: "Teknik Informatika"
+    KIM: "Teknik Kimia"
+    LIN: "Teknik Lingkungan"
+    AKT: "Akuntansi"
+    MAN: "Manajemen"
+    HKM: "Hukum"
+    PSI: "Psikologi"
+    KOM: "Komunikasi"
+    K3:  "Keselamatan dan Kesehatan Kerja"
+    DTS: "Data Science"
+    MTK: "Matematika"
+
+# ---------------------------------------------------------------------------
+# 7. JUDUL PROGRAM — pakai data asli
+# ---------------------------------------------------------------------------
+sumber_judul:
+  live: "knowledge/sources/rekrutmen_pln/programs.csv (31 judul, 2020-2025)"
+  historis: "knowledge/sources/rekrutmen_pln/wayback/programs_historis.csv (111 judul, 80 tak ada di web live)"
+  profesi: "knowledge/sources/rekrutmen_pln/profesi.csv (128 profesi)"
+  rbb: "knowledge/sources/rbb_fhci/lowongan_pln_rbb.csv (20 lowongan PLN Group di RBB 2024)"
+  aturan: >
+    Generator WAJIB memakai judul dari file di atas. Gelombang 2019 seluruhnya diambil dari
+    arsip Wayback (tidak satu pun ada di katalog live). Gelombang 2021 & sebagian 2024
+    tidak punya judul sama sekali -- untuk itu dipakai penanda eksplisit
+    "(tidak terekam di katalog PLN)", BUKAN judul karangan.
+  evolusi_penamaan:
+    2017_2019: 'REKRUTMEN UMUM ... / REKRUTMEN PLN GROUP TINGKAT S1/D4 & D3 (2019) - {KOTA}'
+    2020_plus: 'REKRUTMEN PLN GROUP ...'
+    rujukan: "F-032"
+
+jenis_program:
+  - {kode: REGULER,   nama: "Reguler S1/D4/D3",                    rujukan: F-030}
+  - {kode: CAMPUS,    nama: "Campus / Career Fair",                rujukan: F-032}
+  - {kode: AFIRMASI,  nama: "Afirmasi 3T (Papua/Maluku/Nusra)",    rujukan: "F-006, F-030"}
+  - {kode: PRO_HIRE,  nama: "Pro Hire (pengalaman >=5 th)",        rujukan: "F-027, F-030"}
+  - {kode: DIASPORA,  nama: "S1/S2 Diaspora",                      rujukan: "F-007, F-030"}
+  - {kode: BIDANG,    nama: "Bidang khusus (Hukum, Matematika)",   rujukan: F-030}
+  - {kode: S2,        nama: "S2 Fresh Graduate / Career Evening",  rujukan: "F-007, F-030"}
+  - {kode: RBB,       nama: "PPB / Rekrutmen Bersama BUMN (FHCI)", rujukan: "F-041, F-043"}

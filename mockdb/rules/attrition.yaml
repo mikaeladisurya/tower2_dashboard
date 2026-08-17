@@ -1,0 +1,339 @@
+# attrition.yaml — keluarnya pegawai, carve-out, dan turunan kebutuhan rekrutmen
+# Rujukan: F-036, F-045, F-044, F-015, F-017, F-027, F-043
+#
+# File ini menjawab ReqGathering#1 (Bu Dewi): kebutuhan rekrutmen harus jadi FUNGSI dari
+# pensiun + APS + mutasi + tugas karya, bukan angka sporadis. Karena itu kekosongan
+# dibangkitkan dari MEKANISME BERNAMA, bukan dari angka acak.
+
+meta:
+  versi: 1
+  keyakinan: tinggi
+  cakupan_angka: PLN_INDUK      # SR hanya melaporkan Induk; subholding tidak setara
+
+# ---------------------------------------------------------------------------
+# 1. LAJU ATTRITION
+# ---------------------------------------------------------------------------
+laju_tahunan:
+  2019: {orang: 2357, pct: null,   rincian: "pensiun 2.122 + meninggal 135 + APS 100"}
+  2020: {orang: 1845, pct: null,   rincian: "pensiun 1.656 + meninggal 117 + APS 72"}
+  2021: {orang: 1427, pct: 0.0334, rincian: "pensiun 1.216 + meninggal 146 + APS 65"}
+  2024: {orang: 1031, pct: 0.0269}
+  2025: {orang: 1016, pct: 0.0271}
+  rujukan: "F-036 (SR-2024 & SR-2025) + F-048 (SR-2021 hal. 193)"
+  dipakai_untuk_tahun_lain: 0.027
+  status_sumber_tahun_lain: TURUNAN
+  catatan_2021: >
+    SR-2021 menyebut total keluar 1.441 di narasi tapi rinciannya berjumlah 1.427
+    (selisih 14). Dipakai jumlah rincian. Pola F-040 lagi.
+  tren: >
+    Keluar MENURUN tajam 2019 (2.357) -> 2025 (1.016) karena gelombang pensiun besar
+    sudah lewat. Tapi rekrutmen turun lebih cepat lagi, sehingga headcount tetap menyusut.
+
+# ---------------------------------------------------------------------------
+# 1b. ⚠️ PATAHAN DEFINISI TURNOVER — jebakan 10x (F-049)
+# ---------------------------------------------------------------------------
+patahan_definisi_turnover:
+  peringatan: >
+    Laporan PLN memakai DUA definisi "pegawai keluar" yang berbeda, dan menderetkannya
+    apa adanya akan memunculkan lonjakan PALSU dari 0,2% ke 2,7% di 2021 -- terbaca
+    sebagai krisis retensi padahal tidak terjadi apa-apa.
+  rujukan: "F-049"
+  edisi:
+    - {edisi: "SR-2017, SR-2020", definisi: SEMPIT,
+       isi: "hanya mengundurkan diri + PHK; pensiun dilaporkan TERPISAH dan tidak dihitung",
+       dilaporkan: {2017: 0.0034, 2019: 0.003, 2020: 0.002}}
+    - {edisi: "SR-2021 dan sesudahnya", definisi: LUAS,
+       isi: "pensiun alami + meninggal + mengundurkan diri",
+       dilaporkan: {2021: 0.0334, 2024: 0.0269, 2025: 0.0271}}
+  bukti: >
+    SR-2017: "158 pegawai keluar (135 mengundurkan diri, 23 PHK) = 0,34% dari 46.062",
+    lalu TERPISAH "2.098 pegawai keluar karena pensiun". SR-2020: "total pegawai keluar
+    2020 adalah 82 orang ... turn over 0,2%", sementara SR-2021 mencatat APS 2020 = 72
+    (metrik sempit yang sama) tapi total keluar 2020 = 1.845 termasuk pensiun 1.656.
+  aturan_wajib:
+    - "Simpan `pensiun` sebagai jenis peristiwa TERSENDIRI, jangan dilebur ke 'keluar'."
+    - "Hitung DUA metrik: `turnover_sempit` (APS + PHK) dan `turnover_luas` (semua sebab)."
+    - "Jangan pernah menampilkan satu garis turnover lintas 2019-2025 tanpa penanda patahan."
+  keluarga_masalah: >
+    Ini varian ketiga dari pola yang sama: F-040 (angka tidak konsisten antar tabel),
+    F-045 (carve-out disangka attrition), F-049 (definisi berubah antar edisi).
+    Kesimpulannya satu: ANGKA PLN TIDAK BISA DIDERETKAN BEGITU SAJA LINTAS TAHUN.
+
+arah:
+  headcount: MENYUSUT
+  peringatan: >
+    Rekrutmen < attrition, jadi headcount TURUN. Mock harus mencerminkan ini, BUKAN
+    pertumbuhan. Contoh nyata: 2025 attrition 1.016 orang, sedangkan kohort prajabatan
+    2025 hanya 1.098 -- praktis impas, dan itu tahun terbaiknya.
+
+# ---------------------------------------------------------------------------
+# 1c. RUNTUN PENSIUN & KELUAR PER TAHUN (dipakai langkah 04)
+# ---------------------------------------------------------------------------
+# Pensiun MENURUN tajam: gelombang pensiun era 1980-90an sedang lewat. Ini yang
+# menentukan berapa kekosongan tercipta tiap tahun -- dan karenanya berapa kebutuhan
+# rekrutmen. Angka nyata di 2019-2021 & 2024-2025; 2022-2023 diinterpolasi; 2026 proyeksi.
+runtun_keluar:
+  2019: {pensiun: 2122, total: 2357, sumber: "SR-2021 hal. 193 (NYATA)"}
+  2020: {pensiun: 1656, total: 1845, sumber: "SR-2021 hal. 193 (NYATA)"}
+  2021: {pensiun: 1216, total: 1427, sumber: "SR-2021 hal. 193 (NYATA)"}
+  2022: {pensiun: 1100, total: 1290, sumber: "INTERPOLASI antara 2021 & 2024"}
+  2023: {pensiun:  990, total: 1160, sumber: "INTERPOLASI antara 2021 & 2024"}
+  2024: {pensiun:  884, total: 1031, sumber: "SR-2024 (NYATA: 877 normal + 7 dini)"}
+  2025: {pensiun:  864, total: 1016, sumber: "SR-2025 total NYATA; pensiun turunan 85,1%"}
+  2026: {pensiun:  780, total:  920, sumber: "PROYEKSI"}
+  catatan_proyeksi: >
+    F-038: pegawai >50 th = 9,05% dari 38.289 (2024) = +-3.465 orang di rentang 51-56.
+    Kalau merata, +-693/tahun; realisasi 2024 justru 884, jadi piramidanya condong ke
+    usia tua dan pensiun akan TERUS MENURUN setelah 2025. Proyeksi 2026 = 780.
+  implikasi: >
+    Kekosongan karena pensiun turun dari 2.122 (2019) ke +-780 (2026), yaitu -63%.
+    Kebutuhan rekrutmen ikut turun -- ini penjelasan struktural kenapa kohort menyusut,
+    bukan sekadar kebijakan.
+
+# ---------------------------------------------------------------------------
+# 1d. DUA METRIK "PEGAWAI BARU" — jangan tertukar (F-051)
+# ---------------------------------------------------------------------------
+metrik_pegawai_baru:
+  peringatan: >
+    Laporan PLN memuat DUA angka berbeda yang sama-sama terdengar seperti "rekrutmen".
+    Identitas headcount memilahnya: yang menutup neraca adalah "direkrut", bukan
+    "peserta prajabatan". Peserta prajabatan BELUM terhitung pegawai -- mereka sudah
+    ttd kontrak dan sedang OJT, tapi baru masuk headcount setelah SK penempatan.
+  peserta_prajabatan:
+    arti: "berapa orang menjalani seleksi & diklat pada tahun itu"
+    dipakai_untuk: "ukuran kohort rekrutmen (kohort.yaml)"
+    runtun: {2021: 337, 2022: 689, 2023: 689, 2024: 1277, 2025: 1098}
+  pegawai_direkrut:
+    arti: "berapa orang ber-SK dan masuk headcount pada tahun itu"
+    dipakai_untuk: "menggulirkan headcount di langkah 04"
+    runtun: {2017: 4484, 2019: 1927, 2020: 1093, 2021: 325, 2023: 689, 2024: 663, 2025: 76}
+  rujukan: "F-051"
+  mutasi_keluar_tak_terlapor:
+    pct_headcount: 0.006
+    keterangan: >
+      Residu identitas headcount (+122, +453, -115, -74 di 2017/2021/2024/2025) = 0,2-1,1%.
+      Ditafsirkan sebagai TUGAS KARYA & mutasi ke anak perusahaan yang tidak dilaporkan
+      terpisah -- F-015 mencatat Tugas Karya disebut 114x di Perdir 0050, terbanyak dari
+      semua mekanisme. Dimodelkan eksplisit, bukan disembunyikan.
+    status_sumber: TURUNAN
+
+# ---------------------------------------------------------------------------
+# 1e. PROFIL USIA & KASKADE PROMOSI (dipakai langkah 04)
+# ---------------------------------------------------------------------------
+profil_usia:
+  status_sumber: DIMODELKAN
+  peringatan: >
+    DAPEG tidak punya kolom usia, dan ekstraksi kita sengaja hanya mengeluarkan agregat
+    struktural (tidak ada PII). Jadi sebaran usia di bawah DIREKA, dikalibrasi supaya
+    jumlah pensiun per tahun mendarat di runtun_keluar.
+  jangkar: "F-038 -- <30 th 27,31% · 30-50 th 63,65% · >50 th 9,05% (SR-2024)"
+  usia_pensiun: 56
+  usia_min: 20
+  rata2_per_jenjang:                 # makin tinggi grade, makin tua -- tangga karier
+    G1:  {rata2: 30, sd: 6}
+    G2:  {rata2: 38, sd: 8}
+    G3:  {rata2: 46, sd: 7}
+    SPC: {rata2: 50, sd: 5}
+    SSP: {rata2: 52, sd: 4}
+    MD:  {rata2: 47, sd: 6}
+    MM:  {rata2: 50, sd: 5}
+    MA:  {rata2: 52, sd: 4}
+
+kaskade_promosi:
+  status_sumber: DIMODELKAN
+  gagasan: >
+    Kekosongan di jenjang atas TIDAK diisi pegawai baru (F-042) -- diisi promosi dari
+    jenjang di bawahnya, yang lalu membuka kekosongan di sana, dan seterusnya sampai
+    jenjang masuk. Jadi seorang Manager yang pensiun akhirnya menciptakan kebutuhan
+    rekrutmen di G1/G2. Inilah mekanisme yang diminta ReqGathering#1: kebutuhan rekrutmen
+    sebagai FUNGSI dari pensiun/APS/mutasi, bukan angka sporadis.
+  tangga:                            # level -> kelompok jabatan
+    1: [JUNIOR OFFICER, JUNIOR TECHNICIAN]
+    2: [OFFICER, TECHNICIAN, JUNIOR EXPERT]
+    3: [SENIOR OFFICER, SENIOR TECHNICIAN, TEAM LEADER, EXPERT]
+    4: [SPECIALIST, SENIOR SPECIALIST, ASSISTANT MANAGER, SENIOR EXPERT, SPECIAL ASSISTANT]
+    5: [MANAGER, DEPUTY MANAGER]
+    6: [SENIOR MANAGER, VICE PRESIDENT, KEPALA SATUAN, KEPALA DIVISI, SEKRETARIS PERUSAHAAN]
+    7: [GENERAL MANAGER, EXECUTIVE VICE PRESIDENT, SENIOR EXECUTIVE VICE PRESIDENT]
+  peluang_diisi_promosi:             # sisanya diisi dari luar (rekrutmen)
+    7: 1.00
+    6: 1.00
+    5: 1.00
+    4: 0.97                          # 3% Pro Hire dari luar
+    3: 0.96                          # 4% dari luar -- jalur masuk S2 memang langka
+    2: 0.28                          # 72% dari luar -- jalur masuk utama S1/D4
+    1: 0.00                          # selalu dari luar -- jalur masuk D3
+  dikalibrasi_ke: >
+    Angka-angka ini TIDAK dikarang bebas: disetel sampai bauran pendidikan pagu (langkah 05)
+    mendekati bauran jenjang kohort di demografi.yaml -- S1/D4 +-68%, D3 +-29%, S2 +-3%.
+    Nilai versi pertama (2: 0,45 · 3: 0,75) menghasilkan D3 44% / S1 41% / S2 15%,
+    yaitu terlalu banyak D3 dan S2 belasan kali lipat dari kenyataan (F-020: S2 = 1%
+    pelamar). Nilai sekarang menghasilkan D3 28,3% / S1 67,2% / S2 4,5% -- galat total
+    2,3 poin, hasil pencarian grid atas ketiga peluang. Kalibrasi ini menjadikan
+    demografi.yaml sebagai PENGUJI kaskade, bukan sekadar tetangga yang tidak saling cek.
+  alasan_level_2_rendah: >
+    Hanya 20% lowongan Officer diisi promosi dari Junior Officer. Terlihat rendah, tapi
+    itu konsekuensi bentuk piramida yang NYATA: G1 cuma 6.166 pegawai sedangkan G2 10.807
+    (F-042). Kalau mayoritas G2 berasal dari promosi G1, G1 mustahil lebih kecil dari G2.
+    Jadi jalur masuk utama PLN memang S1/D4 langsung ke G2, bukan naik dari G1.
+
+# ---------------------------------------------------------------------------
+# 2. RINCIAN SEBAB KELUAR
+# ---------------------------------------------------------------------------
+sebab_keluar:
+  rujukan: "F-036 -- rincian 2024: pensiun normal 731P/146W, pensiun dini 5P/2W"
+  porsi:
+    pensiun_normal:      0.851
+    pensiun_dini:        0.007
+    mengundurkan_diri:   0.080    # APS -- Atas Permintaan Sendiri
+    meninggal_dunia:     0.040
+    phk:                 0.022
+  status_sumber_tiga_terakhir: TURUNAN
+  catatan: >
+    F-036 merinci pensiun secara eksplisit (884 dari 1.031 = 85,7%) dan menyebut sisanya
+    sebagai "meninggal, mengundurkan diri, PHK" tanpa memecahnya. Pemecahan 8,0/4,0/2,2
+    di atas TURUNAN.
+  dominasi_pensiun: true
+  implikasi: >
+    Karena attrition didominasi pensiun, kekosongan bisa DIPREDIKSI jauh hari dari
+    tanggal lahir pegawai. Itulah kenapa perencanaan kebutuhan rekrutmen masuk akal
+    dimodelkan -- dan kenapa dashboard proyeksi pensiun punya nilai nyata.
+
+usia_pensiun: 56
+status_sumber_usia_pensiun: ASUMSI
+catatan_usia_pensiun: "Tidak ditemukan di 0056/0050/0048; 56 adalah praktik umum BUMN."
+
+# ---------------------------------------------------------------------------
+# 3. MEKANISME PERGERAKAN (nama resmi dari Perdir 0050)
+# ---------------------------------------------------------------------------
+mekanisme_pergerakan:
+  rujukan: "F-015 -- Perdir 0050.E-DIR-2023, 93 halaman"
+  daftar:
+    - {nama: "Tugas Karya",             sebutan_di_perdir: 114, menciptakan_kekosongan: true}
+    - {nama: "Mutasi",                  sebutan_di_perdir: 68,  menciptakan_kekosongan: true}
+    - {nama: "APS (Atas Permintaan Sendiri)", sebutan_di_perdir: 29, menciptakan_kekosongan: true}
+    - {nama: "Pensiun",                 sebutan_di_perdir: 26,  menciptakan_kekosongan: true}
+    - {nama: "Rotasi",                  sebutan_di_perdir: 7,   menciptakan_kekosongan: false}
+    - {nama: "Promosi",                 sebutan_di_perdir: 3,   menciptakan_kekosongan: false}
+    - {nama: "Demosi",                  sebutan_di_perdir: 2,   menciptakan_kekosongan: false}
+  peringatan_sebutan: >
+    Kolom `sebutan_di_perdir` adalah JUMLAH KEMUNCULAN KATA di dokumen, BUKAN jumlah
+    kejadian per tahun. Jangan dipakai sebagai bobot frekuensi. Nilainya hanya untuk
+    menunjukkan mekanisme mana yang diatur paling rinci.
+  catatan_rotasi: >
+    Rotasi/promosi/demosi memindahkan orang TANPA menciptakan kekosongan bersih --
+    kursi lama terisi kursi baru kosong. Tetap dimodelkan karena memengaruhi komposisi
+    unit, tapi tidak menambah kebutuhan rekrutmen.
+
+# ---------------------------------------------------------------------------
+# 4. CARVE-OUT — WAJIB DIPISAH DARI ATTRITION
+# ---------------------------------------------------------------------------
+carve_out:
+  peringatan: >
+    JANGAN menafsirkan setiap penurunan headcount sebagai orang keluar. Penurunan
+    2022->2023 sebesar -3.609 di Induk terjadi bersamaan dengan KENAIKAN +3.377 di
+    Anak Perusahaan. Itu PEMINDAHAN ke subholding, bukan attrition. Kalau digabung,
+    laju attrition 2023 akan terbaca +-9,5% -- 3,5x angka sebenarnya, dan seluruh
+    proyeksi kebutuhan rekrutmen ikut ngawur.
+  rujukan: "F-045, F-036"
+  kejadian:
+    - tahun: 2023
+      induk_delta: -3609             # perubahan headcount TOTAL, bukan carve-out murni
+      anak_delta: 3377
+      carve_out_murni: 3138          # DITURUNKAN langkah 04, lihat catatan di bawah
+      jenis: CARVE_OUT
+      keterangan: "Pemindahan pegawai ke subholding (pembangkitan)"
+  turunan_carve_out_murni: >
+    Identitas headcount 2023 menyisakan selisih +3.138 yang tidak bisa dijelaskan attrition
+    maupun rekrutmen: 42.151 + 689 (direkrut) - 1.160 (keluar) = 41.680 vs nyata 38.542.
+    Angka 3.138 itulah carve-out murni. Silang-periksa: Anak Perusahaan naik +3.377 di
+    periode yang sama (F-045). Selisih 239 orang = rekrutmen subholding sendiri --
+    besaran yang wajar. Dua jalur perhitungan yang sepenuhnya terpisah mendarat berdekatan,
+    jadi tafsir carve-out ini kuat.
+  tahun_attrition_wajar:
+    - {tahun: 2022, induk_delta: -604, jenis: ATTRITION}
+  simpan_sebagai_kolom_terpisah: true
+  nama_kolom: jenis_perubahan_headcount
+  nilai: [ATTRITION, CARVE_OUT, REKRUTMEN, MUTASI_MASUK]
+
+# ---------------------------------------------------------------------------
+# 5. RUNTUN HEADCOUNT (jangkar nyata)
+# ---------------------------------------------------------------------------
+headcount:
+  rujukan: "F-044 -- cek silang antar edisi SR, cocok angka-per-angka untuk 2022 & 2023"
+  identitas_terverifikasi: "Statistik PLN (Group) = SR (Induk) + SR (Anak & Afiliasi)"
+  selisih_identitas: {2022: 0, 2023: 0, 2024: 3}
+  runtun:
+    2016: {group: 51158, induk: 43956, anak: 7202,  kualitas: nyata}
+    2017: {group: 54820, induk: 46062, anak: 8758,  kualitas: nyata}    # PUNCAK
+    2018: {group: 54124, induk: 45497, anak: 8627,  kualitas: nyata}
+    2019: {group: null,  induk: null,  anak: null,  kualitas: belum_ditemukan}
+    2020: {group: 53385, induk: 44310, anak: 9075,  kualitas: nyata}    # induk NYATA (SR-2020)
+    2021: {group: 52116, induk: 42755, anak: 9361,  kualitas: sebagian_turunan}
+    2022: {group: 51477, induk: 42151, anak: 9326,  kualitas: nyata}
+    2023: {group: 51245, induk: 38542, anak: 12703, kualitas: nyata}
+    2024: {group: 51438, induk: 38289, anak: 13146, kualitas: nyata}
+    2025: {group: null,  induk: 37423, anak: 12535, kualitas: sebagian_nyata}
+  koreksi_2020: >
+    KOREKSI v2. F-044 sebelumnya MENURUNKAN Induk 2020 = ~44.024 lewat identitas
+    `Group = Induk + Anak`. SR-2020 hal. 280 kini memberi angka NYATA: 44.310. Selisihnya
+    hanya ~286, jadi metode turunannya terbukti sehat -- tapi angka nyata yang dipakai.
+    Sekarang justru Anak 2020 yang diturunkan (53.385 - 44.310 = 9.075).
+  puncak_dan_kontraksi: >
+    2017 adalah PUNCAK headcount (46.062) sekaligus puncak rekrutmen (4.484 orang) --
+    era proyek 35.000 MW. Sejak itu turun terus ke 37.423 (2025), -19% dalam 8 tahun.
+    Busur ini nyata dan menjelaskan kenapa rekrutmen anjlok dari 4.484 (2017) ke 325 (2021).
+  belum_ditemukan_2019: >
+    Headcount Induk 2019 belum ketemu di sumber manapun (SR-2019 tidak dimiliki).
+    Tidak memblokir: ukuran kohort 2019 sudah berjangkar lewat "karyawan masuk" (F-048).
+  validasi_silang_internal:
+    dapeg_apr_2026: 37072
+    ftk_realisasi_des_2025: 37067
+    sr_2025_induk: 37423
+    ftk_2025: 37854
+    rujukan: "F-037 -- semua konsisten di kisaran ~37rb"
+
+# ---------------------------------------------------------------------------
+# 6. TURUNAN KEBUTUHAN REKRUTMEN — DIMODELKAN
+# ---------------------------------------------------------------------------
+kebutuhan_rekrutmen:
+  status_sumber: DIMODELKAN
+  peringatan: >
+    SELURUH Data Kebutuhan Rekrutmen (jabatan / unit peminta / jumlah / lokasi /
+    kompetensi) TIDAK TERSEDIA di sistem rekrutmen -- itu domain HST, bukan HTD (F-017).
+    Brosur pun tidak memuat satu pun angka kuota per posisi (F-027), dan
+    `total_job_available` di JSON RBB terbukti BUKAN kuota (F-043: totalnya 1,777 juta
+    untuk seluruh BUMN, semua kelipatan 1.000 -- bobot tampilan internal).
+    Jadi angka kebutuhan di mockdb 100% REKAAN. Ini justru INSIGHT UTAMA dashboard:
+    memperlihatkan gap antara perencanaan HST dan pelaksanaan HTD.
+  rumus:
+    kekosongan_proyeksi: "pensiun_proyeksi + APS_proyeksi + tugas_karya + mutasi_keluar"
+    gap_ftk: "ftk_tahun - realisasi_akhir_tahun_sebelumnya"
+    usulan_unit: "kekosongan_proyeksi + gap_ftk, dibulatkan ke atas per posisi"
+    pagu_ditetapkan: "usulan_unit x faktor_pemotongan"
+  faktor_penyesuaian:
+    status: DIHITUNG                 # bukan diasumsikan -- lihat langkah 05
+    metode: "pagu tahun T = ukuran kohort NYATA tahun T; faktor = pagu / usulan"
+    hasil_per_tahun: {2019: 0.35, 2020: 0.13, 2021: 0.29, 2022: 0.33, 2023: 0.69, 2024: 0.62, 2025: 0.83}
+    rata2_tertimbang: 0.41
+    catatan: >
+      Semula ditulis "rata2 0,62 sd 0,15" sebagai ASUMSI. Sekarang tidak perlu diasumsikan:
+      pagu dijangkar ke ukuran kohort nyata, jadi faktornya JATUH SENDIRI dari data.
+      Hasilnya jauh lebih rendah dan jauh lebih berayun dari tebakan awal -- terendah 0,13
+      di 2020 (COVID; satu-satunya gelombang adalah PPB Papua) dan tertinggi 0,83 di 2025.
+      Tren naik 2020 -> 2025 adalah cerita pemulihan yang nyata.
+    peringatan_jangan_dijumlah: >
+      Selisih usulan-vs-pagu TIDAK boleh dijumlah lintas tahun jadi "defisit pegawai".
+      Gap FTK adalah STOK kursi kosong yang diusulkan ULANG tiap tahun, jadi terhitung
+      berkali-kali. Yang boleh dideret lintas tahun hanya komponen kekosongan (aliran).
+  sumber_gap_ftk: "out/master/unit_induk.csv -- ftk_2024, ftk_2025, realisasi_des_2025, realisasi_mar_2026"
+  sumber_runtun_bulanan: "out/master/realisasi_bulanan.csv -- 13 titik bulanan per unit (F-053)"
+  peringatan_bulanan: >
+    JANGAN menjumlahkan realisasi bulanan tanpa mengecek jumlah unit pelapor. Kantor Pusat
+    kosong Jan-Agt 2025 (#REF! di sumber), jadi total bulan-bulan itu anjlok -3.947 lalu
+    melonjak +3.607 -- terbaca sebagai PHK massal lalu rekrutmen massal, padahal tidak
+    terjadi apa-apa. September & Oktober 2025 tidak punya kolom sama sekali.
+  catatan_ftk: >
+    Kolom FTK di master data NYATA (dari sheet Realisasi Pemenuhan FTK April 2026), jadi
+    gap-nya nyata. Yang dimodelkan hanya bagaimana gap itu diterjemahkan jadi usulan &
+    pagu per posisi. Bedakan keduanya di kamus data.

@@ -1,0 +1,241 @@
+# tahapan.yaml — kosakata tahapan, mode, pemilik proses, sistem sumber, penilaian
+# Rujukan: F-023, F-024, F-029, F-018, F-017, F-028, F-046, F-033
+#
+# PRINSIP: SATU kosakata tahapan untuk kedua jalur. Jalur adalah ATRIBUT
+# (`sumber_rekrutmen`), bukan struktur tabel terpisah. Bedanya cuma TITIK MASUK.
+
+meta:
+  versi: 1
+  urutan_dikunci_dari: "HANDOFF 2026-08-17 (kesepakatan user)"
+  peringatan_urutan: >
+    F-023 (sumber Gemini, keyakinan sedang) menaruh adaptif SEBELUM akademik, sedangkan
+    pipeline mock lama menaruh akademik lebih dulu. ReqGathering#4 sendiri menyatakan
+    urutan bisa berubah antar gelombang. Kami kunci urutan adaptif-dulu, dan menyediakan
+    `urutan` sebagai kolom data supaya gelombang tertentu bisa dibedakan tanpa ubah kode.
+
+# ---------------------------------------------------------------------------
+# 1. TAHAP SELEKSI — per kandidat
+# ---------------------------------------------------------------------------
+# mode              : online | offline | dokumen
+# lokasi            : rumah | kota_terkunci | n/a
+# pemilik_proses    : PLN_HTD | PLN_USER | FHCI | PUSDIKLAT | VENDOR
+# sistem_sumber     : sistem asli tempat datanya hidup (F-018)
+# skor_ada_di_sistem_asli : F-017 -- sistem HANYA menyimpan lulus/gagal. Hampir semua false.
+# masuk_mandiri / masuk_rbb : apakah tahap ini dilalui jalur tsb
+
+tahap_seleksi:
+  - kode: administrasi
+    nama: "Seleksi Administrasi"
+    urutan: 1
+    mode: dokumen
+    lokasi: "n/a"
+    pemilik_proses: PLN_HTD
+    sistem_sumber: "rekrutmen.pln.co.id"
+    ada_kehadiran: false
+    skor_ada_di_sistem_asli: false
+    masuk_mandiri: true
+    masuk_rbb: false                  # dikerjakan FHCI -- F-046 tahap 1
+    rujukan: "F-023, F-029"
+
+  - kode: adaptif
+    nama: "Tes Adaptif PLN (TAP)"
+    urutan: 2
+    mode: online
+    lokasi: rumah
+    proctoring_kamera: true
+    pemilik_proses: PLN_HTD
+    sistem_sumber: "rekrutmen.pln.co.id"
+    ada_kehadiran: true
+    skor_ada_di_sistem_asli: false
+    masuk_mandiri: true
+    masuk_rbb: false                  # setara TKD/AKHLAK di FHCI -- F-046
+    komponen: [abstract_reasoning, verbal_reasoning, numerical_reasoning, karakter_akhlak]
+    rujukan: "F-023 (GAT + Karakter/Budaya AKHLAK), F-024 (online, proctoring)"
+
+  - kode: akademik_inggris
+    nama: "Tes Akademik (TKB) & Bahasa Inggris"
+    urutan: 3
+    mode: online
+    lokasi: rumah
+    pemilik_proses: PLN_HTD
+    sistem_sumber: "seleksi.pln.co.id"
+    catatan_sistem: >
+      SATU-SATUNYA tahap yang datanya hidup di sistem berbeda. Per F-018, seleksi.pln.co.id
+      HANYA modul tes akademik & Inggris, dan hasilnya di-download manual lalu di-upload
+      per angkatan ke rekrutmen.pln.co.id. Serah-terima manual ini layak ditampilkan
+      di dashboard sebagai titik rawan integrasi.
+    ada_kehadiran: true
+    skor_ada_di_sistem_asli: false
+    masuk_mandiri: true
+    masuk_rbb: true                   # TITIK MASUK JALUR RBB
+    komponen: [akademik_tkb, bahasa_inggris]
+    komponen_rbb: [akademik_tkb]      # Inggris sudah dikerjakan FHCI -- JANGAN diulang
+    rujukan: "F-023, F-029 (Seleksi Awal Online Test), F-018, F-046"
+
+  - kode: psikologi
+    nama: "Tes Psikologi"
+    urutan: 4
+    mode: offline
+    lokasi: kota_terkunci
+    pemilik_proses: VENDOR
+    sistem_sumber: "rekrutmen.pln.co.id (hasil di-upload)"
+    ada_kehadiran: true
+    skor_ada_di_sistem_asli: false
+    masuk_mandiri: true
+    masuk_rbb: true
+    komponen: [wartegg, pauli_kraepelin, papi_kostick]
+    rujukan: "F-023 (Wartegg, Pauli/Kraepelin)"
+
+  - kode: fisik_mcu
+    nama: "Tes Fisik & Medical Check-Up"
+    urutan: 5
+    mode: offline
+    lokasi: kota_terkunci
+    pemilik_proses: VENDOR
+    sistem_sumber: "rekrutmen.pln.co.id (hasil di-upload)"
+    ada_kehadiran: true
+    skor_ada_di_sistem_asli: false
+    masuk_mandiri: true
+    masuk_rbb: true
+    komponen: [fisik_bmi, mata_visus, buta_warna, gigi, tht, jantung_ekg, paru_rontgen, lab_darah_urin, audiometri]
+    catatan_komponen: >
+      Kandidat SUDAH mengisi tinggi/berat/BMI/visus/silinder/lingkar perut/tato sejak
+      biodata (F-034). Jadi hasil MCU harus KONSISTEN dengan biodata -- BMI di luar rentang
+      harus mendarat sebagai temuan MCU, bukan angka baru yang bertentangan.
+    buta_warna_wajib_lulus_untuk: [TEKNIK]
+    rujukan: "F-023, F-029 (Seleksi Awal Offline Test), F-034"
+
+  - kode: wawancara
+    nama: "Wawancara User & HR"
+    urutan: 6
+    mode: offline
+    lokasi: kota_terkunci
+    pemilik_proses: PLN_USER
+    sistem_sumber: "rekrutmen.pln.co.id"
+    ada_kehadiran: true
+    skor_ada_di_sistem_asli: false
+    masuk_mandiri: true
+    masuk_rbb: true
+    komponen: [motivasi, komunikasi, penguasaan_bidang, kesesuaian_nilai_akhlak]
+    rujukan: "F-023, F-018 (HTD mengawal administrasi s/d wawancara)"
+
+# ---------------------------------------------------------------------------
+# 2. TAHAP FHCI — AGREGAT SAJA, tanpa nama
+# ---------------------------------------------------------------------------
+tahap_agregat_fhci:
+  berlaku_tahun: [2020, 2021, 2024]   # 2020 = PPB Papua (buka 30 Des), lihat kohort.yaml
+  simpan_sebagai: "tabel terpisah `seleksi_tahap_agregat` (tanggal + jumlah, tanpa kandidat_id)"
+  alasan: >
+    PLN tidak memegang data per-kandidat untuk tahap ini -- itu FAKTA, bukan kekurangan
+    mock. Tapi PLN pasti tahu berapa orang yang diserahkan ke TKB, jadi jumlahnya dicatat.
+    Tanpa angka ini funnel tahun RBB kosong dan tak bisa dibandingkan antar-jalur.
+  tahapan:
+    - {kode: fhci_administrasi, nama: "Seleksi Administrasi (FHCI)",         urutan: -3, pemilik_proses: FHCI, sistem_sumber: "rekrutmenbersama.fhcibumn.id"}
+    - {kode: fhci_tes_online_1, nama: "Tes Online 1: TKD, AKHLAK, TWK",      urutan: -2, pemilik_proses: FHCI, sistem_sumber: "rekrutmenbersama.fhcibumn.id"}
+    - {kode: fhci_tes_online_2, nama: "Tes Online 2: Inggris, Learning Agility", urutan: -1, pemilik_proses: FHCI, sistem_sumber: "rekrutmenbersama.fhcibumn.id"}
+  peran_pln_di_tahap_ini: "hanya menetapkan syarat (umur/IPK/jurusan/stream per lowongan)"
+  rujukan: "F-046, F-043"
+  pertanyaan_terbuka_htd:
+    - "Apakah kandidat RBB tercatat juga di rekrutmen.pln.co.id, atau baru masuk setelah diterima?"
+    - "Apakah skor tes FHCI diserahkan ke PLN, atau PLN hanya terima daftar yang lolos?"
+
+# ---------------------------------------------------------------------------
+# 3. TAHAP PASCA-SELEKSI (kedua jalur sama)
+# ---------------------------------------------------------------------------
+tahap_pasca:
+  - {kode: pengumuman_akhir, nama: "Pengumuman Hasil Seleksi", pemilik_proses: PLN_HTD,    sistem_sumber: "rekrutmen.pln.co.id"}
+  - {kode: ttd_kontrak,      nama: "Penandatanganan Perjanjian", pemilik_proses: PLN_HTD,  sistem_sumber: "rekrutmen.pln.co.id"}
+  - {kode: samapta,          nama: "SAMAPTA",                   pemilik_proses: PUSDIKLAT, sistem_sumber: "aplikasi Pusdiklat"}
+  - {kode: pembidangan,      nama: "Penetapan Pembidangan",     pemilik_proses: PUSDIKLAT, sistem_sumber: "aplikasi Pusdiklat"}
+  - {kode: ojt,              nama: "Diklat Prajabatan / First OJT", pemilik_proses: PUSDIKLAT, sistem_sumber: "aplikasi Pusdiklat"}
+  - {kode: ujian_ojt,        nama: "Ujian Akhir OJT",           pemilik_proses: PUSDIKLAT, sistem_sumber: "aplikasi Pusdiklat"}
+  - {kode: sk_penempatan,    nama: "SK Pengangkatan & Penempatan", pemilik_proses: PLN_HTD, sistem_sumber: "rekrutmen.pln.co.id"}
+catatan_pasca: >
+  F-018: HTD mengawal administrasi s/d wawancara, lalu PUSDIKLAT (prajabatan + uji akhir),
+  lalu hasil balik ke HTD untuk review -> SK Pengangkatan. Perpindahan kepemilikan ini
+  nyata dan bikin data terpecah dua aplikasi -- tandai di dashboard.
+  F-028: Juknis 0048-2025 memakai istilah "OJT - First OJT", bukan "Prajabatan". Kata
+  "Prajabatan" tidak muncul sama sekali di dokumen itu. Simpan kedua nama.
+
+# ---------------------------------------------------------------------------
+# 4. PASSING GRADE — SELURUHNYA DIMODELKAN
+# ---------------------------------------------------------------------------
+passing_grade:
+  status_sumber: DIMODELKAN
+  peringatan: >
+    TIDAK ADA passing grade di regulasi manapun yang kita punya. Perdir 0056, 0050, dan
+    Juknis 0048 sama-sama tidak memuatnya (F-028), dan sistem asli hanya menyimpan
+    lulus/gagal tanpa skor (F-017). Setiap angka di bawah ini REKAAN yang dikalibrasi
+    mundur dari laju lulus di funnel.yaml. Beri tanda `sumber_sistem = 'DIMODELKAN'`
+    pada semua kolom skor supaya dashboard bisa memisahkannya dari data nyata.
+  adaptif:
+    skala_subskor: [0, 100]
+    ambang_total: 65
+    ambang_minimum_tiap_subskor: 45
+    aturan: "lulus jika total >= ambang_total DAN tidak ada subskor < ambang minimum"
+    kategori: {I: [85, 100], II: [75, 85], III: [65, 75], IV: [50, 65], V: [0, 50]}
+  akademik_inggris:
+    skala: [0, 100]
+    ambang_total: 60
+    bobot: {akademik_tkb: 0.7, bahasa_inggris: 0.3}
+    ambang_total_rbb: 60
+    bobot_rbb: {akademik_tkb: 1.0}
+    penilaian: "benar/salah/kosong -> skor; kosong tidak mengurangi"
+  psikologi:
+    hasil: [DISARANKAN, DISARANKAN_DENGAN_PERTIMBANGAN, TIDAK_DISARANKAN]
+    lulus_jika: [DISARANKAN, DISARANKAN_DENGAN_PERTIMBANGAN]
+  fisik_mcu:
+    hasil: [FIT, FIT_WITH_NOTE, UNFIT]
+    lulus_jika: [FIT, FIT_WITH_NOTE]
+    aturan_buta_warna: "UNFIT otomatis untuk profesi bidang TEKNIK"
+  wawancara:
+    skala_aspek: [1, 5]
+    aspek: [motivasi, komunikasi, penguasaan_bidang, kesesuaian_nilai_akhlak]
+    ambang_rata2: 3.25
+    hasil: [DISARANKAN, DISARANKAN_DENGAN_PERTIMBANGAN, TIDAK_DISARANKAN]
+
+# ---------------------------------------------------------------------------
+# 5. KEHADIRAN / NO-SHOW
+# ---------------------------------------------------------------------------
+kehadiran:
+  rata2_hadir: 0.56
+  rujukan: "F-020 -- 566.774/1.015.830"
+  pola: "no-show tertinggi di tes massal pertama, lalu turun tajam"
+  laju_per_tahap: "lihat funnel.yaml (satu sumber angka, jangan diduplikasi di sini)"
+  status_hadir: [HADIR, TIDAK_HADIR, TIDAK_DIUNDANG]
+
+# ---------------------------------------------------------------------------
+# 6. KOTA PENYELENGGARA (43 -- F-019)
+# ---------------------------------------------------------------------------
+kota_penyelenggara:
+  jumlah_target: 43
+  rujukan: "F-019 (43 kota penyelenggara); nama kota dari F-031, F-032, F-006, F-024"
+  dari_arsip_2017_smk:        # F-031
+    [Banda Aceh, Medan, Padang, Pekanbaru, Tanjung Pinang, Jakarta, Bandung, Yogyakarta,
+     Pontianak, Banjarmasin, Balikpapan, Makassar, Palu, Gorontalo, Mamuju, Ternate,
+     Ambon, Kupang, Ende, Jayapura, Timika]
+  dari_arsip_2019_reguler:    # F-032
+    [Surabaya, Palembang, Manado, Bandar Lampung]
+  dari_afirmasi_papua:        # F-006
+    [Manokwari, Merauke, Nabire, Biak, Sorong, Wamena]
+  turunan_ibukota_provinsi_lain:
+    [Semarang, Denpasar, Mataram, Jambi, Bengkulu, Pangkal Pinang, Samarinda, Kendari,
+     Batam, Serang, Palangka Raya, Sofifi]
+  catatan: >
+    21 + 4 + 6 + 12 = 43. Kelompok terakhir TURUNAN (melengkapi ke angka 43 yang
+    disebut F-019); tiga kelompok pertama diambil dari judul program asli.
+  kota_offline_utama: [Jakarta, Medan, Surabaya, Makassar, Palembang, Balikpapan]
+  rujukan_utama: "F-024"
+
+# ---------------------------------------------------------------------------
+# 7. KANAL PENGUMUMAN & NOTIFIKASI
+# ---------------------------------------------------------------------------
+kanal_pengumuman:
+  daftar: [Website, "Job Fair", Iklan, "Career Website eksternal", "Media Sosial"]
+  rujukan: "F-029 (Tabel 3 Juknis 0048)"
+  berlaku_untuk_jalur: [mandiri, rbb]
+  catatan: "PLN tetap menyebarkan info RBB ke kanal sendiri -- HANDOFF butir 3."
+kanal_notifikasi_hasil:
+  daftar: [email, SMS, website]
+  rujukan: "F-029"
+fitur_disebut: ["tracking status lamaran", "real-time confirmation"]

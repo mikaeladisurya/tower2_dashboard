@@ -10,6 +10,9 @@ Klaim: `rekrutmen.pln.co.id/vacancy/site/index` memuat **31 program** (2020–20
 4 halaman. Tiap program: judul, jenjang, lokasi tes, minat profesi, program studi, tgl buka/tutup,
 status, + PDF brosur. Semua field terisi 31/31.
 Sumber: R1 (scrape 2026-08-16, `sources/rekrutmen_pln/programs.csv`) · Keyakinan: **tinggi** · Dampak: **nama & struktur program/angkatan pakai data asli, bukan karangan.**
+> **⚠️ DIPERBARUI setelah R1c/R4:** 31 itu hanya yang **masih tampil publik**. Katalog sebenarnya
+> jauh lebih besar: **111 judul** pulih dari arsip (F-030) dan **222 rekrutmen** tercatat di sistem
+> HTD (F-021). Jangan pakai angka 31 sebagai jumlah angkatan historis.
 
 ### F-002 · Rekrutmen PLN itu PLN GROUP, bukan Holding saja ⚠️
 Klaim: SEMUA program berlabel "PLN GROUP" dengan **penempatan ke subholding/AP**:
@@ -47,9 +50,12 @@ Sumber: R1 · Keyakinan: tinggi · Dampak: tabel program afirmasi = per kota, bu
 Klaim: pendaftaran ~5–14 hari (2025 Nasional: 01–05 Okt; 2023 Diaspora: 03–17 Jul).
 Jenis yang muncul: Reguler S1/D4/D3, S2 Fresh Graduate & Pro Hire (ICE 2022), S1/S2 Diaspora
 (Fresh Graduate & Experienced), Bidang khusus (Matematika, Hukum), Afirmasi 3T.
-Tahun yang muncul di situs: 2020, 2022, 2023, 2025 (2021 & 2024 tidak muncul — kemungkinan tak
-dipublish/tak ada gelombang).
-Sumber: R1 · Keyakinan: sedang (ketiadaan 2021/2024 belum tentu berarti tak ada rekrutmen) · Dampak: kalibrasi tanggal & jumlah angkatan per tahun.
+Tahun yang muncul di situs: 2020, 2022, 2023, 2025 (2021 & 2024 tidak muncul).
+Sumber: R1 · Keyakinan: sedang · Dampak: kalibrasi tanggal & jumlah angkatan per tahun.
+> **✅ TERJAWAB (lihat F-041):** kekosongan 2021 & 2024 nyata — arsip Wayback tidak memuat satu pun
+> judul program baru di kedua tahun itu (padahal cakupan arsip 2021 bagus: 32 snapshot). Penjelasannya:
+> tahun-tahun itu PLN merekrut lewat **jalur PPB/RBB (Rekrutmen Bersama BUMN)** yang pengumumannya
+> ada di situs FHCI, bukan situs PLN.
 
 ### F-008 · Nomor angkatan ASLI = seri paralel per peruntukan
 Klaim: penomoran angkatan = **beberapa seri paralel per peruntukan**, bukan satu seri global.
@@ -70,6 +76,11 @@ ICON (Icon Plus), PLN (PLN Persero); TIPE = UM (Umum), OAP (Orang Asli Papua), H
 S2EX (S2 Experienced). Contoh: IP.UM.D3, ND.UM.S1, PLN.OAP.S1, S2EX.HK. Program lama (2022–23)
 pakai kode numerik `{n}.{m}` (4.8, 3.1, ICON.14).
 Sumber: R1 · Keyakinan: tinggi · Dampak: skema `kode_profesi` mockdb + konfirmasi daftar subholding penempatan.
+> **✅ Menjawab pertanyaan lama soal nomor tes.** Format Sample-05 `2511/ES/92/D3-ELE/135615`:
+> segmen **`ES` = PLN Electricity Services** (subholding penempatan) — bukan kode misterius.
+> Jadi nomor tes = `{YYMM}/{kode subholding}/{angkatan}/{jenjang-jurusan}/{nomor urut}`.
+> Konsekuensi: segmen itu **tidak perlu dihilangkan** seperti keputusan sebelumnya — justru bermakna
+> dan sebaiknya dipakai di mock.
 
 ### F-010 · Granularitas: 1 program → banyak profesi
 Klaim: 31 program → **128 profesi**. Tiap profesi = (jenjang × rumpun jurusan × penempatan) dengan
@@ -198,6 +209,60 @@ mock — kandidat = akun persisten lintas angkatan; 1 akun bisa daftar banyak an
 Klaim: 1–2×/tahun. Mandiri (Nasional PLN Group) ~1×/th di Q3/Q4 (Sep–Okt); RBB (Rekrutmen Bersama
 BUMN via FHCI) ~1×/th; plus kondisional (SMK/pelaksana, putra-putri daerah, S2 khusus spt hukum).
 Sumber: R3 · Keyakinan: sedang-tinggi · Dampak: kalibrasi jumlah & jadwal angkatan/tahun di mock.
+
+### F-041 · Jalur PPB/RBB menjelaskan tahun kosong 2021 & 2024 [R1c+R3]
+Klaim: **2021 = PPB (Program Perekrutan Bersama)**, **2022–2024 = RBB (Rekrutmen Bersama BUMN)**
+diselenggarakan **FHCI**, dan PLN ikut serta bersama Pertamina/Mandiri/BRI/KAI dll. Pengumuman RBB
+ada di `rekrutmenbersama.fhcibumn.id`, **bukan** di situs rekrutmen PLN → karena itu 2021 & 2024
+kosong di katalog PLN. Jejaknya tetap terlihat: arsip memuat *"REKRUTMEN PPB BUMN KHUSUS PUTRA
+PUTRI PAPUA"*. RBB 2024 secara total (semua BUMN) merekrut 5.900 pegawai reguler + 231 disabilitas.
+Sumber: R1c (bukti negatif dari 153 snapshot) + R3 (FHCI/berita) · Keyakinan: tinggi (adanya jalur RBB),
+sedang (bahwa itu satu-satunya sebab kekosongan) · Dampak: menjelaskan kenapa kohort prajabatan tetap
+terisi di tahun tanpa program PLN (mis. prajabatan 2025 = 1.098). **Catatan scope:** user sejak awal
+memutuskan mock fokus ke program rekrutmen PLN sendiri, jadi RBB **di luar cakupan** — tapi wajib
+diketahui agar timeline & angka kohort tidak salah tafsir.
+
+### F-042 · Rekrutmen TIDAK langsung ke jabatan struktural ⭐ [aturan bisnis, tervalidasi DAPEG]
+Klaim (dari user, diverifikasi ke DAPEG): pegawai baru **tidak mungkin** langsung menempati jabatan
+struktural — Team Leader, Assistant Manager, Manager, Senior Manager, GM, VP, EVP. Jalurnya harus
+lewat jenjang pelaksana dulu.
+Verifikasi di `jabatan_klasifikasi.csv`:
+- **Struktural (dikecualikan dari target rekrutmen):** 3.979 posisi / 14.907 pegawai —
+  TEAM LEADER (G2), ASSISTANT MANAGER (G3), MANAGER (MD/G3), SENIOR MANAGER (MM), VP (MM), GM & EVP (MA).
+- **Non-struktural G1/G2 (target sah):** 1.493 posisi / 16.973 pegawai.
+- **Entry level fresh graduate = G1:** JUNIOR TECHNICIAN (4.968 pegawai) + JUNIOR OFFICER (1.198) — 383 posisi.
+⚠️ **Penting:** jenjang saja tidak cukup untuk memfilter — **TEAM LEADER juga G2**, sama dengan
+OFFICER/TECHNICIAN. Filter harus pakai `kelompok_jabatan`, bukan `jenjang`.
+Keyakinan: tinggi · Dampak: aturan wajib di generator penempatan OJT & SK — hanya JUNIOR OFFICER/
+JUNIOR TECHNICIAN (dan OFFICER/TECHNICIAN untuk Pro Hire/experienced), **tidak pernah** struktural.
+
+### F-043 · Lowongan PLN di RBB 2024 berhasil dipanen dari arsip ⭐ [R7]
+Situs RBB sudah mati (SSL error), tapi Wayback mengarsipkan endpoint datanya
+`rekrutmenbersama2024.fhcibumn.id/job/loadRecord/` (JSON 2,5 MB, 663 lowongan seluruh BUMN).
+**20 lowongan milik PLN Group** (`sources/rbb_fhci/lowongan_pln_rbb.csv`).
+
+**Entitas:** PLN ICON Plus 7 · PLN (Persero) 5 · PLN Batam 5 · Haleyora Power 3.
+**Stream:** Digitalisasi & IT **7** · Engineering & Maintenance 6 · Keuangan 2 ·
+Operasi/Produksi/Proyek 2 · Pengembangan Usaha/R&D 2 · Bisnis Niaga/Pemasaran 1.
+**Syarat:** semua `vacancy_type` = **Fresh Graduate**; **umur maks D3 27 / S1 30**; **IPK min 3,00**;
+`check_certificate` = 0. Tersedia juga daftar jurusan granular asli (`major_non_sma_custom`,
+mis. "Instrumentasi Fisik, Teknik Biomedika, Teknik Elektro, …").
+
+⚠️ **`total_job_available` BUKAN kuota.** Jumlahnya 1.777.000 untuk seluruh BUMN (RBB 2024 nyatanya
+merekrut ~5.900) dan semua nilainya kelipatan 1.000 → kemungkinan bobot tampilan internal. Sudah
+dikecualikan dari ekstraksi. **Kuota per posisi tetap tidak ditemukan di sumber manapun** (konsisten F-017/F-027).
+
+**Dua kontras penting vs rekrutmen PLN sendiri:**
+1. **Batas umur beda per jalur** — RBB: S1 ≤30; rekrutmen PLN sendiri: S1 ≤27 (F-022). Aturan
+   administrasi mock harus per-jalur, bukan satu angka global.
+2. **Bauran posisi beda** — RBB didominasi IT/Digital & subholding (Icon Plus/Batam/Haleyora),
+   sedangkan rekrutmen PLN sendiri didominasi Distribusi/Transmisi (F-038, DAPEG).
+Sumber: R7 · Keyakinan: tinggi · Dampak: kalau RBB dimasukkan ke mock, perlakukan sebagai **jalur
+terpisah** dengan aturan & bauran posisi sendiri.
+> Catatan cakupan: user sejak awal menetapkan mock fokus ke program rekrutmen PLN sendiri, jadi RBB
+> tetap **opsional/di luar cakupan inti** — tapi datanya kini tersedia bila mau dipakai.
+> **Belum terpanen:** PPB 2021 & edisi RBB lain — percobaan CDX berikutnya kena *rate limit*
+> archive.org (respons kosong), **bukan** bukti arsipnya tak ada. Bisa dicoba ulang lain waktu.
 
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst

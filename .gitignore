@@ -58,3 +58,5 @@ knowledge/sources/rekrutmen_pln/akun/*
 knowledge/sources/rekrutmen_pln/.browser_profile/
 # PDF laporan resmi PLN (publik tapi besar & bisa diunduh ulang kapan saja).
 knowledge/sources/laporan_pln/pdf/
+
+knowledge/sources/rbb_fhci/raw_*.json

@@ -392,8 +392,27 @@ Verifikasi di `jabatan_klasifikasi.csv`:
 - **Entry level fresh graduate = G1:** JUNIOR TECHNICIAN (4.968 pegawai) + JUNIOR OFFICER (1.198) — 383 posisi.
 ⚠️ **Penting:** jenjang saja tidak cukup untuk memfilter — **TEAM LEADER juga G2**, sama dengan
 OFFICER/TECHNICIAN. Filter harus pakai `kelompok_jabatan`, bukan `jenjang`.
-Keyakinan: tinggi · Dampak: aturan wajib di generator penempatan OJT & SK — hanya JUNIOR OFFICER/
-JUNIOR TECHNICIAN (dan OFFICER/TECHNICIAN untuk Pro Hire/experienced), **tidak pernah** struktural.
+
+**Tangga jabatan non-struktural (terverifikasi DAPEG):**
+
+| Grade | Kelompok jabatan | Pegawai |
+|---|---|---:|
+| G1 | Junior Technician 4.968 · Junior Officer 1.198 | 6.166 |
+| G2 | Officer 7.976 · Technician 2.831 | 10.807 |
+| G3 | Senior Officer 4.384 · Senior Technician 269 | 4.653 |
+| SPC/SSP | Specialist 461 · Senior Specialist 59 | 520 |
+
+Pola: **Junior X (G1) → X (G2) → Senior X (G3) → Specialist (SPC/SSP)**.
+
+**Grade masuk menurut jenjang pendidikan** (dari pengetahuan domain user — **TIDAK dapat
+diverifikasi dari DAPEG karena DAPEG tidak punya kolom pendidikan**):
+- **SMK / D3** → **G1** (Junior Officer / Junior Technician)
+- **S1 / D4** → **G2** (Officer / Technician) — *bukan* Junior
+- **S2** → **G3** (Senior Officer) — Pro Hire mungkin ke SPC
+Keyakinan: tinggi (tangga jabatan & aturan non-struktural), **sedang (pemetaan pendidikan→grade:
+sumber pengetahuan domain, belum ada data pembanding)** · Dampak: aturan wajib di generator
+penempatan OJT & SK. Jangan tempatkan semua pendaftar ke Junior — sesuaikan grade dengan jenjang
+pendidikannya, dan **tidak pernah** ke jabatan struktural.
 
 ### F-043 · Lowongan PLN di RBB 2024 berhasil dipanen dari arsip ⭐ [R7]
 Situs RBB sudah mati (SSL error), tapi Wayback mengarsipkan endpoint datanya

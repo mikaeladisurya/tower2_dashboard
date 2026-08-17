@@ -935,6 +935,286 @@ tapi belum dikonfirmasi HTD) · Dampak: mengunci seluruh skala volume mockdb.
 menghitung **orang** atau **aplikasi**? Satu kalimat jawaban mengunci atau merontokkan seluruh
 kalibrasi volume di atas.
 
+### F-057 · Arsip resmi siaran pers PLN saat ini TIDAK BISA dipakai [R8]
+Klaim: domain lama `web.pln.co.id` (sumber semua URL siaran pers yang sejauh ini kita rujuk,
+termasuk F-039/angka 245.217) **sudah mati DNS-nya** — didekomisioning, bukan gangguan sementara.
+Domain baru `www.pln.co.id/news/press-release` sudah live tapi endpoint datanya
+(`/assets/sample/press-release.json`) masih **data contoh dari developer**: gambar dari
+`fakestoreapi.com`, judul "PLN Raih Penghargaan" berulang, isi "This is a test paragraph".
+Sumber: R8 (probe `curl`+`WebFetch` 2026-08-17: `web.pln.co.id` → `ENOTFOUND`; `www.pln.co.id` →
+JSON dummy + backend CMS `cmscorp.sadigit.cloud` balas 500 WordPress kosong) · Keyakinan: **tinggi**
+· Dampak: **rencana R8 Tingkat-1 (arsip resmi terstruktur) gugur untuk sumber ini.** Angka historis
+dari domain lama (mis. F-039 245.217, F-043 sitiran RBB) tetap sah — itu snapshot yang sudah
+ditangkap sebelum domain mati, bukan diragukan. Tapi tidak ada lagi cara terprogram menambah
+angka baru dari kanal ini; jalur produktif = pers daerah (F-058) + halaman artikel
+`rekrutmen.pln.co.id/content/...` (belum dipanen, kandidat R8 lanjutan) + situs kampus/politeknik.
+
+### F-058 · Funnel per-tahap TIDAK seragam antar gelombang — bukti dari berita lokal ⭐⭐ [R8]
+Klaim: `funnel.yaml` mengunci `lulus_administrasi_pct: 0,64` dan `akademik_inggris.lulus_pct: 0,45`
+sebagai angka tunggal berlaku semua gelombang. Berita lokal PLN UP3 Biak (afirmasi OAP, Okt 2025)
+membantah ini secara langsung dengan funnel per-tahap yang terekam utuh:
+
+| Tahap | Jumlah | Rasio thd tahap sebelumnya |
+|---|---:|---:|
+| Mendaftar (8–21 Sep 2025) | 301 | — |
+| Lolos administrasi | 155 | **51,5%** (vs jangkar nasional 64%) |
+| Hadir akademik+Inggris | 139 | 89,7% |
+| Hadir psikologi | 138 | **99,3%** (1 orang absen tanpa keterangan; NOL yang gugur) |
+
+Bandingkan dengan funnel nasional afirmasi Papua yang lebih besar: **1.658 peserta lolos
+administrasi dari 6 provinsi**, tes akademik/Inggris/TAP digelar serentak **6–9 Okt 2025 di 8 kota**
+(bukan bertahap dengan jeda pengumuman, beda dengan pola nasional/mandiri di funnel.yaml).
+
+**Diagnosis:** ada minimal dua *mode* seleksi, bukan satu:
+- **Mode nasional/mandiri** (dasar funnel.yaml saat ini): tahap terpisah, jeda antar-pengumuman,
+  no-show tinggi di tahap awal (pelamar iseng rontok di TAP).
+- **Mode afirmasi/remote** (Papua, mungkin 3T lain): tes diborong 2–4 hari di satu venue karena
+  lokasi terpencil — logistik tidak memungkinkan gelombang berjenjang. Kehadiran ~99%, eliminasi
+  administrasi lebih longgar (kuota afirmasi terisi jauh di bawah pelamar per profesi umum),
+  hampir tidak ada yang gugur di tahap akademik/psikologi begitu hadir administrasi.
+
+Ini **menjelaskan** kebuntuan langkah 05/06 mockdb: jumlah pendaftar per tahap per gelombang
+dipaksa keluar dari SATU funnel nasional, sementara kebutuhan unit & gender per tahun juga
+dikunci terpisah — sistemnya over-determined, tidak ada solusi konsisten.
+Sumber: RRI ([pln-up3-biak-gelar-tes-rekrutmen-pegawai](https://rri.co.id/daerah/1888397/pln-up3-biak-gelar-tes-rekrutmen-pegawai)),
+Cenderawasih Pos ([301-pendaftar-antusias](https://cenderawasihpos.jawapos.com/lintas-papua/biak/10/10/2025/rekrutmen-pln-up3-biak-prioritaskan-afirmasi-oap-301-pendaftar-antusias/)),
+ParaparaTV ([1.658 peserta 8 kota](https://www.paraparatv.id/2025/10/ikuti-seleksi-pln-1-658-putra-putri-terbaik-papua-ikut-tes-rekrutmen-di-8-kota/))
+· Keyakinan: **tinggi** untuk angka Biak (dua media independen sama persis); **sedang** untuk
+generalisasi "mode afirmasi = borongan" (baru 1 gelombang terverifikasi lengkap)
+· Dampak: **funnel.yaml harus pecah jadi arketipe per jenis gelombang** (nasional/mandiri vs
+afirmasi/remote), bukan satu angka jangkar dipaksa ke semua baris `seleksi_tahap`. Jangkar F-019
+(64%/2,05%) tetap berlaku sebagai **rata-rata tertimbang seluruh gelombang**, bukan aturan per-gelombang.
+
+### F-059 · Titik data funnel tambahan (kalibrasi arketipe, keyakinan bervariasi) [R8]
+Klaim ringkas, tiap baris dari satu artikel bersitasi:
+- **UGM Career Days 2017** (jalur *campus hiring*, D3+S1/D4): **942 peserta hadir psikotest**
+  di Jogja Expo Center, 3 Apr 2017 — psikotest = tahap ke-4 (setelah administrasi, akademik+Inggris,
+  adaptif). Sumber: [rekrutmen.pln.co.id/content/.../peserta-rekrutmen-pln-antusias-ikuti-psikotest](https://rekrutmen.pln.co.id/content/view/Mjk2MTQ5MTc3NTcyOA--/peserta-rekrutmen-pln-antusias-ikuti-psikotest),
+  kutipan Hardian Sakti Laksana (Deputi Manajer Komunikasi & Bina Lingkungan). **Di luar horison
+  2020+**, dipakai hanya sebagai kalibrasi bentuk arketipe *campus hiring* (venue tunggal per
+  kampus/kota, bukan per-provinsi).
+- **Rekrutmen Group 2025 nasional**: **245.217 pendaftar**, tutup 5 Okt 2025, tahapan akademik+Inggris
+  → adaptif → kesehatan → wawancara final, tes digelar di 10 kota (Medan, Ambon, Mataram,
+  Banjarmasin, Yogyakarta, Makassar, Manado, Jayapura, Jakarta, Palembang). Menguatkan F-039,
+  bukan temuan baru — dicatat di sini karena sumbernya kini IDN Times (mengutip Direktur Legal &
+  Manajemen Human Capital PLN Yusuf Didi Setiarto), bukan siaran pers langsung (F-057: siaran
+  pers asli sudah tak terlacak).
+Sumber: lihat tiap baris · Keyakinan: **rendah–sedang** (satu titik data per klaim, tidak
+lintas-verifikasi) · Dampak: bahan mentah untuk `mockdb/rules/funnel.yaml` arketipe *campus_hiring*;
+tidak mengubah jangkar apa pun.
+
+### F-060 · Panen putaran 2 (subholding + wilayah lain Papua) — konfirmasi pola, tanpa arketipe baru [R8]
+Klaim: perluasan pencarian ke (a) situs karier 4 subholding besar (Indonesia Power, Nusantara Power,
+Icon Plus — Nusa Daya/EPI/PLN ES tidak dicek terpisah) dan (b) media daerah lain di luar 2 yang
+awalnya dibagikan user, menghasilkan:
+- **Subholding: NIHIL angka.** Situs karier subholding (`plnipservices.co.id/careers`,
+  `pln-npservices.com/karir`, `plniconplus.co.id/careers`) semuanya halaman generik tanpa siaran
+  pers berangka. Pola F-057 (hanya liputan holding yang menghasilkan angka) **menguat**: rekrutmen
+  subholding tidak diliput media dengan detail proses/statistik seperti holding.
+- **Wilayah Papua lain, media lain, angka baru:**
+  - **UIW Papua & Papua Barat** (cakupan provinsi, bukan per-UP3): **1.186 pendaftar** per 12 Sep
+    2025 (tengah jendela pendaftaran 8-21 Sep) — GM Diksi Erfani Umar, sumber KabarPapua/BeritaSatu.
+  - **Nabire** (kabupaten, bagian dari gelombang Papua yang sama): dari **106 terdaftar, 88 hadir
+    tes offline (83%)** 7-8 Okt 2025 — beda bentuk metrik dari Biak (ini terdaftar→hadir-offline,
+    bukan tahap seleksi berurutan; sisanya kemungkinan besar tes online, bukan gugur).
+  - Satu angka ditemukan lalu **dibuang**: "7.209 peserta lulus administrasi" (Politeknik Ujung
+    Pandang 2023) ternyata halusinasi ringkasan pencarian — halaman aslinya (`poliupg.ac.id`,
+    diverifikasi via WebFetch) **tidak memuat angka itu**; daftar sebenarnya ada di lampiran PDF
+    yang tidak terbaca. Dicatat sebagai pengingat: **selalu verifikasi ke sumber primer**, jangan
+    percaya ringkasan mesin pencari untuk angka.
+- **Media yang sudah dipakai lintas 5 titik data:** RRI (daerah), Cenderawasih Pos, ParaparaTV,
+  KabarPapua/BeritaSatu, IDN Times, rekrutmen.pln.co.id (artikel lama, arsip 2017). Semuanya
+  **Papua/afirmasi atau nasional** — belum ada satu pun titik dari gelombang reguler di Jawa/Sumatera/
+  Sulawesi non-afirmasi, konsisten dengan diagnosis awal (media lokal hanya meliput yang punya
+  sudut berita: afirmasi, rekor jumlah pendaftar).
+Sumber: lihat F-058/F-059 untuk daftar lengkap + `sources/berita/berita_rekrutmen.csv`
+· Keyakinan: pola "subholding nihil" **tinggi** (3 situs dicek, konsisten kosong); titik data baru
+sedang · Dampak: **tidak mengubah kesimpulan F-058** (funnel butuh arketipe, bukan angka tunggal).
+Menguatkan bahwa arketipe `afirmasi_remote` valid lintas beberapa UP3/kabupaten (Biak, Nabire), bukan
+kasus Biak yang kebetulan. Menutup R8 Tingkat-1 & sebagian besar Tingkat-2 untuk sesi ini — hasil
+lebih lanjut kemungkinan besar diminishing returns tanpa strategi baru (mis. panen sistematis semua
+artikel `rekrutmen.pln.co.id/content/all/2/artikel`, atau socmed humas unit/Instagram per UP3).
+
+### F-061 · Funnel LENGKAP 6-tahap dari blog pengalaman kandidat asli (Medan, 2015) ⭐⭐⭐ [R8]
+Klaim: blog pribadi (penulis mengidentifikasi diri sendiri — Rahmat Sanjaya, alumnus Politeknik
+angkatan-4 Teknik Mesin, dibagikan publik sebagai panduan job-seeker, bukan kebocoran PII pihak
+ketiga) mendokumentasikan **seluruh perjalanan seleksinya**, tes demi tes, dengan tanggal DAN
+jumlah peserta tersisa di tiap tahap:
+
+| # | Tahap | Tanggal | Lokasi | Tersisa | Rasio thd tahap sblm |
+|---|---|---|---|---:|---:|
+| 1 | Lulus administrasi | (~1 minggu setelah lamar) | — | **1.700** | (baseline blog, bukan total pendaftar) |
+| 2 | GAT (General Aptitude Test / TPA) | Sab, 25 Apr 2015 | Gedung POLMED, Medan | **~900** | 52,9% |
+| 3 | Tes akademik + Bahasa Inggris | Min, 26 Apr 2015 | Gedung POLMED, Medan | **~700** | 77,8% |
+| 4 | Psikotes | Sen, 27 Apr 2015 | Gedung H. Anief, Medan (dipindah dari POLMED — bentrok anak perusahaan Garuda Indonesia) | **495** | 70,7% |
+| 5 | Tes fisik | Sel, 12 Mei 2015 | Klinik Prodia, Medan | **295** | 59,6% |
+| 6 | Tes lab & kesehatan penunjang | Sen, 25 Mei 2015 | Klinik Prodia, Medan | **138** | 46,8% |
+| 7 | Wawancara | Rab, 10 Jun 2015 | Kantor PLN Jl. KL Yos Sudarso, Medan | *(hasil tak tercatat di artikel — bersambung)* | — |
+
+**Temuan struktural yang MEREVISI F-058 (bukan membatalkan):** tiga tes kognitif pertama (GAT →
+akademik+Inggris → psikotes) digelar **3 hari BERTURUT-TURUT** di kota yang sama (25-26-27 April),
+bukan bertahap dengan jeda pengumuman mingguan seperti diasumsikan `funnel.yaml` saat ini untuk
+jalur mandiri. Baru tahap fisik/lab/wawancara yang punya jeda panjang (2-4 minggu) — masuk akal,
+karena itu perlu waktu proses lab & penjadwalan panel wawancara, bukan soal jalur afirmasi-vs-mandiri.
+**Implikasi:** pola "borongan multi-hari di satu venue regional" tampaknya BUKAN ciri khusus jalur
+afirmasi (seperti disimpulkan F-058) — itu mungkin **pola umum test center regional** untuk
+tahap-tahap awal berbasis kognitif, di jalur mandiri maupun afirmasi. Yang benar-benar membedakan
+afirmasi (Biak) dari mandiri (Medan 2015) kemungkinan besar bukan JADWAL, tapi **LAJU ELIMINASI**:
+Medan 2015 tetap menggugurkan besar-besaran di tiap tahap (52,9% → 77,8% → 70,7% → 59,6% → 46,8%,
+majemuk ~7,4% dari 1.700 lolos ke tahap wawancara), sedangkan Biak nyaris tidak menggugurkan
+setelah administrasi (99,3% bertahan). Arketipe funnel sebaiknya dipisah oleh **laju eliminasi**,
+bukan pola penjadwalan.
+Sumber: [everydayisgood.home.blog/2020/08/17/pengalaman-rekrutmen-pln](https://everydayisgood.home.blog/2020/08/17/pengalaman-rekrutmen-pln/)
+· Keyakinan: **tinggi** untuk kronologi & angka (narasi internal konsisten, tanggal berurutan logis,
+detail sangat spesifik/tak mungkin dikarang) — **rendah** untuk representativitas (1 kota, 1 tahun,
+2015, di luar horison 2019+, dan "1.700" adalah populasi test-center Medan bukan total pendaftar
+nasional) · Dampak: **kalibrasi terbaik yang kita punya untuk struktur internal jalur mandiri**
+tapi TIDAK menggantikan jangkar F-019 (itu tetap skala nasional 2020+); dipakai untuk BENTUK funnel
+(berapa tahap, tahap mana yang borongan, tahap mana yang berjeda), bukan angka absolut.
+
+### F-062 · Surat panggilan tes: sistem batch & venue regional [R8]
+Klaim: dua surat panggilan tes asli (dari `rekrutmen.pln.co.id/recruitment/site/printinvitationtest/`,
+diverifikasi via WebFetch dengan larangan eksplisit mengutip PII — hanya struktur diambil) menunjukkan:
+- **Bandung, 27 Mar 2018**: "Tes Akademik dan Bahasa Inggris", tiba **90 menit** sebelum jadwal,
+  venue publik disewa (Graha Batununggal Indah), *dress code* formal wajib (kemeja+bawahan kain,
+  dilarang jeans/kaos/sandal), bawa alat tulis sendiri (pensil 2B, HB, penghapus, ballpoint, papan alas).
+- **Online, 14 Okt 2023**: tahap sama ("Tes Akademik") sudah pindah ke **format online** via
+  `seleksi.pln.co.id`, sistem **batch waktu** (mis. Batch 13, mulai 13:00 WIB), syarat teknis eksplisit
+  (PC/laptop wajib, Chrome≥16, Windows≥XP, ≥512kbps), tidak hadir di jam batch = gugur otomatis.
+Konfirmasi evolusi **offline→online** untuk tes akademik+Inggris antara 2018 dan 2023 (melengkapi
+F-024 "drop point" yang sudah lebih dulu mencatat transisi ini secara umum).
+Sumber: dua surat panggilan asli (kunci URL dari pencarian manual user, 2026-08-18) · Keyakinan:
+tinggi untuk struktur/jadwal, tidak berlaku data pribadi (sengaja tidak diambil) · Dampak:
+`tahapan.yaml` sudah punya arah offline→online (F-024); ini menambah bukti titik potong ≤2018
+masih offline venue fisik, ≥2023 sudah online+batch.
+
+### F-063 · Cek sistematis tiap gelombang 2019–2025 thd `angkatan.yaml` — konfirmasi + 1 sitasi meragukan [R8]
+Klaim: user meminta pengecekan ulang tiap gelombang yang sudah dikunci di `angkatan.yaml` (seri
+`utama`, angkatan 70-92) — apakah ada berita yang menguatkan, atau memang bolong secara berita saja
+(bukan berarti tidak ada rekrutmennya). Hasil per angkatan:
+
+**Dikuatkan / cocok kuat dengan berita:**
+- **Angkatan 72** (yaml: 2019-09, "~7 kota"): siaran pers PLN eksplisit berjudul
+  *["Cari Talenta Unggul, PLN Buka Rekrutmen di 7 Kota"](https://web.pln.co.id/cms/media/siaran-pers/2019/09/cari-talenta-unggul-pln-buka-rekrutmen-di-7-kota/)*
+  — **"7 kota" cocok PERSIS**. Pendaftaran 7-20 Sep 2019, bertepatan UGM Career Days ke-26
+  (7-8 Sep 2019). Kota yang teridentifikasi: Jakarta, Palembang, Medan, Banjarmasin, Yogyakarta,
+  Makassar (+1). **Naikkan keyakinan gelombang ini dari `inferensi` mendekati `nyata`.**
+- **Angkatan 73** (yaml: 2019-11, S2 Indonesia Career Evening): dikonfirmasi acara di London
+  **28 Okt 2019** — dekat dengan "November" yang tertulis (selisih wajar, bisa jadi buka
+  pendaftaran online menyusul setelah acara tatap muka). Sumber: [web.pln.co.id/.../jemput-bola-pln-rekrut-pelajar-s2-indonesia-terbaik-di-london](https://web.pln.co.id/cms/media/siaran-pers/2019/11/jemput-bola-pln-rekrut-pelajar-s2-indonesia-terbaik-di-london/).
+- **Angkatan 71** (yaml: 2019-08, Airlangga Career Fair): acara & pendaftaran memang terkonfirmasi
+  nyata, TAPI tanggalnya **Maret 2019** (pendaftaran 13-22 Mar, Airlangga Career Fair ke-31
+  13-14 Mar), **bukan Agustus** seperti tertulis di yaml — lihat poin sitasi meragukan di bawah.
+
+**⚠️ Sitasi meragukan — perlu dicek ulang sumber Wayback aslinya untuk gelombang 70 & 71:**
+- yaml gelombang 70 (2019-07) mencantumkan entri "**Bursa Karir ITS ke-33**" sebagai bagian
+  gelombang ini. Ditelusuri: **Bursa Karir ITS ke-33 terjadi April 2017** (terkait target rekrutmen
+  6.056 pegawai 2017, F-031), bukan 2019. Edisi ITS di tahun 2019 yang benar adalah **ke-37 (20-21
+  Mar 2019)** dan **ke-38 (25-26 Sep 2019)** — dan tidak satupun hasil pencarian mengonfirmasi
+  kehadiran PLN spesifik di ke-37/ke-38.
+- Ditambah temuan Airlangga Career Fair di atas (Maret, bukan Agustus untuk gelombang 71) — pola
+  yang muncul: **peristiwa kampus yang dipakai sebagai penanda bulan gelombang 70/71 kemungkinan
+  tertukar dengan tahun/gelombang lain saat R1c (panen Wayback) dulu**, ATAU deskripsi "entri" di
+  `angkatan.yaml` memang cuma perkiraan longgar (sudah ditandai `sumber_nomor: inferensi`, jadi
+  ini bukan pelanggaran janji, tapi bukti konkret bahwa dugaan bulannya kemungkinan meleset).
+  **Tidak diperbaiki di sini** — findings hanya mencatat, `angkatan.yaml` adalah wilayah sesi build.
+  Rekomendasi: sebelum sesi build memakai bulan 70/71 untuk apa pun yang presisi (mis. urutan
+  dalam tahun), tarik ulang `sources/rekrutmen_pln/wayback/programs_historis.csv` baris 70/71 dan
+  cocokkan tanggal `buka` aslinya dengan Maret vs Juli/Agustus.
+
+**Diperkaya (bukan sekadar dikonfirmasi) — detail baru yang tidak ada di yaml:**
+- **Angkatan 75** (yaml: "PPB/RBB nasional 2021", entri "0 -- tidak ada di katalog PLN"): ternyata
+  **BUKAN generik nasional** — ini program **khusus Papua & Papua Barat** dengan target eksplisit
+  **200 orang (kuota dibuka 250 posisi)**, pendaftaran **23 Des 2021 – 14 Jan 2022** (melintasi
+  pergantian tahun). Sumber: [Kompas](https://www.kompas.com/tren/read/2021/12/24/200500265/dibuka-program-perekrutan-bersama-bumn-papua-dan-papua-barat-2021-ini),
+  [Tribun Bogor](https://bogor.tribunnews.com/2021/12/24/lowongan-kerja-terbaru-desember-2021-rekrutmen-bersama-bumn-papua-dan-papua-barat).
+  Ini kandidat kuat untuk memperbaiki `nama` gelombang 75 di `angkatan.yaml` jadi lebih spesifik,
+  dan `tahun` mungkin perlu dipertanyakan (dibuka Des 2021, tapi hasil seleksi & penempatan
+  realistisnya jatuh 2022 — konsisten dengan pola jeda pipeline F-048).
+
+**Genuinely bolong (dicari, nihil — SESUAI dugaan `angkatan.yaml` sendiri):**
+- **Angkatan 79, 80** (Nov-Des 2022, D3/S1 reguler): tiga percobaan pencarian dengan kata kunci
+  berbeda, nol hasil rekrutmen PLN spesifik Nov/Des 2022. Ini **memperkuat**, bukan melemahkan,
+  keputusan `angkatan.yaml` sendiri untuk menandai gelombang ini "tidak terekam di katalog PLN" —
+  bolongnya konsisten antara katalog resmi dan berita, jadi kemungkinan besar memang tidak
+  terpublikasi luas (bukan berarti tidak terjadi).
+
+**Tidak konklusif:**
+- **Angkatan 87/88** (RBB 2024, diasumsikan 2 batch Mar & Agu): pendaftaran RBB 2024 yang
+  terkonfirmasi cuma **SATU jendela nasional, 23 Mar – 1 Apr 2024**, dengan proses seleksi
+  (bukan pendaftaran ulang) berlangsung sampai **~Agustus 2024**. Pencarian eksplisit untuk
+  "batch 2 Agustus 2024" hanya menemukan pola umum RBB (BUMN besar seperti Pertamina/BRI/Telkom
+  kadang buka batch 2), **tidak ada konfirmasi PLN ikut batch 2**. Asumsi "87=batch I, 88=batch II"
+  di `angkatan.yaml` **belum terbukti maupun terbantah** — cukup masuk akal kalau 87/88 sebenarnya
+  sama-sama bagian dari SATU proses Maret 2024, bukan dua pendaftaran terpisah.
+
+Sumber: lihat tiap poin · Keyakinan: bervariasi per poin (dicatat di atas) · Dampak: **tidak ada
+angka mockdb yang berubah dari temuan ini** — ini murni validasi-silang katalog vs berita. Nilai
+utamanya untuk sesi build: (1) angkatan 72 boleh dipakai lebih percaya diri, (2) angkatan 75 punya
+deskripsi lebih akurat untuk dipakai di dashboard/nama gelombang, (3) sitasi ITS ke-33 di gelombang
+70 sebaiknya diverifikasi ulang ke Wayback sebelum dipakai sebagai fakta presisi bulan.
+
+### F-064 · DUA SUMBU over-determined di langkah 05/06 — satu selesai (R8), satu sudah punya prinsip (F-050) ⭐⭐ [sintesis]
+Klaim: kebuntuan yang dilaporkan sesi build ("konflik antara rule kebutuhan unit dengan rule gender
+menghasilkan angka bertentangan, terlihat di kasus Papua 2023/2025") sebenarnya **dua sumbu masalah
+berbeda**, tercampur karena muncul bersamaan di titik yang sama (langkah 05→06). Keduanya sudah
+punya jalan keluar — tidak ada yang butuh riset lebih lanjut.
+
+**Sumbu 1 — jumlah pendaftar per tahap per gelombang.**
+*Gejala:* satu funnel nasional tunggal (`funnel.yaml` lama: lulus administrasi 64%, dst.) dipaksa
+berlaku ke SEMUA gelombang, padahal kohort per tahun (`kohort.yaml`, nyata) dan kebutuhan unit
+per tahun sudah dikunci terpisah — tidak ada solusi funnel tunggal yang konsisten dengan keduanya
+sekaligus.
+*Bukti akar masalah:* berita Biak 2025 (F-058) dan blog kandidat Medan 2015 (F-061) menunjukkan
+funnel NYATA berbeda jauh antar-gelombang — bukan variasi acak, tapi dua **arketipe laju eliminasi**
+yang berbeda struktur:
+- `nasional_mandiri`: eliminasi berat tiap tahap (Medan 2015: majemuk ~7,4% dari lulus-administrasi
+  ke pra-wawancara)
+- `afirmasi_remote`: eliminasi nyaris nol setelah administrasi (Biak: 99,3% bertahan tiap tahap)
+*Resolusi:* `funnel.yaml` dipecah per arketipe (dipilih per gelombang lewat `angkatan.yaml` ->
+`jenis_program`: AFIRMASI vs REGULER/CAMPUS/dst.), BUKAN satu angka jangkar untuk semua. Jangkar
+nasional F-019 (64%/2,05%) tetap berlaku sebagai **rata-rata tertimbang seluruh gelombang**, bukan
+aturan per-gelombang. **STATUS: siap dikerjakan** — datanya sudah ada (F-058/F-059/F-061), tinggal
+restrukturisasi `funnel.yaml` (pekerjaan sesi build, bukan riset lagi).
+
+**Sumbu 2 — kebutuhan unit (pagu) vs bauran jurusan/gender historis gelombang.**
+*Gejala:* `pagu_rekrutmen.csv`/`usulan_kebutuhan.csv` (langkah 05, bottom-up dari attrition +
+kekosongan per unit — F-051/F-052) menyatakan BERAPA orang dibutuhkan di BIDANG/UNIT mana. Tapi
+gelombang/program yang REAL terjadi di tahun itu (angkatan.yaml, nyata dari programs.csv) punya
+bauran jurusan & gender sendiri yang sudah baku secara historis (mis. 2023 didominasi afirmasi 3T
+Papua+Maluku -> gender 86:14, `demografi.yaml`). Kedua hal ini **independen dan tidak dijamin
+cocok** — memaksa generator memuaskan keduanya secara PERSIS di tahun & bidang yang sama adalah
+over-determined, gejalanya sama seperti Sumbu 1 tapi di layer berbeda (bidang/gender, bukan volume).
+*Bukti bahwa ini BUKAN masalah baru:* sudah ditemukan & diputuskan di **langkah 03**, jauh sebelum
+langkah 05/06 ditulis — lihat F-050: kursi Distribusi (−14,8 poin) & Transmisi (−6,3 poin) kurang
+pasokan dari bauran jurusan yang diundang program. Keputusan yang SUDAH TERTULIS saat itu:
+> "JANGAN memaksa pengisian kursi proporsional berdasarkan kelayakan jurusan... Kursi harus diisi
+> dengan pelonggaran eksplisit, dan **kekurangannya dilaporkan sebagai keluaran, bukan ditutupi**."
+`demografi.yaml` (§1 gender) menulis prinsip yang sama dari sisi gender: *"Generator harus
+menghasilkan angka ini LEWAT bauran program, bukan dengan memaksa 0,86 di sisi kandidat."*
+*Resolusi:* **prinsipnya sudah ada, tinggal ditegakkan di kode.** Urutan wajib:
+1. `angkatan.yaml` (gelombang & program REAL tahun itu) → menentukan bauran bidang/gender yang
+   TERJADI — ini kebenaran yang tidak bisa dinegosiasi ulang.
+2. `pagu_rekrutmen.csv`/`usulan_kebutuhan.csv` (kebutuhan unit) → **bukan target keras** yang harus
+   dipenuhi persis. Perannya jadi **pembanding/indikator gap**: unit mana yang under-supplied tahun
+   itu, dilaporkan sebagai keluaran dashboard ("kebutuhan vs realisasi"), bukan dipaksa sama dengan
+   memutar-mutar bauran gelombang yang sudah nyata.
+3. Gender per tahun (`demografi.yaml`) HARUS muncul sebagai HASIL dari langkah 1 (bauran program
+   nyata × gender per bidang), diverifikasi cocok dengan angka nyata F-048 — bukan dipaksakan
+   langsung ke kandidat.
+*Dugaan akar bug di sesi build:* kemungkinan besar langkah 06 (atau turunannya) mencoba memuaskan
+`pagu_rekrutmen.csv` sebagai constraint keras BERSAMAAN dengan mencocokkan bauran gelombang nyata
+— melanggar urutan di atas. **STATUS: prinsip sudah dikunci sejak langkah 03, cek implementasi
+kode di 05→06, bukan riset lebih lanjut.**
+
+**Ringkasan untuk sesi build:** kedua sumbu SELESAI dari sisi riset/keputusan. Sumbu 1 butuh
+restrukturisasi `funnel.yaml` (data sudah ada). Sumbu 2 butuh audit kode supaya `pagu_rekrutmen.csv`
+diperlakukan sebagai pelaporan-gap (sesuai F-050 yang sudah lama diputuskan), bukan target keras
+yang dipaksa sama dengan bauran gelombang nyata dari `angkatan.yaml`.
+Sumber: sintesis F-050, F-058, F-061, `demografi.yaml`, `mockdb/rules/README.md` (urutan kausal)
+· Keyakinan: tinggi (logika, bukan angka baru) · Dampak: **membuka blokade langkah 05/06** tanpa
+riset tambahan — dua perbaikan konkret untuk sesi build.
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

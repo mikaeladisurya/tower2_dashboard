@@ -210,6 +210,27 @@ Baca `mockdb/rules/README.md` dulu — di situ ada **urutan kausal** yang wajib 
 tidak boleh dilupakan** (jangan isi mundur; jangan saring jabatan pakai `jenjang`; jangan
 tafsirkan penurunan headcount 2023 sebagai attrition).
 
+### ⚠️ 6c. Kalau mentok di langkah 05/06 dengan "jumlah pendaftar/kebutuhan unit/gender saling
+bertentangan" (sudah pernah terjadi — kasus Papua 2023/2025) — baca **F-064** dulu sebelum
+membongkar aturan apa pun. Ringkasnya, ini DUA sumbu berbeda yang kebetulan muncul bersamaan:
+
+1. **Volume pendaftar per tahap per gelombang** — funnel tunggal dipaksa ke semua gelombang.
+   **Resolusi (data sudah ada, R8):** pecah `funnel.yaml` per arketipe laju eliminasi —
+   `nasional_mandiri` (eliminasi berat tiap tahap, lihat F-061 funnel 6-tahap Medan 2015) vs
+   `afirmasi_remote` (nyaris tanpa eliminasi setelah administrasi, F-058 Biak/Nabire). Jangkar
+   nasional F-019 jadi rata-rata TERTIMBANG, bukan aturan per-gelombang.
+2. **Kebutuhan unit (pagu) vs bauran jurusan/gender historis gelombang** — dua sumber kebenaran
+   independen (pagu bottom-up dari attrition; bauran gelombang REAL dari `angkatan.yaml`) dipaksa
+   cocok persis. **Resolusi (prinsip sudah dikunci sejak langkah 03, F-050):** bauran gelombang
+   nyata adalah kebenaran tak-bisa-dinegosiasi; `pagu_rekrutmen.csv`/`usulan_kebutuhan.csv`
+   diperlakukan sebagai **indikator gap untuk dilaporkan** ("kebutuhan vs realisasi"), BUKAN
+   target keras yang harus dipenuhi persis oleh generator. Gender per tahun harus MUNCUL dari
+   bauran program × gender-per-bidang, bukan dipaksa ke kandidat (`demografi.yaml` §1).
+
+Kalau kode langkah 06 mencoba memuaskan pagu DAN bauran gelombang nyata secara bersamaan sebagai
+dua constraint keras, itu bug-nya — bukan kurang data. Detail lengkap + tabel & sitasi: F-064
+(sintesis), F-050 (akar sumbu 2), F-058/F-061 (akar sumbu 1).
+
 ## 7. Peta file penting
 
 ```

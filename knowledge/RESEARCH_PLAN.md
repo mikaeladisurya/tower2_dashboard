@@ -114,6 +114,39 @@ kanal resmi/nota dinas ke VP HTD/HST. Fallback ini sudah disetujui: "lanjut paka
 | — | Socmed PLN (IG) | Sudah terjawab Wayback (F-030) | ⬜ tidak perlu |
 | — | Situs karier subholding | Subholding dimodelkan ringkas (DECISION-01) | ⬜ prioritas rendah |
 | — | PPB 2021 & edisi RBB lain | Percobaan kena *rate limit* archive.org, bukan bukti tak ada | ⬜ bisa dicoba ulang |
+| **R8** | **Berita/pers lokal + blog kandidat + surat panggilan tes** (media daerah, situs kampus, subholding, blog pribadi) via matriks kueri pencarian + panen manual user | Mengisi funnel **per-tahap per-gelombang** — tidak ada di sumber manapun sebelumnya. Ditemukan dari kasus nyata: berita Biak 2025 membantah jangkar funnel tunggal → funnel harus dipecah jadi arketipe, TAPI pembeda sebenarnya adalah **laju eliminasi**, bukan pola jadwal (F-061 merevisi F-058) | ✅ Tingkat 1 (arsip resmi) **mati/nihil**. Tingkat 2 (berita): **17 titik data** dari 7+ sumber independen, termasuk **funnel 6-tahap LENGKAP** dari blog kandidat 2015 (F-061 ⭐⭐⭐) + skema surat panggilan tes 2018 & 2023 (F-062) → `sources/berita/berita_rekrutmen.csv`. Tingkat 3 (socmed) belum dikerjakan. |
+
+## 8b. Peta media untuk panen R8 (dipakai sebagai matriks kueri, bukan crawl buta)
+
+Ditulis setelah 2 putaran panen (F-057–F-060) — daftar ini bukan tebakan, kolom "sudah kena"
+tercatat dari apa yang benar-benar menghasilkan titik data.
+
+**Jaringan nasional dgn kanal daerah (paling produktif — media lokal di bawah payung besar):**
+
+| Jaringan | Pola domain daerah | Sudah kena? |
+|---|---|---|
+| **Antara** | `<kota/provinsi>.antaranews.com` (mis. `mataram.`, `papuatengah.`) | belum dicoba langsung — kandidat kuat |
+| **RRI** | `rri.co.id/daerah/...` | ✅ Biak, Nabire |
+| **Tribun (Kompas Gramedia)** | `<kota>.tribunnews.com` — 22 unit: Aceh(Serambinews), Batam, Medan, Pekanbaru, Jambi, Palembang, Lampung, Babel, Jakarta, Jogja, Bandung, Semarang, Surabaya, Kupang, Manado, Makassar(Tribun-Timur), Balikpapan, Banjarmasin, Pontianak, Bali | ✅ tersirat (aceh.tribunnews.com dipakai R3 lama) |
+| **Jawa Pos Group / Radar** | banyak berawalan "Radar" + media daerah bermerek sendiri: Cenderawasih Pos (Papua), Riau Pos, Manado Post, Kaltim Post, Sumatera Ekspres, Harian Fajar (Makassar), Pontianak Post | ✅ Cenderawasih Pos (Biak) |
+| **Kompas Gramedia lain** | kompas.com, money.kompas.com | ✅ (angka nasional 2025) |
+| **Detik** | detik.com + kanal daerah (detikSulsel, detikJabar, dst), finance.detik.com untuk BUMN | dipakai sesekali, belum sistematis |
+| **IDN Times** | idntimes.com + kanal kota | ✅ (angka nasional 245.217) |
+
+**Media independen fokus wilayah (terutama Papua/3T — kandidat terbaik untuk arketipe afirmasi):**
+ParaparaTV, KabarPapua.co/BeritaSatu Network, Fajar Papua, Jubi.id (independen, kritis, layak dicoba),
+Klikpapua.com. ✅ 4 dari 5 sudah menghasilkan titik data (F-058, F-060).
+
+**Kandidat belum dicoba (prioritas lanjutan kalau diminta):**
+- `rekrutmen.pln.co.id/content/all/2/artikel` — halaman artikel resmi situs rekrutmen sendiri,
+  bukan siaran pers holding. Beda dari F-057 (yang mati itu `web.pln.co.id`, bukan ini).
+- Antara jaringan daerah (belum dicoba eksplisit meski jaringan terbukti reliable via RRI-style URL)
+- Situs Pemda/Pemprov (kadang memuat siaran pers rekrutmen BUMN sebagai berita daerah)
+- Instagram humas per-UP3 (Tingkat 3, mahal — manual, tidak terindeks pencarian)
+
+**Yang TERBUKTI tidak produktif (jangan diulang tanpa strategi baru):** situs karier subholding
+(F-060), domain `web.pln.co.id` (mati, F-057), rentang tahun 2020–2022 non-afirmasi (nol hit
+lintas 3 putaran pencarian — media tidak meliput rekrutmen rutin tanpa sudut berita).
 
 ## 9. Status log
 
@@ -123,3 +156,5 @@ kanal resmi/nota dinas ke VP HTD/HST. Fallback ini sudah disetujui: "lanjut paka
 | 2026-08-16 | **R1** 31 program + 128 profesi + 30 PDF. **R2** triage 9 perdir, ekstrak 0056 & 0050. **R4** chat HTD (peta ketersediaan data, funnel asli). **DECISION-01** dikunci: PLN Group. |
 | 2026-08-16 | **R2c** Juknis 0048 (via subagent Sonnet) — ternyata dok *employee experience*, bukan SOP rekrutmen. **R1c** Wayback: 111 program historis. **R1b** brosur: kuota TIDAK ada di sumber manapun → wajib dimodelkan. |
 | 2026-08-16 | **R1-login**: skema biodata/CV asli didapat (termasuk field fisik: BMI, visus, tatto). Akun ternyata milik pihak ketiga → dump HTML/PNG & profil browser **dihapus**, nama disensor; hanya `skema_form.md` disimpan. |
+| 2026-08-17 | **R8 dibuka**: sesi build (terpisah) mentok di langkah 05/06 — jumlah pendaftar per tahap per gelombang over-determined (funnel tunggal vs kebutuhan unit vs gender per tahun saling bertentangan). User menemukan berita Biak yang memuat funnel per-tahap asli → hipotesis: berita/pers daerah bisa mengisi celah ini. Probe `web.pln.co.id` **mati DNS** (F-057); domain baru `www.pln.co.id` masih data developer dummy. Panen via pencarian: funnel Biak lengkap (301→155→139→138), agregat Papua 1.658/8 kota, kalibrasi campus_hiring (UGM 2017, 942). **Kesimpulan F-058**: funnel bukan satu angka — minimal 2 arketipe (nasional/mandiri berjenjang vs afirmasi/remote diborong). `funnel.yaml` perlu direstrukturisasi jadi per-arketipe sebelum langkah 05/06 dilanjut. |
+| 2026-08-18 | **R8 lanjut, putaran 2-4**: (a) subholding nihil angka, Nabire+regional Papua konfirmasi arketipe afirmasi (F-060); (b) user bagi 5 sumber manual → blog kandidat Medan 2015 kasih **funnel 6-tahap lengkap** — MEREVISI F-058: pembeda arketipe adalah **laju eliminasi**, bukan pola jadwal (F-061 ⭐⭐⭐); surat panggilan tes konfirmasi transisi offline(2018)→online(2023) (F-062); (c) cek sistematis tiap gelombang 2019-2025 vs `angkatan.yaml`: angkatan 72 dikuatkan kuat (7 kota cocok persis), angkatan 75 diperkaya (target 200-250 org, Papua-spesifik bukan nasional generik), angkatan 79/80 bolongnya genuinely konsisten (bukan cuma di katalog PLN, di berita juga nihil) — TAPI ditemukan **sitasi meragukan**: "Bursa Karir ITS ke-33" di gelombang 70 ternyata acara 2017, bukan 2019 (edisi 2019 asli = ke-37/ke-38); perlu diverifikasi ulang ke Wayback sebelum dipakai presisi (F-063). Total panen: **17 titik data** di `sources/berita/berita_rekrutmen.csv`. |

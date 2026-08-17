@@ -60,6 +60,19 @@
 7. **Pembidangan berat sebelah**: Pembangkitan di holding cuma 761 pegawai G1+G2 → porsi UPDL
    Suralaya kecil; didominasi Distribusi/Transmisi/Niaga. (langkah 02 mockdb)
 
+### 4b. Tahun jalur RBB (2021 & 2024) — modelkan sebagai jalur terpisah
+
+2021 & 2024 kosong di katalog PLN karena rekrutmen lewat **PPB/RBB (FHCI)**, bukan program PLN
+sendiri (F-041). Teknisnya (F-046): **FHCI** mengerjakan administrasi + tes online 1 (TKD/AKHLAK/TWK)
++ tes online 2 (Inggris/Learning Agility); **PLN baru masuk di Tahap 3/TKB** (kompetensi bidang +
+psikotes + wawancara + MCU). PLN hanya menetapkan syarat di tahap awal.
+
+→ Modelkan RBB sebagai **jalur (`sumber_rekrutmen`) terpisah** dengan pipeline PLN lebih pendek:
+kandidat masuk di tahap TKB, tahap awal ditandai `dilaksanakan FHCI`/kosong. Ini memberi dashboard
+perbandingan antar-jalur (*recruitment source effectiveness*, ReqGathering#3) sekaligus memperkuat
+tema "data apa yang ada vs belum".
+⚠️ Keyakinan **sedang** (sumber pemberitaan). 3 pertanyaan terbuka untuk tim HTD tercatat di F-046.
+
 ## 5. Tiga hal yang HARUS dimodelkan (tidak ada di sumber manapun)
 
 Ini bukan kegagalan riset — justru **gap inilah yang mau ditonjolkan dashboard**

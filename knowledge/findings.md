@@ -210,6 +210,43 @@ Klaim: 1–2×/tahun. Mandiri (Nasional PLN Group) ~1×/th di Q3/Q4 (Sep–Okt);
 BUMN via FHCI) ~1×/th; plus kondisional (SMK/pelaksana, putra-putri daerah, S2 khusus spt hukum).
 Sumber: R3 · Keyakinan: sedang-tinggi · Dampak: kalibrasi jumlah & jadwal angkatan/tahun di mock.
 
+### F-046 · Teknis jalur RBB: PLN masuk di Tahap 3/TKB [R3]
+**Pembagian kerja FHCI vs BUMN:**
+
+| Tahap | Isi | Pelaksana |
+|---|---|---|
+| 1 | Seleksi Administrasi | **FHCI** (portal RBB terpusat) |
+| 2 | Tes Online 1: TKD, AKHLAK, TWK, cek perangkat | **FHCI** |
+| 3 | Tes Online 2: Bahasa Inggris, Learning Agility | **FHCI** |
+| 4 | **TKB** (Tes Kompetensi Bidang) + psikotes + wawancara user/HR + **MCU** | ⭐ **masing-masing BUMN (= PLN)** |
+| 5 | Pengumuman final → onboarding perusahaan | BUMN |
+
+Peran PLN di tahap 1–3 hanya **menetapkan syarat** (umur/IPK/jurusan/stream per lowongan — persis
+yang terpanen di F-043); kandidat sudah tersaring saat sampai ke PLN.
+
+**Pemetaan ke pipeline PLN sendiri (F-023):** TKD/AKHLAK ≈ tes adaptif PLN · Tes Online 2 ≈ bagian
+Inggris dari akading · TKB+wawancara+MCU ≈ tahap 5–7 jalur mandiri. Artinya kandidat RBB
+**melewati tahap awal di luar sistem PLN**.
+
+Sumber: R3 (detik, kompas, medcom, situs bimbel — konsisten lintas sumber) ·
+Keyakinan: **sedang** (pemberitaan, bukan dokumen resmi PLN; detail PLN belum dikonfirmasi) ·
+Dampak: lihat rekomendasi pemodelan di bawah.
+
+**❓ BELUM DIKETAHUI — pertanyaan untuk tim HTD (Willy):**
+1. Apakah kandidat RBB tercatat juga di `rekrutmen.pln.co.id`, atau baru masuk sistem HR setelah diterima?
+2. Apakah hasil tes FHCI (TKD/AKHLAK/Inggris) diserahkan ke PLN, atau PLN hanya terima daftar yang lolos?
+3. Apakah pegawai hasil RBB ikut prajabatan/OJT yang sama dengan jalur mandiri? (diduga ya — kohort
+   prajabatan 2024/2025 tampaknya mencakup mereka, tapi belum terkonfirmasi)
+
+**Rekomendasi pemodelan mock:** perlakukan RBB sebagai **jalur terpisah** dengan pipeline PLN yang
+lebih pendek — kandidat masuk di tahap TKB; tahap-tahap awal ditandai `dilaksanakan FHCI` /
+data kosong. Alasannya kuat:
+- Realistis & menjelaskan kenapa 2021 & 2024 berbeda bentuknya
+- Memberi dashboard perbandingan antar-jalur (funnel & kelengkapan data berbeda) — persis tema
+  *recruitment source effectiveness* di ReqGathering#3 ("source mana paling banyak yield")
+- Memperkuat tema **"data apa yang ada vs belum"** (F-017): kandidat RBB memang punya lebih sedikit
+  jejak di sistem PLN
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

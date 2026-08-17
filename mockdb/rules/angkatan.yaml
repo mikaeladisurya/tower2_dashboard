@@ -57,7 +57,7 @@ seri:
       2019: [70, 71, 72, 73]
       2020: [74]
       2021: [75]
-      2022: [78]
+      2022: [78, 79, 80]
       2023: [81, 82, 86]
       2024: [87, 88]
       2025: [91, 92]
@@ -77,6 +77,10 @@ seri:
            nama: "PPB/RBB nasional 2021", entri: "0 -- tidak ada di katalog PLN", jalur: rbb}
       78: {tahun: 2022, buka: "2022-10-07", sumber_nomor: nyata,
            nama: "Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022", entri: "1"}
+      79: {tahun: 2022, buka: "2022-11", sumber_nomor: inferensi,
+           nama: "Reguler D3 & S1/D4 2022 gelombang I", entri: "0 -- tidak ada di katalog PLN"}
+      80: {tahun: 2022, buka: "2022-12", sumber_nomor: inferensi,
+           nama: "Reguler D3 & S1/D4 2022 gelombang II", entri: "0 -- tidak ada di katalog PLN"}
       81: {tahun: 2023, buka: "2023-05-22", sumber_nomor: nyata,
            nama: "REKRUTMEN ORANG ASLI PAPUA (OAP) TAHUN 2023", entri: "8 kota"}
       82: {tahun: 2023, buka: "2023-07-03", sumber_nomor: inferensi_kuat,
@@ -92,11 +96,47 @@ seri:
       92: {tahun: 2025, buka: "2025-10-01", sumber_nomor: nyata,
            nama: "REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025", entri: "7 (IP, ND, NP, ES, Hukum, Matematika, EPI)"}
 
-    lubang: [76, 77, 79, 80, 83, 84, 85, 89, 90]
+    lubang: [76, 77, 83, 84, 85, 89, 90]
     lubang_keterangan: >
-      9 nomor di rentang 2021-2025 yang TIDAK diberi gelombang. Ini disengaja -- lihat
+      7 nomor di rentang 2021-2025 yang TIDAK diberi gelombang. Ini disengaja -- lihat
       `aturan.alasan_lubang`. Dashboard menampilkannya sebagai bukti bahwa katalog publik
       tidak lengkap, bukan sebagai data hilang.
+
+    kapan_lubang_DIISI:
+      aturan: >
+        Lubang dibiarkan kosong SELAMA tahun itu masih masuk akal tanpa gelombang tambahan.
+        Lubang DIISI hanya kalau tahun itu punya kohort masuk yang tidak bisa ditampung
+        gelombang yang terekam. Pegawai masuk tanpa rekrutmen sebelumnya lebih janggal
+        daripada nomor angkatan yang kosong -- keputusan user, 2026-08-17.
+      diisi:
+        - nomor: [79, 80]
+          tahun: 2022
+          alasan: >
+            Katalog 2022 hanya memuat TIGA program dan dua di antaranya S2, jadi NOL kursi
+            D3 -- padahal 2022 menerima 1.109 orang (689 induk + 420 sub) dan demografi.yaml
+            menetapkan porsi D3 2022 sebesar 27%. Tanpa gelombang ini, 88% kursi menumpuk di
+            satu program Icon Plus, yang mustahil untuk subholding sekecil itu.
+          kronologi: >
+            SAH secara urutan: 78 buka 7 Okt 2022 dan 81 buka 22 Mei 2023, jadi 79-80 muat
+            di Nov-Des 2022 dan tetap berada di tahun program 2022. Nomor 76-77 dibiarkan
+            kosong karena posisinya di antara 75 (2021) dan 78 (Okt 2022).
+          judul: >
+            TIDAK ADA judul yang dikarang. Keduanya memakai penanda
+            "(tidak terekam di katalog PLN)" sama seperti gelombang 2021 dan RBB batch II.
+      dibiarkan_kosong:
+        - nomor: [76, 77]
+          rentang: "2021 - Okt 2022"
+          alasan: "2021 (689 orang, jalur RBB) cukup ditampung satu gelombang nasional 75."
+        - nomor: [83, 84, 85]
+          rentang: "Jul - Okt 2023"
+          alasan: >
+            2023 sudah tertutup rapat: 3 gelombang, 14 program, 81 profesi untuk 1.797 orang.
+            Tidak ada kekurangan yang perlu ditambal.
+        - nomor: [89, 90]
+          rentang: "Agu 2024 - Sep 2025"
+          alasan: >
+            2024 dan 2025 sama-sama punya dua gelombang dengan kapasitas memadai
+            (2024: 21 program; 2025: 11 program, 42 profesi).
 
     catatan_kesinambungan: >
       70-73 (2019) menyambung langsung ke 74 (Des 2020) tanpa lubang -- konsisten dengan

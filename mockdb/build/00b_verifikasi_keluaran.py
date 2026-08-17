@@ -26,6 +26,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 MASTER = ROOT / "mockdb" / "out" / "master"
 RULES = ROOT / "mockdb" / "rules"
+SRC = ROOT / "knowledge" / "sources"
 
 TOL = 1e-3
 
@@ -241,6 +242,122 @@ def cek_pii() -> None:
     cek("tidak ada nilai berpola email/NIK", not tersangka_nilai, f"{tersangka_nilai[:3]}")
 
 
+# ---------------------------------------------------------------------------
+# 7. Katalog gelombang/program/profesi (langkah 06)
+# ---------------------------------------------------------------------------
+def cek_katalog(R: dict, gel: list[dict], prog: list[dict], prof: list[dict],
+                prodi: list[dict]) -> None:
+    print("\n[ katalog gelombang/program/profesi ]")
+    ang = R["angkatan"]
+
+    # --- aturan paling keras langkah 06: tidak ada judul yang dikarang ---
+    asli: set[str] = set()
+
+    def norm(j: str) -> str:
+        return re.sub(r"[^A-Z0-9]", "", (j or "").upper())
+
+    for path, kolom in (
+        (SRC / "rekrutmen_pln" / "programs.csv", "title"),
+        (SRC / "rekrutmen_pln" / "wayback" / "programs_historis.csv", "judul"),
+        (SRC / "rbb_fhci" / "lowongan_pln_rbb.csv", "vacancy_name"),
+    ):
+        if path.exists():
+            with path.open(encoding="utf-8-sig", newline="") as f:
+                asli |= {norm(r[kolom]) for r in csv.DictReader(f)}
+
+    karangan = [
+        p["judul"] for p in prog
+        if p["sumber_judul"] != "tidak_terekam" and norm(p["judul"]) not in asli
+    ]
+    cek("tidak ada judul program yang dikarang", not karangan,
+        f"{len(karangan)} judul asing, mis. {karangan[:2]}" if karangan else
+        f"{len(prog)} judul, semua terlacak ke sumber")
+
+    penanda = [p for p in prog if p["sumber_judul"] == "tidak_terekam"]
+    cek("gelombang tanpa judul diberi penanda", all("tidak terekam" in p["judul"] for p in penanda),
+        f"{len(penanda)} program berpenanda eksplisit")
+
+    # SMK tidak dimodelkan di horison ini (angkatan.yaml -> smk_pelaksana).
+    smk = [p["judul"] for p in prog if re.search(r"\bSMK\b|TINGKAT SMA", p["judul"].upper())]
+    cek("tidak ada program SMK di horison", not smk, f"{len(smk)} program: {smk[:2]}")
+
+    # --- nomor angkatan: yang dialokasikan hadir, yang dilubangi tetap kosong ---
+    dipakai = {int(g["angkatan"]) for g in gel}
+    for seri in ("utama", "khusus"):
+        alokasi = {a for tahun in ang["seri"][seri]["alokasi_horison"].values() for a in tahun}
+        hadir = {a for a in dipakai if any(
+            int(g["angkatan"]) == a and g["seri"] == seri for g in gel)}
+        cek(f"angkatan seri {seri} sesuai alokasi", hadir == alokasi,
+            f"hasil {sorted(hadir)} vs aturan {sorted(alokasi)}")
+    lubang = set(ang["seri"]["utama"]["lubang"])
+    cek("lubang angkatan tetap kosong", not (dipakai & lubang),
+        f"terisi: {sorted(dipakai & lubang)}" if dipakai & lubang else f"{sorted(lubang)} kosong")
+
+    # --- jeda pipeline ---
+    salah = [g for g in gel if int(g["tahun_masuk"]) != int(g["tahun_program"]) + 1]
+    cek("tahun_masuk = tahun_program + 1", not salah, f"{len(salah)} gelombang menyimpang")
+
+    # --- total diterima dijangkar ke kohort ---
+    koh = {r["tahun"]: r for r in R["kohort"]["kohort_per_tahun_program"]
+           if r.get("ada_gelombang", True)}
+    per_tahun: dict[int, int] = defaultdict(int)
+    for p in prof:
+        per_tahun[int(p["tahun_program"])] += int(p["diterima_target"])
+    total = sum(per_tahun.values())
+    target = sum(i["induk_diterima"] + i["sub_diterima"] for i in koh.values())
+    cek("total diterima = kohort Group", total == target, f"{total:,} vs {target:,}")
+
+    meleset = [f"{t}: {per_tahun.get(t, 0)} vs {i['induk_diterima'] + i['sub_diterima']}"
+               for t, i in sorted(koh.items())
+               if per_tahun.get(t, 0) != i["induk_diterima"] + i["sub_diterima"]]
+    cek("diterima per tahun = kohort per tahun", not meleset, "; ".join(meleset) or f"{len(koh)} tahun cocok")
+
+    # --- keutuhan rujukan ---
+    gid = {g["gelombang_id"] for g in gel}
+    pid = {p["program_id"] for p in prog}
+    fid = {p["profesi_id"] for p in prof}
+    cek("program merujuk gelombang yang ada", not ({p["gelombang_id"] for p in prog} - gid), "")
+    cek("profesi merujuk program & gelombang yang ada",
+        not ({p["program_id"] for p in prof} - pid) and not ({p["gelombang_id"] for p in prof} - gid), "")
+    cek("profesi_prodi merujuk profesi yang ada", not ({p["profesi_id"] for p in prodi} - fid),
+        f"{len(prodi):,} baris syarat IPK per prodi")
+
+    # --- syarat administrasi masuk akal & sesuai jalur ---
+    tabel = R["administrasi"]["umur_maks_saat_daftar"]
+    salah_umur = [
+        f"{p['profesi_id']} {p['sumber_rekrutmen']}/{p['jenjang']}={p['umur_maks']}"
+        for p in prof if p["jenis_program"] != "PRO_HIRE"
+        and p["status_sumber"] != "NYATA_RBB"
+        and int(p["umur_maks"]) != tabel.get("rbb" if p["sumber_rekrutmen"] == "rbb" else "mandiri",
+                                             {}).get(p["jenjang"], int(p["umur_maks"]))
+    ]
+    cek("batas umur sesuai jalur", not salah_umur,
+        f"{len(salah_umur)} menyimpang, mis. {salah_umur[:2]}" if salah_umur else
+        "mandiri vs rbb dibedakan (F-022/F-043)")
+
+    ipk_aneh = [p["profesi_id"] for p in prof if not 2.0 <= float(p["min_ipk"]) <= 4.0]
+    cek("IPK minimal dalam rentang wajar", not ipk_aneh, f"{len(ipk_aneh)} di luar 2,0-4,0")
+
+    kosong = [g["gelombang_id"] for g in gel if int(g["n_profesi"]) == 0]
+    cek("setiap gelombang punya profesi", not kosong, f"kosong: {kosong}")
+
+    # Kursi subholding hanya boleh jatuh ke entri berpenempatan subholding. `sub_diterima`
+    # di kohort.yaml diturunkan dari jumlah entri itu (F-003), jadi kalau alokasi memakai
+    # pemisahan lain, sebuah gelombang bisa menerima lebih sedikit orang daripada angka
+    # yang diturunkan dari entri penempatannya sendiri.
+    meleset_sh = []
+    for t, i in sorted(koh.items()):
+        rows = [p for p in prof if int(p["tahun_program"]) == t]
+        punya_sh = any(p["penempatan"] == "SUBHOLDING" for p in rows)
+        if not punya_sh:
+            continue        # tahun tanpa entri subholding di katalog: kursinya dilebur
+        sh = sum(int(p["diterima_target"]) for p in rows if p["penempatan"] == "SUBHOLDING")
+        if sh != i["sub_diterima"]:
+            meleset_sh.append(f"{t}: {sh} vs {i['sub_diterima']}")
+    cek("kursi subholding = sub_diterima kohort", not meleset_sh,
+        "; ".join(meleset_sh) or "tiap tahun berentri subholding cocok")
+
+
 def main() -> int:
     print(f"Verifikasi keluaran di {MASTER}")
     R = {p.stem: yaml.safe_load(p.read_text(encoding="utf-8")) for p in sorted(RULES.glob("*.yaml"))}
@@ -250,6 +367,10 @@ def main() -> int:
     unit = baca("unit_induk.csv")
     proyeksi = baca("proyeksi_kekosongan.csv")
     ringkas = baca("kekosongan_ringkas.csv")
+    gel = baca("gelombang.csv")
+    prog = baca("program.csv")
+    prof = baca("profesi.csv")
+    prodi = baca("profesi_prodi.csv")
     if gagal:
         print("\nInput belum lengkap -- hentikan.")
         return 1
@@ -259,6 +380,7 @@ def main() -> int:
     cek_total_pagu(R, pagu)
     cek_rujukan(pagu, usulan, unit)
     cek_angka(usulan, proyeksi, ringkas)
+    cek_katalog(R, gel, prog, prof, prodi)
     cek_pii()
 
     print("\n" + "=" * 60)

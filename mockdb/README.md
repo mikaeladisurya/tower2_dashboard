@@ -318,11 +318,59 @@ sekadar bertetangga.
 Gap FTK adalah **stok** kursi kosong yang diusulkan ulang tiap tahun, jadi ia terhitung
 berkali-kali. Yang boleh dideret lintas tahun hanya komponen kekosongan (aliran).
 
+### ✅ 06 — Gelombang, program & profesi (`build/06_gelombang_program_profesi.py`)
+
+Tiga level menurut `angkatan.yaml`: **gelombang** (satu nomor angkatan) → **program** (entri
+penempatan per subholding/kota) → **profesi** (unit granular pendaftaran, F-010).
+
+| File | Baris | Isi |
+|---|---:|---|
+| `out/master/gelombang.csv` | 19 | 16 seri utama + 3 seri khusus |
+| `out/master/program.csv` | 97 | entri penempatan — **judul asli semua** |
+| `out/master/profesi.csv` | 289 | + syarat IPK, batas umur, kuota |
+| `out/master/profesi_prodi.csv` | 427 | IPK minimal per program studi |
+
+⚠️ **Tidak ada judul program yang dikarang** — aturan paling keras di langkah ini, dan kini
+ditegakkan otomatis oleh `00b`: setiap judul harus terlacak balik ke `programs.csv` (31),
+`programs_historis.csv` (42 dipakai, arsip Wayback), atau `lowongan_pln_rbb.csv` (20).
+Empat gelombang yang tidak punya judul sama sekali memakai penanda eksplisit
+*"(tidak terekam di katalog PLN)"*.
+
+**Total diterima mendarat persis di 8.851** (kohort Group), dan bauran pendidikan tiap tahun
+mengikuti `demografi.yaml` — mis. 2022: D3 27% / S1 64% / S2 9%, tepat sasaran.
+
+⚠️ **`pertama_terlihat` di arsip Wayback adalah tanggal SNAPSHOT, bukan tanggal program dibuka.**
+Menyaring dengannya menyeret 12 program SMK 2017 dan 4 program 2018 ke gelombang 2019 — dan SMK
+justru dinyatakan tidak dimodelkan di horison ini. Yang menentukan adalah **tahun di judul**;
+snapshot hanya dipakai untuk judul yang tidak mencantumkan tahun.
+
+**Kursi induk & subholding dibagi di kolam terpisah.** `sub_diterima` di `kohort.yaml`
+*diturunkan dari* jumlah entri penempatan subholding per gelombang (F-003) — jadi kursi itu
+harus kembali ke gelombang yang punya entri tersebut. Tanpa pemisahan ini, angkatan 92 (2025)
+menerima 542 orang padahal 950 kursi subholding tahun itu berasal dari lima entri
+penempatannya sendiri: gelombang menerima lebih sedikit daripada angka yang diturunkan
+darinya. Setelah dipisah, 91 → 979 dan 92 → 1.021. Tahun tanpa entri subholding sama sekali
+(2019, 2023) kursinya dilebur ke kolam induk.
+
+⚠️ **Sisa yang BELUM selesai:** di dalam kolam induk, porsi masih dibagi menurut jumlah baris
+profesi — dan jumlah baris itu ukuran cakupan geografis, bukan jumlah orang. Afirmasi pecah
+per kota (Papua 2025 = 6 kota × 5 = 30 baris), reguler nasional cukup menulis "Seluruh
+Indonesia" (12 baris). Akibatnya angkatan 91 masih menyerap 979 dari 1.050 kursi induk 2025,
+sementara pagu langkah 05 hanya mengalokasikan **38 kursi** ke unit Papua. Belum diperbaiki
+karena beririsan dengan ketegangan 2023 (gender 86:14 NYATA menuntut afirmasi besar, pagu
+menuntut kecil) yang masih terbuka.
+
+**Dua lubang angkatan diisi: 79 & 80 (2022).** Katalog 2022 hanya memuat tiga program dan dua
+di antaranya S2 — nol kursi D3, padahal tahun itu menerima 1.109 orang. Tanpa gelombang ini 88%
+kursi menumpuk di satu program Icon Plus. Pegawai masuk tanpa rekrutmen sebelumnya lebih janggal
+daripada nomor angkatan yang kosong. Kronologinya sah: 78 buka 7 Okt 2022, 81 buka 22 Mei 2023.
+Tujuh lubang lain **tetap kosong** — alasan per nomor ada di `angkatan.yaml` →
+`kapan_lubang_DIISI`.
+
 ### ⬜ Berikutnya
 
-06 program/angkatan & profesi · 07 vendor & lokasi
-seleksi · 08 kandidat & pendaftaran · 09 tahapan seleksi · 10 kontrak/prajabatan/OJT ·
-11 penempatan · 12 load ke DuckDB
+07 vendor & lokasi seleksi · 08 kandidat & pendaftaran · 09 tahapan seleksi ·
+10 kontrak/prajabatan/OJT · 11 penempatan · 12 load ke DuckDB
 
 ## Skema penilaian tiap tahap (disepakati)
 

@@ -185,6 +185,25 @@ tahapan harus identik antara `tahapan.yaml` dan `funnel.yaml`, nomor angkatan ha
 memuat semua jangkar asli, dan kurva kelengkapan tidak boleh menurun.
 **Jalankan setiap kali menyentuh `rules/`.**
 
+**Verifikasi keluaran:** `python mockdb/build/00b_verifikasi_keluaran.py`
+
+Skrip di atas membaca `rules/`; yang ini membaca `out/master/*.csv`. Perbedaan itu penting —
+**aturan yang benar tidak menjamin generator menaatinya.** Kekosongan inilah yang membiarkan
+langkah 05 menaruh 143 orang di jabatan struktural sementara seluruh 161 cek aturan lulus,
+karena tak satu pun di antaranya pernah membuka CSV hasil.
+
+22 cek: larangan struktural di pagu & usulan, `kode_grade` harus cocok dengan jenjang
+pendidikan menurut `jabatan.yaml`, total pagu harus mendarat persis di kohort tiap tahun,
+setiap unit yang dirujuk harus ada di master, `nama_jabatan + sebutan_jabatan` harus bisa
+dirangkai balik jadi jabatan utuh, `usulan = kekosongan + gap_ftk`, proyeksi rinci harus
+sama dengan ringkasannya, dan **penjaga PII** — tidak boleh ada kolom atau nilai berbau
+orang (NIP/NIK/email) di seluruh `out/master/`.
+
+Cek-nya sudah diuji-negatif: lima cacat disuntikkan sengaja (Team Leader diselundupkan,
+D3 dinaikkan ke G2, satu orang dihilangkan dari total, level pro hire dimunculkan lagi,
+struktural di usulan) — kelimanya tertangkap, kontrol tanpa mutasi tetap lulus.
+**Jalankan setiap kali menyentuh `build/`.**
+
 ### ✅ 03 — Rumpun jurusan & jembatan jurusan↔jabatan (`build/03_rumpun_jurusan.py`)
 
 Menutup mata rantai antara **sisi pelamar** (punya program studi) dan **sisi kursi**
@@ -250,12 +269,24 @@ dan sebaran posisi per unit.
 
 Keluarannya **mengikuti skema asli dokumen HR** `Sample-04-Penetapan Pagu Rekrutmen_2026.xlsx`
 (F-054): `NO · HOLDING/AP SH · HOLDING/SUBHOLDING · UNIT PELAKSANA · JABATAN ·
-JURUSAN PENDIDIKAN · JUMLAH · PENDIDIKAN · KETERANGAN`.
+JURUSAN PENDIDIKAN · JUMLAH · PENDIDIKAN · KETERANGAN`, ditambah tiga kolom dari
+**Sample-02** (F-055): `NAMA JABATAN · SEBUTAN JABATAN · JENJANG JABATAN`.
 
 | File | Baris | Isi |
 |---|---:|---|
-| `out/master/usulan_kebutuhan.csv` | 41.314 | usulan unit sebelum dipotong |
-| `out/master/pagu_rekrutmen.csv` | 4.990 | pagu ditetapkan, skema HR — total **6.221** orang |
+| `out/master/usulan_kebutuhan.csv` | 34.006 | usulan unit sebelum dipotong |
+| `out/master/pagu_rekrutmen.csv` | 4.975 | pagu ditetapkan, skema HR — total **6.221** orang |
+
+**Nama jabatan dipecah tiga, mengikuti Sample-02.** Master menyimpannya tergabung
+(`OFFICER KINERJA DAN ADMINISTRASI LAYANAN PELANGGAN`); keluaran memecahnya kembali jadi
+`nama_jabatan` = OFFICER, `sebutan_jabatan` = KINERJA DAN ADMINISTRASI LAYANAN PELANGGAN,
+`kode_grade` = G2 — persis tiga kolom yang dipakai dokumen formasi HR.
+
+**Baris berformasi nol dipertahankan** (27.317 dari 34.006 baris usulan, 80%). Sebelumnya
+baris ber-nilai < 0,01 dibuang sebagai "debu numerik"; itu keliru. Sample-02 mempertahankan
+baris ber-FTK 0, dan memang harus: *"posisi ini ada di unit tapi formasinya nol tahun ini"*
+adalah cerita yang berbeda dari *"posisi ini tidak ada di unit ini"*. Kalau dibuang, dashboard
+tidak bisa membedakan keduanya.
 
 **Faktor penyesuaian DIHITUNG, bukan diasumsikan.** Pagu dijangkar ke ukuran kohort nyata,
 jadi faktornya jatuh sendiri: 0,35 (2019) · **0,13 (2020)** · 0,29 · 0,33 · 0,69 · 0,62 ·
@@ -266,8 +297,18 @@ naiknya adalah cerita pemulihan yang nyata.
 
 | Uji | Hasil | Target |
 |---|---|---|
-| Bauran pendidikan pagu vs `demografi.yaml` | D3 28,6% · S1 67,6% · S2 3,9% | 28,7% · 67,9% · 3,4% |
+| Bauran pendidikan pagu vs `demografi.yaml` | D3 28,7% · S1 68,0% · S2 3,3% | 28,7% · 67,9% · 3,4% |
 | Total pagu vs kohort induk | 6.221 | 6.221 |
+
+⚠️ **Jabatan struktural dikeluarkan dari sasaran rekrutmen** — dan ini pernah bocor.
+Versi pertama langkah 05 menyaring pakai `level`, bukan `kelompok_jabatan`, sehingga
+**143 orang** masuk ke jabatan TEAM LEADER & ASSISTANT MANAGER. Persis jebakan yang
+diperingatkan `jabatan.yaml`: TEAM LEADER bergrade **G2** (sama dengan OFFICER) dan
+ASSISTANT MANAGER bergrade **G3** (sama dengan SENIOR OFFICER), jadi saringan berbasis
+grade memang tidak bisa memisahkan keduanya. Level 4 (SPC/SSP) juga dikeluarkan: satu-satunya
+jalur masuk ke sana adalah pro hire, yang di luar cakupan. Kekosongan di jabatan struktural
+**tetap dihitung** dan tetap masuk kaskade promosi — yang dilarang cuma menjadikannya
+tujuan rekrutmen dari luar.
 
 Peluang promosi di `attrition.yaml` disetel lewat pencarian grid sampai bauran pendidikan
 pagu cocok dengan demografi kohort — jadi kedua file itu kini saling mengunci, bukan

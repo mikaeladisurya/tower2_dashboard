@@ -11,7 +11,7 @@ Bentuknya nyata; ISINYA tetap dimodelkan (sampel HR dianonimkan & cuma 20 baris)
 
 Input  : out/master/proyeksi_kekosongan.csv, unit_induk.csv, posisi_unit_induk.csv
          out/master/rumpun_subbidang.csv, jabatan_klasifikasi.csv
-         rules/attrition.yaml, rules/kohort.yaml
+         rules/attrition.yaml, rules/kohort.yaml, rules/jabatan.yaml
 Output : out/master/usulan_kebutuhan.csv   (sebelum dipotong)
          out/master/pagu_rekrutmen.csv     (skema HR, sesudah dipotong)
 
@@ -31,7 +31,12 @@ MASTER = ROOT / "mockdb" / "out" / "master"
 RULES = ROOT / "mockdb" / "rules"
 
 # Jenjang pendidikan yang boleh masuk di tiap level tangga jabatan (F-042, tervalidasi F-054).
-PENDIDIKAN_LEVEL = {1: "D3", 2: "S1", 3: "S2", 4: "S2"}
+#
+# Level 4 (SPC/SSP) SENGAJA TIDAK ADA. Di `jabatan.yaml` satu-satunya jalur masuk ke SPC
+# adalah PRO_HIRE, dan user memutuskan pro hire di luar cakupan ("fokus di rekrutmen
+# pegawai non jabatan"). Sebelum ini level 4 ikut terbawa dan menghasilkan 10 orang
+# fresh graduate S2 berjabatan Specialist/Assistant Manager.
+PENDIDIKAN_LEVEL = {1: "D3", 2: "S1", 3: "S2"}
 
 # Provinsi/unit dengan penempatan 3T -- menentukan kolom KETERANGAN (F-054).
 KATA_3T = ("PAPUA", "MALUKU", "NUSA TENGGARA", "KALIMANTAN", "SULAWESI", "ACEH", "BENGKULU")
@@ -58,6 +63,17 @@ def angka(x: str) -> int:
         return 0
 
 
+def sebutan(nama_posisi: str, kelompok: str) -> str:
+    """Potong prefiks kelompok dari nama posisi -> kolom SEBUTAN JABATAN gaya Sample-02.
+
+    HR memecah nama jabatan jadi dua kolom: NAMA JABATAN ("Officer") dan SEBUTAN JABATAN
+    ("Pengelolaan Aset Distribusi"). Master kita menyimpannya tergabung, jadi di sini
+    prefiksnya dilepas kembali. Huruf besar dipertahankan mengikuti konvensi DAPEG.
+    """
+    n, k = nama_posisi.strip(), (kelompok or "").strip()
+    return n[len(k):].strip() if k and n.startswith(k) else n
+
+
 def jurusan_untuk(sub_bidang: str, pendidikan: str, rumpun_map: dict, prodi_map: dict) -> str:
     """Susun teks bergaya HR: 'D3 Teknik Listrik/Teknik Elektro'.
 
@@ -79,6 +95,11 @@ def main() -> int:
     print("05 — usulan kebutuhan unit & penetapan pagu rekrutmen\n")
     attr = yaml.safe_load((RULES / "attrition.yaml").read_text(encoding="utf-8"))
     koh = yaml.safe_load((RULES / "kohort.yaml").read_text(encoding="utf-8"))
+    jab = yaml.safe_load((RULES / "jabatan.yaml").read_text(encoding="utf-8"))
+
+    # Daftar terlarang DIBACA dari aturan, tidak ditulis ulang di sini -- kalau tidak,
+    # rules dan generator bisa menyimpang diam-diam.
+    terlarang = {s.strip().upper() for s in jab["larangan_struktural"]["kelompok_jabatan_terlarang"]}
 
     kohort = {
         r["tahun"]: r for r in koh["kohort_per_tahun_program"] if r.get("ada_gelombang", True)
@@ -132,16 +153,31 @@ def main() -> int:
     kosong: dict[tuple[str, int, int], float] = defaultdict(float)   # (unit, tahun, level)
     kursi: dict[tuple[str, int], list[dict]] = defaultdict(list)     # (unit, level) -> posisi
     seen: set[tuple[str, str]] = set()
+    ditolak_struktural = 0
     for p in proyeksi:
         t, lv, un = int(p["tahun"]), int(p["level"]), p["unit_induk"]
+        # Kekosongannya TETAP dihitung -- posisi struktural memang kosong dan tetap harus
+        # masuk kaskade promosi. Yang dilarang cuma menjadikannya TUJUAN rekrutmen luar.
         kosong[(un, t, lv)] += float(p["kekosongan"])
-        if (un, p["nama_posisi"]) not in seen:
-            seen.add((un, p["nama_posisi"]))
-            kursi[(un, lv)].append(p)
+        if (un, p["nama_posisi"]) in seen:
+            continue
+        seen.add((un, p["nama_posisi"]))
+        # LARANGAN KERAS jabatan.yaml: pegawai baru tidak pernah masuk jabatan struktural.
+        # Disaring pakai kelompok_jabatan, BUKAN jenjang/level -- justru inilah jebakan yang
+        # diperingatkan aturan itu, dan yang sebelumnya terinjak di sini: TEAM LEADER
+        # bergrade G2 (sama dengan OFFICER) dan ASSISTANT MANAGER bergrade G3 (sama dengan
+        # SENIOR OFFICER), jadi saringan berbasis grade meloloskan keduanya.
+        if p["kelompok_jabatan"].strip().upper() in terlarang:
+            ditolak_struktural += 1
+            continue
+        kursi[(un, lv)].append(p)
+    print(f"\n  Posisi struktural dikeluarkan dari sasaran rekrutmen: {ditolak_struktural:,} "
+          f"posisi x unit (kekosongannya tetap masuk kaskade promosi)")
 
     usulan_baris: list[dict] = []
     pagu_mentah: dict[int, list[dict]] = defaultdict(list)
     usulan_total: dict[int, float] = defaultdict(float)   # dihitung SEBELUM dipecah per posisi
+    luar_cakupan = 0.0    # sisa rekrutmen luar di level 4+ (jalur pro hire, di luar cakupan)
 
     for tahun_program, info in sorted(kohort.items()):
         t_isi = info["masuk_di"]          # kekosongan tahun kapan yang mau diisi
@@ -163,25 +199,34 @@ def main() -> int:
                 gap_bobot[nama] / rerata_bobot if rerata_bobot else 1
             )
             total_rekrut = sum(rekrut_level.values())
-            for lv, n in rekrut_level.items():
-                if n <= 0 or lv not in PENDIDIKAN_LEVEL:
+            luar_cakupan += sum(
+                n for lv, n in rekrut_level.items() if lv not in PENDIDIKAN_LEVEL and n > 0
+            )
+            # Ditelusuri per level cakupan, BUKAN per level yang kebetulan berkekosongan.
+            # Bedanya: level tanpa kebutuhan pun tetap memancarkan baris ber-usulan 0,
+            # meniru Sample-02 yang mempertahankan baris FTK 0. "Formasi nol" dan "posisi
+            # tidak ada di unit ini" adalah dua cerita berbeda, dan sebelumnya keduanya
+            # sama-sama tak terlihat.
+            for lv in sorted(PENDIDIKAN_LEVEL):
+                daftar = kursi.get((nama, lv), [])
+                if not daftar:
                     continue
-                bagian_gap = gap_unit * (n / total_rekrut) if total_rekrut else 0
+                n = rekrut_level.get(lv, 0.0)
+                bagian_gap = gap_unit * (n / total_rekrut) if total_rekrut else 0.0
                 usulan = n + bagian_gap
                 usulan_total[tahun_program] += usulan
-                daftar = kursi.get((nama, lv), [])
                 bobot_total = sum(int(k["pegawai"]) for k in daftar) or 1
                 for k in daftar:
                     porsi = int(k["pegawai"]) / bobot_total
                     nilai = usulan * porsi
-                    if nilai < 0.01:      # ambang sangat kecil: hanya buang debu numerik
-                        continue
                     baris = {
                         "tahun_program": tahun_program,
                         "unit_induk": nama,
                         "jenis_unit": u["jenis_unit"],
                         "nama_posisi": k["nama_posisi"],
                         "kelompok_jabatan": k["kelompok_jabatan"],
+                        "sebutan_jabatan": sebutan(k["nama_posisi"], k["kelompok_jabatan"]),
+                        "kode_grade": k["jenjang"],
                         "sub_bidang": k["sub_bidang"],
                         "level": lv,
                         "pendidikan": PENDIDIKAN_LEVEL[lv],
@@ -190,7 +235,8 @@ def main() -> int:
                         "usulan": round(nilai, 3),
                     }
                     usulan_baris.append(baris)
-                    pagu_mentah[tahun_program].append(baris)
+                    if nilai >= 0.001:      # baris nol tidak ikut pembagian pagu
+                        pagu_mentah[tahun_program].append(baris)
 
     # ---- pemotongan: total pagu harus mendarat di ukuran kohort nyata ----
     # Faktor bisa >1: di tahun-tahun terakhir PLN merekrut MELEBIHI kebutuhan pengganti,
@@ -255,6 +301,9 @@ def main() -> int:
                     "holding_subholding": nama_unit,
                     "unit_pelaksana": "",     # master kita berhenti di unit pelaksana; ULP tidak tersedia
                     "jabatan": b["nama_posisi"],
+                    "nama_jabatan": b["kelompok_jabatan"],   # kolom NAMA JABATAN Sample-02
+                    "sebutan_jabatan": b["sebutan_jabatan"],  # kolom SEBUTAN JABATAN Sample-02
+                    "kode_grade": b["kode_grade"],            # kolom JENJANG JABATAN Sample-02
                     "jurusan_pendidikan": jurusan_untuk(
                         b["sub_bidang"], b["pendidikan"], rumpun_map, prodi_map
                     ),
@@ -289,6 +338,19 @@ def main() -> int:
     for r, k, v in urut[:6]:
         print(f"    {k:34s} usulan {v[0]:7.0f} -> pagu {v[1]:6.0f}  ({r:.0%})")
 
+    # Sebelumnya baris ber-nilai < 0,01 dibuang sebagai "debu numerik". Itu keliru:
+    # baris begitu justru padanan baris FTK 0 di Sample-02 -- posisi ADA di unit, tapi
+    # formasinya nol tahun itu. Kalau dibuang, "formasi nol" jadi tak bisa dibedakan dari
+    # "posisi tidak ada di unit ini". Sekarang dipertahankan.
+    tipis = sum(1 for b in usulan_baris if b["usulan"] < 0.01)
+    kosong_pagu = sum(1 for b in usulan_baris if b["usulan"] < 0.5)
+    print(f"\n  Baris berformasi nol dipertahankan: {tipis:,} baris < 0,01 (dulu dibuang) "
+          f"dari {len(usulan_baris):,}")
+    print(f"  Baris yang tidak menghasilkan satu orang pun di pagu: {kosong_pagu:,} "
+          f"({kosong_pagu / len(usulan_baris):.0%}) -- ini 'formasi nol' gaya Sample-02")
+    print(f"  Sisa rekrutmen luar di level 4+ yang DIBUANG: {luar_cakupan:,.0f} orang "
+          f"seluruh horison -- itu jalur pro hire (SPC/SSP), di luar cakupan.")
+
     total_pagu = sum(b["jumlah"] for b in pagu_baris)
     total_kohort = sum(i["induk_diterima"] for i in kohort.values())
     print(f"\n  Total pagu {total_pagu:,} vs kohort induk {total_kohort:,} "
@@ -300,14 +362,15 @@ def main() -> int:
     tulis(
         MASTER / "usulan_kebutuhan.csv",
         ["tahun_program", "unit_induk", "jenis_unit", "nama_posisi", "kelompok_jabatan",
-         "sub_bidang", "level", "pendidikan", "kekosongan", "gap_ftk", "usulan"],
+         "sebutan_jabatan", "kode_grade", "sub_bidang", "level", "pendidikan",
+         "kekosongan", "gap_ftk", "usulan"],
         usulan_baris,
     )
     tulis(
         MASTER / "pagu_rekrutmen.csv",
         ["no", "tahun_program", "holding_ap_sh", "holding_subholding", "unit_pelaksana",
-         "jabatan", "jurusan_pendidikan", "jumlah", "pendidikan", "keterangan",
-         "sub_bidang", "level", "usulan_sebelum_potong"],
+         "jabatan", "nama_jabatan", "sebutan_jabatan", "kode_grade", "jurusan_pendidikan",
+         "jumlah", "pendidikan", "keterangan", "sub_bidang", "level", "usulan_sebelum_potong"],
         pagu_baris,
     )
     return 0

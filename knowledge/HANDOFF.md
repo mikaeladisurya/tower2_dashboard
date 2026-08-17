@@ -32,6 +32,9 @@
 - **9 file `mockdb/rules/*.yaml`** — 49 temuan disuling jadi aturan yang bisa dieksekusi.
 - **`mockdb/docs/ERD.md` + `kamus_data.md`** — model data & kamus kolom.
 - **`mockdb/build/00_verifikasi_rules.py`** — ±140 cek silang antar file aturan, semua lulus.
+- **`mockdb/build/00b_verifikasi_keluaran.py`** — 22 cek atas `out/master/*.csv`. Dibuat setelah
+  F-056: 161 cek aturan lulus sementara langkah 05 menaruh 143 orang di jabatan struktural,
+  karena tak satu pun cek pernah membuka CSV hasil. **Aturan benar ≠ generator menaatinya.**
 
 **Skala yang disepakati user: penuh 1:1.** ±315rb pendaftaran · ±499rb akun kandidat ·
 ±621rb baris tahapan · 8.851 lulus seleksi (6.427 sudah ber-SK) · DuckDB ±350 MB.
@@ -151,7 +154,8 @@ Ini bukan kegagalan riset — justru **gap inilah yang mau ditonjolkan dashboard
 | 1 — `mockdb/README.md` | ✅ diperbarui ke PLN Group, gelombang 2019–2025, kalibrasi baru |
 | 2 — `mockdb/rules/` | ✅ 9 YAML + `rules/README.md` (peta, konvensi, urutan kausal) |
 | 3 — `mockdb/docs/` | ✅ `ERD.md` (11 area tabel, diagram mermaid) + `kamus_data.md` |
-| — verifikasi | ✅ `build/00_verifikasi_rules.py`, ±160 cek, semua lulus |
+| — verifikasi aturan | ✅ `build/00_verifikasi_rules.py`, ±160 cek, semua lulus |
+| — verifikasi keluaran | ✅ `build/00b_verifikasi_keluaran.py`, 22 cek + penjaga PII, semua lulus |
 
 **Keputusan pemodelan baru yang diambil di langkah 1–3** (semua tercatat lengkap di
 file aturannya masing-masing, dengan alasan & cara membatalkannya):
@@ -224,6 +228,7 @@ knowledge/
 mockdb/
   README.md             <- ✅ diperbarui (PLN Group, 2020-2026, kalibrasi baru)
   build/00_verifikasi_rules.py  <- JALANKAN tiap kali menyentuh rules/
+       00b_verifikasi_keluaran.py <- JALANKAN tiap kali menyentuh build/
        01_extract_master.py · 02_klasifikasi_jabatan.py
   rules/README.md       <- peta aturan, konvensi status_sumber, URUTAN KAUSAL
        kohort.yaml · funnel.yaml · administrasi.yaml · tahapan.yaml · angkatan.yaml ·

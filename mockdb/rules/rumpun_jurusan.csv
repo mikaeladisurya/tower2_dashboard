@@ -1,0 +1,151 @@
+urutan,kata_kunci,rumpun,bidang,catatan
+10,PROGRAM STUDI LAINNYA NON TEKNIK,Lainnya Non-Teknik,NON-TEKNIK,payung resmi di profesi.csv -- WAJIB sebelum aturan 'LAINNYA TEKNIK' karena memuat kata TEKNIK
+11,PROGRAM STUDI LAINNYA TEKNIK,Lainnya Teknik,TEKNIK,payung resmi di profesi.csv
+20,KESEHATAN MASYARAKAT K3,K3,TEKNIK,
+21,KESELAMATAN DAN KESEHATAN KERJA,K3,TEKNIK,
+22,SAFETY ENGINEERING,K3,TEKNIK,
+23,HIPERKES,K3,TEKNIK,
+30,TEKNIK LINGKUNGAN,Kimia dan Lingkungan,TEKNIK,
+31,TEKNIK KIMIA,Kimia dan Lingkungan,TEKNIK,
+32,TEKNIK FISIKA,Elektro dan Ketenagalistrikan,TEKNIK,instrumentasi & kontrol -- lebih dekat ke proteksi/kontrol daripada kimia
+40,TEKNIK INFORMATIKA,Informatika dan Data,TEKNIK,
+41,TEKNIK TELEKOMUNIKASI,Informatika dan Data,TEKNIK,
+42,TEKNIK KOMPUTER,Informatika dan Data,TEKNIK,
+43,DATA SCIENCE,Informatika dan Data,TEKNIK,
+44,BIG DATA,Informatika dan Data,TEKNIK,
+45,BUSINESS INTELLIGENCE,Informatika dan Data,TEKNIK,
+46,SISTEM INFORMASI,Informatika dan Data,TEKNIK,
+47,ILMU KOMPUTER,Informatika dan Data,TEKNIK,
+48,INFORMATIKA,Informatika dan Data,TEKNIK,
+50,TEKNIK GEODESI,Sipil dan Geodesi,TEKNIK,
+51,TEKNIK GEOLOGI,Sipil dan Geodesi,TEKNIK,
+52,TEKNIK SIPIL,Sipil dan Geodesi,TEKNIK,
+53,ARSITEKTUR,Sipil dan Geodesi,TEKNIK,
+54,PLANOLOGI,Sipil dan Geodesi,TEKNIK,
+55,RANCANG KOTA,Sipil dan Geodesi,TEKNIK,
+60,TEKNIK INDUSTRI,Industri dan Rekayasa,TEKNIK,
+61,TEKNIK MATERIAL,Industri dan Rekayasa,TEKNIK,
+62,TEKNIK METALURGI,Industri dan Rekayasa,TEKNIK,
+70,KONVERSI ENERGI,Mesin dan Konversi Energi,TEKNIK,
+71,ENERGI BARU TERBARUKAN,Mesin dan Konversi Energi,TEKNIK,
+72,TEKNIK ENERGI,Mesin dan Konversi Energi,TEKNIK,
+73,TEKNIK MESIN,Mesin dan Konversi Energi,TEKNIK,
+80,TEKNIK ELEKTRO,Elektro dan Ketenagalistrikan,TEKNIK,rumpun terbesar -- 58 kemunculan di profesi.csv
+81,TEKNIK LISTRIK,Elektro dan Ketenagalistrikan,TEKNIK,
+82,TEKNIK TENAGA LISTRIK,Elektro dan Ketenagalistrikan,TEKNIK,
+83,INSTRUMENTASI,Elektro dan Ketenagalistrikan,TEKNIK,
+84,MEKATRONIKA,Elektro dan Ketenagalistrikan,TEKNIK,
+85,ELEKTRONIKA,Elektro dan Ketenagalistrikan,TEKNIK,
+90,ADMINISTRASI FISKAL,Akuntansi dan Perpajakan,NON-TEKNIK,WAJIB sebelum aturan ADMINISTRASI
+91,PERPAJAKAN,Akuntansi dan Perpajakan,NON-TEKNIK,
+92,PAJAK,Akuntansi dan Perpajakan,NON-TEKNIK,
+93,AKUNTANSI,Akuntansi dan Perpajakan,NON-TEKNIK,
+94,ACCOUNTING,Akuntansi dan Perpajakan,NON-TEKNIK,
+100,MANAJEMEN KEUANGAN,Keuangan,NON-TEKNIK,WAJIB sebelum aturan MANAJEMEN
+101,MANAJEMEN INVESTASI,Keuangan,NON-TEKNIK,
+102,KEUANGAN,Keuangan,NON-TEKNIK,
+103,PERBANKAN,Keuangan,NON-TEKNIK,
+110,MANAJEMEN PEMASARAN,Pemasaran dan Niaga,NON-TEKNIK,WAJIB sebelum aturan MANAJEMEN
+111,DIGITAL MARKETING,Pemasaran dan Niaga,NON-TEKNIK,
+112,PEMASARAN,Pemasaran dan Niaga,NON-TEKNIK,
+113,MARKETING,Pemasaran dan Niaga,NON-TEKNIK,
+120,SUPPLY CHAIN,Logistik dan Rantai Pasok,NON-TEKNIK,
+121,LOGISTIK,Logistik dan Rantai Pasok,NON-TEKNIK,
+122,MANAJEMEN RANTAI PASOK,Logistik dan Rantai Pasok,NON-TEKNIK,
+130,MANAJEMEN ASET,Manajemen dan Bisnis,NON-TEKNIK,
+131,MANAJEMEN BISNIS,Manajemen dan Bisnis,NON-TEKNIK,
+132,ADMINISTRASI BISNIS,Manajemen dan Bisnis,NON-TEKNIK,WAJIB sebelum aturan ADMINISTRASI
+133,BISNIS ANALIS,Manajemen dan Bisnis,NON-TEKNIK,
+134,BISNIS,Manajemen dan Bisnis,NON-TEKNIK,
+135,EKONOMI,Manajemen dan Bisnis,NON-TEKNIK,
+136,MANAJEMEN,Manajemen dan Bisnis,NON-TEKNIK,jaring terakhir untuk semua varian MANAJEMEN
+140,HUBUNGAN MASYARAKAT,Komunikasi dan Humas,NON-TEKNIK,
+141,ILMU KOMUNIKASI,Komunikasi dan Humas,NON-TEKNIK,
+142,KOMUNIKASI,Komunikasi dan Humas,NON-TEKNIK,
+143,HUBUNGAN INTERNASIONAL,Komunikasi dan Humas,NON-TEKNIK,
+150,PSIKOLOGI,Psikologi dan SDM,NON-TEKNIK,
+151,SUMBER DAYA MANUSIA,Psikologi dan SDM,NON-TEKNIK,
+152,MANAJEMEN SDM,Psikologi dan SDM,NON-TEKNIK,
+160,PUBLIC POLICY,Hukum,NON-TEKNIK,
+161,ADMINISTRASI PUBLIK,Hukum,NON-TEKNIK,WAJIB sebelum aturan ADMINISTRASI
+162,ADMINISTRASI NEGARA,Hukum,NON-TEKNIK,
+163,HUKUM,Hukum,NON-TEKNIK,
+170,STATISTIKA,Informatika dan Data,TEKNIK,
+171,MATEMATIKA,Informatika dan Data,TEKNIK,program bidang khusus Matematika 2025 -- diarahkan ke Data Analitik
+180,ADMINISTRASI,Administrasi,NON-TEKNIK,jaring terakhir -- semua varian ADMINISTRASI yang belum tertangkap di atas
+190,LINGKUNGAN,Kimia dan Lingkungan,NON-TEKNIK,jaring terakhir untuk 'LINGKUNGAN' tanpa awalan TEKNIK
+33,BIOMEDI,Kimia dan Lingkungan,TEKNIK,varian RBB: Teknik Biomedik/Biomedika/Biomedis
+34,BIOMEDICAL,Kimia dan Lingkungan,TEKNIK,
+35,BIOPROSES,Kimia dan Lingkungan,TEKNIK,
+36,BIOTEKNOLOGI,Kimia dan Lingkungan,TEKNIK,
+37,BIOENERGI,Mesin dan Konversi Energi,TEKNIK,
+38,ARTIFICIAL INTELLIGENCE,Informatika dan Data,TEKNIK,WAJIB sebelum BUSINESS
+39,INFORMATION TECHNOLOGY,Informatika dan Data,TEKNIK,WAJIB sebelum BUSINESS
+49,APPLICATION DEVELOPMENT,Informatika dan Data,TEKNIK,
+56,PERENCANAAN WILAYAH,Sipil dan Geodesi,TEKNIK,
+57,PENGINDERAAN JAUH,Sipil dan Geodesi,TEKNIK,
+58,BANDAR UDARA,Sipil dan Geodesi,TEKNIK,
+63,AERONAUTI,Mesin dan Konversi Energi,TEKNIK,
+64,AERONOTIKA,Mesin dan Konversi Energi,TEKNIK,
+65,PENERBANGAN,Mesin dan Konversi Energi,TEKNIK,
+66,DIRGANTARA,Mesin dan Konversi Energi,TEKNIK,
+95,TAXATION,Akuntansi dan Perpajakan,NON-TEKNIK,
+114,ADVERTISING,Pemasaran dan Niaga,NON-TEKNIK,
+115,PERIKLANAN,Pemasaran dan Niaga,NON-TEKNIK,
+116,PERMEREKAN,Pemasaran dan Niaga,NON-TEKNIK,
+117,PRILAKU KONSUMEN,Pemasaran dan Niaga,NON-TEKNIK,
+137,BUSINESS,Manajemen dan Bisnis,NON-TEKNIK,jaring inggris -- setelah ARTIFICIAL INTELLIGENCE & INFORMATION TECHNOLOGY
+138,KEWIRAUSAHAAN,Manajemen dan Bisnis,NON-TEKNIK,
+139,CREATIVEPRENEUR,Manajemen dan Bisnis,NON-TEKNIK,
+144,CULINARY,Manajemen dan Bisnis,NON-TEKNIK,
+145,MANAGEMENT,Manajemen dan Bisnis,NON-TEKNIK,ejaan inggris -- setelah semua MANAJEMEN
+146,STRATEGIC,Manajemen dan Bisnis,NON-TEKNIK,
+153,KEPEGAWAIAN,Psikologi dan SDM,NON-TEKNIK,
+154,ORGANISASI,Psikologi dan SDM,NON-TEKNIK,
+164,KEBIJAKAN PUBLIK,Hukum,NON-TEKNIK,
+181,ADMINITRASI,Administrasi,NON-TEKNIK,salah ketik yang ada di sumber RBB -- sengaja dipertahankan
+182,ADM.,Administrasi,NON-TEKNIK,singkatan di sumber RBB
+183,KESEKRETARIATAN,Administrasi,NON-TEKNIK,
+184,SEKRETARIS,Administrasi,NON-TEKNIK,
+185,PERKANTORAN,Administrasi,NON-TEKNIK,
+186,COMPUTER,Informatika dan Data,TEKNIK,jaring inggris paling akhir
+187,INFORMASI SYSTEM,Informatika dan Data,TEKNIK,urutan terbalik di sumber RBB
+67,OTOMOTIF,Mesin dan Konversi Energi,TEKNIK,WAJIB sebelum ROBOTIKA
+68,MOTOR PESAWAT,Mesin dan Konversi Energi,TEKNIK,
+69,PENDINGIN,Mesin dan Konversi Energi,TEKNIK,
+74,KETENAGALISTRIKAN,Elektro dan Ketenagalistrikan,TEKNIK,
+75,TENAGA LISTRIK,Elektro dan Ketenagalistrikan,TEKNIK,varian RBB: Teknik Instalasi (Pemanfaatan) Tenaga Listrik
+76,ELEKTONIKA,Elektro dan Ketenagalistrikan,TEKNIK,salah ketik di sumber RBB
+77,ELETROMEDIK,Elektro dan Ketenagalistrikan,TEKNIK,salah ketik di sumber RBB
+78,OTOMASI,Elektro dan Ketenagalistrikan,TEKNIK,
+79,ROBOTIKA,Elektro dan Ketenagalistrikan,TEKNIK,
+86,MEKANIKAL,Mesin dan Konversi Energi,TEKNIK,
+87,MEKANISASI,Mesin dan Konversi Energi,TEKNIK,
+88,MEKANIKA,Mesin dan Konversi Energi,TEKNIK,
+89,MEKANIK,Mesin dan Konversi Energi,TEKNIK,
+96,NUKLIR,Mesin dan Konversi Energi,TEKNIK,
+97,ENERJI,Mesin dan Konversi Energi,TEKNIK,salah ketik di sumber RBB
+98,MANUFAKTUR,Industri dan Rekayasa,TEKNIK,
+99,PENGAIRAN,Sipil dan Geodesi,TEKNIK,
+104,BIOSISTEM,Kimia dan Lingkungan,TEKNIK,
+105,KEAMANAN SIBER,Informatika dan Data,TEKNIK,
+106,PERANGKAT LUNAK,Informatika dan Data,TEKNIK,
+107,TEKNOLOGI INFORMASI,Informatika dan Data,TEKNIK,
+108,APLIKASI MOBILE,Informatika dan Data,TEKNIK,
+118,TENAGA ELEKTRIK,Elektro dan Ketenagalistrikan,TEKNIK,
+119,PERMESINAN,Mesin dan Konversi Energi,TEKNIK,
+123,REFRIGERASI,Mesin dan Konversi Energi,TEKNIK,
+124,ALAT BERAT,Mesin dan Konversi Energi,TEKNIK,
+125,PERKERETAAPIAN,Mesin dan Konversi Energi,TEKNIK,
+126,PESAWAT UDARA,Mesin dan Konversi Energi,TEKNIK,
+127,RANGKA PESAWAT,Mesin dan Konversi Energi,TEKNIK,
+128,JALAN DAN JEMBATAN,Sipil dan Geodesi,TEKNIK,
+129,PERECANAAN WILAYAH,Sipil dan Geodesi,TEKNIK,salah ketik di sumber RBB
+147,PERENCANAAN DAN KONSTRUKSI,Sipil dan Geodesi,TEKNIK,
+148,INFRASTRUKTUR,Sipil dan Geodesi,TEKNIK,
+149,TRANSPORTASI,Sipil dan Geodesi,TEKNIK,
+155,TEKSTIL,Industri dan Rekayasa,TEKNIK,
+156,SYNTH FIBER,Industri dan Rekayasa,TEKNIK,
+157,KARET DAN PLASTIK,Kimia dan Lingkungan,TEKNIK,
+158,PERTAMBANGAN,Mesin dan Konversi Energi,TEKNIK,energi primer
+165,PRODUKSI,Industri dan Rekayasa,TEKNIK,jaring terakhir teknik produksi

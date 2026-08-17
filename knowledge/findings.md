@@ -420,8 +420,14 @@ Sumber: R7 · Keyakinan: tinggi · Dampak: kalau RBB dimasukkan ke mock, perlaku
 terpisah** dengan aturan & bauran posisi sendiri.
 > Catatan cakupan: user sejak awal menetapkan mock fokus ke program rekrutmen PLN sendiri, jadi RBB
 > tetap **opsional/di luar cakupan inti** — tapi datanya kini tersedia bila mau dipakai.
-> **Belum terpanen:** PPB 2021 & edisi RBB lain — percobaan CDX berikutnya kena *rate limit*
-> archive.org (respons kosong), **bukan** bukti arsipnya tak ada. Bisa dicoba ulang lain waktu.
+> **Belum terpanen:** PPB 2021 & edisi RBB selain 2024 — **status BELUM DIKETAHUI**, bukan "tidak ada".
+> Percobaan CDX berikutnya gagal karena **archive.org membalas HTTP 503 Service Unavailable**.
+> Didiagnosis dengan kontrol: domain yang terbukti punya arsip (`rekrutmenbersama2024`) *dan* domain
+> omong kosong sama-sama dibalas 503 → **gangguan layanan sisi server, bukan rate limit ke kita
+> dan bukan ketiadaan arsip**. (Koreksi: catatan sebelumnya menyebut "rate limit" — itu keliru.)
+> 503 bersifat sementara (hitungan jam); CDX bekerja normal beberapa jam sebelumnya di sesi yang sama.
+> **Aksi:** coba ulang `r7_rbb_fhci.py` + CDX untuk `ppb.fhcibumn.id*`, `rekrutmenbersama2022/2023/2025`
+> lain waktu. Catatan: hasil "0 snapshot" untuk PDF SR-2022 **valid** (respons JSON normal, bukan 503).
 
 ### F-044 · Runtun waktu headcount 2020–2025 lengkap (2020 diturunkan) ⭐ [R6b]
 **Cek silang antar edisi SR**: seluruh metrik yang beririsan (total pegawai induk & anak, prajabatan,

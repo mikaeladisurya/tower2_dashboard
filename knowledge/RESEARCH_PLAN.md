@@ -108,9 +108,12 @@ kanal resmi/nota dinas ke VP HTD/HST. Fallback ini sudah disetujui: "lanjut paka
 | **R1c** | **Wayback Machine** (web.archive.org) | Situs PLN menghapus pengumuman angkatan lama. Arsip 2017–2026 memulihkan judul program yang hilang | ✅ 111 program (80 baru) |
 | **R1-login** | Area member rekrutmen.pln.co.id | Satu-satunya sumber **skema biodata/CV asli** | ✅ selesai; PII dibersihkan |
 | **R3-situs** | Halaman FAQ + Info Rekrutmen/artikel | Mekanisme akun, cancel lamaran, jalur campus hiring | ✅ |
-| **R6** | Laporan **Statistik PLN** 2014–2025, Annual Report 2014–2025, Sustainability Report 2022–2025 | Runtun waktu jumlah pegawai → kalibrasi attrition & kebutuhan rekrutmen | 🔄 berjalan |
-| — | Socmed PLN (IG) | Sebagian besar sudah terjawab Wayback | ⬜ prioritas rendah |
+| **R6** | Laporan **Statistik PLN** 2014–2025, Annual Report 2014–2025, Sustainability Report 2022–2025 | Runtun waktu jumlah pegawai → kalibrasi attrition & kebutuhan rekrutmen | ✅ SR-2024/2025 + Statistik 2020–2024 |
+| **R6b** | Sustainability Report **2022 & 2023** | Tiap SR memuat tabel komparatif 3 tahun → menjangkarkan **2020–2021** | 🔄 berjalan |
+| **R7** | **RBB/FHCI** (arsip Wayback endpoint `/job/loadRecord/`) | Mengisi celah 2021 & 2024; syarat umur/IPK per jalur | ✅ 20 lowongan PLN dari RBB 2024 |
+| — | Socmed PLN (IG) | Sudah terjawab Wayback (F-030) | ⬜ tidak perlu |
 | — | Situs karier subholding | Subholding dimodelkan ringkas (DECISION-01) | ⬜ prioritas rendah |
+| — | PPB 2021 & edisi RBB lain | Percobaan kena *rate limit* archive.org, bukan bukti tak ada | ⬜ bisa dicoba ulang |
 
 ## 9. Status log
 

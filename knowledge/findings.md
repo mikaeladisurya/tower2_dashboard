@@ -264,6 +264,41 @@ terpisah** dengan aturan & bauran posisi sendiri.
 > **Belum terpanen:** PPB 2021 & edisi RBB lain — percobaan CDX berikutnya kena *rate limit*
 > archive.org (respons kosong), **bukan** bukti arsipnya tak ada. Bisa dicoba ulang lain waktu.
 
+### F-044 · Runtun waktu headcount 2020–2025 lengkap (2020 diturunkan) ⭐ [R6b]
+**Cek silang antar edisi SR**: seluruh metrik yang beririsan (total pegawai induk & anak, prajabatan,
+pendidikan, usia rinci, ringkasan 3-bucket, dana pensiun) **cocok persis angka-per-angka** antara
+SR-2023 dan SR-2024 untuk tahun 2022 & 2023 → keyakinan tinggi pada data ini.
+
+**Identitas terverifikasi:** `Statistik PLN (Group) = SR (Induk) + SR (Anak & Afiliasi)` —
+selisih **0** untuk 2022 & 2023, **3** untuk 2024. Identitas ini dipakai menurunkan angka yang hilang.
+
+| Tahun | Group (Statistik) | Induk (SR) | Anak & Afiliasi | Kohort prajabatan |
+|---|---:|---:|---:|---:|
+| 2020 | 53.385 | **~44.000** *(diturunkan)* | ~9.350 *(diturunkan)* | tidak tersedia |
+| 2021 | 52.116 | 42.755 | 9.361 *(diturunkan)* | 337 |
+| 2022 | 51.477 | 42.151 | 9.326 | 689 |
+| 2023 | 51.245 | 38.542 | 12.703 | 689 |
+| 2024 | 51.438 | 38.289 | 13.146 | 1.277 |
+| 2025 | tidak tersedia | 37.423 | 12.535 | 1.098 |
+
+Turunan 2020: Anak Perusahaan stabil ~9,3rb di 2021 (9.361 turunan) & 2022 (9.326 dilaporkan),
+sehingga Induk 2020 ≈ 53.385 − ~9.350 ≈ **44.024–44.059**. Ini **estimasi berdasar identitas
+terverifikasi**, bukan tebakan — tapi tetap tandai sebagai turunan di data dictionary.
+
+**Gagal diperoleh:** SR-2022 (63,9 MB) — server PLN mengabaikan HTTP Range dan memutus koneksi
+berulang (5 percobaan sah); tidak ada arsip Wayback untuk PDF ini. Dampaknya kecil karena 2020
+sudah tertutup lewat identitas di atas.
+Sumber: R6b · Keyakinan: tinggi (2021–2025), sedang (2020 turunan) · Dampak: **horison 2020–2026
+kini berjangkar data nyata**, sesuai keputusan horison hibrida.
+
+### F-045 · Lonjakan/penurunan headcount bukan attrition murni [R6b]
+Klaim: penurunan besar 2022→2023 (42.151 → 38.542, −3.609) **bukan** attrition — di periode sama
+Anak Perusahaan naik 9.326 → 12.703 (+3.377). Ini ***carve-out*** pemindahan pegawai ke subholding.
+Sebaliknya 2021→2022 hanya −604 (attrition wajar). Kohort 2021 juga kecil (337) — konsisten dengan
+2021 sebagai tahun jalur PPB (F-041), bukan rekrutmen mandiri PLN.
+Sumber: R6b · Keyakinan: tinggi · Dampak: model mock **jangan** menafsirkan semua penurunan headcount
+sebagai keluar/pensiun; sediakan mekanisme *carve-out/tugas karya* terpisah (sejalan F-015).
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/
@@ -372,12 +407,16 @@ lama. Field fisik & visus adalah temuan baru yang menyambungkan biodata → taha
 Folder `akun/` di-gitignore. Untuk kebutuhan proyek cukup `skema_form.md`; dump mentah sebaiknya dihapus.
 
 ### F-035 · Ukuran kohort rekrutmen ASLI per tahun ⭐⭐ [R6] — MENGOREKSI KALIBRASI
-Klaim (Sustainability Report, PLN Induk): **peserta diklat prajabatan** = ukuran kohort rekrutmen
-sebenarnya → **2022: 689 · 2023: 689 · 2024: 1.277 · 2025: 1.098**.
-Sedangkan **"pegawai baru direkrut"** (= resmi diangkat/SK tahun berjalan) → **2024: 663** (494P/169W);
-**2025: 76** (57P/19W). Laporan tidak menjelaskan selisihnya, tapi cocok dengan **jeda pipeline** kita:
-seleksi thn N → prajabatan → OJT → SK thn N+1 (mis. gelombang Okt-2025 baru diangkat 2026).
-Sumber: R6 (SR-2024 hal. 239; SR-2025 hal. 203) · Keyakinan: tinggi (angka), sedang (tafsir selisih) ·
+Klaim (Sustainability Report, PLN Induk): **peserta diklat prajabatan** = proksi ukuran kohort
+rekrutmen → **2021: 337** (218P/119W) · **2022: 689** · **2023: 689** · **2024: 1.277** · **2025: 1.098**.
+Sedangkan **"pegawai baru direkrut"** → **2023: 689** · **2024: 663** (494P/169W) · **2025: 76** (57P/19W).
+
+⚠️ **Tafsir selisih belum pasti.** Untuk **2023 kedua angka SAMA (689)**, tapi 2024 & 2025 berbeda jauh.
+Jadi hipotesis "prajabatan = lolos seleksi, direkrut = diangkat/SK tahun berjalan (jeda pipeline)"
+**hanya cocok sebagian**. Kemungkinan lain: basis pelaporan berubah antar edisi, atau SR-2023 memakai
+angka yang sama untuk dua metrik. Laporan tidak menjelaskan. **Jangan dipakai sebagai aturan keras**
+tanpa konfirmasi tim HTD.
+Sumber: R6 (SR-2024 hal. 239; SR-2025 hal. 203) + R6b (SR-2023 hal. 170) · Keyakinan: tinggi (angka), **rendah-sedang (tafsir selisih)** ·
 Dampak: **asumsi lama "~2.000 diterima/tahun" ±2x terlalu tinggi.** Angka realistis PLN Induk
 **±700–1.300/tahun**. Dengan 3–4 angkatan/tahun → **±200–400 per angkatan** (batas atas ~500 dari user tetap masuk akal).
 

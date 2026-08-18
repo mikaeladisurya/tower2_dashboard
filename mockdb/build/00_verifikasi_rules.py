@@ -82,6 +82,21 @@ def cek_kohort(R: dict) -> None:
     awal, akhir = R["kohort"]["meta"]["horison"]
     cek("horison lengkap", tahun == list(range(awal, akhir + 1)), f"{tahun}")
 
+    for r in baris:
+        if "komposisi_jalur" not in r:
+            continue
+        komposisi = sum(k["diterima"] for k in r["komposisi_jalur"])
+        cek(
+            f"komposisi_jalur {r['tahun']} = induk_diterima",
+            komposisi == r["induk_diterima"],
+            f"{komposisi} vs {r['induk_diterima']}",
+        )
+        cek(
+            f"komposisi_jalur {r['tahun']} semua diterima >= 0",
+            all(k["diterima"] >= 0 for k in r["komposisi_jalur"]),
+            str([k["diterima"] for k in r["komposisi_jalur"]]),
+        )
+
 
 def rantai_mandiri(R: dict) -> float:
     """Kalikan laju tiap tahap dan pastikan cocok dengan multiplier yang tertulis."""

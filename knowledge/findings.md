@@ -1775,6 +1775,71 @@ tersitasi/nyata), rendah-disengaja (9 vendor lain, `status_sumber: DIMODELKAN` e
 `tahap_ref.csv`(16); `00` dan `00b` dua-duanya SEMUA CEK LULUS; siap jadi basis
 penugasan tahap offline di langkah 09.
 
+### F-078 · Generator 08 (kandidat & pendaftaran) -- administrasi dijalankan sungguhan, bukan diundi; ikatan dinas dikeluarkan dari pendaftaran [sesi build]
+Klaim: `08_kandidat_pendaftaran.py` membangkitkan 368.912 akun kandidat & 218.928 baris
+pendaftaran, dengan dua penyesuaian penting yang TIDAK ADA di `profesi.csv` (langkah 06)
+apa adanya:
+
+**(1) Ikatan dinas dikeluarkan dari basis penghitungan pendaftar.** `profesi.csv.
+diterima_target` berjumlah 8.851 (= seluruh kohort Group), tapi itu KELIRU dipakai
+langsung sebagai basis "berapa yang mendaftar" -- `funnel_ikatan_dinas.pendaftaran:
+tidak_ada` (peserta ikatan dinas diseleksi lewat jalur kampus, tak pernah menyentuh
+portal rekrutmen PLN). Ternyata `diterima_target` per profesi MENCAMPUR ikatan dinas
+ke profesi katalog nyata tanpa penanda (warisan langkah 06: `target = induk_diterima +
+sub_diterima` per tahun, dan `induk_diterima` kohort.yaml sendiri sudah termasuk
+komposisi ikatan dinas). Langkah 08 mengurangi porsi ikatan dinas per tahun (2020:200,
+2021:640, 2024:300 = total 1.140, dari `kohort.yaml.komposisi_jalur`) secara
+proporsional dari `diterima_target` sebelum dibalik jadi jumlah pendaftar --
+hasilnya **7.711**, PERSIS sama dengan `funnel.yaml.status_per_15sep2026.lulus_
+wawancara`. Diuji otomatis di `00b_verifikasi_keluaran.py`.
+⚠️ **Catatan residual yang TIDAK diperbaiki** (di luar cakupan langkah 08): pembagian
+`sumber_rekrutmen` (mandiri/rbb) di level profesi.csv (6.259/2.592) TIDAK cocok dengan
+pembagian jalur sesungguhnya di `kohort.yaml.komposisi_jalur` (mandiri 6.951/rbb 760) --
+tahun bergelombang tunggal (2020, 2021) berlabel `rbb` di katalog membawa SELURUH
+kursi tahun itu (termasuk `tidak_diketahui`/siluman yang seharusnya arketipe
+`nasional_mandiri`) sebagai `rbb`. Ini warisan sumbu-2 F-064 yang butuh perbaikan di
+langkah 06 kalau mau ditutup persis; langkah 08 memakai tag `sumber_rekrutmen` apa
+adanya per profesi (jadi total pendaftar RBB sedikit membengkak, mandiri sedikit
+menyusut, dibanding rincian funnel.yaml) -- volume total & angka DITERIMA tidak
+terpengaruh, cuma komposisi jalur di level pendaftar granular.
+
+**(2) Administrasi (jalur mandiri) dijalankan SUNGGUHAN, bukan diundi dari target 64%.**
+Biodata (umur, IPK, prodi, status kawin, kelengkapan berkas) dibangkitkan dulu dari
+`demografi.yaml` (dikalibrasi supaya laju lulus ALAMI mendekati jangkar F-019), lalu
+kriteria `administrasi.yaml` (umur_maks per jalur+jenjang dari `profesi.csv`, IPK
+minimal per prodi dari `profesi_prodi.csv`, kesesuaian jurusan, status BELUM MENIKAH,
+kelengkapan berkas per tahun) diperiksa PER KANDIDAT PER PENDAFTARAN sungguhan --
+`alasan_gagal` (boleh >1) adalah hasil pemeriksaan nyata, bukan label tempelan. Hasil
+aktual: laju gagal administrasi 32,7% (target 36%, selisih 3 poin -- sepola dengan
+toleransi yang sudah diterima di F-075 funnel afirmasi). Persis `diterima_pendaftaran`
+dipilih dari kolam lulus-administrasi sebagai DITERIMA (jangkar keras); sisa lulus-
+administrasi disebar ke tahap berikutnya (adaptif..wawancara) memakai proporsi
+`multiplier_lulus` funnel arketipe (nasional_mandiri/afirmasi_remote, F-075). Jalur RBB
+tidak dites administrasi PLN sama sekali (titik masuk akademik_inggris, F-046) --
+langsung disebar 4 tahap PLN via proporsi `funnel_rbb`.
+🐛 **Bug tertangkap & diperbaiki sebelum commit:** percobaan pertama memakai gender
+KANDIDAT dari target `diterima_per_tahun_program` (65:35..86:14) alih-alih baseline
+`gender.pelamar` (62:38) + `variasi_per_bidang` -- persis pelanggaran yang diperingatkan
+demografi.yaml ("jangan paksa target di sisi pelamar"). Hasilnya 76:24 P:W di seluruh
+kandidat, jauh dari wajar. Diperbaiki: gender kini EMERGENT dari bidang prodi yang
+disampel per slot (TEKNIK 82% P, NON-TEKNIK 45% P, campuran 62% P baseline) --
+hasil akhir 63,4% P, dalam rentang wajar. Bug kedua: fallback "profesi tanpa entri
+`profesi_prodi.csv`" (96 dari 219 profesi) awalnya menandai SEMUA pelamarnya
+`jurusan_tidak_sesuai` (polaritas terbalik -- seharusnya "tak ada acuan buat dinilai
+salah" bukan "otomatis salah"), yang menaikkan laju gagal administrasi ke 74% sebelum
+diperbaiki.
+Sumber: F-019/F-047 (jangkar funnel), F-064/F-075 (arketipe), F-046 (RBB), demografi.yaml/
+administrasi.yaml/kelengkapan.yaml (kalibrasi biodata) · Keyakinan: sedang (mekanisme &
+jangkar keras diuji otomatis; distribusi alasan_gagal individual menyimpang dari bobot
+target administrasi.yaml -- lihat catatan di kode, diterima sebagai variasi wajar N kecil
+per profesi, tidak dikejar presisi per-alasan) · Dampak: `out/master/` bertambah
+`kandidat.csv`(368.912), `pendaftaran.csv`(218.928), `kandidat_pendidikan.csv`(~1,07jt),
+`kandidat_sertifikasi.csv`(~146rb), `kandidat_keluarga.csv`(~366rb),
+`kandidat_berkas.csv`(~1,35jt); `00b_verifikasi_keluaran.py` dapat blok cek baru + penjaga
+PII diperluas (kandidat.csv/kandidat_keluarga.csv SENGAJA berbentuk PII sintetis 100% --
+dikecualikan dari guard kolom/nilai, diganti cek bahwa generatornya sendiri tidak pernah
+membaca sumber PII asli).
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

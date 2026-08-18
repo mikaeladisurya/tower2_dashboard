@@ -217,9 +217,16 @@ def cek_angka(usulan: list[dict], proyeksi: list[dict], ringkas: list[dict]) -> 
 # ---------------------------------------------------------------------------
 def cek_pii() -> None:
     print("\n[ penjaga PII ]")
+    # kandidat.csv/kandidat_keluarga.csv SENGAJA berbentuk PII (nama/email/KTP/alamat) --
+    # itu skema aslinya (F-034, kamus_data.md), tapi 100% SINTETIS (demografi.yaml
+    # meta.peringatan_pii). Guard kolom/nilai di bawah tidak berlaku utk keduanya; sebagai
+    # gantinya kita pastikan generatornya SENDIRI tidak pernah membaca sumber PII asli.
+    FILE_PII_SINTETIS = {"kandidat.csv", "kandidat_keluarga.csv"}
     tersangka_kolom: list[str] = []
     tersangka_nilai: list[str] = []
     for path in sorted(MASTER.glob("*.csv")):
+        if path.name in FILE_PII_SINTETIS:
+            continue
         with path.open(encoding="utf-8-sig", newline="") as f:
             r = csv.reader(f)
             kolom = next(r, [])
@@ -238,9 +245,17 @@ def cek_pii() -> None:
     # pengecualian yang sudah ditelusuri. Selain itu, temuan apa pun harus diperiksa manual.
     KECUALI = {"unit_pelaksana.csv:nama_lengkap", "updl.csv:nama_lengkap"}
     tersangka_kolom = [t for t in tersangka_kolom if t not in KECUALI]
-    cek("tidak ada kolom berbau PII di out/master", not tersangka_kolom,
+    cek("tidak ada kolom berbau PII di out/master (di luar kandidat.csv/kandidat_keluarga.csv)",
+        not tersangka_kolom,
         f"{tersangka_kolom[:5]}" if tersangka_kolom else "sudah dikurangi pengecualian unit_pelaksana")
-    cek("tidak ada nilai berpola email/NIK", not tersangka_nilai, f"{tersangka_nilai[:3]}")
+    cek("tidak ada nilai berpola email/NIK (di luar kandidat.csv/kandidat_keluarga.csv)",
+        not tersangka_nilai, f"{tersangka_nilai[:3]}")
+
+    sumber_08 = (ROOT / "mockdb" / "build" / "08_kandidat_pendaftaran.py").read_text(encoding="utf-8")
+    TERLARANG = ["data sintetis", "rekrutmen_pln/akun", "rekrutmen_pln\\akun"]
+    ditemukan = [t for t in TERLARANG if t in sumber_08]
+    cek("generator kandidat (08) tidak pernah membaca sumber PII asli (DAPEG/dump akun)",
+        not ditemukan, f"{ditemukan}")
 
 
 # ---------------------------------------------------------------------------
@@ -402,6 +417,101 @@ def cek_vendor_lokasi(R: dict, kota: list[dict], updl: list[dict], vendor: list[
     cek("kode tahap seleksi di tahap_ref cocok dgn funnel.yaml", kode_funnel <= kode_ref, f"selisih {kode_funnel - kode_ref}")
 
 
+# ---------------------------------------------------------------------------
+# 9. Kandidat & pendaftaran (langkah 08)
+# ---------------------------------------------------------------------------
+def cek_kandidat_pendaftaran(R: dict, kandidat: list[dict], pendaftaran: list[dict],
+                              kand_didik: list[dict], kand_sert: list[dict],
+                              kand_kel: list[dict], kand_berkas: list[dict],
+                              profesi: list[dict]) -> None:
+    print("\n[ kandidat & pendaftaran (langkah 08) ]")
+
+    kandidat_id = {r["kandidat_id"] for r in kandidat}
+    profesi_id = {r["profesi_id"] for r in profesi}
+    cek("semua pendaftaran.kandidat_id ada di kandidat.csv",
+        all(r["kandidat_id"] in kandidat_id for r in pendaftaran))
+    cek("semua pendaftaran.profesi_id ada di profesi.csv",
+        all(r["profesi_id"] in profesi_id for r in pendaftaran))
+
+    hasil_ctr = Counter(r["hasil_akhir"] for r in pendaftaran)
+    n_diterima = hasil_ctr.get("DITERIMA", 0)
+    target = R["funnel"]["volume_target"]["status_per_15sep2026"]["lulus_wawancara"]
+    cek("total DITERIMA di pendaftaran = lulus_wawancara funnel.yaml (F-078)",
+        n_diterima == target, f"{n_diterima} vs {target}")
+
+    # diterima per profesi harus persis = diterima_target dikurangi porsi ikatan dinas
+    id_per_tahun: dict[int, int] = {}
+    for row in R["kohort"]["kohort_per_tahun_program"]:
+        id_per_tahun[row["tahun"]] = sum(
+            k["diterima"] for k in row.get("komposisi_jalur", []) if k["sumber"] == "ikatan_dinas"
+        )
+    per_tahun_rows: dict[int, list[dict]] = defaultdict(list)
+    for p in profesi:
+        if int(p["diterima_target"]) > 0:
+            per_tahun_rows[int(p["tahun_program"])].append(p)
+    diterima_per_profesi: dict[str, int] = {}
+    for tahun, rows in per_tahun_rows.items():
+        total = sum(int(r["diterima_target"]) for r in rows)
+        idn = id_per_tahun.get(tahun, 0)
+        keep = max(0, total - idn)
+        if idn == 0:
+            for r in rows:
+                diterima_per_profesi[r["profesi_id"]] = int(r["diterima_target"])
+        else:
+            bobot = [int(r["diterima_target"]) for r in rows]
+            s = sum(bobot)
+            raw = [b * keep / s for b in bobot]
+            base = [int(x) for x in raw]
+            sisa = keep - sum(base)
+            order = sorted(range(len(raw)), key=lambda i: -(raw[i] - base[i]))
+            for i in order[:sisa]:
+                base[i] += 1
+            for r, v in zip(rows, base):
+                diterima_per_profesi[r["profesi_id"]] = v
+    diterima_aktual: Counter = Counter()
+    for r in pendaftaran:
+        if r["hasil_akhir"] == "DITERIMA":
+            diterima_aktual[r["profesi_id"]] += 1
+    selisih = {pid: (diterima_aktual.get(pid, 0), target_n)
+               for pid, target_n in diterima_per_profesi.items() if diterima_aktual.get(pid, 0) != target_n}
+    cek("DITERIMA per profesi = diterima_target (dikurangi ikatan dinas)", not selisih, f"{list(selisih.items())[:5]}")
+
+    # 1 profesi per gelombang per akun
+    per_akun_gel: dict[str, set] = defaultdict(set)
+    dobel = []
+    for r in pendaftaran:
+        key = (r["kandidat_id"], r["gelombang_id"])
+        if r["gelombang_id"] in per_akun_gel[r["kandidat_id"]]:
+            dobel.append(r["kandidat_id"])
+        per_akun_gel[r["kandidat_id"]].add(r["gelombang_id"])
+    cek("tidak ada akun melamar >1 profesi di gelombang yang sama", not dobel, f"{dobel[:5]}")
+
+    pernah_melamar_flag = {r["kandidat_id"]: r["pernah_melamar"] == "True" for r in kandidat}
+    id_yang_melamar = {r["kandidat_id"] for r in pendaftaran}
+    salah_true = [k for k in id_yang_melamar if not pernah_melamar_flag.get(k, False)]
+    salah_false = [k for k, v in pernah_melamar_flag.items() if v and k not in id_yang_melamar]
+    cek("kandidat.pernah_melamar konsisten dgn keberadaan di pendaftaran.csv",
+        not salah_true and not salah_false, f"{len(salah_true)} salah-true, {len(salah_false)} salah-false")
+
+    # RBB: berkas_unggahan permanen kosong (kelengkapan.yaml per_jalur.rbb)
+    jalur_anchor = {r["kandidat_id"]: r["jalur_anchor"] for r in kandidat}
+    id_rbb = {k for k, v in jalur_anchor.items() if v == "rbb"}
+    berkas_rbb = [r for r in kand_berkas if r["kandidat_id"] in id_rbb]
+    cek("kandidat_berkas kosong utk seluruh kandidat berjalur RBB (F-046/kelengkapan.yaml)",
+        not berkas_rbb, f"{len(berkas_rbb)} baris ditemukan")
+
+    for nama, rows in (("kandidat_pendidikan", kand_didik), ("kandidat_sertifikasi", kand_sert),
+                        ("kandidat_keluarga", kand_kel), ("kandidat_berkas", kand_berkas)):
+        asing = [r["kandidat_id"] for r in rows if r["kandidat_id"] not in kandidat_id]
+        cek(f"{nama}.kandidat_id semua ada di kandidat.csv", not asing, f"{len(asing)} baris asing")
+
+    gender_ctr = Counter(r["jenis_kelamin"] for r in kandidat)
+    total_g = sum(gender_ctr.values())
+    porsi_p = gender_ctr.get("P", 0) / total_g
+    cek("gender kandidat tidak 50:50 & tidak condong ekstrem (rentang wajar 0,55-0,75 P)",
+        0.55 <= porsi_p <= 0.75, f"P={porsi_p:.3f}")
+
+
 def main() -> int:
     print(f"Verifikasi keluaran di {MASTER}")
     R = {p.stem: yaml.safe_load(p.read_text(encoding="utf-8")) for p in sorted(RULES.glob("*.yaml"))}
@@ -419,6 +529,12 @@ def main() -> int:
     updl = baca("updl.csv")
     vendor = baca("vendor.csv")
     tahap_ref = baca("tahap_ref.csv")
+    kandidat = baca("kandidat.csv")
+    pendaftaran = baca("pendaftaran.csv")
+    kand_didik = baca("kandidat_pendidikan.csv")
+    kand_sert = baca("kandidat_sertifikasi.csv")
+    kand_kel = baca("kandidat_keluarga.csv")
+    kand_berkas = baca("kandidat_berkas.csv")
     if gagal:
         print("\nInput belum lengkap -- hentikan.")
         return 1
@@ -430,6 +546,7 @@ def main() -> int:
     cek_angka(usulan, proyeksi, ringkas)
     cek_katalog(R, gel, prog, prof, prodi)
     cek_vendor_lokasi(R, kota, updl, vendor, tahap_ref)
+    cek_kandidat_pendaftaran(R, kandidat, pendaftaran, kand_didik, kand_sert, kand_kel, kand_berkas, prof)
     cek_pii()
 
     print("\n" + "=" * 60)

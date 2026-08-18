@@ -506,6 +506,31 @@ def cek_ikatan_dinas_siluman(R: dict) -> None:
     cek("total ikatan_dinas angkatan.yaml = funnel.yaml volume_target", total_id == v["ikatan_dinas"], f"{total_id} vs {v['ikatan_dinas']}")
 
 
+def cek_vendor(R: dict) -> None:
+    print("\n[12] Vendor -- tipe layanan & konsistensi dgn tahapan.yaml")
+    daftar = R["vendor"]["vendor"]
+    kode = [v["kode"] for v in daftar]
+    cek("tidak ada kode vendor kembar", len(kode) == len(set(kode)))
+    cek(
+        "tipe_layanan vendor hanya psikologi/fisik_mcu",
+        all(v["tipe_layanan"] in ("psikologi", "fisik_mcu") for v in daftar),
+    )
+    tahap = R["tahapan"]["tahap_seleksi"]
+    tahap_vendor = {t["kode"] for t in tahap if t["pemilik_proses"] == "VENDOR"}
+    cek(
+        "tiap tahap VENDOR di tahapan.yaml punya tipe_layanan vendor yg cocok",
+        tahap_vendor == {"psikologi", "fisik_mcu"},
+        f"{tahap_vendor}",
+    )
+    tanpa_rujukan = [
+        v["kode"] for v in daftar if v.get("status_sumber") != "DIMODELKAN" and not v.get("rujukan")
+    ]
+    cek("vendor nyata (bukan DIMODELKAN) punya rujukan", not tanpa_rujukan, f"{tanpa_rujukan}")
+    ada_psikologi = any(v["tipe_layanan"] == "psikologi" for v in daftar)
+    ada_mcu = any(v["tipe_layanan"] == "fisik_mcu" for v in daftar)
+    cek("ada minimal 1 vendor psikologi & 1 fisik_mcu", ada_psikologi and ada_mcu)
+
+
 def main() -> int:
     print(f"Verifikasi aturan di {RULES_DIR}")
     R = muat()
@@ -523,6 +548,7 @@ def main() -> int:
     cek_angkatan(R)
     cek_kelengkapan(R)
     cek_ikatan_dinas_siluman(R)
+    cek_vendor(R)
 
     print("\n" + "=" * 60)
     if gagal:

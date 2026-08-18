@@ -17,6 +17,7 @@ dibuat supaya bisa diedit tangan tanpa menyentuh kode.
 | `jabatan.yaml` | Larangan struktural, grade per pendidikan, pembidangan, aturan penempatan | F-042, F-005 |
 | `attrition.yaml` | Laju 2,7%, sebab keluar, carve-out, **patahan definisi turnover**, runtun headcount 2016–2025 | F-036, F-045, **F-049**, F-048 |
 | `kelengkapan.yaml` | Kelengkapan field bertahap per tahun, field yang tak pernah ada | keputusan user, F-017, F-034 |
+| `vendor.yaml` | ±10 vendor psikologi/fisik-MCU, 1 real (Prodia) + sisanya DIMODELKAN dgn nama perusahaan real | F-061 |
 | `bidang_jabatan.csv` | 109 kata kunci klasifikasi jabatan (*first-match-wins*) — sudah dipakai langkah 02 | — |
 
 ## Konvensi

@@ -1739,6 +1739,42 @@ tersitasi sebelumnya), rendah-disengaja (7 taksiran, ditandai eksplisit `tgl_sta
 gelombang.csv sekarang 0/19 tanpa tanggal (dari 10/19 sebelumnya); dashboard WAJIB tampilkan
 badge "estimasi" memakai kolom `tgl_status` baru, jangan tampilkan tanggal taksiran seolah pasti.
 
+### F-077 · Generator 07 (kota/UPDL/vendor/tahap_ref) -- 1 vendor real, 9 DIMODELKAN dgn nama perusahaan real [sesi build]
+Klaim: langkah 07 HANDOFF ("vendor & lokasi seleksi") murni memateriali­sasi master yang
+sudah ada aturannya -- **kota** (43, sudah di `tahapan.yaml` sejak fondasi) dan **UPDL**
+(11, sudah nyata di `unit_pelaksana.csv` via `jenis_unit=UPDL`) tidak butuh keputusan baru,
+tinggal difilter/ditulis ulang jadi `kota.csv`/`updl.csv`. Yang butuh keputusan baru:
+**vendor** psikologi & fisik/MCU (pemilik_proses=VENDOR di `tahapan.yaml`).
+
+Satu-satunya vendor bernama yang muncul di sumber tersitasi: **"Klinik Prodia, Medan"**
+(F-061, blog rekrutmen 2015, tes fisik & lab). Sistem asli PLN tidak menyimpan daftar
+vendor per kota untuk tahap ini (domain operasional vendor, bukan HTD -- pola sama F-017).
+9 vendor lain di `rules/vendor.yaml` **DIMODELKAN**: dipilih nama perusahaan yang **memang
+real** dan bergerak di jasa lab-kesehatan (Prodia cabang lain, Kimia Farma Diagnostika) atau
+assessment psikologi (LPT UI, Daya Dimensi Indonesia, UPAC PLN Corporate University, Bina
+Talenta) di Indonesia -- bukan nama karangan -- ditempatkan di `kota_offline_utama` (F-024:
+Jakarta, Medan, Surabaya, Makassar, Palembang, Balikpapan). Setiap baris DIMODELKAN ditandai
+`status_sumber` + catatan penjelas kenapa nama itu masuk akal untuk peran tsb.
+
+Penugasan vendor→kota→kandidat per tahap BUKAN bagian langkah 07 (murni tabel master) --
+itu langkah 09 (tahapan seleksi). `catatan_penunjukan` di `vendor.yaml` sudah menuliskan
+aturan sementara: kota_terkunci = kota_basis vendor dapat vendor itu; kota lain pakai
+vendor `kota_basis: nasional` (VEND08/VEND09 psikologi) atau vendor fisik_mcu terdekat
+(fisik_mcu belum punya cadangan nasional eksplisit -- keputusan lokasi per-kota didorong
+ke langkah 09, ditandai DIMODELKAN di sana).
+
+Verifikasi: `00_verifikasi_rules.py` cek [12] baru (kode tak kembar, tipe_layanan valid,
+tahap VENDOR di `tahapan.yaml` cocok dgn tipe vendor yang ada, vendor nyata wajib
+rujukan). `00b_verifikasi_keluaran.py` cek baru (kota=43, updl=11 & persis subset
+`unit_pelaksana.csv`, vendor tak kembar & DIMODELKAN wajib catatan, tahap_ref=16 & kode
+seleksinya cocok `funnel.yaml`) + penjaga PII diperluas (`updl.csv:nama_lengkap` adalah
+nama UNIT, bukan orang -- pengecualian sama seperti `unit_pelaksana.csv`).
+Sumber: F-061 (Prodia) · Keyakinan: tinggi (Prodia, kota, UPDL -- semua dari data
+tersitasi/nyata), rendah-disengaja (9 vendor lain, `status_sumber: DIMODELKAN` eksplisit)
+· Dampak: `out/master/` bertambah `kota.csv`(43), `updl.csv`(11), `vendor.csv`(10),
+`tahap_ref.csv`(16); `00` dan `00b` dua-duanya SEMUA CEK LULUS; siap jadi basis
+penugasan tahap offline di langkah 09.
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

@@ -234,9 +234,10 @@ def cek_pii() -> None:
                         tersangka_nilai.append(f"{path.name}: {sel[:24]}")
                         break
 
-    # `nama_lengkap` di unit_pelaksana.csv adalah nama UNIT, bukan orang -- itu satu-satunya
+    # `nama_lengkap` di unit_pelaksana.csv/updl.csv adalah nama UNIT, bukan orang -- itu
     # pengecualian yang sudah ditelusuri. Selain itu, temuan apa pun harus diperiksa manual.
-    tersangka_kolom = [t for t in tersangka_kolom if t != "unit_pelaksana.csv:nama_lengkap"]
+    KECUALI = {"unit_pelaksana.csv:nama_lengkap", "updl.csv:nama_lengkap"}
+    tersangka_kolom = [t for t in tersangka_kolom if t not in KECUALI]
     cek("tidak ada kolom berbau PII di out/master", not tersangka_kolom,
         f"{tersangka_kolom[:5]}" if tersangka_kolom else "sudah dikurangi pengecualian unit_pelaksana")
     cek("tidak ada nilai berpola email/NIK", not tersangka_nilai, f"{tersangka_nilai[:3]}")
@@ -373,6 +374,34 @@ def cek_katalog(R: dict, gel: list[dict], prog: list[dict], prof: list[dict],
         "; ".join(meleset_sh) or "tiap tahun berentri subholding cocok")
 
 
+# ---------------------------------------------------------------------------
+# 8. Kota / UPDL / vendor / tahap_ref (langkah 07)
+# ---------------------------------------------------------------------------
+def cek_vendor_lokasi(R: dict, kota: list[dict], updl: list[dict], vendor: list[dict],
+                       tahap_ref: list[dict]) -> None:
+    print("\n[ kota / updl / vendor / tahap_ref ]")
+    cek("kota.csv = 43 baris (F-019)", len(kota) == 43, f"{len(kota)}")
+    cek("tidak ada nama kota kembar", len({k["nama"] for k in kota}) == len(kota))
+
+    cek("updl.csv = 11 baris", len(updl) == 11, f"{len(updl)}")
+    cek(
+        "updl.csv persis subset unit_pelaksana.csv (jenis_unit=UPDL)",
+        {u["updl_id"] for u in updl} == {r["kode_unit_pelaksana"] for r in baca("unit_pelaksana.csv")
+                                          if r.get("jenis_unit") == "UPDL"},
+    )
+
+    cek("tidak ada vendor_id kembar", len({v["vendor_id"] for v in vendor}) == len(vendor))
+    tipe = {v["tipe_layanan"] for v in vendor}
+    cek("vendor mencakup psikologi & fisik_mcu", {"psikologi", "fisik_mcu"} <= tipe, f"{tipe}")
+    dimodelkan = [v for v in vendor if v["status_sumber"] == "DIMODELKAN"]
+    cek("vendor DIMODELKAN punya catatan", all(v["rujukan"] for v in dimodelkan))
+
+    cek("tahap_ref.csv = 16 baris (6 seleksi + 3 fhci + 7 pasca)", len(tahap_ref) == 16, f"{len(tahap_ref)}")
+    kode_ref = {t["tahap_kode"] for t in tahap_ref}
+    kode_funnel = {t["tahap"] for t in R["funnel"]["funnel_mandiri"]["nasional_mandiri"]["tahapan"]}
+    cek("kode tahap seleksi di tahap_ref cocok dgn funnel.yaml", kode_funnel <= kode_ref, f"selisih {kode_funnel - kode_ref}")
+
+
 def main() -> int:
     print(f"Verifikasi keluaran di {MASTER}")
     R = {p.stem: yaml.safe_load(p.read_text(encoding="utf-8")) for p in sorted(RULES.glob("*.yaml"))}
@@ -386,6 +415,10 @@ def main() -> int:
     prog = baca("program.csv")
     prof = baca("profesi.csv")
     prodi = baca("profesi_prodi.csv")
+    kota = baca("kota.csv")
+    updl = baca("updl.csv")
+    vendor = baca("vendor.csv")
+    tahap_ref = baca("tahap_ref.csv")
     if gagal:
         print("\nInput belum lengkap -- hentikan.")
         return 1
@@ -396,6 +429,7 @@ def main() -> int:
     cek_rujukan(pagu, usulan, unit)
     cek_angka(usulan, proyeksi, ringkas)
     cek_katalog(R, gel, prog, prof, prodi)
+    cek_vendor_lokasi(R, kota, updl, vendor, tahap_ref)
     cek_pii()
 
     print("\n" + "=" * 60)

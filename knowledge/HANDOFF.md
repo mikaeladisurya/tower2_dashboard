@@ -1,8 +1,8 @@
 # HANDOFF — dari fase RISET ke fase BANGUN DATABASE
 
 > **Sesi baru: baca file ini dulu, lalu `knowledge/findings.md`.**
-> Riset selesai (54 temuan tersitasi). Fondasi + langkah 01 revisi, 03, 04 & 05 selesai. Tugas berikutnya: generator 06.
-> Terakhir diperbarui: 2026-08-17.
+> Riset selesai (77 temuan tersitasi). Fondasi + langkah 01 revisi, 03, 04, 05, 06 & 07 selesai. Tugas berikutnya: generator 08.
+> Terakhir diperbarui: 2026-08-18.
 
 ---
 
@@ -17,7 +17,9 @@
 | Generator 03 (rumpun jurusan) | ✅ **SELESAI** — 4 keluaran, cakupan 99,8%, memunculkan F-050 |
 | Generator 04 (attrition & kekosongan) | ✅ **SELESAI** — identitas headcount tertutup, memunculkan F-051 & F-052 |
 | Generator 05 (usulan & pagu) | ✅ **SELESAI** — skema HR asli (F-054), pagu 6.221 = kohort |
-| **Generator 06–12** | ⬜ **BELUM — ini tugas sesi baru** |
+| Generator 06 (gelombang/program/profesi) | ✅ **SELESAI** — katalog 2019–2025, arketipe funnel (F-075), tgl_tutup (F-076) |
+| Generator 07 (kota/updl/vendor/tahap_ref) | ✅ **SELESAI** — 43 kota, 11 UPDL, 10 vendor (1 real: Prodia/F-061, sisanya DIMODELKAN), 16 tahap_ref |
+| **Generator 08–12** | ⬜ **BELUM — ini tugas sesi baru** |
 
 ### Yang selesai di sesi 2026-08-17
 
@@ -197,8 +199,8 @@ file aturannya masing-masing, dengan alasan & cara membatalkannya):
 ## 6b. Tugas sesi baru — generator (langkah 4)
 
 Generate bertahap: unit ✅ → rumpun jurusan ✅ → attrition & kekosongan ✅ →
-usulan & pagu ✅ → **06 program/angkatan & profesi** → 06 program/angkatan & profesi → 07 vendor & lokasi →
-08 kandidat & pendaftaran → 09 tahapan seleksi → 10 kontrak/prajabatan/OJT →
+usulan & pagu ✅ → 06 program/angkatan & profesi ✅ → 07 vendor & lokasi ✅ →
+**08 kandidat & pendaftaran** → 09 tahapan seleksi → 10 kontrak/prajabatan/OJT →
 11 penempatan → 12 load ke DuckDB.
 
 ⚠️ **Bawa F-050 ke langkah 11.** Bauran jurusan yang diundang kurang memasok Distribusi
@@ -253,11 +255,13 @@ mockdb/
        01_extract_master.py · 02_klasifikasi_jabatan.py
   rules/README.md       <- peta aturan, konvensi status_sumber, URUTAN KAUSAL
        kohort.yaml · funnel.yaml · administrasi.yaml · tahapan.yaml · angkatan.yaml ·
-       demografi.yaml · jabatan.yaml · attrition.yaml · kelengkapan.yaml ·
+       demografi.yaml · jabatan.yaml · attrition.yaml · kelengkapan.yaml · vendor.yaml ·
        bidang_jabatan.csv
   docs/ERD.md · kamus_data.md
   out/master/           unit_induk(48) · unit_pelaksana(357) · jabatan_katalog(6.148) ·
-                        jabatan_klasifikasi · posisi_unit_induk · posisi_unit_pelaksana
+                        jabatan_klasifikasi · posisi_unit_induk · posisi_unit_pelaksana ·
+                        gelombang · program · profesi · profesi_prodi (langkah 06) ·
+                        kota(43) · updl(11) · vendor(10) · tahap_ref(16) (langkah 07)
 data sintetis/          SUMBER ASLI + PII (DAPEG 37rb pegawai). GITIGNORED. Jangan commit.
 referensi/              perdir PDF, chat WA, screenshot. GITIGNORED.
 ```

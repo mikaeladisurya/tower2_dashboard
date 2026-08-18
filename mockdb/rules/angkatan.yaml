@@ -114,17 +114,22 @@ seri:
         nama: "Perekrutan Bersama BUMN Papua & Papua Barat 2021"
         entri: "0 -- tidak ada di katalog PLN"
         jalur: rbb
-        target_orang: 200
-        kuota_posisi: 250
         pendaftaran: "2021-12-23 s/d 2022-01-14"
+        umur_maks_program: {SMA: 22, Diploma: 25, S1: 28, S2: 33}
         koreksi_f063: >
              Semula tertulis "PPB/RBB nasional 2021" tanpa tanggal. F-063 menemukan satu-satunya
              program PPB 2021 yang terdokumentasi ternyata KHUSUS Papua & Papua Barat, dengan
-             target eksplisit 200 orang (kuota 250 posisi) dan pendaftaran melintasi pergantian
-             tahun. Sumber: Kompas & Tribun, 24 Des 2021.
+             pendaftaran melintasi pergantian tahun. Sumber: Kompas, 24 Des 2021 -- diverifikasi
+             langsung ke halamannya (WebFetch 2026-08-18).
+             ❌ DICABUT: versi pertama catatan ini menulis "target 200 orang, kuota 250 posisi".
+             Kedua angka itu TIDAK ADA di artikel Kompas, dan PLN bahkan tidak disebut di sana.
+             Lihat F-067. Yang sah cuma tanggal pendaftaran + batas umur per jenjang.
         kekurangan_belum_tertutup: >
-             ⚠️ Kohort 2021 = 689 orang (NYATA, SR-2024), tapi program di atas cuma menargetkan 200.
-             Sekitar 489 orang belum punya gelombang. Polanya sama dengan 2022 sebelum 79/80 diisi.
+             ⚠️ Kohort 2021 = 689 orang (NYATA, SR-2024), tapi TIDAK ADA satu pun angka target
+             yang sah untuk program di atas -- yang dulu tertulis (200) sudah dicabut, lihat F-067.
+             Jadi besarnya celah TIDAK DIKETAHUI; yang pasti cuma bahwa katalog PLN 2021 kosong
+             dan satu-satunya program terdokumentasi berlingkup Papua saja, sementara 689 orang
+             menjalani prajabatan di 2022. Polanya sama dengan 2022 sebelum 79/80 diisi.
              BELUM ditambal karena ada masalah kronologi yang belum terpecahkan: gelombang RBB
              nasional 2021 -- kalau ada -- besar kemungkinan dibuka SEBELUM Desember, sehingga
              nomornya mestinya lebih kecil dari 75; padahal 74 sudah terpakai (Des 2020) dan tidak

@@ -34,7 +34,7 @@ gender:
     2021: {P: 0.72, W: 0.28, sumber: "SR-2024 -- pra-jabatan 2022: 496P/193W", status: NYATA}
     2022: {P: 0.73, W: 0.27, sumber: "SR-2024 -- pra-jabatan 2023: 506P/183W", status: NYATA}
     2023: {P: 0.86, W: 0.14, sumber: "SR-2024 -- pra-jabatan 2024: 1.104P/173W", status: NYATA}
-    2024: {P: 0.78, W: 0.22, sumber: "TURUNAN -- SR-2025 tidak merinci gender", status: TURUNAN}
+    2024: {P: 0.7696, W: 0.2304, sumber: "SR-2025 hal. 203 -- pra-jabatan 2025: 845P/253W", status: NYATA}
     2025: {P: 0.78, W: 0.22, sumber: "TURUNAN -- SR-2026 belum terbit",         status: TURUNAN}
   penjelasan_2023: >
     Lonjakan ke 86:14 di gelombang 2023 PUNYA SEBAB, bukan derau: tahun itu didominasi

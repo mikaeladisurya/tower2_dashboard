@@ -1124,13 +1124,17 @@ Klaim: user meminta pengecekan ulang tiap gelombang yang sudah dikunci di `angka
 
 **Diperkaya (bukan sekadar dikonfirmasi) — detail baru yang tidak ada di yaml:**
 - **Angkatan 75** (yaml: "PPB/RBB nasional 2021", entri "0 -- tidak ada di katalog PLN"): ternyata
-  **BUKAN generik nasional** — ini program **khusus Papua & Papua Barat** dengan target eksplisit
-  **200 orang (kuota dibuka 250 posisi)**, pendaftaran **23 Des 2021 – 14 Jan 2022** (melintasi
-  pergantian tahun). Sumber: [Kompas](https://www.kompas.com/tren/read/2021/12/24/200500265/dibuka-program-perekrutan-bersama-bumn-papua-dan-papua-barat-2021-ini),
+  **BUKAN generik nasional** — ini program **khusus Papua & Papua Barat**, pendaftaran
+  **23 Des 2021 – 14 Jan 2022** (melintasi pergantian tahun). Sumber: [Kompas](https://www.kompas.com/tren/read/2021/12/24/200500265/dibuka-program-perekrutan-bersama-bumn-papua-dan-papua-barat-2021-ini),
   [Tribun Bogor](https://bogor.tribunnews.com/2021/12/24/lowongan-kerja-terbaru-desember-2021-rekrutmen-bersama-bumn-papua-dan-papua-barat).
   Ini kandidat kuat untuk memperbaiki `nama` gelombang 75 di `angkatan.yaml` jadi lebih spesifik,
   dan `tahun` mungkin perlu dipertanyakan (dibuka Des 2021, tapi hasil seleksi & penempatan
   realistisnya jatuh 2022 — konsisten dengan pola jeda pipeline F-048).
+  > **❌ DITARIK 2026-08-18 — lihat F-067.** Versi pertama butir ini menulis "target eksplisit
+  > **200 orang (kuota dibuka 250 posisi)**". **Kedua angka itu TIDAK ADA di artikel Kompas yang
+  > disitasi**, dan PLN bahkan tidak disebut sama sekali di sana (diverifikasi WebFetch 2026-08-18).
+  > Yang sah dari artikel itu hanya **tanggal pendaftaran** dan batas umur per jenjang
+  > (SMA 22 / Diploma 25 / S1 28 / S2 33). Angka 200/250 dicabut.
 
 **Genuinely bolong (dicari, nihil — SESUAI dugaan `angkatan.yaml` sendiri):**
 - **Angkatan 79, 80** (Nov-Des 2022, D3/S1 reguler): tiga percobaan pencarian dengan kata kunci
@@ -1153,6 +1157,84 @@ angka mockdb yang berubah dari temuan ini** — ini murni validasi-silang katalo
 utamanya untuk sesi build: (1) angkatan 72 boleh dipakai lebih percaya diri, (2) angkatan 75 punya
 deskripsi lebih akurat untuk dipakai di dashboard/nama gelombang, (3) sitasi ITS ke-33 di gelombang
 70 sebaiknya diverifikasi ulang ke Wayback sebelum dipakai sebagai fakta presisi bulan.
+
+### F-067 · Angka "200/250" DICABUT — dan RBB ternyata jalan TIAP TAHUN, bukan selang-seling ⭐⭐ [cek-ricek]
+Klaim: dua hal, satu koreksi dan satu hipotesis baru.
+
+**(a) Pencabutan.** F-063 menulis program PPB Papua 2021 punya "target eksplisit 200 orang
+(kuota dibuka 250 posisi)". **Kedua angka itu tidak ada di sumbernya.** Artikel Kompas yang
+disitasi diverifikasi langsung (WebFetch 2026-08-18): yang ada hanya **tanggal pendaftaran
+23 Des 2021 – 14 Jan 2022** dan batas umur per jenjang (SMA 22 / Diploma 25 / S1 28 / S2 33).
+Tidak ada angka target, tidak ada kuota, dan **PLN tidak disebut sama sekali** — program itu
+lintas BUMN. Tribun (sitasi kedua) memblokir akses (HTTP 403), jadi tidak bisa jadi penopang.
+
+⚠️ **Tandanya sudah ada sejak awal dan terlewat:** angka itu tidak pernah masuk
+`sources/berita/berita_rekrutmen.csv`, padahal 15 titik data lain semuanya tercatat di sana
+lengkap dengan `kutipan_verbatim`. Klaim yang hidup hanya di prosa temuan, tanpa kutipan, layak
+dicurigai. Ini kekambuhan persis dari jebakan yang F-060 sendiri catat ("7.209 peserta" yang
+ternyata halusinasi ringkasan pencarian) — **aturan "verifikasi ke sumber primer" ternyata
+dilanggar di temuan yang sama yang menuliskannya.**
+
+Akibatnya: besar celah 2021 **TIDAK DIKETAHUI**. Yang masih berdiri cuma bahwa katalog PLN 2021
+kosong, satu-satunya program terdokumentasi berlingkup Papua, dan 689 orang menjalani prajabatan
+di 2022.
+
+**(a2) Dari mana angka itu berasal — dan kenapa salahnya fatal.** Panen lanjutan menemukan
+sumber aslinya: [Detik, 25 Jun 2021](https://www.detik.com/edu/edutainment/d-5619419/kementerian-bumn-buka-lowongan-kerja-untuk-1-000-putra-putri-papua-barat)
+memuat kalimat bahwa **masih dibutuhkan "250 orang lagi untuk mencapai 1.000 target"**. Itu
+**sisa target NASIONAL lintas seluruh BUMN**, bukan kuota PLN. Angka nyata programnya:
+
+| | Angka | Cakupan |
+|---|---:|---|
+| Target program PPB Papua 2019–2021 | **1.000** | seluruh BUMN |
+| Realisasi 2019 | **522** | seluruh BUMN (39 perusahaan) |
+| Realisasi 2020 | **254** | seluruh BUMN (47 BUMN) |
+| Sisa untuk 2021 | **~250** | seluruh BUMN |
+| Lolos administrasi PPB Papua 2021 | **2.759** | seluruh BUMN |
+
+Angka 2.759 dari dokumen primer *"Lolos Seleksi Administrasi PPB Papua 2021.pdf"* (61 halaman,
+dibuat 20 Jan 2022 — tepat setelah pendaftaran tutup 14 Jan 2022), ditemukan lewat tautan
+`bit.ly/PPBPapua2021` di artikel Kompas. **Berkasnya daftar nama pihak ketiga: hanya jumlah
+barisnya yang diambil, tidak disimpan ke repo, tidak satu nama pun dikutip.**
+
+⚠️ **Konsekuensinya jauh lebih besar dari sekadar mencabut satu angka.** Kalau SELURUH BUMN
+hanya menyerap 254 orang (2020) dan ~250 orang (2021) dari program ini, maka porsi PLN paling
+banyak beberapa puluh orang. Padahal `kohort.yaml` menyandarkan **dua tahun penuh** padanya:
+
+| tahun program | gelombang di `angkatan.yaml` | kohort PLN | plafon program (semua BUMN) |
+|---|---|---:|---:|
+| 2020 | 74 — PPB Papua, buka 30 Des 2020 | **325** | 254 |
+| 2021 | 75 — PPB Papua & Papua Barat | **689** | ~250 |
+
+PLN sendirian tidak mungkin merekrut 325 orang dari program yang total nasionalnya 254. **Premis
+`kohort.yaml` bahwa 2020 & 2021 adalah "tahun jalur PPB/RBB" karena itulah satu-satunya gelombang
+di katalog TIDAK BISA DIPERTAHANKAN.** Kohort 325 & 689 tetap NYATA (dari SR); yang salah adalah
+atribusinya ke gelombang PPB Papua.
+
+**(b) Hipotesis baru dari cek-ricek `referensi/historychatgemini02.txt`** — bukan bukti, tapi
+konsisten dengan bukti negatif kita sendiri:
+- **PLN Induk menutup rekrutmen umum sepanjang 2020–2021** karena efisiensi anggaran pandemi.
+  Cocok dengan bukti negatif kuat kita: nol judul baru di 32 snapshot Wayback 2021.
+- **RBB edisi PERDANA = April 2022**, bukan 2021. Kalau benar, "jalur rbb" untuk 2021 di
+  `kohort.yaml` mustahil — RBB belum ada.
+- **PLN ikut RBB di 2022, 2023, 2024, DAN 2025** — jadi RBB dan mandiri **berjalan paralel tiap
+  tahun**, bukan selang-seling. `kohort.yaml` yang menetapkan SATU `jalur` per tahun
+  (2020 rbb · 2021 rbb · 2022 mandiri · 2023 mandiri · 2024 rbb · 2025 mandiri) kemungkinan
+  menyederhanakan berlebihan.
+- **Jadwalnya berbeda sistematis:** RBB dibuka Mar–Mei, mandiri dibuka Q3/Q4. Kalau benar, jeda
+  pipeline tidak seragam — RBB (buka Mar, seleksi selesai ~Agu, F-063) bisa mendarat di kelas
+  prajabatan **tahun yang sama**, sementara mandiri (buka Q3/Q4) mendarat **tahun berikutnya**.
+  Ini calon penjelasan paling rapi untuk 689 orang prajabatan 2022: mereka mungkin keluaran
+  **RBB April 2022 (jeda 0)**, bukan gelombang 2021 (jeda +1).
+
+⚠️ **Status (b): HIPOTESIS, jangan diterapkan sebelum diverifikasi ke sumber primer.** Sumbernya
+ringkasan chatbot, kelas sumber yang baru saja menjatuhkan kita di butir (a). Bukti tandingannya
+sudah ada: chat itu menyebut RBB 2024 memberi PLN Group "12 posisi", padahal panen primer kita
+(`lowongan_pln_rbb.csv`, arsip portal FHCI) memuat **20 lowongan**. Data primer menang.
+Sumber: WebFetch Kompas 2026-08-18 (butir a); `referensi/historychatgemini02.txt` (butir b) ·
+Keyakinan: **tinggi** untuk pencabutan (diverifikasi langsung), **rendah** untuk hipotesis RBB ·
+Dampak: `angkatan.yaml` gelombang 75 dibersihkan dari angka karangan; celah 2021 kembali jadi
+besaran tak diketahui; **`kohort.yaml -> jalur` per tahun masuk daftar yang perlu diuji ulang.**
 
 ### F-066 · Penempatan TIDAK mengikuti kota tes ⭐⭐ [keterangan user]
 Klaim: kota tes dan lokasi penempatan adalah dua hal terpisah. Yang menentukan penempatan

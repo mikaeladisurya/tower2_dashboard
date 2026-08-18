@@ -1154,6 +1154,51 @@ utamanya untuk sesi build: (1) angkatan 72 boleh dipakai lebih percaya diri, (2)
 deskripsi lebih akurat untuk dipakai di dashboard/nama gelombang, (3) sitasi ITS ke-33 di gelombang
 70 sebaiknya diverifikasi ulang ke Wayback sebelum dipakai sebagai fakta presisi bulan.
 
+### F-066 · Penempatan TIDAK mengikuti kota tes ⭐⭐ [keterangan user]
+Klaim: kota tes dan lokasi penempatan adalah dua hal terpisah. Yang menentukan penempatan
+adalah **FTK yang kosong**, bukan kedekatan geografis dengan tempat kandidat ikut seleksi.
+
+**Bukti dari dalam prosesnya sendiri:** di wawancara kandidat ditanya apakah *siap ditempatkan
+di seluruh Indonesia*. Pertanyaan itu tidak ada gunanya kalau penempatan mengikuti kota tes.
+
+Ada **kecenderungan** — bukan aturan — menempatkan dekat alamat KTP, dan lebih kuat untuk
+kandidat **perempuan**. Dimodelkan sebagai bobot lunak yang bisa dikalahkan kebutuhan FTK.
+
+⚠️ **Kenapa ini penting dicatat eksplisit:** `kota_rekrutmen` di `profesi.csv` terkunci saat
+mendaftar (F-024/F-033) dan *terlihat* seperti penanda wilayah. Pemodel mana pun akan default
+menempatkan lulusan tes Makassar ke unit Sulawesi. Itu salah, dan salahnya tidak akan terlihat
+di verifikasi mana pun karena hasilnya tetap "masuk akal".
+
+**Pengecualian historis (DI LUAR horison):** ≤2016/17 ada angkatan SMA/SMK yang seleksinya
+REGIONAL — peserta seleksi Sumatera Bagian Utara hanya ditempatkan di unit Sumbagut
+(pembangkitan/transmisi/distribusi Sumbagut). Tidak dimodelkan, konsisten dengan
+`angkatan.yaml -> smk_pelaksana.dimodelkan: false`. Dicatat supaya kalau horison dimundurkan
+ke ≤2017, aturan penempatan ikut berubah — bukan diteruskan begitu saja.
+Sumber: keterangan user (2026-08-18) · Keyakinan: **tinggi** (pengetahuan orang dalam) ·
+Dampak: mengunci aturan langkah 11; ditulis ke `jabatan.yaml -> penempatan.lokasi_tes_bukan_lokasi_penempatan`.
+
+### F-065 · Mekanisme carve-out: TUGAS KARYA, dan itu PILIHAN pegawai ⭐ [keterangan user]
+Klaim: F-045/F-052 mengukur *besaran* carve-out 2023 (3.138 orang) tapi tidak tahu
+*mekanismenya*. Mekanismenya: sekitar 2021–2022 PLN membentuk struktur holding-subholding —
+anak perusahaan pemegang pembangkitan (Indonesia Power & Nusantara Power) dijadikan subholding,
+dan banyak pembangkit PLN dialihkan pengelolaannya ke sana. Pegawainya **diberi pilihan**:
+
+1. tetap di **holding**, tapi lokasi tugasnya dipindah; atau
+2. tetap di **lokasi** yang sama, tapi berpindah ke subholding sebagai **tugas karya**.
+
+**Tiga konsekuensi pemodelan:**
+1. Carve-out bukan pemindahan borongan melainkan hasil **pilihan individu**, jadi besarannya
+   tidak bisa diturunkan dari daftar aset pembangkit yang dialihkan. Angka 3.138 hasil identitas
+   headcount (F-052) tetap cara terbaik mengukurnya.
+2. Yang memilih tugas karya **tidak pindah rumah**; yang bertahan di holding justru pindah lokasi.
+   Jadi **jangan** memodelkan carve-out sebagai relokasi geografis.
+3. Mereka keluar dari headcount **holding** tapi tetap di dalam PLN Group — bukan attrition, dan
+   **tidak** memunculkan kekosongan yang perlu direkrut ulang di lokasi yang sama.
+
+Menjelaskan juga kenapa porsi Pembangkitan di holding tinggal 761 pegawai G1+G2 (langkah 02).
+Sumber: keterangan user (2026-08-18) · Keyakinan: **tinggi** · Dampak: `attrition.yaml ->
+carve_out.mekanisme`; melarang tafsir carve-out sebagai relokasi atau sebagai kekosongan.
+
 ### F-064 · DUA SUMBU over-determined di langkah 05/06 — satu selesai (R8), satu sudah punya prinsip (F-050) ⭐⭐ [sintesis]
 Klaim: kebuntuan yang dilaporkan sesi build ("konflik antara rule kebutuhan unit dengan rule gender
 menghasilkan angka bertentangan, terlihat di kasus Papua 2023/2025") sebenarnya **dua sumbu masalah

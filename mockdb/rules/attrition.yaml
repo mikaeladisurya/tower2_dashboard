@@ -250,6 +250,27 @@ carve_out:
     periode yang sama (F-045). Selisih 239 orang = rekrutmen subholding sendiri --
     besaran yang wajar. Dua jalur perhitungan yang sepenuhnya terpisah mendarat berdekatan,
     jadi tafsir carve-out ini kuat.
+  mekanisme:
+    rujukan: "keterangan user, 2026-08-18"
+    keterangan: >
+      Sejak sekitar 2021-2022 PLN membentuk struktur holding-subholding: anak perusahaan
+      pemegang pembangkitan (Indonesia Power & Nusantara Power) dijadikan SUBHOLDING, dan
+      banyak pembangkit milik PLN dialihkan pengelolaannya ke sana.
+    pilihan_pegawai:
+      - "Tetap di HOLDING, tapi lokasi tugasnya dipindah."
+      - "Tetap di LOKASI yang sama, tapi berpindah ke subholding sebagai TUGAS KARYA."
+    konsekuensi_pemodelan: >
+      Carve-out BUKAN pemindahan borongan, melainkan hasil PILIHAN INDIVIDU. Artinya:
+      (a) besarannya tidak bisa diturunkan dari daftar aset pembangkit yang dialihkan --
+      ia bergantung pada berapa orang memilih ikut, jadi angka 3.138 yang diturunkan dari
+      identitas headcount tetap cara terbaik mengukurnya;
+      (b) yang memilih tugas karya TIDAK pindah rumah, sedangkan yang bertahan di holding
+      justru pindah lokasi -- jadi jangan modelkan carve-out sebagai relokasi geografis;
+      (c) mereka keluar dari headcount HOLDING tapi tetap di dalam PLN Group. Bukan
+      attrition, dan tidak boleh memunculkan kekosongan yang perlu direkrut ulang di
+      lokasi yang sama.
+    istilah: "TUGAS KARYA = penugasan pegawai holding ke entitas lain di dalam Group."
+
   tahun_attrition_wajar:
     - {tahun: 2022, induk_delta: -604, jenis: ATTRITION}
   simpan_sebagai_kolom_terpisah: true

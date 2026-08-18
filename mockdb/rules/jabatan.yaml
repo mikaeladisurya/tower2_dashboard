@@ -140,6 +140,34 @@ penempatan:
     - "Jangan menempatkan ke unit induk yang tidak punya posisi tsb sama sekali."
     - "Jangan menempatkan ke jabatan struktural (lihat butir 1)."
     - "Jangan menempatkan lulusan SMK/D3 ke G2+."
+    - "JANGAN menempatkan berdasarkan KOTA TES. Lihat butir di bawah."
+
+  lokasi_tes_bukan_lokasi_penempatan:
+    rujukan: "keterangan user, 2026-08-18"
+    aturan: >
+      Penempatan TIDAK mengikuti kota tes. Ini jebakan paling mudah terinjak: `kota_rekrutmen`
+      di profesi.csv terkunci saat mendaftar (F-024/F-033) dan terlihat seperti penanda wilayah,
+      padahal itu cuma tempat orang mengikuti seleksi.
+    yang_menentukan: "FTK yang kosong -- penempatan mengisi kebutuhan unit, bukan kedekatan geografis."
+    bukti: >
+      Di wawancara kandidat ditanya apakah SIAP DITEMPATKAN DI SELURUH INDONESIA. Pertanyaan itu
+      tidak ada artinya kalau penempatan mengikuti kota tes.
+    kecenderungan_ktp:
+      ada: true
+      keterangan: >
+        Ada kecenderungan -- bukan aturan -- menempatkan dekat alamat KTP, LEBIH KUAT untuk
+        kandidat perempuan. Modelkan sebagai bobot lunak yang bisa dikalahkan kebutuhan FTK,
+        bukan sebagai batasan keras.
+      status_sumber: DIMODELKAN
+    pengecualian_historis:
+      berlaku: false
+      periode: "2016/17 ke bawah"
+      keterangan: >
+        Dulu ada angkatan SMA/SMK yang seleksinya REGIONAL: peserta seleksi Sumatera Bagian Utara
+        hanya ditempatkan di unit-unit Sumbagut (pembangkitan, transmisi, distribusi Sumbagut).
+        DI LUAR HORISON 2019-2025 dan tidak dimodelkan -- konsisten dengan
+        `angkatan.yaml -> smk_pelaksana.dimodelkan: false`. Dicatat supaya kalau nanti horison
+        dimundurkan ke <=2017, aturan penempatan ikut berubah, bukan diteruskan begitu saja.
   level_unit_terdalam: unit_pelaksana
   catatan_level_unit: >
     KEPUTUSAN SADAR, bukan keterbatasan. Dokumen pagu asli tim HR (F-054) turun sampai

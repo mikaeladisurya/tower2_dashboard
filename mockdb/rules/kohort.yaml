@@ -73,7 +73,7 @@ kohort_per_tahun_program:
     komposisi_jalur:               # F-067 + ikatan_dinas.yaml (2026-08-18) -- lihat catatan di sana
       - {sumber: ppb_papua, diterima: 50, keyakinan: rendah, catatan: "porsi PLN dari plafon nasional PPB Papua 2020 (~254 seluruh BUMN, F-067); angka manual, dinaikkan dari perkiraan awal 'puluhan'"}
       - {sumber: ikatan_dinas, diterima: 200, keyakinan: rendah, catatan: "D3 intake 2017, lulus+prajab ~2020; lihat ikatan_dinas.yaml taksiran_dipakai"}
-      - {sumber: tidak_diketahui, diterima: 75, keyakinan: null, catatan: "residu -- BELUM ada penjelasan, JANGAN dipaksa diisi"}
+      - {sumber: tidak_diketahui, diterima: 75, keyakinan: null, catatan: "residu -- kandidat penjelas: limpasan gelombang campus fair Nov 2019 (SK nominalnya jatuh ~Des 2020, mepet ke pergantian tahun -- F-068), tapi besarannya TIDAK DIKETAHUI, jadi tidak dipisah dari tidak_diketahui. JANGAN dipaksa diisi angka."}
     catatan: >
       KOREKSI v1. Katalog 2020 hanya memuat DUA hal: "Rekrutmen Pro Hire VP Pengelolaan
       Pajak" (April, jabatan STRUKTURAL -- dikeluarkan dari cakupan, lihat jabatan.yaml)
@@ -96,7 +96,7 @@ kohort_per_tahun_program:
     kualitas: rendah
     ada_gelombang: true
     komposisi_jalur:               # F-067 + ikatan_dinas.yaml (2026-08-18)
-      - {sumber: ppb_papua, diterima: 49, keyakinan: rendah, catatan: "porsi PLN dari plafon nasional PPB Papua 2021 (~250 seluruh BUMN, F-067); angka manual, disesuaikan 1 unit supaya total pas 689"}
+      - {sumber: ppb_papua, diterima: 49, keyakinan: rendah, catatan: "porsi PLN dari PPB Papua & Papua Barat 2021 -- realisasi NASIONAL sekarang terkonfirmasi 154 peserta (F-070, fhcibumn.com resmi, naik dari 'target ~250' F-067). 49 tetap di bawah batas atas 154 (aman), tapi porsi PLN dari 154 itu sendiri masih tebakan -- tidak ada data lowongan granular seperti F-043 untuk RBB 2024"}
       - {sumber: ikatan_dinas, diterima: 340, keyakinan: rendah, catatan: "D3 intake 2018 (17 PTN konfirmasi), lulus+prajab awal 2021; lihat ikatan_dinas.yaml"}
       - {sumber: ikatan_dinas, diterima: 300, keyakinan: rendah, catatan: "D3 intake 2019 (15 PTN konfirmasi), lulus+prajab akhir 2021; lihat ikatan_dinas.yaml"}
       - {sumber: tidak_diketahui, diterima: 0, keyakinan: null, catatan: "residu ~nol dengan komposisi ini -- KEBETULAN PEMBULATAN, bukan bukti komposisi ini benar. Jangan naikkan keyakinan cuma karena totalnya pas."}
@@ -113,9 +113,21 @@ kohort_per_tahun_program:
     induk_sumber: "SR-2024 hal. 239 -- peserta pra-jabatan 2023 (NYATA)"
     sub_diterima: 420
     masuk_di: 2023
-    kualitas: tinggi
+    kualitas: sedang              # TURUN dari tinggi -- lihat catatan_audit_2026-08-18
     ada_gelombang: true
-    catatan: "Tiga gelombang: Icon Plus S1/D4 (30 Mar), S2 Fresh Graduate ICE & S2 Pro Hire ICE (7 Okt)."
+    komposisi_jalur:               # F-070 + F-071 (panen primer Wayback loadRecord 2026-08-18)
+      - {sumber: rbb, diterima: 30, keyakinan: rendah, catatan: "RBB Reguler batch 1 2022: 9 lowongan PLN Group (Assistant Analyst Pemasaran & Pelayanan Pelanggan, 7x Assistant Engineer) dari 839 lowongan nasional -- dipanen LANGSUNG dari endpoint loadRecord arsip Wayback (F-071, snapshot 13 Apr 2022, cocok persis dengan Detik 'Rekrutmen Bersama BUMN 2022 Ditutup 2 Hari Lagi'). 9 lowongan x ~3,3 peserta/lowongan (taksiran manual) = 30. Batch 2 (1 Des 2022, snapshot loadRecord juga dipanen): 0 lowongan PLN dari 87 tenant -- KAI ada, PLN tidak, bertentangan dengan berita Kompas yang menyebut PLN ikut batch 2."}
+      - {sumber: ppb_papua, diterima: 51, keyakinan: rendah, catatan: "porsi PLN dari RBB Papua & Papua Barat 2022 (256 peserta nasional, F-070 fhcibumn.com resmi); angka manual, konsisten dengan taksiran PPB 2020/2021"}
+      - {sumber: tidak_diketahui, diterima: 608, keyakinan: null, catatan: "residu -- angkatan 79/80 (Nov/Des 2022) SELAMA INI berlabel 'Reguler D3 & S1/D4' padahal 100% tidak ada di katalog PLN maupun sumber eksternal manapun (beda dari 74/75/87/88 yang setidaknya punya jejak Kompas/FHCI). Dibiarkan berlubang sampai ada info lebih baik."}
+    catatan: "SUBHOLDING (420) real: Icon Plus S1/D4 (30 Mar), S2 Fresh/Pro Hire ICE (7 Okt) -- angkatan 8/9/78. INDUK (689) TIDAK sama sekali cocok ke gelombang di atas (itu semua subholding) -- lihat komposisi_jalur."
+    catatan_audit_2026-08-18: >
+      Ditemukan saat mengaudit seluruh horison untuk pola sintetis serupa 2020/2021/2024:
+      total group 2022 (1.109 = 689+420) memang PAS ke total gelombang katalog (8+9+78+79+80
+      = 1.109), TAPI breakdown per penempatan menunjukkan seluruh INDUK (689) datang dari
+      angkatan 79/80 yang eksplisit "tidak ada di katalog PLN" -- bukan dari gelombang nyata
+      (8/9/78, yang semuanya SUBHOLDING). Label "kualitas: tinggi" sebelumnya keliru; itu
+      cuma total groupnya yang pas, bukan sumbernya. Turun jadi "sedang" karena subholding-nya
+      tetap solid (real katalog), tapi induknya sekarang eksplisit sebagian residu.
 
   - tahun: 2023
     jalur: mandiri
@@ -123,8 +135,11 @@ kohort_per_tahun_program:
     induk_sumber: "SR-2024 hal. 239 -- peserta pra-jabatan 2024 (NYATA)"
     sub_diterima: 520
     masuk_di: 2024
-    kualitas: tinggi
+    kualitas: tinggi              # subholding & mayoritas induk tetap solid, lihat komposisi_jalur
     ada_gelombang: true
+    komposisi_jalur:               # F-071 (audit 2026-08-18) -- PLN TERNYATA JUGA ikut RBB 2023
+      - {sumber: rbb, diterima: 60, keyakinan: rendah, catatan: "PLN buka 32 lowongan di RBB 2023 (siaran pers PLN, Mei 2023, pendaftaran 11-20 Mei 2023 -- 'PLN Buka 32 Lowongan Pekerjaan di Rekrutmen Bersama BUMN 2023'). Data granular RBB 2023 tidak ketemu di arsip Wayback (domain rekrutmenbersama2023 nol snapshot, endpoint loadRecord cuma ada utk 2022; sampel 40/120 halaman /job/detail 2023 nol PLN -- konsisten statistik dgn 32/>2.000 = 1,6%, bukan bukti negatif). 32 lowongan x ~1,9 peserta/lowongan (taksiran manual) = 60."}
+      - {sumber: mandiri, diterima: 1217, keyakinan: sedang, catatan: "OAP 8 kota (22 Mei) + Diaspora S1/S2 (3 Jul) + Putra-Putri Maluku & Nusa Tenggara (16 Okt) -- gelombang REAL katalog PLN (programs.csv), dikurangi 60 supaya ada ruang untuk komponen RBB di atas. TIDAK dilabeli tidak_diketahui karena sumbernya memang diketahui (tiga gelombang nyata ini), cuma pemecahan pastinya belum diverifikasi granular."}
     catatan: >
       Gelombang terbesar di era mandiri: OAP 8 kota (22 Mei) + Diaspora S1/S2 (3 Jul) +
       Putra-Putri Maluku & Nusa Tenggara (16 Okt). Dominasi afirmasi 3T menjelaskan
@@ -139,13 +154,13 @@ kohort_per_tahun_program:
     kualitas: tinggi
     ada_gelombang: true
     komposisi_jalur:               # F-067 + ikatan_dinas.yaml (2026-08-18)
-      - {sumber: rbb, diterima: 54, keyakinan: sedang, catatan: "porsi PLN di RBB 2024: 20 lowongan PLN Group / 688 total listing nasional (F-043)"}
+      - {sumber: rbb, diterima: 40, keyakinan: sedang, catatan: "porsi PLN di RBB 2024: 20 lowongan PLN Group (F-043) / 688 lowongan nasional x 1.378 peserta RBB Reguler 2024 REALISASI RIIL (F-070, fhcibumn.com resmi) = 40,1. KOREKSI 2026-08-18 dari 54 (yang salah pakai kuota 1.830, bukan realisasi)."}
       - {sumber: ikatan_dinas, diterima: 300, keyakinan: rendah, catatan: "D4 intake 2019 (perdana & satu-satunya, 5 PTN), lulus+prajab awal 2024; lihat ikatan_dinas.yaml"}
-      - {sumber: tidak_diketahui, diterima: 744, keyakinan: null, catatan: "residu BESAR -- mayoritas kohort 2024 tetap tak terjelaskan. Sempat dicoba isi pakai ulang angka kontrak ITPLN 147/2023, DITARIK 2026-08-18 (salah tafsir: itu kontrak MASUK 2023, bukan lulus 2024). Dibiarkan berlubang."}
+      - {sumber: tidak_diketahui, diterima: 758, keyakinan: null, catatan: "residu BESAR -- mayoritas kohort 2024 tetap tak terjelaskan. Kandidat penjelas SEBAGIAN: limpasan gelombang Putra-Putri Maluku & Nusa Tenggara Okt 2023 (SK nominalnya jatuh ~Okt 2024, mepet ke pergantian tahun -- F-068), tapi besarannya TIDAK DIKETAHUI, jadi tidak dipisah dari tidak_diketahui. Sempat dicoba isi pakai ulang angka kontrak ITPLN 147/2023, DITARIK 2026-08-18 (salah tafsir: itu kontrak MASUK 2023, bukan lulus 2024). Dibiarkan berlubang."}
     catatan: "20 lowongan PLN Group di RBB 2024 (F-043): Icon Plus 7, PLN 5, Batam 5, Haleyora 3."
     catatan_f067: >
-      RBB cuma menjelaskan ~54/1.098 (5%). `jalur: rbb` menandai pola funnel/timeline
-      gelombang katalog, BUKAN klaim bahwa seluruh 1.098 dari RBB. 68% (744) tetap
+      RBB cuma menjelaskan ~40/1.098 (3,6%). `jalur: rbb` menandai pola funnel/timeline
+      gelombang katalog, BUKAN klaim bahwa seluruh 1.098 dari RBB. 69% (758) tetap
       TIDAK DIKETAHUI -- ini gap PALING BESAR di seluruh horison, lihat ikatan_dinas.yaml
       soal kenapa ikatan dinas tidak bisa menutupnya (lubang generasi 2020-2027).
 

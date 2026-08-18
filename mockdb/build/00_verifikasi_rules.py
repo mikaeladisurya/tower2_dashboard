@@ -191,20 +191,34 @@ def cek_volume(R: dict) -> None:
         f"{sum(v['rincian_pendaftaran'].values())} vs {v['pendaftaran_total']}",
     )
 
-    # Jalur mana yang dipakai tiap tahun harus konsisten antara kohort dan funnel.
-    jalur_rbb = {r["tahun"] for r in R["kohort"]["kohort_per_tahun_program"] if r["jalur"] == "rbb"}
+    # Tahun mana pun yang punya komponen rbb/ppb_papua di komposisi_jalur (BUKAN cuma
+    # field `jalur` mentah -- F-071 membuktikan tahun jalur:mandiri bisa juga punya
+    # porsi RBB) harus konsisten dengan tahapan.yaml.
+    tahun_ada_rbb = {
+        r["tahun"]
+        for r in R["kohort"]["kohort_per_tahun_program"]
+        for k in r.get("komposisi_jalur", [])
+        if k["sumber"] in ("rbb", "ppb_papua")
+    }
     tahun_agregat = set(R["tahapan"]["tahap_agregat_fhci"]["berlaku_tahun"])
-    cek("tahun RBB konsisten kohort vs tahapan", jalur_rbb == tahun_agregat, f"{sorted(jalur_rbb)}")
+    cek("tahun RBB konsisten kohort vs tahapan", tahun_ada_rbb == tahun_agregat, f"{sorted(tahun_ada_rbb)} vs {sorted(tahun_agregat)}")
+
+    cek(
+        "lulus_wawancara + ikatan_dinas_langsung = total_masuk_pasca_seleksi",
+        v["status_per_15sep2026"]["lulus_wawancara"] + v["status_per_15sep2026"]["ikatan_dinas_langsung"]
+        == v["status_per_15sep2026"]["total_masuk_pasca_seleksi"],
+        f"{v['status_per_15sep2026']}",
+    )
 
     print("\n[4b] Status pada tanggal potong -- harus menurun monoton")
     st = v["status_per_15sep2026"]
-    urut = ["lulus_wawancara", "ttd_kontrak", "lulus_samapta", "sudah_sk_penempatan"]
+    urut = ["total_masuk_pasca_seleksi", "ttd_kontrak", "lulus_samapta", "sudah_sk_penempatan"]
     nilai = [st[k] for k in urut]
     cek("menurun monoton", all(a >= b for a, b in zip(nilai, nilai[1:])), f"{nilai}")
     cek(
-        "lulus_wawancara = diterima_selesai",
-        st["lulus_wawancara"] == v["diterima_selesai"],
-        f"{st['lulus_wawancara']}",
+        "total_masuk_pasca_seleksi = diterima_selesai",
+        st["total_masuk_pasca_seleksi"] == v["diterima_selesai"],
+        f"{st['total_masuk_pasca_seleksi']} vs {v['diterima_selesai']}",
     )
     cek(
         "sudah_sk + sedang_ojt <= lulus_samapta",
@@ -226,6 +240,8 @@ def cek_gelombang(R: dict) -> None:
 
     tahun_angkatan = set()
     for seri in R["angkatan"]["seri"].values():
+        if "alokasi_horison" not in seri:
+            continue  # ikatan_dinas & siluman: ada_gelombang:false, tidak punya seri katalog
         tahun_angkatan |= set(seri["alokasi_horison"])
     cek("semua tahun bergelombang punya nomor angkatan", ada <= tahun_angkatan, f"{sorted(ada - tahun_angkatan)}")
     cek("tahun tanpa gelombang tidak punya nomor angkatan", not (tanpa & tahun_angkatan), f"{sorted(tanpa)}")
@@ -351,6 +367,8 @@ def cek_angkatan(R: dict) -> None:
     """
     print("\n[9] Angkatan -- alokasi, lubang, jangkar asli, kronologi")
     for nama_seri, isi in R["angkatan"]["seri"].items():
+        if "alokasi_horison" not in isi:
+            continue  # ikatan_dinas & siluman: bukan seri katalog nomor-integer
         alokasi = isi["alokasi_horison"]
         datar = sorted(n for tahun in alokasi for n in alokasi[tahun])
         lubang = isi.get("lubang", [])
@@ -427,6 +445,41 @@ def cek_kelengkapan(R: dict) -> None:
     cek("kualitas_kohort mencakup semua tahun", tahun_kohort == tahun_program, f"{sorted(tahun_kohort)}")
 
 
+def cek_ikatan_dinas_siluman(R: dict) -> None:
+    print("\n[11] Ikatan dinas & siluman -- angkatan.yaml harus cocok dengan komposisi_jalur")
+    seri = R["angkatan"]["seri"]
+    baris = R["kohort"]["kohort_per_tahun_program"]
+
+    def komposisi_per_sumber(tahun: int, sumber: str) -> int:
+        row = next(r for r in baris if r["tahun"] == tahun)
+        return sum(k["diterima"] for k in row.get("komposisi_jalur", []) if k["sumber"] == sumber)
+
+    id_per_tahun: dict[int, int] = {}
+    for kode, info in seri["ikatan_dinas"]["kohort"].items():
+        id_per_tahun[info["tahun_program"]] = id_per_tahun.get(info["tahun_program"], 0) + info["diterima"]
+    for tahun, jumlah in id_per_tahun.items():
+        target = komposisi_per_sumber(tahun, "ikatan_dinas")
+        cek(f"ikatan_dinas {tahun}: angkatan.yaml vs komposisi_jalur", jumlah == target, f"{jumlah} vs {target}")
+
+    for kode, info in seri["siluman"]["kohort"].items():
+        target = komposisi_per_sumber(info["tahun_program"], "tidak_diketahui")
+        cek(
+            f"siluman {kode} ({info['tahun_program']}): diterima vs komposisi_jalur",
+            info["diterima"] == target,
+            f"{info['diterima']} vs {target}",
+        )
+        sebaran = sum(info["jenjang_sebaran"].values())
+        cek(
+            f"siluman {kode}: jenjang_sebaran = diterima",
+            sebaran == info["diterima"],
+            f"{sebaran} vs {info['diterima']}",
+        )
+
+    v = R["funnel"]["volume_target"]["rincian_diterima"]
+    total_id = sum(info["diterima"] for info in seri["ikatan_dinas"]["kohort"].values())
+    cek("total ikatan_dinas angkatan.yaml = funnel.yaml volume_target", total_id == v["ikatan_dinas"], f"{total_id} vs {v['ikatan_dinas']}")
+
+
 def main() -> int:
     print(f"Verifikasi aturan di {RULES_DIR}")
     R = muat()
@@ -443,6 +496,7 @@ def main() -> int:
     cek_tahapan(R)
     cek_angkatan(R)
     cek_kelengkapan(R)
+    cek_ikatan_dinas_siluman(R)
 
     print("\n" + "=" * 60)
     if gagal:

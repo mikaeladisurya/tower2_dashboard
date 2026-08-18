@@ -140,9 +140,11 @@ seri:
       78: {tahun: 2022, buka: "2022-10-07", sumber_nomor: nyata,
            nama: "Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022", entri: "1"}
       79: {tahun: 2022, buka: "2022-11", sumber_nomor: inferensi,
-           nama: "Reguler D3 & S1/D4 2022 gelombang I", entri: "0 -- tidak ada di katalog PLN"}
+           nama: "Reguler D3 & S1/D4 2022 gelombang I", entri: "0 -- tidak ada di katalog PLN",
+           catatan_audit_2026-08-18: "SHELL PENOMORAN SAJA -- sumber headcount sebenarnya lihat kohort.yaml komposisi_jalur 2022 & angkatan.yaml seri.siluman.X-03"}
       80: {tahun: 2022, buka: "2022-12", sumber_nomor: inferensi,
-           nama: "Reguler D3 & S1/D4 2022 gelombang II", entri: "0 -- tidak ada di katalog PLN"}
+           nama: "Reguler D3 & S1/D4 2022 gelombang II", entri: "0 -- tidak ada di katalog PLN",
+           catatan_audit_2026-08-18: "SHELL PENOMORAN SAJA -- sumber headcount sebenarnya lihat kohort.yaml komposisi_jalur 2022 & angkatan.yaml seri.siluman.X-03"}
       81: {tahun: 2023, buka: "2023-05-22", sumber_nomor: nyata,
            nama: "REKRUTMEN ORANG ASLI PAPUA (OAP) TAHUN 2023", entri: "8 kota"}
       82: {tahun: 2023, buka: "2023-07-03", sumber_nomor: inferensi_kuat,
@@ -251,6 +253,106 @@ seri:
     catatan: >
       Setelah 2022 penempatan subholding MELEBUR ke seri utama -- programs.csv 2025
       menunjukkan IP.UM.D3 dan ND.UM.S1 sama-sama angkatan 92. Jadi seri ini berhenti.
+
+  ikatan_dinas:
+    keterangan: >
+      BUKAN seri angkatan PLN -- ikatan dinas/kelas kerjasama TIDAK PERNAH punya nomor
+      angkatan resmi (ikatan_dinas.yaml, F-067). Kode "ID-xx" murni buatan kita sendiri
+      supaya tiap cohort D3/D4 punya satu identitas di skema data (gelombang->program->
+      profesi) yang sama dengan seri lain -- BUKAN klaim bahwa PLN memakai penomoran ini.
+    ada_gelombang: false               # tidak pernah tercatat di katalog publik manapun
+    funnel: ikatan_dinas                # lihat funnel.yaml -- skip administrasi s.d. wawancara
+    jangkar_kronologi: >
+      Penomoran D3 mengikuti urutan angkatan SEJAK PROGRAM DIMULAI, bukan sejak horison
+      kita (2019). Siaran pers PLN Agu 2018 (ikatan_dinas.yaml): "Sejak tahun 2013..." ->
+      2013=ke-1. Jadi intake 2017=ke-5, 2018=ke-6, 2019=ke-7. D4 dimulai TERPISAH di 2019
+      (perdana -- tidak menyambung hitungan D3), diberi kode sendiri ID-D4-01.
+    kohort:
+      ID-05:
+        jenjang: D3
+        intake_kuliah: 2017
+        lulus_prajab: 2020
+        tahun_program: 2020            # masuk komposisi_jalur kohort.yaml tahun 2020
+        diterima: 200
+        jumlah_ptn: "15 diasumsikan (2 konfirmasi individual: PENS, PNUP -- 13 sisanya TIDAK diverifikasi)"
+        sumber: "ikatan_dinas.yaml -- taksiran_dipakai"
+      ID-06:
+        jenjang: D3
+        intake_kuliah: 2018
+        lulus_prajab: 2021
+        tahun_program: 2021
+        diterima: 340
+        jumlah_ptn: "17 (konfirmasi primer -- PLN siaran pers Mar 2018)"
+        sumber: "ikatan_dinas.yaml -- taksiran_dipakai"
+      ID-07:
+        jenjang: D3
+        intake_kuliah: 2019
+        lulus_prajab: 2021
+        tahun_program: 2021
+        diterima: 300
+        jumlah_ptn: "15 (konfirmasi primer)"
+        sumber: "ikatan_dinas.yaml -- taksiran_dipakai"
+      ID-D4-01:
+        jenjang: D4
+        intake_kuliah: 2019
+        lulus_prajab: 2024
+        tahun_program: 2024
+        diterima: 300
+        jumlah_ptn: "5 (UNDIP, UGM-SV, POLBAN, PENS, PNUP)"
+        catatan: "perdana & satu-satunya angkatan D4 era kerjasama PTN"
+        sumber: "ikatan_dinas.yaml -- taksiran_dipakai"
+
+  siluman:
+    keterangan: >
+      Model residu untuk bagian kohort NYATA (dari SR) yang tidak bisa dijelaskan oleh
+      gelombang katalog, RBB/PPB, maupun ikatan dinas manapun (kohort.yaml komposisi_jalur,
+      sumber: tidak_diketahui). Kode "X-xx" TIDAK ADA DI KATALOG NYATA -- jangan disalah-
+      artikan sebagai gelombang yang hilang tercatat. Ini murni pengisi residu supaya
+      total kohort tetap utuh saat dipecah ke tabel profesi/kandidat.
+    ada_gelombang: false
+    funnel: mandiri                     # funnel_mandiri PENUH -- dianggap rekrutmen terbuka generik
+    peringatan_dashboard: >
+      WAJIB ditandai "SUMBER TIDAK DIKETAHUI -- dimodelkan sebagai rekrutmen mandiri generik
+      karena tidak ada info lain (F-067/F-068)", BUKAN ditampilkan seolah gelombang asli.
+    cara_isi_jenjang: >
+      Dipilih dari SISA kebutuhan pagu_rekrutmen.csv per tahun_program setelah dikurangi
+      alokasi RBB + ikatan dinas tahun itu -- bukan tebakan bebas. Lihat rincian per kohort.
+    kohort:
+      X-01:
+        tahun_program: 2020
+        diterima: 75
+        jenjang_sebaran: {"S1/D-IV": 70, S2: 5}
+        catatan: >
+          Pagu 2020: S1=220, D3=94, S2=11 (total 325=induk persis). Setelah RBB(50, S1/D-IV)
+          + ID-05(200, D3): sisa kebutuhan S1=170, D3=-106 (SUDAH TERLAMPAUI oleh ikatan
+          dinas sendiri -- ditandai, bukan disembunyikan), S2=11. X-01 cuma 75, tidak cukup
+          menutup sisa S1 (170) -- dialokasikan proporsional ke S1/S2 saja, D3 tidak ditambah.
+        sumber: "kohort.yaml komposisi_jalur 2020 -- tidak_diketahui"
+      X-02:
+        tahun_program: 2024
+        diterima: 758
+        jenjang_sebaran: {"S1/D-IV": 406, "D-III": 316, S2: 36}
+        catatan: >
+          Pagu 2024: S1=746, D3=316, S2=36 (total 1.098=induk persis). Setelah RBB(40 -- KOREKSI
+          2026-08-18 dari 54, F-070: pakai realisasi riil RBB Reguler 2024 = 1.378, bukan kuota
+          1.830 -- S1/D-IV) + ID-D4-01(300, S1/D-IV -- D4 masuk bucket S1/D-IV di skema kita):
+          sisa S1=406, D3=316, S2=36 = 758. Kecocokan totalnya murni karena pagu_rekrutmen.csv
+          dikalibrasi sama dengan induk_diterima; bukan bukti independen bahwa sebaran
+          jenjangnya benar.
+        sumber: "kohort.yaml komposisi_jalur 2024 -- tidak_diketahui"
+      X-03:
+        tahun_program: 2022
+        diterima: 608
+        jenjang_sebaran: {"S1/D-IV": 387, "D-III": 198, S2: 23}
+        catatan: >
+          Ditemukan saat audit 2026-08-18: seluruh INDUK 2022 (689) ternyata berasal dari
+          angkatan 79/80 yang 100% sintetis ("tidak ada di katalog PLN"), bukan dari gelombang
+          nyata (yang semuanya SUBHOLDING -- Icon Plus/S2 ICE). Pagu 2022: S1=468, D3=198, S2=23
+          (total 689=induk persis). Setelah rbb(30, batch1 RBB Reguler, S1/D-IV) +
+          ppb_papua(51, S1/D-IV) = 81: sisa S1=387, D3=198, S2=23 = 608. KOREKSI 2026-08-18
+          (F-071) dari 639 -- turun 31 setelah komponen RBB Reguler batch1 ditemukan (data
+          primer loadRecord Wayback).
+        sumber: "kohort.yaml komposisi_jalur 2022 -- tidak_diketahui"
 
 # ---------------------------------------------------------------------------
 # 3. SMK/PELAKSANA — SENGAJA TIDAK DIMODELKAN DI HORISON INI

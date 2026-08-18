@@ -107,7 +107,10 @@ funnel_rbb:
     lolos_kumulatif_fhci: 0.0196     # 0.400 * 0.280 * 0.175
     rasio_pelamar_serahterima: 51    # 1 / 0.0196 -- sisi FHCI saja
     rasio_gabungan_rbb: 186          # 1 / (0.0196 * 0.2749) -- FHCI x PLN
-    rasio_nasional_rujukan: 186      # RBB 2024: ~1,1jt pendaftar / 5.900 diterima (F-043)
+    rasio_nasional_rujukan: 186      # TIDAK ANDAL -- lihat F-069: 5.900 ternyata kumulatif
+                                      # 2022-2024, dipasangkan keliru dengan pendaftar 2024 saja
+                                      # (jebakan sama dgn F-039/F-047). Dipertahankan sementara
+                                      # karena belum ada pengganti; audit ulang sebelum langkah 08.
     catatan_kalibrasi: >
       Laju FHCI dipilih supaya rasio GABUNGAN mendarat di 1:186, angka nasional RBB 2024
       yang bisa diperiksa dari F-043. Jadi yang dijangkar adalah ujung-ke-ujungnya;
@@ -142,6 +145,28 @@ funnel_rbb:
       terlihat di dashboard, dan sepenuhnya masuk akal secara perilaku.
 
 # ---------------------------------------------------------------------------
+# 3b. FUNNEL IKATAN DINAS/KELAS KERJASAMA — TIDAK ADA PENDAFTARAN TERBUKA
+# ---------------------------------------------------------------------------
+# Peserta sudah diseleksi lewat jalur kampus (masuk kuliah kelas kerjasama + syarat PLN
+# terpisah, ikatan_dinas.yaml) -- mereka TIDAK PERNAH mendaftar di portal rekrutmen PLN.
+# Jadi tidak ada administrasi/adaptif/akademik_inggris/psikologi/fisik_mcu/wawancara sama
+# sekali. Mendarat langsung di tahap pasca-seleksi (samapta dst, sama seperti jalur lain).
+
+funnel_ikatan_dinas:
+  status_sumber: TURUNAN
+  catatan: >
+    Bukan funnel dalam arti pendaftar->diundang->lulus. 100% dari `diterima` di
+    angkatan.yaml (seri.ikatan_dinas) langsung masuk hitungan "lulus seleksi", karena
+    seleksinya sudah selesai di tingkat kampus, bertahun-tahun sebelum prajabatan.
+  titik_masuk: samapta
+  multiplier_lulus: 1.0000             # tidak ada penyusutan sebelum titik masuk
+  pendaftaran: tidak_ada
+  catatan_dashboard: >
+    Jangan tampilkan baris "pendaftar ikatan dinas" di funnel dashboard -- kosongkan atau
+    beri keterangan "seleksi kampus, di luar sistem pendaftaran PLN", supaya tidak terbaca
+    seolah 1.140 orang mendaftar terbuka dan semuanya lolos (itu akan menyesatkan).
+
+# ---------------------------------------------------------------------------
 # 4. SESUDAH LULUS WAWANCARA (kedua jalur sama)
 # ---------------------------------------------------------------------------
 pasca_seleksi:
@@ -158,35 +183,47 @@ pasca_seleksi:
 # 5. VOLUME HASIL (dihitung generator, ditulis di sini untuk verifikasi)
 # ---------------------------------------------------------------------------
 volume_target:
-  pendaftaran_total: 314730
+  # KOREKSI 2026-08-18 (4x, F-067/F-069/F-070/F-071): (1) 2020/2021/2024 tidak 100%
+  # RBB/PPB; (2) RBB 2024 pakai realisasi riil 1.378 bukan kuota 1.830; (3) 2022 ternyata
+  # JUGA tidak 100% tercakup katalog nyata (induknya 100% angkatan 79/80 sintetis); (4) PLN
+  # TERNYATA JUGA ikut RBB 2022 (9 lowongan, data primer loadRecord) & RBB 2023 (32
+  # lowongan, siaran pers PLN) -- dua tahun yang sebelumnya dianggap 100% mandiri.
+  pendaftaran_total: 341838          # TIDAK termasuk ikatan dinas -- mereka tidak mendaftar
   rincian_pendaftaran:
-    mandiri: 305300                  # 6.259 diterima / 0,0205 -- tahun 2019, 2022, 2023, 2025
-    rbb_serah_terima: 9430           # 2.592 diterima / 0,2749 -- tahun 2020, 2021, 2024
-  akun_kandidat_melamar: 233100      # rata-rata 1,35 lamaran per akun (F-025 lifetime)
-  akun_kandidat_tanpa_lamaran: 265700
-  baris_seleksi_tahap: 620600
+    mandiri: 339073                  # 6.951 diterima / 0,0205
+    rbb_serah_terima: 2765           # 760 diterima / 0,2749 (280 induk RBB/PPB asli + 480 sub 2024)
+    ikatan_dinas: 0                  # TIDAK ADA -- seleksi kampus, di luar sistem pendaftaran
+  akun_kandidat_melamar: 253213      # rata-rata 1,35 lamaran per akun (F-025 lifetime)
+  akun_kandidat_tanpa_lamaran: 288663
+  baris_seleksi_tahap: 671487
   rincian_baris_tahap:
-    mandiri: 598800                  # 1,9615 baris per pendaftaran (6 tahap, funnel menyempit)
-    rbb: 21800                       # 2,3127 baris per pendaftaran (4 tahap)
-  baris_seleksi_tahap_agregat: 27    # tahap FHCI, 3 tahun RBB x 3 tahap x beberapa lowongan
-  diterima_selesai: 8851             # = LULUS WAWANCARA, belum tentu sudah ber-SK
+    mandiri: 665092                  # 1,9615 baris per pendaftaran (6 tahap, funnel menyempit)
+    rbb: 6395                        # 2,3127 baris per pendaftaran (4 tahap)
+  baris_seleksi_tahap_agregat: 27    # tahap FHCI, tahun RBB x tahap x beberapa lowongan
+  diterima_selesai: 8851             # = LULUS SELEKSI (via funnel ATAU ikatan dinas), belum tentu ber-SK
   rincian_diterima:
-    mandiri: 6259
-    rbb: 2592
+    mandiri: 6951                    # 2019+2025 (induk+sub murni) + 2023 mandiri+sub + sub 2022 + tidak_diketahui (2020/2021/2022/2024)
+    rbb: 760                         # ppb2020(50)+ppb2021(49)+rbb2022(30)+ppb2022(51)+rbb2023(60)+rbb2024(40)+sub2024(480)
+    ikatan_dinas: 1140               # 200+340+300 (D3) + 300 (D4) -- lihat angkatan.yaml
 
-  porsi_plafon_f019: 0.53            # 314.730 / 598.395 pelamar kumulatif sejak +-2013
+  porsi_plafon_f019: 0.5713          # 341.838 / 598.395 pelamar kumulatif sejak +-2013
   catatan_plafon: >
-    Menyisakan 47% untuk 2013-2018, termasuk era ledakan 2017 (4.484 rekrutan, F-048).
-    Kalau horison dimundurkan sampai 2017 porsi ini melonjak ke 97% dan menabrak plafon --
-    itu alasan horison berhenti di 2019.
+    Naik dari 0,53 (versi lama) ke 0,57 setelah siluman/tidak_diketahui dipindah ke
+    funnel_mandiri -- logis, mereka MENAMBAH pendaftar mandiri, bukan lagi "gratis" lewat
+    RBB. Ikatan dinas (1.140) TIDAK dihitung di porsi ini sama sekali (bukan pendaftar).
 
   # -------------------------------------------------------------------------
   # STATUS PADA TANGGAL POTONG 15 SEP 2026
   # -------------------------------------------------------------------------
   # "Diterima" BUKAN berarti "sudah jadi pegawai". Kohort 2025 (+-2.000 orang) sudah
   # ttd kontrak Mar-2026 tapi masih di tengah OJT; SK-nya baru 9 Nov 2026.
+  # KOREKSI 2026-08-18: `lulus_wawancara` sekarang HANYA yang benar2 lewat tahap wawancara
+  # (mandiri+rbb = 7.711). Ikatan dinas (1.140) skip wawancara -- ditambahkan terpisah,
+  # baru gabung lagi di titik yang sama (samapta) karena funnel_ikatan_dinas.titik_masuk.
   status_per_15sep2026:
-    lulus_wawancara: 8851
+    lulus_wawancara: 7711            # mandiri(7.078) + rbb(633) -- YANG LEWAT FUNNEL SELEKSI
+    ikatan_dinas_langsung: 1140      # skip administrasi..wawancara, lihat funnel_ikatan_dinas
+    total_masuk_pasca_seleksi: 8851  # 7.711 + 1.140 -- baru di sini kedua jalur GABUNG
     ttd_kontrak: 8497                # 8.851 x 0,96 (4% mundur sebelum kontrak)
     lulus_samapta: 8429              # x 0,992
     sudah_sk_penempatan: 6427        # HANYA gelombang 2019-2024
@@ -201,9 +238,16 @@ volume_target:
   cara_verifikasi: >
     rincian_pendaftaran.mandiri x 0,0205 harus = rincian_diterima.mandiri;
     rincian_pendaftaran.rbb_serah_terima x 0,2749 harus = rincian_diterima.rbb;
-    rincian_diterima dijumlah harus = kohort.yaml totals_cek.group_2020_2026;
-    status_per_15sep2026 harus menurun monoton dari lulus_wawancara ke sudah_sk.
+    rincian_diterima dijumlah (termasuk ikatan_dinas) harus = kohort.yaml totals_cek.group;
+    lulus_wawancara + ikatan_dinas_langsung harus = total_masuk_pasca_seleksi;
+    status_per_15sep2026 harus menurun monoton dari total_masuk_pasca_seleksi ke sudah_sk.
     Semuanya diuji otomatis -- jangan ubah satu angka tanpa menyetel yang lain.
+
+  perlu_dihitung_ulang_saat_langkah_08: >
+    lamaran_per_akun/akun_tanpa_lamaran di bawah masih pakai RASIO lama (belum tentu
+    berubah, cuma basis pendaftaran_total-nya yang naik) -- baris_seleksi_tahap juga.
+    Ini cukup presisi untuk perencanaan langkah 07-12, tapi kalkulasi ulang yang teliti
+    baru relevan saat generator 08 (kandidat & pendaftaran) benar-benar ditulis.
 
   lamaran_per_akun:
     rata2: 1.35

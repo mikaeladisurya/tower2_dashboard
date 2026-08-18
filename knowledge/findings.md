@@ -367,7 +367,9 @@ Klaim: **2021 = PPB (Program Perekrutan Bersama)**, **2022–2024 = RBB (Rekrutm
 diselenggarakan **FHCI**, dan PLN ikut serta bersama Pertamina/Mandiri/BRI/KAI dll. Pengumuman RBB
 ada di `rekrutmenbersama.fhcibumn.id`, **bukan** di situs rekrutmen PLN → karena itu 2021 & 2024
 kosong di katalog PLN. Jejaknya tetap terlihat: arsip memuat *"REKRUTMEN PPB BUMN KHUSUS PUTRA
-PUTRI PAPUA"*. RBB 2024 secara total (semua BUMN) merekrut 5.900 pegawai reguler + 231 disabilitas.
+PUTRI PAPUA"*. RBB (semua BUMN) merekrut 5.900 pegawai reguler + 231 disabilitas **KUMULATIF
+2022-2024** — BUKAN RBB 2024 sendirian (koreksi F-069, ditemukan angka ini tercampur skop saat
+verifikasi ulang 2026-08-18; RBB 2024 sendiri: 688 lowongan/1.830 posisi, sumber Kompas 22 Mar 2024).
 Sumber: R1c (bukti negatif dari 153 snapshot) + R3 (FHCI/berita) · Keyakinan: tinggi (adanya jalur RBB),
 sedang (bahwa itu satu-satunya sebab kekosongan) · Dampak: menjelaskan kenapa kohort prajabatan tetap
 terisi di tahun tanpa program PLN (mis. prajabatan 2025 = 1.098). **Catatan scope:** user sejak awal
@@ -1341,6 +1343,231 @@ yang dipaksa sama dengan bauran gelombang nyata dari `angkatan.yaml`.
 Sumber: sintesis F-050, F-058, F-061, `demografi.yaml`, `mockdb/rules/README.md` (urutan kausal)
 · Keyakinan: tinggi (logika, bukan angka baru) · Dampak: **membuka blokade langkah 05/06** tanpa
 riset tambahan — dua perbaikan konkret untuk sesi build.
+
+### F-068 · Limpasan gelombang ujung tahun ke laporan tahun berikutnya — mekanisme dikonfirmasi, besaran belum ⭐ [keterangan user]
+Klaim: `jeda_pipeline` (F-048) memakai SATU angka lag (~13 bulan, tutup gelombang → SK) untuk
+seluruh peserta satu gelombang. Padahal siswa yang **gagal ujian OJT dan mengulang** bisa dapat SK
+berbulan-bulan lebih lambat dari kelompok utamanya — kalau gelombangnya sendiri sudah tutup dekat
+akhir tahun, sebagian pesertanya bisa **ber-SK di tahun laporan SR berikutnya**, bukan tahun yang
+diasumsikan `masuk_di`.
+
+**Bukti (pengalaman langsung user, angkatan Okt 2016):**
+> Pendaftaran Okt 2016 → wawancara s.d. akhir Des 2016 → pengumuman lolos awal Jan 2017 → ttd
+> kontrak, samapta, pembidangan → OJT mulai April → ujian OJT Agustus (saat itu OJT cuma 3 bulan,
+> "sepertinya sekarang diperpanjang") → **pengangkatan (SK) September** untuk yang lulus ujian
+> pertama. Tapi ada teman yang **tidak lulus ujian pertama, SK-nya baru turun November** — mundur
+> 2 bulan dari kelompok utama. Kalau ada yang tidak lulus ujian ULANGnya lagi, "bisa jadi dapat
+> SK-nya Januari" — mundur ke TAHUN KALENDER BERIKUTNYA.
+
+**Implikasi ke kohort.yaml:** gelombang yang tutup di kuartal 4 punya risiko limpasan lebih tinggi
+karena marjin waktunya ke pergantian tahun lebih tipis. Dicek pola bulan tutup tiap tahun_program
+yang sudah "kualitas tinggi" (sudah pas ke katalog visible tanpa residu):
+
+| tahun_program | gelombang penutup terakhir | risiko limpasan |
+|---|---|---|
+| 2019 | campus fair ~Nov | sedang |
+| 2020 | PPB buka 30 Des 2020 | tinggi |
+| 2021 | PPB tutup pendaftaran 14 Jan 2022 (F-067) | tinggi |
+| 2022 | S2 ICE 7 Okt | sedang |
+| 2023 | Putra-Putri Maluku & Nusa Tenggara 16 Okt | sedang-tinggi |
+| 2024 | RBB ~Mar/Apr | rendah |
+
+**Kenapa BELUM dipakai untuk mengisi residu 2024 (~744, F-067) atau tahun lain:** tiga alasan
+menahan diri dari memasukkan angka spekulatif ke `komposisi_jalur`:
+1. F-048 sudah membuktikan kecocokan pipeline ~13 bulan SANGAT presisi di 3 titik ekstrem (program
+   2019/2020/2023) tanpa dipaksakan — limpasan besar semestinya merusak kecocokan setajam itu.
+2. Limpasan realistis paling banyak sebagian KECIL dari satu gelombang (kelompok yang mengulang
+   ujian OJT, bukan seluruh angkatan) — residu 744 di 2024 terlalu besar untuk dijelaskan limpasan
+   saja.
+3. Tidak ada footnote metodologi di SR (sudah dicek halaman sekitar tabel pra-jabatan SR-2025 hal.
+   202-204) yang menjelaskan cutoff/batas hitung per tahun.
+
+**Status: mekanisme terbukti nyata (kesaksian langsung), besaran belum terukur.** Kandidat
+penjelas TAMBAHAN kecil untuk residu `tidak_diketahui` di 2020/2021/2024 — bukan pengganti
+`ikatan_dinas.yaml`, dan tidak diberi angka di `komposisi_jalur` sampai ada cara mengukurnya
+(mis. data lulus-vs-mengulang ujian OJT per gelombang, yang tidak kita punya).
+Sumber: keterangan langsung user (pengalaman pribadi angkatan Okt 2016); SR-PLN-2025-160726.pdf
+hal. 200-204 (dicek, tidak ada footnote metodologi) · Keyakinan: **tinggi** untuk mekanisme
+(kesaksian langsung + konsisten dgn `durasi_hari_setelah_tutup` di kohort.yaml), **tidak ada**
+untuk besaran · Dampak: tidak mengubah `komposisi_jalur` yang sudah ditulis; jadi catatan
+metodologi untuk sesi mendatang kalau ada data ujian-OJT per gelombang.
+
+### F-069 · "5.900 diterima RBB" ternyata KUMULATIF 2022-2024, bukan RBB 2024 saja — dan 1.830 posisi akhirnya tersitasi ⭐⭐ [cek-ricek]
+Klaim: dua hal ditemukan sambil menelusuri ulang dari mana angka "54" (porsi PLN di RBB 2024,
+`kohort.yaml`) berasal.
+
+**(a) 688 lowongan / 1.830 posisi / 110 BUMN — sekarang tersitasi.** Angka ini dipakai sejak sesi
+sebelumnya untuk menghitung "54" tapi TIDAK PERNAH masuk `findings.md` dengan kutipan verbatim —
+persis pola yang menjatuhkan F-067(a). Diverifikasi ulang 2026-08-18:
+
+> *"Ia menjelaskan, pelamar dapat menemukan lebih dari 100 BUMN yang membuka 688 lowongan untuk
+> 1.830 posisi"* — [Kompas.com, 22 Maret 2024](https://www.kompas.com/tren/read/2024/03/22/193000365/rekrutmen-bersama-bumn-2024-ada-1.830-posisi-lulusan-sma-dan-difabel-bisa)
+
+Dikonfirmasi silang oleh iNews.id ("Rekrutmen Bersama BUMN 2024 Buka 688 Lowongan") dan beberapa
+media lain, semua tanggal sekitar 22-24 Maret 2024 (persis saat pendaftaran RBB 2024 dibuka).
+**1.830 posisi ini KUOTA/TARGET yang diumumkan di awal, bukan konfirmasi realisasi akhir** —
+konsisten dengan pola target>realisasi yang berulang di proyek ini (ITPLN 150→147/135/109, dst).
+
+**Dampak ke `kohort.yaml`:** angka "54" (= 20/688 x 1.830, dibulatkan) ternyata SUDAH memakai
+basis yang benar (posisi spesifik RBB 2024, bukan angka lintas-tahun) — kekhawatiran sebelumnya
+bahwa satuannya salah TIDAK TERBUKTI. Yang perlu diperbaiki cuma catatan sitasinya (sekarang
+tertaut ke Kompas 22 Mar 2024), plus tambah peringatan bahwa 54 kemungkinan sedikit
+OVER-estimate (karena 1.830 kuota, bukan realisasi akhir).
+
+**(b) TEMUAN LEBIH BESAR: "5.900 pegawai reguler + 231 disabilitas" (F-041, dan `funnel.yaml`
+`rasio_nasional_rujukan: 186`) ternyata KUMULATIF seluruh program RBB/PPB 2022-2024, BUKAN RBB
+2024 sendirian** seperti tertulis di F-041 ("RBB 2024 secara total... merekrut 5.900..."). Sumber
+sekunder (pencarian 2026-08-18) menyatakan tegas program ini "berjalan dari 2022 sampai 2024"
+untuk mencapai total 5.900+231 itu — tiga angkatan RBB digabung, bukan satu.
+
+⚠️ **Konsekuensi ke kalibrasi funnel RBB:** `funnel.yaml` memasangkan **5.900 (kumulatif 3 tahun)**
+dengan **±1,1 juta pendaftar (yang tampaknya KHUSUS 2024** — pencarian independen menemukan
+1.384.743 pendaftar RBB 2024 per 16 Maret 2024, masih sebelum pendaftaran tutup 17 Maret**)
+untuk menghasilkan rasio 1:186. **Itu bandingkan pembilang lintas-tahun dengan penyebut satu-
+tahun — jebakan yang sama persis dengan F-039 (1:223, dicampur cakupan Group vs Induk) yang
+sudah lebih dulu ditolak di proyek ini (F-047).** Rasio 1:186 kemungkinan keliru, tapi BELUM
+diganti — perlu angka realisasi RBB 2024 SENDIRI (bukan kumulatif) untuk kalibrasi ulang, dan
+angka itu belum ditemukan di pencarian manapun sejauh ini.
+
+**Status: (a) selesai, `kohort.yaml` tidak perlu diubah, cuma sitasi ditambah. (b) BELUM
+diperbaiki** — `funnel.yaml` `funnel_rbb.fhci_agregat` (rasio 1:186, lolos_kumulatif_fhci 0,0196)
+tetap dipertahankan APA ADANYA untuk saat ini karena tidak ada pengganti yang lebih baik, tapi
+ditandai TIDAK ANDAL sampai angka RBB-2024-murni ditemukan.
+Sumber: Kompas.com 22 Mar 2024 (butir a); pencarian web 2026-08-18, sumber sekunder tanpa
+kutipan primer resmi FHCI (butir b) · Keyakinan: **tinggi** untuk (a), **sedang** untuk (b)
+(pola "kumulatif 2022-2024" konsisten di 2 sumber independen, tapi belum ketemu rilis resmi
+FHCI yang menyatakannya eksplisit) · Dampak: `kohort.yaml` komposisi_jalur 2024 (rbb:54) AMAN;
+`funnel.yaml` funnel_rbb butuh audit lanjutan sebelum dipakai generator 08.
+
+### F-070 · Infografik resmi FHCI: rincian per-tahun PPB/RBB 2021-2024 — konfirmasi F-069(b) & angka baru untuk 2021/2024 ⭐⭐⭐ [sumber primer, user]
+Klaim: user membagikan tangkapan layar infografik resmi dari `fhcibumn.com/program/rekrutmen-
+bersama-bumn-rbb-vPteSd` (halaman program RBB milik FHCI sendiri — sumber PRIMER, bukan berita
+sekunder), berjudul *"Transformasi Program Rekrutmen: Rekrutmen Bersama BUMN (RBB)"*. Rincian per
+tahun:
+
+| tahun | kategori | peserta |
+|---|---|---:|
+| 2021 | PPB Papua & Papua Barat | **154** |
+| 2022 | RBB Reguler batch 1 | 2.297 |
+| 2022 | RBB Reguler batch 2 | 805 |
+| 2022 | RBB Disabilitas | 137 |
+| 2022 | RBB Papua & Papua Barat | 256 |
+| 2023 | RBB Reguler | 1.420 |
+| 2023 | RBB Disabilitas | 47 |
+| 2024 | RBB Reguler | **1.378** |
+| 2024 | RBB Disabilitas | 47 |
+| **total (semua tahun)** | RBB Reguler | **5.900** |
+| **total (semua tahun)** | PPB/RBB Disabilitas | 231 |
+| **total (semua tahun)** | PPB/RBB Papua & Papua Barat | 410 |
+
+**Konfirmasi F-069(b):** 2.297+805+1.420+1.378 = **5.900 persis** — membuktikan tuntas bahwa
+"5.900" memang kumulatif 4 batch 2022-2024, bukan angka satu tahun. F-069(b) yang tadinya
+berstatus "keyakinan sedang, sumber sekunder" sekarang **naik ke tinggi, sumber primer FHCI**.
+
+**Dua angka baru yang mengubah `kohort.yaml`:**
+1. **RBB Reguler 2024 = 1.378** (realisasi RIIL nasional, bukan kuota 1.830 dari F-069(a)).
+   Porsi PLN dihitung ulang: 20 lowongan PLN / 688 lowongan nasional x 1.378 = **40,1 ≈ 40**
+   (turun dari 54). Ini basis lebih baik karena REALISASI, bukan target — konsisten dengan pola
+   target>realisasi yang berulang di proyek ini.
+2. **PPB Papua & Papua Barat 2021 = 154 peserta NASIONAL (realisasi, bukan target).** Ini
+   MENGISI celah yang sebelumnya "TIDAK DIKETAHUI" (F-067: sebelumnya cuma ada "sisa target
+   ~250", bukan realisasi). 154 sekarang jadi **batas atas keras** untuk komponen `ppb_papua`
+   tahun_program 2021 di `kohort.yaml` (yang saat ini bernilai 49 — masih di bawah 154, jadi
+   TIDAK bertentangan, tapi porsi PLN dari 154 tetap belum punya metode penurunan yang solid
+   seperti RBB 2024, karena tidak ada data "lowongan PLN" granular untuk PPB 2021 seperti F-043
+   punya untuk RBB 2024). Nilai 49 DIPERTAHANKAN apa adanya, tapi keyakinannya dinaikkan sedikit
+   karena sekarang punya batas atas yang solid, bukan lagi disandarkan ke angka target.
+
+**Yang TIDAK terjawab infografik ini:** tahun 2020 (PPB Papua realisasi 254, F-067) tidak muncul
+di linimasa FHCI ini sama sekali — grafik dimulai dari 2021. Konsisten dengan dugaan bahwa FHCI
+menghitung "RBB" sebagai brand yang baru dimulai 2021/2022, sementara PPB 2019/2020 mungkin
+di-track terpisah (di luar cakupan infografik "transformasi" ini). Tidak mengubah apa pun untuk
+tahun_program 2020.
+
+**Dampak:** `kohort.yaml` tahun_program 2024: rbb 54->40, residu tidak_diketahui 744->758.
+`angkatan.yaml` X-02: diterima 744->758, jenjang_sebaran disesuaikan. `funnel.yaml`
+`volume_target` dihitung ulang. Tahun_program 2021: tidak ada perubahan angka, cuma keyakinan
+ppb_papua naik & catatan diperbarui.
+Sumber: [fhcibumn.com/program/rekrutmen-bersama-bumn-rbb-vPteSd](https://fhcibumn.com/program/rekrutmen-bersama-bumn-rbb-vPteSd)
+(tangkapan layar dibagikan user 2026-08-18) · Keyakinan: **tinggi** (sumber primer resmi FHCI,
+bukan berita sekunder) · Dampak: lihat di atas.
+
+### F-071 · PLN TERNYATA JUGA ikut RBB 2022 & 2023 — data primer dipanen ulang dari arsip Wayback ⭐⭐⭐ [audit induk-vs-subholding + panen primer]
+Klaim: audit sistematis seluruh horison (2026-08-18, dipicu temuan 2022 di F-070) menemukan
+DUA tahun tambahan (2022, 2023) yang selama ini dilabeli `jalur: mandiri` murni ternyata JUGA
+punya partisipasi RBB nyata dari PLN — bukan cuma 2020/2021/2024 seperti diasumsikan sejak F-041.
+
+**(a) RBB 2022 — data granular dipanen langsung, setara F-043.** Endpoint `loadRecord` (sama
+seperti yang dipanen F-043 untuk 2024) ternyata terarsip Wayback untuk KEDUA batch RBB 2022:
+
+| batch | snapshot | lowongan nasional | **lowongan PLN** | peserta diterima nasional (F-070) |
+|---|---|---:|---:|---:|
+| Batch 1 | 13 Apr 2022 | 839 | **9** | 2.297 |
+| Batch 2 | 1 Des 2022 | 308 | **0** | 805 |
+
+Disimpan permanen: `knowledge/sources/rbb_fhci/raw_loadRecord_2022b1.json`,
+`raw_loadRecord_2022b2.json`. **Batch 1 cocok PERSIS dengan berita** ([Detik, 14-25 Apr
+2022](https://finance.detik.com/bumn/d-6047227/rekrutmen-bersama-bumn-2022-ditutup-2-hari-lagi-cek-lowongan-kerja-di-pln)):
+9 lowongan PLN ditemukan satu-satu cocok dengan judul yang disebut berita (Assistant Analyst
+Pemasaran & Pelayanan Pelanggan, 7x Assistant Engineer bidang Distribusi/Proteksi/Meter/Gardu
+Induk). **Batch 2 menunjukkan NOL lowongan PLN dari 87 tenant** — bertentangan dengan
+[Kompas, 2 Des 2022](https://www.kompas.com/tren/read/2022/12/02/180000365/rekrutmen-bersama-bumn-2022-dibuka-ini-lowongan-dari-pln-dan-kai)
+yang menulis *"Dua BUMN di antaranya yang membuka rekrutmen, yakni KAI dan PLN"* — KAI memang
+ada (8 lowongan) di data primer, PLN tidak. Data primer menang (pola sama F-067). Caveat:
+snapshot diambil hari pembukaan (1 Des), ada kemungkinan kecil PLN masuk belakangan tapi tidak
+ada snapshot lain untuk mengecek.
+
+**(b) RBB 2023 — partisipasi dikonfirmasi PLN sendiri, data granular TIDAK ditemukan.**
+
+> *"PT PLN (Persero) menyediakan lowongan kerja untuk 32 posisi"* — [siaran pers PLN, Mei
+> 2023](https://web.pln.co.id/cms/media/siaran-pers/2023/05/pln-buka-32-lowongan-pekerjaan-di-rekrutmen-bersama-bumn-2023/),
+> dikonfirmasi silang [Kompas](https://money.kompas.com/read/2023/05/17/212053726/rekrutmen-bersama-bumn-2023-cek-lowongan-kerja-pln-buat-d3-dan-s1),
+> [Liputan6](https://www.liputan6.com/bisnis/read/5286487/pln-buka-32-posisi-lowongan-kerja-di-rekrutmen-bersama-bumn-2023-ayo-daftar),
+> dan 3 media lain. Pendaftaran 11-20 Mei 2023.
+
+Percobaan memanen data granular (endpoint `loadRecord`) untuk 2023 GAGAL: domain
+`rekrutmenbersama2023.fhcibumn.id` nol snapshot; endpoint `loadRecord` di domain utama cuma
+terarsip 2× dan keduanya 2022. Ditemukan alternatif: 120 halaman `/job/detail/<id>` terarsip
+untuk 2023 — disampel 40, **nol mengandung "PLN"**. **Ini BUKAN bukti negatif**: kalau porsi
+PLN 32/>2.000 lowongan nasional (~1,6%), ekspektasi statistik di sampel 40 cuma ~0,6 — nol
+sepenuhnya wajar. Berhenti di titik ini; siaran pers PLN sendiri jadi sumber terkuat yang ada.
+
+**(c) Angka final yang dipakai (keputusan user 2026-08-18, BUKAN hasil rasio presisi).**
+User eksplisit: *"saat ini kita masih menebak-nebak yg beneran PLN dapat dari RBB ini berapa,
+jadi pake angka yg kuberi aja dulu sampai nnti bisa kita konfirm ke tim rekrutmen."*
+
+| tahun | dasar (lowongan = batas bawah) | keputusan user |
+|---|---|---:|
+| 2022 RBB Reguler | 9 lowongan batch 1 x ~2-3 peserta/lowongan | **30** |
+| 2022 RBB Papua & Papua Barat | 256 nasional (F-070) | **51** |
+| 2023 RBB | 32 lowongan x ~1-3 peserta/lowongan | **60** |
+| 2024 RBB | 20 lowongan (F-043) x realisasi 1.378 (F-070) | **40 (tidak diubah)** |
+
+**Dampak ke `kohort.yaml`:**
+- 2022: `komposisi_jalur` jadi rbb(30) + ppb_papua(51) + tidak_diketahui(608, turun dari 639)
+- 2023: `komposisi_jalur` BARU — rbb(60) + mandiri(1217). Bedanya dari `tidak_diketahui`:
+  sumber 1.217 ini DIKETAHUI (OAP+Diaspora+Maluku, gelombang nyata katalog PLN), cuma
+  pemecahan presisinya (berapa dari tiap gelombang vs RBB) belum diverifikasi granular.
+- `tahapan.yaml`: `tahap_agregat_fhci.berlaku_tahun` diperluas dari `[2020,2021,2024]` ke
+  `[2020,2021,2022,2023,2024]`.
+- `00_verifikasi_rules.py`: cek "tahun RBB konsisten" diperbaiki -- sebelumnya menurunkan
+  daftar tahun RBB dari field `jalur` mentah (yang cuma bisa "mandiri" ATAU "rbb" per
+  tahun), sekarang dari `komposisi_jalur` (yang mengizinkan campuran). Field `jalur` per
+  tahun TERBUKTI tidak representatif lagi -- tetap dipertahankan sebagai penanda pola
+  funnel/timeline DOMINAN gelombang katalog (dipakai generator 06), bukan klaim sumber
+  headcount tunggal.
+
+**Yang masih terbuka:** field `jalur` per tahun (mandiri|rbb, satu nilai) sekarang jelas
+konsep yang terlalu sederhana -- RBB & mandiri jalan PARALEL tiap tahun 2020-2024. Belum
+diputuskan apakah field ini dipensiunkan sepenuhnya (diganti murni oleh `komposisi_jalur`)
+atau dipertahankan sebagai penanda dominan. Juga belum dicoba: apakah 2019/2025 (belum
+diaudit ada-tidaknya komponen RBB tersembunyi) perlu direvisi juga.
+Sumber: `knowledge/sources/rbb_fhci/raw_loadRecord_2022b1.json`,
+`raw_loadRecord_2022b2.json` (panen primer 2026-08-18); Detik 14-25 Apr 2022; Kompas 2 Des
+2022; PLN siaran pers Mei 2023 + Kompas/Liputan6 Mei 2023 (butir b); keputusan angka final:
+user 2026-08-18 · Keyakinan: **tinggi** untuk keberadaan partisipasi RBB 2022/2023 (multi-
+sumber independen), **rendah** untuk besaran porsi PLN persisnya (diakui eksplisit sebagai
+taksiran sementara) · Dampak: lihat di atas.
 
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst

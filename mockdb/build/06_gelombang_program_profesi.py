@@ -66,6 +66,19 @@ def tulis(path: Path, kolom: list[str], baris: list[dict]) -> None:
     print(f"  tulis {path.relative_to(ROOT)}  ({len(baris)} baris)")
 
 
+def tgl_rencana(g: dict, dasar: str, alt: str) -> str:
+    """Tanggal lengkap (YYYY-MM-DD) dari `dasar` kalau presisinya penuh, else dari `alt`.
+
+    `buka` di angkatan.yaml kadang cuma presisi BULAN (dipakai generator untuk mencocokkan
+    judul arsip Wayback -- lihat kumpulkan_judul) -- dalam kasus itu tanggal lengkap
+    (nyata atau estimasi) disimpan terpisah di `tgl_buka`/`tgl_tutup` (F-076).
+    """
+    nilai = g.get(dasar) or ""
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", nilai):
+        return nilai
+    return g.get(alt) or ""
+
+
 def parse_tgl(teks: str) -> str:
     """'05 Oktober 2025 23:59 WIB' -> '2025-10-05'. String kosong kalau tak terbaca."""
     m = re.search(r"(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})", teks or "")
@@ -119,7 +132,7 @@ def susun_gelombang(R: dict) -> list[dict]:
             if tahun not in koh:
                 continue
             info = koh[tahun]
-            jalur = g.get("jalur", info["jalur"])
+            jalur = g["jalur"]
             keluar.append({
                 "gelombang_id": f"G{tahun}-{angkatan:03d}",
                 "angkatan": angkatan,
@@ -129,6 +142,11 @@ def susun_gelombang(R: dict) -> list[dict]:
                 "tahun_masuk": tahun + tambah,
                 "nama_gelombang": g["nama"],
                 "tgl_buka_rencana": g["buka"],
+                "buka": g["buka"],
+                "tutup": g.get("tutup", ""),
+                "tgl_buka": g.get("tgl_buka", ""),
+                "tgl_tutup": g.get("tgl_tutup", ""),
+                "tgl_status": g.get("tgl_status", "nyata"),
                 "jenis_program": jenis_program(g["nama"], jalur),
                 "sumber_rekrutmen": jalur,
                 "kualitas_kohort": info["kualitas"],
@@ -168,6 +186,7 @@ def kumpulkan_judul(gelombang: list[dict]) -> tuple[list[dict], dict[str, int]]:
             "gelombang": g, "judul": r["title"], "sumber_judul": "programs.csv",
             "lokasi_tes": r["lokasi_tes"], "status": r["status"],
             "tgl_buka": buka, "tgl_tutup": parse_tgl(r["tgl_tutup"]),
+            "tgl_status": "nyata",
             "pdf_brosur": r["pdf_files"], "program_id_asli": r["program_id"],
         })
         hitung["dari_programs"] += 1
@@ -220,7 +239,10 @@ def kumpulkan_judul(gelombang: list[dict]) -> tuple[list[dict], dict[str, int]]:
         entri.append({
             "gelombang": g, "judul": r["judul"], "sumber_judul": "wayback",
             "lokasi_tes": "", "status": "CLOSED",
-            "tgl_buka": "", "tgl_tutup": "", "pdf_brosur": "", "program_id_asli": "",
+            "tgl_buka": tgl_rencana(g, "buka", "tgl_buka"),
+            "tgl_tutup": tgl_rencana(g, "tutup", "tgl_tutup"),
+            "tgl_status": g.get("tgl_status", "estimasi"),
+            "pdf_brosur": "", "program_id_asli": "",
         })
         hitung["dari_wayback"] += 1
 
@@ -234,7 +256,10 @@ def kumpulkan_judul(gelombang: list[dict]) -> tuple[list[dict], dict[str, int]]:
             entri.append({
                 "gelombang": rbb_g, "judul": r["vacancy_name"], "sumber_judul": "rbb_fhci",
                 "lokasi_tes": "Seluruh Indonesia", "status": "CLOSED",
-                "tgl_buka": "", "tgl_tutup": "", "pdf_brosur": "", "program_id_asli": r["vacancy_id"],
+                "tgl_buka": tgl_rencana(rbb_g, "buka", "tgl_buka"),
+                "tgl_tutup": tgl_rencana(rbb_g, "tutup", "tgl_tutup"),
+                "tgl_status": rbb_g.get("tgl_status", "estimasi"),
+                "pdf_brosur": "", "program_id_asli": r["vacancy_id"],
                 "perusahaan": r["tenant_name"], "rbb": r,
             })
             hitung["dari_rbb"] += 1
@@ -246,7 +271,10 @@ def kumpulkan_judul(gelombang: list[dict]) -> tuple[list[dict], dict[str, int]]:
             entri.append({
                 "gelombang": g, "judul": f"{g['nama_gelombang']} {TANPA_JUDUL}",
                 "sumber_judul": "tidak_terekam", "lokasi_tes": "", "status": "CLOSED",
-                "tgl_buka": "", "tgl_tutup": "", "pdf_brosur": "", "program_id_asli": "",
+                "tgl_buka": tgl_rencana(g, "buka", "tgl_buka"),
+                "tgl_tutup": tgl_rencana(g, "tutup", "tgl_tutup"),
+                "tgl_status": g.get("tgl_status", "estimasi"),
+                "pdf_brosur": "", "program_id_asli": "",
             })
             hitung["tanpa_judul"] += 1
 
@@ -362,6 +390,7 @@ def main() -> int:
             "status": e["status"],
             "tgl_buka": e["tgl_buka"],
             "tgl_tutup": e["tgl_tutup"],
+            "tgl_status": e.get("tgl_status", "nyata"),
             "pdf_brosur": e["pdf_brosur"],
             "jenis_program": jenis_program(e["judul"], g["sumber_rekrutmen"]),
         }
@@ -391,6 +420,7 @@ def main() -> int:
                     "kode_profesi": r["kode_profesi"], "nama_profesi": r["nama_profesi"],
                     "jenjang": jenj, "kota_rekrutmen": r["kota_rekrutmen"],
                     "tgl_buka": parse_tgl(r["tgl_buka"]), "tgl_tutup": parse_tgl(r["tgl_tutup"]),
+                    "tgl_status": "nyata",
                     "min_ipk": ipk_min(R, jenis, r["min_ipk"]),
                     "umur_maks": umur_maks(R, g["sumber_rekrutmen"], jenj, jenis),
                     "sumber_rekrutmen": g["sumber_rekrutmen"],
@@ -425,6 +455,7 @@ def main() -> int:
                     "kode_profesi": f"{g['angkatan']}.{n}", "nama_profesi": p["judul"],
                     "jenjang": j, "kota_rekrutmen": p["lokasi_tes"] or "Seluruh Indonesia",
                     "tgl_buka": p["tgl_buka"], "tgl_tutup": p["tgl_tutup"],
+                    "tgl_status": p.get("tgl_status", "nyata"),
                     "min_ipk": ipk_min(R, jenis, (rbb or {}).get(kol_ipk[j], "")),
                     "umur_maks": int((rbb or {}).get(kol_umur[j]) or 0)
                                  or umur_maks(R, g["sumber_rekrutmen"], j, jenis),
@@ -500,6 +531,8 @@ def main() -> int:
         g["diterima_target"] = sum(p["diterima_target"] for p in pro)
         g["tgl_buka"] = min((p["tgl_buka"] for p in pro if p["tgl_buka"]), default="")
         g["tgl_tutup"] = max((p["tgl_tutup"] for p in pro if p["tgl_tutup"]), default="")
+        status_tgl = {p.get("tgl_status", "nyata") for p in pro if p["tgl_buka"] or p["tgl_tutup"]}
+        g["tgl_status"] = "estimasi" if "estimasi" in status_tgl else ("nyata" if status_tgl else "")
 
     # ---- diagnostik: di mana katalog tidak sanggup menopang kohort ----
     # Bukan cacat generator, melainkan temuan tentang DATANYA. Kalau katalog satu tahun
@@ -543,16 +576,16 @@ def main() -> int:
     tulis(MASTER / "gelombang.csv",
           ["gelombang_id", "angkatan", "seri", "sumber_nomor", "tahun_program", "tahun_masuk",
            "nama_gelombang", "jenis_program", "sumber_rekrutmen", "kualitas_kohort",
-           "tgl_buka", "tgl_tutup", "n_program", "n_profesi", "diterima_target"], gelombang)
+           "tgl_buka", "tgl_tutup", "tgl_status", "n_program", "n_profesi", "diterima_target"], gelombang)
     tulis(MASTER / "program.csv",
           ["program_id", "gelombang_id", "angkatan", "tahun_program", "judul", "sumber_judul",
            "jenis_program", "perusahaan_penempatan", "lokasi_tes", "status",
-           "tgl_buka", "tgl_tutup", "pdf_brosur"], program_baris)
+           "tgl_buka", "tgl_tutup", "tgl_status", "pdf_brosur"], program_baris)
     tulis(MASTER / "profesi.csv",
           ["profesi_id", "program_id", "gelombang_id", "angkatan", "tahun_program",
            "kode_profesi", "nama_profesi", "jenjang", "kota_rekrutmen", "tgl_buka", "tgl_tutup",
-           "min_ipk", "umur_maks", "sumber_rekrutmen", "jenis_program", "penempatan", "status_sumber",
-           "kuota", "diterima_target"], profesi_baris)
+           "tgl_status", "min_ipk", "umur_maks", "sumber_rekrutmen", "jenis_program", "penempatan",
+           "status_sumber", "kuota", "diterima_target"], profesi_baris)
     tulis(MASTER / "profesi_prodi.csv", ["profesi_id", "program_studi", "min_ipk"], prodi_baris)
     return 0
 

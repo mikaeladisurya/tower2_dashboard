@@ -98,19 +98,19 @@ def cek_kohort(R: dict) -> None:
         )
 
 
-def rantai_mandiri(R: dict) -> float:
+def rantai_arketipe(nama: str, tahapan: list[dict]) -> float:
     """Kalikan laju tiap tahap dan pastikan cocok dengan multiplier yang tertulis."""
     m = 1.0
-    for t in R["funnel"]["funnel_mandiri"]:
+    for t in tahapan:
         cek(
-            f"multiplier undangan {t['tahap']}",
+            f"[{nama}] multiplier undangan {t['tahap']}",
             abs(m - t["multiplier_undangan"]) < TOL,
             f"hitung {m:.4f} vs tertulis {t['multiplier_undangan']}",
         )
         hadir = t["hadir_pct"]
         m = m * t["lulus_pct"] if hadir is None else m * hadir * t["lulus_pct"]
         cek(
-            f"multiplier lulus    {t['tahap']}",
+            f"[{nama}] multiplier lulus    {t['tahap']}",
             abs(m - t["multiplier_lulus"]) < TOL,
             f"hitung {m:.4f} vs tertulis {t['multiplier_lulus']}",
         )
@@ -118,16 +118,42 @@ def rantai_mandiri(R: dict) -> float:
 
 
 def cek_funnel(R: dict) -> None:
-    print("\n[2] Funnel mandiri -- rantai laju mendarat di jangkar F-019")
-    m = rantai_mandiri(R)
+    print("\n[2] Funnel mandiri -- dua arketipe (F-064), nasional_mandiri mendarat di jangkar F-019")
+    arketipe = R["funnel"]["funnel_mandiri"]
+
+    m_nasional = rantai_arketipe("nasional_mandiri", arketipe["nasional_mandiri"]["tahapan"])
     jangkar = R["funnel"]["meta"]["jangkar_keras"]
     cek(
-        "end-to-end = jangkar F-019",
-        abs(m - jangkar["end_to_end_pct"]) < TOL,
-        f"{m:.4f} vs {jangkar['end_to_end_pct']}",
+        "nasional_mandiri end-to-end = jangkar F-019",
+        abs(m_nasional - jangkar["end_to_end_pct"]) < TOL,
+        f"{m_nasional:.4f} vs {jangkar['end_to_end_pct']}",
     )
     rasio = R["funnel"]["meta"]["rasio_pelamar_diterima"]
-    cek("rasio pelamar:diterima", abs(1 / m - rasio) < 1.0, f"1:{1 / m:.0f} vs 1:{rasio}")
+    cek("rasio pelamar:diterima", abs(1 / m_nasional - rasio) < 1.0, f"1:{1 / m_nasional:.0f} vs 1:{rasio}")
+
+    m_afirmasi = rantai_arketipe("afirmasi_remote", arketipe["afirmasi_remote"]["tahapan"])
+    cek(
+        "afirmasi_remote end-to-end = tertulis (bukan jangkar keras)",
+        abs(m_afirmasi - arketipe["afirmasi_remote"]["validasi"]["end_to_end"]) < TOL,
+        f"{m_afirmasi:.4f} vs {arketipe['afirmasi_remote']['validasi']['end_to_end']}",
+    )
+    cek(
+        "afirmasi_remote jauh lebih longgar dari nasional_mandiri",
+        m_afirmasi > m_nasional * 5,
+        f"{m_afirmasi:.4f} vs {m_nasional:.4f}",
+    )
+
+    tahap_nasional = [t["tahap"] for t in arketipe["nasional_mandiri"]["tahapan"]]
+    tahap_afirmasi = [t["tahap"] for t in arketipe["afirmasi_remote"]["tahapan"]]
+    cek("kosakata tahap sama di dua arketipe", tahap_nasional == tahap_afirmasi,
+        f"{tahap_nasional} vs {tahap_afirmasi}")
+
+    peta = R["funnel"]["pemilihan_arketipe"]["peta"]
+    dikenal = {"nasional_mandiri", "afirmasi_remote"}
+    cek("peta arketipe hanya menunjuk arketipe yang ada", set(peta.values()) <= dikenal,
+        f"{set(peta.values()) - dikenal}")
+    cek("default_residu menunjuk arketipe yang ada",
+        R["funnel"]["pemilihan_arketipe"]["default_residu"] in dikenal)
 
     print("\n[3] Funnel RBB -- rantai laju & rasio gabungan")
     rbb = R["funnel"]["funnel_rbb"]
@@ -343,7 +369,7 @@ def cek_tahapan(R: dict) -> None:
     urutan = [t["urutan"] for t in tahap]
     cek("urutan tahap 1..n tanpa lompatan", urutan == list(range(1, len(tahap) + 1)), f"{urutan}")
 
-    kode_funnel = [t["tahap"] for t in R["funnel"]["funnel_mandiri"]]
+    kode_funnel = [t["tahap"] for t in R["funnel"]["funnel_mandiri"]["nasional_mandiri"]["tahapan"]]
     cek("kosakata tahap sama di tahapan.yaml & funnel.yaml", [t["kode"] for t in tahap] == kode_funnel)
 
     masuk_rbb = [t["kode"] for t in tahap if t["masuk_rbb"]]

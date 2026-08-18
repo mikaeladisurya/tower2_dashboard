@@ -26,64 +26,171 @@ penolakan_rasio_200:
     jumlah diterima tidak berubah karena dijangkar terpisah.
 
 # ---------------------------------------------------------------------------
-# 2. FUNNEL JALUR MANDIRI
+# 2. FUNNEL JALUR MANDIRI — DUA ARKETIPE (F-064 Sumbu 1)
 # ---------------------------------------------------------------------------
-# hadir_pct   = dari yang DIUNDANG (no-show; F-020 rata-rata ~44% no-show lintas tahapan)
-# lulus_pct   = dari yang HADIR (bukan dari yang diundang)
-# multiplier  = fraksi pendaftar awal yang mencapai tahap ini (untuk sanity-check generator)
+# F-058/F-061: satu funnel nasional tunggal TIDAK cocok semua gelombang -- ada dua
+# arketipe laju eliminasi berbeda STRUKTUR (bukan cuma beda angka), dipilih per
+# gelombang lewat `jenis_program` (angkatan.yaml -> generator 06), BUKAN satu angka
+# dipaksa ke semua baris `seleksi_tahap`.
+#   - nasional_mandiri : eliminasi berat tiap tahap (Medan 2015, F-061: majemuk
+#     ~7,4% administrasi->wawancara). Funnel INI yang menutup jangkar keras F-019
+#     (64%/2,05%) secara eksak -- jangkar itu berlaku sebagai rata-rata TERTIMBANG
+#     seluruh gelombang (lihat `meta.jangkar_keras`), tapi karena nasional_mandiri
+#     menyerap mayoritas volume horison, praktiknya jangkarnya ditutup di sini.
+#   - afirmasi_remote : eliminasi nyaris nol setelah administrasi (Biak 2025,
+#     F-058: 99,3% bertahan begitu hadir administrasi). Tes digelar borongan
+#     2-4 hari di satu venue karena lokasi terpencil -- logistik tak memungkinkan
+#     gelombang berjenjang. TIDAK punya jangkar nasional independen setara F-019 --
+#     lihat validasi masing-masing.
+# RBB (jenis_program RBB, jalur: rbb) tidak lewat sini sama sekali -- funnel sendiri,
+# lihat bagian 3. Ikatan dinas juga funnel sendiri, lihat bagian 3b.
+
+pemilihan_arketipe:
+  keterangan: >
+    Generator 06 menghitung `jenis_program` per gelombang dari judul+jalur
+    (06_gelombang_program_profesi.py -> POLA_JENIS). Nilai itu dipetakan ke SALAH
+    SATU arketipe di bawah. Kalau `jenis_program` baru muncul di generator tanpa
+    entri di peta ini, 00b_verifikasi_keluaran.py akan menggagalkan cek.
+  peta:
+    REGULER: nasional_mandiri
+    S2: nasional_mandiri
+    PRO_HIRE: nasional_mandiri
+    DIASPORA: nasional_mandiri      # tidak ada data khusus jalur ini -- default konservatif
+    BIDANG: nasional_mandiri        # Matematika/Hukum -- rekrutmen khusus tapi bukan remote/3T
+    CAMPUS: nasional_mandiri        # campus hiring (F-059 UGM 2017) -- venue tunggal per kampus,
+                                      # bentuknya lebih dekat nasional_mandiri daripada afirmasi_remote
+    AFIRMASI: afirmasi_remote       # OAP/Papua/Maluku & Nusa Tenggara
+  default_residu: nasional_mandiri  # siluman (angkatan.yaml seri.siluman) BUKAN gelombang
+    # katalog nyata, tidak punya jenis_program sama sekali -- dianggap "rekrutmen
+    # terbuka generik" (F-067/F-068), bukan afirmasi. Default eksplisit, bukan celah.
 
 funnel_mandiri:
-  - tahap: administrasi
-    hadir_pct: null                  # penilaian dokumen, tidak ada undangan/kehadiran
-    lulus_pct: 0.640
-    multiplier_undangan: 1.0000
-    multiplier_lulus: 0.6400
-    rujukan: "F-019 (keras)"
-  - tahap: adaptif
-    hadir_pct: 0.45
-    lulus_pct: 0.67
-    multiplier_undangan: 0.6400
-    multiplier_lulus: 0.1930
-    rujukan: "TURUNAN, dikalibrasi ke jangkar"
-    catatan: >
-      No-show tertinggi ada di sini (55%). Ini tes massal pertama dan gratis, jadi
-      pelamar iseng rontok di titik ini. Lulus|hadir tinggi (67%) karena ambangnya longgar --
-      fungsinya menyaring yang tidak serius, bukan menyaring kemampuan.
-  - tahap: akademik_inggris
-    hadir_pct: 0.80
-    lulus_pct: 0.45
-    multiplier_undangan: 0.1930
-    multiplier_lulus: 0.0695
-    rujukan: "TURUNAN"
-    catatan: "Penyaring terberat. Yang tersisa sudah serius, jadi no-show turun ke 20%."
-  - tahap: psikologi
-    hadir_pct: 0.88
-    lulus_pct: 0.55
-    multiplier_undangan: 0.0695
-    multiplier_lulus: 0.0336
-    rujukan: "TURUNAN"
-  - tahap: fisik_mcu
-    hadir_pct: 0.92
-    lulus_pct: 0.82
-    multiplier_undangan: 0.0336
-    multiplier_lulus: 0.0254
-    rujukan: "TURUNAN"
-    catatan: "Lulus tinggi -- MCU menggugurkan karena temuan medis, bukan karena kuota."
-  - tahap: wawancara
-    hadir_pct: 0.95
-    lulus_pct: 0.85
-    multiplier_undangan: 0.0254
-    multiplier_lulus: 0.0205        # = end_to_end_pct, jangkar F-019 TERCAPAI
-    rujukan: "TURUNAN, ditutup ke jangkar F-019"
+  # hadir_pct   = dari yang DIUNDANG (no-show; F-020 rata-rata ~44% no-show lintas tahapan)
+  # lulus_pct   = dari yang HADIR (bukan dari yang diundang)
+  # multiplier  = fraksi pendaftar awal yang mencapai tahap ini (untuk sanity-check generator)
 
-validasi_funnel_mandiri:
-  end_to_end_tercapai: 0.0205
-  kehadiran_rata2_tertimbang: 0.581  # target F-020 ~0.56 -- selisih 2 poin, diterima
-  catatan_selisih: >
-    F-020 menyebut kehadiran 566.774/1.015.830 = 56%. Penyebut 1.015.830 tidak bisa
-    direkonsiliasi persis dengan funnel F-019 (kemungkinan menghitung sub-tes terpisah,
-    mis. akademik dan Inggris sebagai dua baris). Kami tidak memaksa cocok; kami kunci
-    ke dua angka F-019 yang tidak ambigu dan menerima kehadiran 58%.
+  nasional_mandiri:
+    keterangan: >
+      Bentuk & laju IDENTIK dengan funnel_mandiri versi sebelum F-064 -- kini
+      eksplisit sebagai salah satu dari dua arketipe, bukan aturan tunggal semua gelombang.
+    tahapan:
+      - tahap: administrasi
+        hadir_pct: null              # penilaian dokumen, tidak ada undangan/kehadiran
+        lulus_pct: 0.640
+        multiplier_undangan: 1.0000
+        multiplier_lulus: 0.6400
+        rujukan: "F-019 (keras)"
+      - tahap: adaptif
+        hadir_pct: 0.45
+        lulus_pct: 0.67
+        multiplier_undangan: 0.6400
+        multiplier_lulus: 0.1930
+        rujukan: "TURUNAN, dikalibrasi ke jangkar"
+        catatan: >
+          No-show tertinggi ada di sini (55%). Ini tes massal pertama dan gratis, jadi
+          pelamar iseng rontok di titik ini. Lulus|hadir tinggi (67%) karena ambangnya longgar --
+          fungsinya menyaring yang tidak serius, bukan menyaring kemampuan.
+      - tahap: akademik_inggris
+        hadir_pct: 0.80
+        lulus_pct: 0.45
+        multiplier_undangan: 0.1930
+        multiplier_lulus: 0.0695
+        rujukan: "TURUNAN"
+        catatan: "Penyaring terberat. Yang tersisa sudah serius, jadi no-show turun ke 20%."
+      - tahap: psikologi
+        hadir_pct: 0.88
+        lulus_pct: 0.55
+        multiplier_undangan: 0.0695
+        multiplier_lulus: 0.0336
+        rujukan: "TURUNAN"
+      - tahap: fisik_mcu
+        hadir_pct: 0.92
+        lulus_pct: 0.82
+        multiplier_undangan: 0.0336
+        multiplier_lulus: 0.0254
+        rujukan: "TURUNAN"
+        catatan: "Lulus tinggi -- MCU menggugurkan karena temuan medis, bukan karena kuota."
+      - tahap: wawancara
+        hadir_pct: 0.95
+        lulus_pct: 0.85
+        multiplier_undangan: 0.0254
+        multiplier_lulus: 0.0205    # = end_to_end_pct, jangkar F-019 TERCAPAI
+        rujukan: "TURUNAN, ditutup ke jangkar F-019"
+    validasi:
+      end_to_end_tercapai: 0.0205
+      kehadiran_rata2_tertimbang: 0.581  # target F-020 ~0.56 -- selisih 2 poin, diterima
+      catatan_selisih: >
+        F-020 menyebut kehadiran 566.774/1.015.830 = 56%. Penyebut 1.015.830 tidak bisa
+        direkonsiliasi persis dengan funnel F-019 (kemungkinan menghitung sub-tes terpisah,
+        mis. akademik dan Inggris sebagai dua baris). Kami tidak memaksa cocok; kami kunci
+        ke dua angka F-019 yang tidak ambigu dan menerima kehadiran 58%.
+
+  afirmasi_remote:
+    keterangan: >
+      Kalibrasi dari SATU gelombang terobservasi penuh (PLN UP3 Biak, OAP Okt 2025,
+      F-058) + korroborasi kualitatif (Nabire 83% hadir-offline, UIW Papua 1.186
+      pendaftar se-provinsi -- F-060). TIDAK punya jangkar nasional independen
+      setara F-019 -- dua tahap ("administrasi", "akademik_inggris"+"psikologi")
+      punya angka terverifikasi tinggi (2 media independen); tiga sisanya ("adaptif",
+      "fisik_mcu", "wawancara") TURUNAN, diekstrapolasi dari tesis arketipe
+      (eliminasi nyaris nol pasca-administrasi) -- keyakinan lebih rendah dari
+      nasional_mandiri secara keseluruhan.
+    status_sumber: campuran
+    tahapan:
+      - tahap: administrasi
+        hadir_pct: null
+        lulus_pct: 0.515              # 155/301, Biak (F-058)
+        multiplier_undangan: 1.0000
+        multiplier_lulus: 0.5150
+        rujukan: "F-058 (Biak -- RRI + Cenderawasih Pos, tinggi)"
+      - tahap: adaptif
+        hadir_pct: 0.95
+        lulus_pct: 0.97
+        multiplier_undangan: 0.5150
+        multiplier_lulus: 0.4746
+        rujukan: "TURUNAN"
+        catatan: >
+          Biak TIDAK punya baris terpisah untuk tahap ini -- laporan nasional Papua
+          2025 menyebut TAP digelar SERENTAK dengan akademik/Inggris (F-058). Angka
+          di sini murni konsisten-tesis (eliminasi nyaris nol), BUKAN diverifikasi.
+      - tahap: akademik_inggris
+        hadir_pct: 0.897
+        lulus_pct: 1.000
+        multiplier_undangan: 0.4746
+        multiplier_lulus: 0.4257
+        rujukan: "F-058 (Biak: 139/155 hadir, 0 gugur, tinggi)"
+      - tahap: psikologi
+        hadir_pct: 0.993
+        lulus_pct: 1.000
+        multiplier_undangan: 0.4257
+        multiplier_lulus: 0.4227
+        rujukan: "F-058 (Biak: 138/139 hadir, 0 gugur tanpa keterangan, tinggi)"
+      - tahap: fisik_mcu
+        hadir_pct: 0.95
+        lulus_pct: 0.90
+        multiplier_undangan: 0.4227
+        multiplier_lulus: 0.3614
+        rujukan: "TURUNAN -- Biak tidak sampai merekam tahap ini"
+      - tahap: wawancara
+        hadir_pct: 0.95
+        lulus_pct: 0.55
+        multiplier_undangan: 0.3614
+        multiplier_lulus: 0.1888
+        rujukan: >
+          TURUNAN, DISENGAJA lebih ketat dari tahap lain -- inilah titik penyempitan
+          kuota yang sesungguhnya. Bukti tak langsung: Papua 2025 nasional 1.658
+          lulus administrasi (F-059) vs target diterima gelombang 91 = 979 -->
+          rasio administrasi->diterima keseluruhan ~59%, padahal tahap TEREKAM
+          (akademik/psikologi) nyaris tanpa gugur. Penyempitan sesungguhnya pasti
+          terjadi di wawancara/tahap akhir yang tak terekam, bukan tersebar merata.
+    validasi:
+      end_to_end: 0.1888
+      catatan: >
+        TIDAK dijangkarkan ke angka nasional independen (beda dari nasional_mandiri
+        yang ditutup persis ke F-019). Jauh lebih longgar (1:5,3) dari nasional_mandiri
+        (1:49) -- kontras itu memang tesis intinya, tapi presisi angkanya rendah-sedang.
+        Dipakai untuk BENTUK funnel (tahap mana longgar, tahap mana ketat), bukan
+        angka final yang bisa dikutip presisi.
 
 # ---------------------------------------------------------------------------
 # 3. FUNNEL JALUR RBB

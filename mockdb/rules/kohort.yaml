@@ -48,7 +48,6 @@ jeda_pipeline:
 
 kohort_per_tahun_program:
   - tahun: 2019
-    jalur: mandiri
     induk_diterima: 1093
     induk_sumber: "SR-2020 hal. 280 -- karyawan masuk 2020 (NYATA)"
     sub_diterima: 260
@@ -61,9 +60,11 @@ kohort_per_tahun_program:
       dan S2 Indonesia Career Evening (Nov). Judulnya hanya pulih lewat arsip Wayback --
       tidak satu pun ada di katalog live. Kualitas rendah karena itu.
       Catatan silang: SR-2021 menyebut 1.096 untuk tahun yang sama (selisih 3, pola F-040).
+      Audit F-072 (2026-08-18): TIDAK ada komponen RBB/PPB tersembunyi -- PPB Papua baru
+      diinagurasi Feb 2020, RBB generik baru mulai 2021. Tahun ini mendahului kedua program.
+      Tidak perlu komposisi_jalur.
 
   - tahun: 2020
-    jalur: rbb                       # PPB -- dikoreksi dari `mandiri` di v1 (lihat catatan_f067)
     induk_diterima: 325
     induk_sumber: "SR-2021 hal. 193 -- karyawan masuk 2021 (NYATA)"
     sub_diterima: 0
@@ -83,12 +84,13 @@ kohort_per_tahun_program:
     catatan_f067: >
       F-067 (2026-08-18) menemukan plafon PPB Papua 2020 NASIONAL (seluruh BUMN) cuma
       ~254 orang -- jauh di bawah 325. Jadi PPB TIDAK BISA jadi satu-satunya penjelas
-      seperti diasumsikan semula. `jalur: rbb` di atas kini hanya menandai POLA FUNNEL/
-      TIMELINE gelombang katalog (dipakai generator 06), BUKAN klaim bahwa seluruh 325
-      berasal dari PPB. Sumber headcount sebenarnya lihat `komposisi_jalur`.
+      seperti diasumsikan semula. Field `jalur` per-tahun DIPENSIUNKAN 2026-08-18 (F-073) --
+      gelombang katalog (74, "REKRUTMEN PPB BUMN KHUSUS PUTRA PUTRI PAPUA") tetap bertanda
+      `jalur: rbb` di angkatan.yaml sendiri (POLA FUNNEL/TIMELINE, dipakai generator 06),
+      BUKAN klaim bahwa seluruh 325 berasal dari PPB. Sumber headcount sebenarnya lihat
+      `komposisi_jalur`.
 
   - tahun: 2021
-    jalur: rbb                       # PPB nasional -- F-041 (lihat catatan_f067)
     induk_diterima: 689
     induk_sumber: "SR-2024 hal. 239 -- peserta pra-jabatan 2022 (NYATA)"
     sub_diterima: 0
@@ -105,10 +107,10 @@ kohort_per_tahun_program:
       negatif kuat). Rekrutmen berjalan lewat PPB/FHCI, di luar sistem PLN.
     catatan_f067: >
       Sama seperti 2020: plafon PPB Papua 2021 nasional cuma ~250, jauh di bawah 689.
-      `jalur: rbb` menandai pola funnel/timeline saja. Lihat `komposisi_jalur`.
+      Field `jalur` per-tahun DIPENSIUNKAN (F-073) -- gelombang katalog 75 tetap bertanda
+      `jalur: rbb` di angkatan.yaml (pola funnel/timeline saja). Lihat `komposisi_jalur`.
 
   - tahun: 2022
-    jalur: mandiri
     induk_diterima: 689
     induk_sumber: "SR-2024 hal. 239 -- peserta pra-jabatan 2023 (NYATA)"
     sub_diterima: 420
@@ -130,7 +132,6 @@ kohort_per_tahun_program:
       tetap solid (real katalog), tapi induknya sekarang eksplisit sebagian residu.
 
   - tahun: 2023
-    jalur: mandiri
     induk_diterima: 1277
     induk_sumber: "SR-2024 hal. 239 -- peserta pra-jabatan 2024 (NYATA)"
     sub_diterima: 520
@@ -146,7 +147,6 @@ kohort_per_tahun_program:
       kenapa gendernya paling timpang (86:14 -- lihat demografi.yaml).
 
   - tahun: 2024
-    jalur: rbb                       # RBB FHCI -- F-041, F-043, F-046 (lihat catatan_f067)
     induk_diterima: 1098
     induk_sumber: "SR-2025 hal. 203 -- peserta pra-jabatan 2025 (NYATA)"
     sub_diterima: 480
@@ -159,27 +159,35 @@ kohort_per_tahun_program:
       - {sumber: tidak_diketahui, diterima: 758, keyakinan: null, catatan: "residu BESAR -- mayoritas kohort 2024 tetap tak terjelaskan. Kandidat penjelas SEBAGIAN: limpasan gelombang Putra-Putri Maluku & Nusa Tenggara Okt 2023 (SK nominalnya jatuh ~Okt 2024, mepet ke pergantian tahun -- F-068), tapi besarannya TIDAK DIKETAHUI, jadi tidak dipisah dari tidak_diketahui. Sempat dicoba isi pakai ulang angka kontrak ITPLN 147/2023, DITARIK 2026-08-18 (salah tafsir: itu kontrak MASUK 2023, bukan lulus 2024). Dibiarkan berlubang."}
     catatan: "20 lowongan PLN Group di RBB 2024 (F-043): Icon Plus 7, PLN 5, Batam 5, Haleyora 3."
     catatan_f067: >
-      RBB cuma menjelaskan ~40/1.098 (3,6%). `jalur: rbb` menandai pola funnel/timeline
-      gelombang katalog, BUKAN klaim bahwa seluruh 1.098 dari RBB. 69% (758) tetap
-      TIDAK DIKETAHUI -- ini gap PALING BESAR di seluruh horison, lihat ikatan_dinas.yaml
-      soal kenapa ikatan dinas tidak bisa menutupnya (lubang generasi 2020-2027).
+      RBB cuma menjelaskan ~40/1.098 (3,6%). Field `jalur` per-tahun DIPENSIUNKAN (F-073) --
+      gelombang katalog 87/88 tetap bertanda `jalur: rbb` di angkatan.yaml (pola funnel/
+      timeline), BUKAN klaim bahwa seluruh 1.098 dari RBB. 69% (758) tetap TIDAK DIKETAHUI
+      -- ini gap PALING BESAR di seluruh horison, lihat ikatan_dinas.yaml soal kenapa
+      ikatan dinas tidak bisa menutupnya (lubang generasi 2020-2027).
 
   - tahun: 2025
-    jalur: mandiri
     induk_diterima: 1050
     induk_sumber: "TURUNAN -- SR-2026 belum terbit"
     sub_diterima: 950
     masuk_di: 2026
     kualitas: tinggi
     ada_gelombang: true
+    komposisi_jalur:               # F-074 (2026-08-18) -- RBB 2025 dikonfirmasi, taksiran manual
+      - {sumber: rbb, diterima: 48, keyakinan: rendah, catatan: "24 lowongan PLN Group terkonfirmasi di RBB 2025: PT PLN Indonesia Power 22 (Arah Pena, sitasi ganda), PT PLN Nusantara Power 2 (bersamabumn.com, snapshot Wayback beku 18 Apr 2025 -- di dalam jendela pendaftaran Mar-Jul 2025). PLN (Persero) sendiri 0 lowongan RBB (bersamabumn.com: 'belum ada posisi dibuka', cuma Rekrutmen Nasional mandiri Okt 2025). Data granular per-lowongan GAGAL dipanen -- situs RBB 2025 SPA, data di-fetch API runtime yang tidak ikut terarsip. 24 lowongan x ~2 peserta/lowongan (taksiran manual, pola sama 2022/2023) = 48."}
+      - {sumber: mandiri, diterima: 1002, keyakinan: rendah, catatan: "sisa dari gelombang katalog nyata 91 (Papua 6 kota) + 92 (reguler 7 penempatan), dikurangi 48 di atas. TIDAK dipisah tidak_diketahui karena sumbernya diketahui (dua gelombang real), cuma proporsinya belum diverifikasi granular -- SAMA seperti pola 2023."}
     catatan: >
       Satu-satunya angka diterima yang TURUNAN. 6 entri penempatan subholding di
       programs.csv 2025 -> porsi subholding terbesar sepanjang runtun.
       Kohort ini BELUM ber-SK pada tanggal potong -- lihat bagian 2b.
+      Audit F-072 (2026-08-18): RBB 2025 NYATA terjadi dan PLN konfirmasi ikut
+      (portal rekrutmenbersama2025.fhcibumn.id).
+      F-074 (2026-08-18): keputusan user -- tetap masukkan komposisi_jalur meski induk_diterima
+      masih TURUNAN (dua lapis taksiran diakui eksplisit; SR-2026 akan mengoreksi basisnya nanti,
+      bukan cuma porsi RBB-nya). Begitu SR-2026 terbit: koreksi induk_diterima jadi NYATA,
+      lalu evaluasi ulang porsi RBB di atas dengan basis yang benar.
 
   - tahun: 2026
     fase: PERENCANAAN
-    jalur: null
     induk_diterima: 0
     induk_sumber: "n/a -- belum ada gelombang"
     sub_diterima: 0

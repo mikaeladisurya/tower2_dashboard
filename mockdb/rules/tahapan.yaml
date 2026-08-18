@@ -123,9 +123,10 @@ tahap_seleksi:
 # 2. TAHAP FHCI — AGREGAT SAJA, tanpa nama
 # ---------------------------------------------------------------------------
 tahap_agregat_fhci:
-  berlaku_tahun: [2020, 2021, 2022, 2023, 2024]  # KOREKSI 2026-08-18 (F-071): PLN ternyata
-    # JUGA ikut RBB 2022 (9 lowongan primer) & RBB 2023 (32 lowongan, siaran pers PLN) --
-    # sebelumnya dianggap tahun mandiri murni. Lihat kohort.yaml komposisi_jalur tiap tahun.
+  berlaku_tahun: [2020, 2021, 2022, 2023, 2024, 2025]  # KOREKSI 2026-08-18 (F-071/F-074): PLN
+    # ternyata JUGA ikut RBB 2022 (9 lowongan primer), RBB 2023 (32 lowongan, siaran pers PLN),
+    # & RBB 2025 (24 lowongan, Indonesia Power + Nusantara Power) -- sebelumnya dianggap tahun
+    # mandiri murni. Lihat kohort.yaml komposisi_jalur tiap tahun.
   simpan_sebagai: "tabel terpisah `seleksi_tahap_agregat` (tanggal + jumlah, tanpa kandidat_id)"
   alasan: >
     PLN tidak memegang data per-kandidat untuk tahap ini -- itu FAKTA, bukan kekurangan

@@ -65,10 +65,15 @@ seri:
     gelombang:
       70:
         tahun: 2019
-        buka: "2019-07"
+        buka: "2019-07"              # bulan-saja -- DIPAKAI generator utk mencocokkan judul Wayback,
+                                       # jangan diubah presisinya. Tanggal tampilan ada di tgl_buka/tgl_tutup.
+        tgl_buka: "2019-07-15"       # ESTIMASI hari -- cuma bulan yang diketahui (arsip Wayback)
+        tgl_tutup: "2019-07-25"      # ESTIMASI, +10 hari (median jendela nyata lintas gelombang, F-076)
+        tgl_status: estimasi
         sumber_nomor: inferensi
         nama: "Reguler S1/D4 & D3 2019 gelombang I"
         entri: "3 kota (Denpasar, Makassar, Padang)"
+        jalur: mandiri
         koreksi_f063: >
              Semula tertulis "~19 kota + Unsyiah Career Day + Bursa Karir ITS ke-33". SALAH pada
              dua hal. (a) F-063: Bursa Karir ITS ke-33 terjadi April 2017, bukan 2019 -- sitasi itu
@@ -80,10 +85,14 @@ seri:
              katalog. Kelompok itu kini dibuang oleh generator sebagai tak-bertanggal.
       71:
         tahun: 2019
-        buka: "2019-08"
+        buka: "2019-08"              # bulan-saja -- DIPAKAI generator utk mencocokkan judul Wayback
+        tgl_buka: "2019-08-15"       # ESTIMASI hari -- cuma bulan yang diketahui (arsip Wayback)
+        tgl_tutup: "2019-08-25"      # ESTIMASI, +10 hari (F-076)
+        tgl_status: estimasi
         sumber_nomor: inferensi
         nama: "Reguler S1/D4 & D3 2019 gelombang II"
         entri: "7 kota + Airlangga Career Fair"
+        jalur: mandiri
         catatan_airlangga: >
              F-063 menemukan Airlangga Career Fair ke-31 berlangsung 13-14 Mar 2019 (pendaftaran
              13-22 Mar), bukan Agustus. Arsip Wayback baru menangkapnya Agu-2019, tapi
@@ -93,23 +102,30 @@ seri:
              sebagai fakta presisi bulan.
       72:
         tahun: 2019
-        buka: "2019-09"
+        buka: "2019-09"              # bulan-saja -- DIPAKAI generator utk mencocokkan judul Wayback
+        tgl_buka: "2019-09-07"       # NYATA -- siaran pers PLN, lihat konfirmasi_berita
+        tgl_tutup: "2019-09-20"      # NYATA -- siaran pers PLN
+        tgl_status: nyata
         sumber_nomor: inferensi
         nama: "Reguler S1/D4 & D3 2019 gelombang III"
         entri: "7 kota"
+        jalur: mandiri
         konfirmasi_berita: >
              DIKUATKAN F-063. Siaran pers PLN berjudul "Cari Talenta Unggul, PLN Buka Rekrutmen di
              7 Kota", pendaftaran 7-20 Sep 2019 -- dan katalog kita memang menghasilkan TEPAT 7 kota
              untuk gelombang ini (Medan, Palembang, Kupang, Banjarmasin, Jakarta, Yogyakarta,
              Makassar). Cocok persis, dari dua sumber yang tidak saling bergantung.
              Nomor 72 sendiri TETAP `inferensi` -- yang dikuatkan gelombangnya, bukan nomornya.
-      73: {tahun: 2019, buka: "2019-11", sumber_nomor: inferensi,
-           nama: "S2 Indonesia Career Evening 2019", entri: "1"}
+      73: {tahun: 2019, buka: "2019-11", tgl_buka: "2019-11-15", tgl_tutup: "2019-11-25", tgl_status: estimasi,
+           sumber_nomor: inferensi, nama: "S2 Indonesia Career Evening 2019", entri: "1", jalur: mandiri}
+           # buka = bulan-saja (dipakai pencocokan Wayback); tgl_buka/tgl_tutup ESTIMASI +10 hari median (F-076)
       74: {tahun: 2020, buka: "2020-12-30", sumber_nomor: nyata,
            nama: "REKRUTMEN PPB BUMN KHUSUS PUTRA PUTRI PAPUA", entri: "1", jalur: rbb}
       75:
         tahun: 2021
         buka: "2021-12-23"
+        tutup: "2022-01-14"          # NYATA -- Kompas 24 Des 2021 (F-063), sama seperti `pendaftaran`
+        tgl_status: nyata
         sumber_nomor: inferensi
         nama: "Perekrutan Bersama BUMN Papua & Papua Barat 2021"
         entri: "0 -- tidak ada di katalog PLN"
@@ -138,22 +154,26 @@ seri:
              (c) 489 orang itu masuk lewat gelombang 2020 yang panen keterlambatannya jatuh di 2022.
              Perlu keputusan sebelum ditambal -- jangan diisi diam-diam.
       78: {tahun: 2022, buka: "2022-10-07", sumber_nomor: nyata,
-           nama: "Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022", entri: "1"}
-      79: {tahun: 2022, buka: "2022-11", sumber_nomor: inferensi,
-           nama: "Reguler D3 & S1/D4 2022 gelombang I", entri: "0 -- tidak ada di katalog PLN",
+           nama: "Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022", entri: "1", jalur: mandiri}
+      79: {tahun: 2022, buka: "2022-11-15", tutup: "2022-11-25", tgl_status: estimasi, sumber_nomor: inferensi,
+           nama: "Reguler D3 & S1/D4 2022 gelombang I", entri: "0 -- tidak ada di katalog PLN", jalur: mandiri,
            catatan_audit_2026-08-18: "SHELL PENOMORAN SAJA -- sumber headcount sebenarnya lihat kohort.yaml komposisi_jalur 2022 & angkatan.yaml seri.siluman.X-03"}
-      80: {tahun: 2022, buka: "2022-12", sumber_nomor: inferensi,
-           nama: "Reguler D3 & S1/D4 2022 gelombang II", entri: "0 -- tidak ada di katalog PLN",
+           # buka/tutup ESTIMASI -- shell tanpa entri katalog nyata, cuma bulan diketahui, +10 hari median (F-076)
+      80: {tahun: 2022, buka: "2022-12-15", tutup: "2022-12-25", tgl_status: estimasi, sumber_nomor: inferensi,
+           nama: "Reguler D3 & S1/D4 2022 gelombang II", entri: "0 -- tidak ada di katalog PLN", jalur: mandiri,
            catatan_audit_2026-08-18: "SHELL PENOMORAN SAJA -- sumber headcount sebenarnya lihat kohort.yaml komposisi_jalur 2022 & angkatan.yaml seri.siluman.X-03"}
+           # buka/tutup ESTIMASI -- shell tanpa entri katalog nyata, cuma bulan diketahui, +10 hari median (F-076)
       81: {tahun: 2023, buka: "2023-05-22", sumber_nomor: nyata,
-           nama: "REKRUTMEN ORANG ASLI PAPUA (OAP) TAHUN 2023", entri: "8 kota"}
+           nama: "REKRUTMEN ORANG ASLI PAPUA (OAP) TAHUN 2023", entri: "8 kota", jalur: mandiri}
       82: {tahun: 2023, buka: "2023-07-03", sumber_nomor: inferensi_kuat,
-           nama: "REKRUTMEN PLN GROUP DIASPORA TAHUN 2023", entri: "3 (S1 Fresh, S2 Fresh, S2 Experienced)"}
+           nama: "REKRUTMEN PLN GROUP DIASPORA TAHUN 2023", entri: "3 (S1 Fresh, S2 Fresh, S2 Experienced)", jalur: mandiri}
       86: {tahun: 2023, buka: "2023-10-16", sumber_nomor: nyata,
-           nama: "REKRUTMEN PLN GROUP PUTRA-PUTRI ASLI MALUKU DAN NUSA TENGGARA", entri: "3"}
+           nama: "REKRUTMEN PLN GROUP PUTRA-PUTRI ASLI MALUKU DAN NUSA TENGGARA", entri: "3", jalur: mandiri}
       87:
         tahun: 2024
         buka: "2024-03-23"
+        tutup: "2024-04-01"          # NYATA -- sama seperti `pendaftaran`, F-046
+        tgl_status: nyata
         sumber_nomor: inferensi
         nama: "RBB 2024 batch I"
         entri: "0 di katalog PLN -- 20 lowongan di portal FHCI"
@@ -161,7 +181,9 @@ seri:
         pendaftaran: "2024-03-23 s/d 2024-04-01"
       88:
         tahun: 2024
-        buka: "2024-08"
+        buka: "2024-08-15"           # ESTIMASI hari DAN eksistensi gelombang ini sendiri diragukan
+        tutup: "2024-08-25"          # ESTIMASI, +10 hari median (F-076)
+        tgl_status: estimasi
         sumber_nomor: inferensi
         nama: "RBB 2024 batch II"
         entri: "0 di katalog PLN"
@@ -175,9 +197,9 @@ seri:
              Dibiarkan terpecah dua supaya kursi 2024 tidak menumpuk di satu gelombang, tapi
              JANGAN dipakai sebagai fakta.
       91: {tahun: 2025, buka: "2025-09-08", sumber_nomor: nyata,
-           nama: "REKRUTMEN PUTRA-PUTRI ASLI PAPUA PLN GROUP TAHUN 2025", entri: "6 kota"}
+           nama: "REKRUTMEN PUTRA-PUTRI ASLI PAPUA PLN GROUP TAHUN 2025", entri: "6 kota", jalur: mandiri}
       92: {tahun: 2025, buka: "2025-10-01", sumber_nomor: nyata,
-           nama: "REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025", entri: "7 (IP, ND, NP, ES, Hukum, Matematika, EPI)"}
+           nama: "REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025", entri: "7 (IP, ND, NP, ES, Hukum, Matematika, EPI)", jalur: mandiri}
 
     lubang: [76, 77, 83, 84, 85, 89, 90]
     lubang_keterangan: >
@@ -244,12 +266,13 @@ seri:
       2019: [7]
       2022: [8, 9]
     gelombang:
-      7: {tahun: 2019, buka: "2019-08", sumber_nomor: inferensi,
-          nama: "Rekrutmen Pro Hire PLN Group 2019", entri: "2 (Jakarta, Aset Properti)"}
+      7: {tahun: 2019, buka: "2019-08-15", tutup: "2019-08-25", tgl_status: estimasi, sumber_nomor: inferensi,
+          nama: "Rekrutmen Pro Hire PLN Group 2019", entri: "2 (Jakarta, Aset Properti)", jalur: mandiri}
+          # buka/tutup ESTIMASI -- cuma bulan yang diketahui (arsip Wayback), +10 hari median (F-076)
       8: {tahun: 2022, buka: "2022-03-30", sumber_nomor: nyata,
-          nama: "REKRUTMEN PLN GROUP PT INDONESIA COMNETS PLUS TINGKAT S1/D4 TAHUN 2022", entri: "1"}
+          nama: "REKRUTMEN PLN GROUP PT INDONESIA COMNETS PLUS TINGKAT S1/D4 TAHUN 2022", entri: "1", jalur: mandiri}
       9: {tahun: 2022, buka: "2022-10-07", sumber_nomor: nyata,
-          nama: "Rekrutmen PLN Group Tingkat S2 Pro Hire Indonesia Career Excellence 2022", entri: "1"}
+          nama: "Rekrutmen PLN Group Tingkat S2 Pro Hire Indonesia Career Excellence 2022", entri: "1", jalur: mandiri}
     catatan: >
       Setelah 2022 penempatan subholding MELEBUR ke seri utama -- programs.csv 2025
       menunjukkan IP.UM.D3 dan ND.UM.S1 sama-sama angkatan 92. Jadi seri ini berhenti.
@@ -310,7 +333,9 @@ seri:
       artikan sebagai gelombang yang hilang tercatat. Ini murni pengisi residu supaya
       total kohort tetap utuh saat dipecah ke tabel profesi/kandidat.
     ada_gelombang: false
-    funnel: mandiri                     # funnel_mandiri PENUH -- dianggap rekrutmen terbuka generik
+    funnel: mandiri                     # funnel_mandiri, arketipe nasional_mandiri (F-064
+                                          # pemilihan_arketipe.default_residu -- siluman tidak
+                                          # punya jenis_program, jadi tidak lewat pemetaan otomatis)
     peringatan_dashboard: >
       WAJIB ditandai "SUMBER TIDAK DIKETAHUI -- dimodelkan sebagai rekrutmen mandiri generik
       karena tidak ada info lain (F-067/F-068)", BUKAN ditampilkan seolah gelombang asli.

@@ -1,20 +1,20 @@
-gelombang_id,angkatan,seri,sumber_nomor,tahun_program,tahun_masuk,nama_gelombang,jenis_program,sumber_rekrutmen,kualitas_kohort,tgl_buka,tgl_tutup,n_program,n_profesi,diterima_target
-G2019-007,7,khusus,inferensi,2019,2020,Rekrutmen Pro Hire PLN Group 2019,PRO_HIRE,mandiri,rendah,,,2,2,0
-G2019-070,70,utama,inferensi,2019,2020,Reguler S1/D4 & D3 2019 gelombang I,REGULER,mandiri,rendah,,,3,9,267
-G2019-071,71,utama,inferensi,2019,2020,Reguler S1/D4 & D3 2019 gelombang II,REGULER,mandiri,rendah,,,8,24,607
-G2019-072,72,utama,inferensi,2019,2020,Reguler S1/D4 & D3 2019 gelombang III,REGULER,mandiri,rendah,,,7,21,476
-G2019-073,73,utama,inferensi,2019,2020,S2 Indonesia Career Evening 2019,S2,mandiri,rendah,,,1,1,3
-G2020-074,74,utama,nyata,2020,2021,REKRUTMEN PPB BUMN KHUSUS PUTRA PUTRI PAPUA,RBB,rbb,rendah,2020-12-30,2021-01-09,1,2,325
-G2021-075,75,utama,inferensi,2021,2022,Perekrutan Bersama BUMN Papua & Papua Barat 2021,RBB,rbb,rendah,,,1,3,689
-G2022-008,8,khusus,nyata,2022,2023,REKRUTMEN PLN GROUP PT INDONESIA COMNETS PLUS TINGKAT S1/D4 TAHUN 2022,REGULER,mandiri,tinggi,2022-03-30,2022-04-08,1,2,368
-G2022-009,9,khusus,nyata,2022,2023,Rekrutmen PLN Group Tingkat S2 Pro Hire Indonesia Career Excellence 2022,PRO_HIRE,mandiri,tinggi,2022-10-07,2022-10-16,1,5,0
-G2022-078,78,utama,nyata,2022,2023,Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022,S2,mandiri,tinggi,2022-10-07,2022-10-16,1,5,52
-G2022-079,79,utama,inferensi,2022,2023,Reguler D3 & S1/D4 2022 gelombang I,REGULER,mandiri,tinggi,,,1,3,345
-G2022-080,80,utama,inferensi,2022,2023,Reguler D3 & S1/D4 2022 gelombang II,REGULER,mandiri,tinggi,,,1,3,344
-G2023-081,81,utama,nyata,2023,2024,REKRUTMEN ORANG ASLI PAPUA (OAP) TAHUN 2023,AFIRMASI,mandiri,tinggi,2023-05-22,2023-06-02,8,48,624
-G2023-082,82,utama,inferensi_kuat,2023,2024,REKRUTMEN PLN GROUP DIASPORA TAHUN 2023,DIASPORA,mandiri,tinggi,2023-07-03,2023-07-17,3,9,667
-G2023-086,86,utama,nyata,2023,2024,REKRUTMEN PLN GROUP PUTRA-PUTRI ASLI MALUKU DAN NUSA TENGGARA,AFIRMASI,mandiri,tinggi,2023-10-16,2023-10-25,3,24,506
-G2024-087,87,utama,inferensi,2024,2025,RBB 2024 batch I,RBB,rbb,tinggi,,,20,20,1222
-G2024-088,88,utama,inferensi,2024,2025,RBB 2024 batch II,RBB,rbb,tinggi,,,1,3,356
-G2025-091,91,utama,nyata,2025,2026,REKRUTMEN PUTRA-PUTRI ASLI PAPUA PLN GROUP TAHUN 2025,AFIRMASI,mandiri,tinggi,2025-09-08,2025-09-21,6,30,979
-G2025-092,92,utama,nyata,2025,2026,REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025,REGULER,mandiri,tinggi,2025-10-01,2025-10-05,7,12,1021
+gelombang_id,angkatan,seri,sumber_nomor,tahun_program,tahun_masuk,nama_gelombang,jenis_program,sumber_rekrutmen,kualitas_kohort,tgl_buka,tgl_tutup,tgl_status,n_program,n_profesi,diterima_target
+G2019-007,7,khusus,inferensi,2019,2020,Rekrutmen Pro Hire PLN Group 2019,PRO_HIRE,mandiri,rendah,2019-08-15,2019-08-25,estimasi,2,2,0
+G2019-070,70,utama,inferensi,2019,2020,Reguler S1/D4 & D3 2019 gelombang I,REGULER,mandiri,rendah,2019-07-15,2019-07-25,estimasi,3,9,267
+G2019-071,71,utama,inferensi,2019,2020,Reguler S1/D4 & D3 2019 gelombang II,REGULER,mandiri,rendah,2019-08-15,2019-08-25,estimasi,8,24,607
+G2019-072,72,utama,inferensi,2019,2020,Reguler S1/D4 & D3 2019 gelombang III,REGULER,mandiri,rendah,2019-09-07,2019-09-20,nyata,7,21,476
+G2019-073,73,utama,inferensi,2019,2020,S2 Indonesia Career Evening 2019,S2,mandiri,rendah,2019-11-15,2019-11-25,estimasi,1,1,3
+G2020-074,74,utama,nyata,2020,2021,REKRUTMEN PPB BUMN KHUSUS PUTRA PUTRI PAPUA,RBB,rbb,rendah,2020-12-30,2021-01-09,nyata,1,2,325
+G2021-075,75,utama,inferensi,2021,2022,Perekrutan Bersama BUMN Papua & Papua Barat 2021,RBB,rbb,rendah,2021-12-23,2022-01-14,nyata,1,3,689
+G2022-008,8,khusus,nyata,2022,2023,REKRUTMEN PLN GROUP PT INDONESIA COMNETS PLUS TINGKAT S1/D4 TAHUN 2022,REGULER,mandiri,sedang,2022-03-30,2022-04-08,nyata,1,2,368
+G2022-009,9,khusus,nyata,2022,2023,Rekrutmen PLN Group Tingkat S2 Pro Hire Indonesia Career Excellence 2022,PRO_HIRE,mandiri,sedang,2022-10-07,2022-10-16,nyata,1,5,0
+G2022-078,78,utama,nyata,2022,2023,Rekrutmen PLN Group Tingkat S2 Fresh Graduate Indonesia Career Excellence 2022,S2,mandiri,sedang,2022-10-07,2022-10-16,nyata,1,5,52
+G2022-079,79,utama,inferensi,2022,2023,Reguler D3 & S1/D4 2022 gelombang I,REGULER,mandiri,sedang,2022-11-15,2022-11-25,estimasi,1,3,345
+G2022-080,80,utama,inferensi,2022,2023,Reguler D3 & S1/D4 2022 gelombang II,REGULER,mandiri,sedang,2022-12-15,2022-12-25,estimasi,1,3,344
+G2023-081,81,utama,nyata,2023,2024,REKRUTMEN ORANG ASLI PAPUA (OAP) TAHUN 2023,AFIRMASI,mandiri,tinggi,2023-05-22,2023-06-02,nyata,8,48,624
+G2023-082,82,utama,inferensi_kuat,2023,2024,REKRUTMEN PLN GROUP DIASPORA TAHUN 2023,DIASPORA,mandiri,tinggi,2023-07-03,2023-07-17,nyata,3,9,667
+G2023-086,86,utama,nyata,2023,2024,REKRUTMEN PLN GROUP PUTRA-PUTRI ASLI MALUKU DAN NUSA TENGGARA,AFIRMASI,mandiri,tinggi,2023-10-16,2023-10-25,nyata,3,24,506
+G2024-087,87,utama,inferensi,2024,2025,RBB 2024 batch I,RBB,rbb,tinggi,2024-03-23,2024-04-01,nyata,20,20,1222
+G2024-088,88,utama,inferensi,2024,2025,RBB 2024 batch II,RBB,rbb,tinggi,2024-08-15,2024-08-25,estimasi,1,3,356
+G2025-091,91,utama,nyata,2025,2026,REKRUTMEN PUTRA-PUTRI ASLI PAPUA PLN GROUP TAHUN 2025,AFIRMASI,mandiri,tinggi,2025-09-08,2025-09-21,nyata,6,30,979
+G2025-092,92,utama,nyata,2025,2026,REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025,REGULER,mandiri,tinggi,2025-10-01,2025-10-05,nyata,7,12,1021

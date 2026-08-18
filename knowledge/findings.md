@@ -1569,6 +1569,176 @@ user 2026-08-18 · Keyakinan: **tinggi** untuk keberadaan partisipasi RBB 2022/2
 sumber independen), **rendah** untuk besaran porsi PLN persisnya (diakui eksplisit sebagai
 taksiran sementara) · Dampak: lihat di atas.
 
+### F-072 · Audit 2019 & 2025 (item terbuka F-071) — 2019 bersih, 2025 belum bisa dinilai ⭐ [cek-ricek]
+Klaim: melengkapi audit horison penuh yang diminta F-071, dua tahun tersisa dicek:
+
+**2019 — TIDAK ada komponen RBB/PPB tersembunyi.** PPB Papua (satu-satunya program bersama BUMN
+yang eksis periode ini) baru **diinagurasi 22 Februari 2020**; kebijakannya memang diumumkan
+Presiden 10 Sep 2019, tapi eksekusi (pendaftaran, tes) baru berjalan sepanjang **2020**, dan
+dasar hukumnya (Surat MBU S-165/MBU/03/2020) baru terbit **Maret 2020**. RBB generik sendiri
+baru mulai 2021 (sebagai PPB) lalu berganti nama RBB 2022. Kohort `tahun: 2019` (tes 2019 →
+masuk 2020, `induk_diterima: 1093`) mendahului semua program ini secara kronologis — tidak ada
+yang perlu dikoreksi.
+
+**2025 — RBB 2025 nyata & PLN ikut, tapi kohort 2025 belum bisa dipecah.** RBB 2025 dibuka
+resmi (pendaftaran Mar-Jul 2025, ≥2.000 lowongan lintas 100+ BUMN), dan PLN Indonesia Power
+konfirmasi berpartisipasi (halaman `career_detail` sendiri di portal `rekrutmenbersama2025.
+fhcibumn.id`). **Tapi** `induk_diterima: 1050` untuk kohort 2025 di `kohort.yaml` berstatus
+**TURUNAN** ("SR-2026 belum terbit") — bukan headcount nyata. Memecahnya jadi `komposisi_jalur`
+sekarang berarti menaksir di atas taksiran (dua lapis dugaan bertumpuk) — ditolak, konsisten
+dengan disiplin sitasi sesi ini. **Tindak lanjut:** begitu SR-2026 terbit dan `induk_diterima`
+2025 dikoreksi jadi NYATA, cek ulang partisipasi RBB 2025 PLN (kemungkinan bisa panen granular
+`loadRecord` dari domain `rekrutmenbersama2025.fhcibumn.id` selagi masih hidup — belum coba,
+lihat metodologi F-043/F-071).
+Sumber: WebSearch 2026-08-18 (fhcibumn.com/gallery/news RBB-2025 launch; puskib.ummetro.ac.id
+sejarah PPB→RBB; antaranews "776 putra putri Papua" re: inagurasi PPB Papua Feb 2020; jadibumn.id
+career_detail PLN Indonesia Power RBB 2025) · Keyakinan: **tinggi** (2019 bersih), **tinggi**
+(2025 RBB+PLN terjadi) tapi **n/a** untuk besaran (data belum nyata) · Dampak: horison
+2019-2025 kini teraudit penuh untuk komponen RBB tersembunyi; item terbuka F-071 selesai.
+`kohort.yaml` diberi catatan penanda di kedua entri (2019: audit bersih; 2025: RBB pending
+SR-2026) agar tidak diaudit ulang dari nol.
+
+### F-073 · Field `jalur` per-tahun DIPENSIUNKAN — digantikan sepenuhnya oleh penanda per-gelombang ⭐ [keputusan user]
+Klaim: menutup item terbuka F-071. Field `jalur` (mandiri|rbb, satu nilai per tahun) di
+`kohort.yaml` **dihapus**. Alasannya sudah terbukti sejak F-067/F-071: RBB & mandiri jalan
+PARALEL tiap tahun (2020-2024), jadi satu nilai per tahun secara struktural tidak bisa benar
+-- ia cuma kebetulan cocok untuk tahun-tahun di mana satu-satunya gelombang KATALOG yang
+tampak memang RBB-timed (2020/2021/2024) atau memang mandiri-timed (2019/2022/2023/2025).
+
+**Perbaikan:** konsep "pola funnel/timeline gelombang katalog" (dipakai generator 06 untuk
+`jenis_program`, `sumber_rekrutmen`, `umur_maks`) dipindah ke granularitas yang sebenarnya
+benar -- **per-gelombang**, bukan per-tahun. Semua 21 gelombang di `angkatan.yaml` (seri utama
++ khusus) sekarang punya `jalur:` eksplisit sendiri (`mandiri` atau `rbb`); sebelumnya cuma
+74/75/87/88 yang eksplisit (karena memang gelombang RBB-timed), sisanya diam-diam mewarisi
+field kohort yang kini dihapus. `06_gelombang_program_profesi.py:122` diubah dari
+`g.get("jalur", info["jalur"])` (fallback ke kohort) jadi `g["jalur"]` (wajib per-gelombang).
+
+**Yang TIDAK berubah:** semua nilai efektifnya. Setiap gelombang mewarisi persis nilai yang
+dulu datang dari kohort tahunnya -- audit ini murni pemindahan tempat definisi, bukan koreksi
+angka. Diverifikasi: `06_gelombang_program_profesi.py` jalan bersih pasca-perubahan, total
+diterima tetap 8.851 = kohort Group, `00_verifikasi_rules.py` semua cek tetap lulus.
+Sumber: keputusan user 2026-08-18 (menutup item terbuka F-071) · Keyakinan: tinggi ·
+Dampak: `kohort.yaml` kohort_per_tahun_program tidak lagi punya field `jalur`; jangan
+dipakai lagi di generator manapun -- pola funnel/timeline sekarang murni properti gelombang
+(`angkatan.yaml`), sumber headcount murni properti `komposisi_jalur`.
+
+### F-074 · RBB 2025 dikonfirmasi & dikuantifikasi — 24 lowongan, dimasukkan ke komposisi_jalur meski basis masih TURUNAN ⭐⭐ [keputusan user]
+Klaim: menindaklanjuti F-072 (yang menemukan RBB 2025 terjadi tapi tidak menguantifikasi karena
+`induk_diterima` 2025 masih TURUNAN). User memutuskan tetap masukkan komponen RBB ke
+`komposisi_jalur` 2025 walau basisnya belum NYATA — dua lapis taksiran diakui eksplisit.
+
+**Panen lowongan PLN Group di RBB 2025 (metode berbeda dari F-043/F-071 -- lihat catatan):**
+
+| entitas | lowongan | sumber |
+|---|---:|---|
+| PT PLN Indonesia Power | **22** | [Arah Pena](https://www.arahpena.com/ragam/77914721985/pt-pln-indonesia-power-di-rbb-bumn-2025-cek-22-posisi-lowongan-kualifikasi-persyaratan-dan-cara-daftar) -- dikonfirmasi 2 kutipan WebSearch independen |
+| PT PLN Nusantara Power | **2** | [bersamabumn.com/rbb/pt-pln-nusantara-power](https://www.bersamabumn.com/rbb/pt-pln-nusantara-power/), diverifikasi lewat **snapshot Wayback beku 18 Apr 2025** (di dalam jendela pendaftaran RBB 2025, Mar-Jul) -- bukan data 2026 yang ketumpahan. Isi: Jr Technician Mesin (D3 Teknik Mesin) + Jr Technician Pengendalian Konstruksi (D3 Teknik Sipil), IPK min 3.00, umur maks 27. |
+| PT PLN (Persero) sendiri | **0** | bersamabumn.com: "belum ada posisi dibuka" utk RBB -- yang ada cuma Rekrutmen Nasional PLN Group mandiri (1-5 Okt 2025) |
+| Nusa Daya/EPI/ES/Icon Plus/Batam/Haleyora | tidak ditemukan | tidak terdaftar di direktori RBB bersamabumn.com -- bukan bukti negatif kuat (situs pihak ketiga, cakupannya tidak lengkap terbukti dari absennya slug Indonesia Power juga padahal Indonesia Power terkonfirmasi ikut lewat sumber lain) |
+
+**Total: 24 lowongan PLN Group.**
+
+⚠️ **Data granular per-lowongan GAGAL dipanen**, beda dari F-043 (2024)/F-071 (2022): situs RBB
+2025 (`rekrutmenbersama2025.fhcibumn.id`) ternyata **SPA** (Single Page Application) -- CDX
+Wayback punya ratusan snapshot tapi isinya app-shell React kosong (`<title>Wayback Machine</title>`,
+tanpa data), karena listing lowongan di-fetch lewat API runtime yang tidak ikut terarsip sebagai
+halaman terpisah. Endpoint `loadRecord` (yang berhasil untuk 2022/2024) TIDAK ADA lagi di 2025 --
+arsitektur situsnya sudah berubah. Dua kutipan berita/aggregator di atas jadi sumber terkuat yang ada.
+
+**Angka final (keputusan user 2026-08-18):** pola sama F-071 -- lowongan sebagai batas bawah,
+~2 peserta/lowongan (median taksiran 2022-2023) → **24 × 2 = 48**. Ditambahkan ke `kohort.yaml`
+2025 sebagai `komposisi_jalur`: rbb(48) + mandiri(1002, sisa dari gelombang katalog nyata 91+92).
+
+**Konsekuensi eksplisit dari basis TURUNAN:** beda dari 2020-2024 (yang induk_diterima-nya NYATA
+dari SR), 2025 punya DUA lapis dugaan bertumpuk -- total 1.050 itu sendiri proyeksi, porsi RBB
+48 di dalamnya proyeksi kedua di atas proyeksi pertama. User eksplisit terima risiko ini demi
+mencerminkan bahwa RBB 2025 memang terjadi, bukan diam-diam. Begitu SR-2026 terbit dan
+`induk_diterima` dikoreksi ke NYATA, seluruh komposisi ini (bukan cuma porsi RBB) perlu dievaluasi
+ulang -- dicatat sebagai TODO di `kohort.yaml`.
+
+**Dampak lain:** `tahapan.yaml` `tahap_agregat_fhci.berlaku_tahun` diperluas dari
+`[2020,2021,2022,2023,2024]` ke `[...,2025]` supaya cek konsistensi `00_verifikasi_rules.py`
+(tahun RBB kohort vs tahapan) tetap lulus.
+Sumber: WebSearch 2026-08-18 (Arah Pena; bersamabumn.com); Wayback CDX + fetch langsung
+(`rekrutmenbersama2025.fhcibumn.id` domain dump, `bersamabumn.com/rbb/pt-pln-nusantara-power`
+snapshot 20250418002316); keputusan angka final: user 2026-08-18 · Keyakinan: **tinggi**
+(keberadaan & entitas partisipasi RBB 2025), **rendah** (besaran 48 -- taksiran eksplisit,
+DAN bertumpuk di atas basis 2025 yang sendirinya belum nyata) · Dampak: lihat di atas.
+
+### F-075 · Funnel dipecah jadi dua arketipe (F-064 Sumbu 1 dieksekusi) ⭐⭐ [sesi build]
+Klaim: menutup item terbuka F-064 Sumbu 1. `funnel.yaml` `funnel_mandiri` yang semula satu
+daftar tahap tunggal dipecah jadi dua arketipe bersarang, dipilih per gelombang lewat
+`jenis_program` (dihitung generator 06 dari judul+jalur):
+
+- **`nasional_mandiri`** — bentuk & angka IDENTIK dengan funnel_mandiri lama (jangkar keras
+  F-019: 64%/2,05%). Menyerap REGULER, S2, PRO_HIRE, DIASPORA, BIDANG, CAMPUS + `default_residu`
+  untuk siluman (`angkatan.yaml` seri.siluman, tidak punya `jenis_program` sendiri).
+- **`afirmasi_remote`** (BARU) — dikalibrasi dari Biak 2025 (F-058, satu gelombang terobservasi
+  penuh): administrasi lulus 51,5% (tinggi, 2 media independen), akademik_inggris & psikologi
+  nyaris tanpa gugur (897/993 hadir, 0 gugur -- tinggi). Tiga tahap tanpa data Biak (adaptif,
+  fisik_mcu, wawancara) diberi laju tinggi TURUNAN konsisten-tesis, KECUALI wawancara yang
+  disengaja diberi laju lebih ketat (0,55) sebagai titik penyempitan kuota sesungguhnya --
+  dialasankan dari bukti tak langsung: Papua 2025 nasional 1.658 lulus administrasi (F-059)
+  vs target diterima gelombang 91 = 979 (rasio keseluruhan ~59%, jauh lebih ketat dari tahap
+  yang benar-benar terekam). End-to-end hasil rantai: **18,88%** (1:5,3) -- jauh lebih longgar
+  dari nasional_mandiri (1:49), TAPI TIDAK dijangkarkan ke angka nasional independen apa pun
+  (beda dari nasional_mandiri yang ditutup persis ke F-019) -- ditandai keyakinan campuran,
+  bukan angka final presisi.
+
+**Pemilihan arketipe otomatis:** `pemilihan_arketipe.peta` di `funnel.yaml` memetakan tiap
+`jenis_program` ke arketipe. AFIRMASI (OAP/Papua/Maluku & Nusa Tenggara) -> afirmasi_remote;
+enam kode lain -> nasional_mandiri (DIASPORA dan BIDANG/CAMPUS default konservatif karena
+tidak ada data khusus jalur itu).
+
+**Verifikasi:** `00_verifikasi_rules.py` [2] direstruktur -- `rantai_arketipe()` menguji rantai
+perkalian KEDUA arketipe (nasional_mandiri wajib mendarat di jangkar F-019; afirmasi_remote
+cuma wajib konsisten-diri + terbukti jauh lebih longgar), plus cek kosakata tahap sama &
+peta hanya menunjuk arketipe yang ada. `00b_verifikasi_keluaran.py` dapat cek baru: tiap
+`jenis_program` yang MUNCUL NYATA di `profesi.csv` (selain RBB) harus punya entri di peta --
+kalau generator 06 memunculkan kode baru tanpa dipetakan, cek ini gagal (diuji: ketujuh kode
+non-RBB yang benar-benar muncul semua terpetakan). Generator 06 dijalankan ulang, `00` dan
+`00b` dua-duanya SEMUA CEK LULUS, angka kohort tidak berubah (8.851 tetap).
+Sumber: F-058, F-059, F-061 (data funnel); F-064 (resolusi/keputusan sebelumnya) · Keyakinan:
+tinggi (nasional_mandiri, tidak berubah dari sebelumnya), campuran (afirmasi_remote -- 3 dari
+6 tahap terverifikasi, 3 turunan) · Dampak: `funnel.yaml` siap dipakai generator 08 (kandidat
+& pendaftaran per tahap) tanpa lagi over-determined oleh satu funnel nasional tunggal.
+
+### F-076 · 10 gelombang tanpa tgl_tutup diisi -- 3 dari sumber nyata, 7 taksiran median jendela ⭐ [sesi build]
+Klaim: menutup item terbuka poin [1] audit generator 06 ("10 dari 19 gelombang tidak punya
+tgl_tutup"). Dua kelompok:
+
+**Nyata (3 gelombang) -- tanggal SUDAH ada di catatan lain, cuma belum diwiring ke kolom
+terstruktur:**
+- G2019-072 (Reguler gel. III): siaran pers PLN "Cari Talenta Unggul, PLN Buka Rekrutmen di
+  7 Kota", pendaftaran 7-20 Sep 2019 (sudah tercatat di `konfirmasi_berita`, F-063)
+- G2021-075 (Papua & Papua Barat 2021): Kompas 24 Des 2021, pendaftaran 23 Des 2021 - 14 Jan
+  2022 (sudah tercatat di field `pendaftaran`, F-063)
+- G2024-087 (RBB 2024 batch I): 23 Mar - 1 Apr 2024 (sudah tercatat di field `pendaftaran`, F-046)
+
+**Taksiran (7 gelombang) -- cuma bulan yang diketahui atau gelombangnya sendiri shell/diragukan:**
+G2019-007/070/071/073 (Pro Hire + Reguler gel I/II + S2 Career Evening -- cuma bulan dari
+snapshot Wayback), G2022-079/080 (shell 100% sintetis, F-071), G2024-088 (RBB batch II, F-063:
+eksistensinya sendiri belum terbukti). Diberi tanggal **median jendela pendaftaran nyata**
+lintas 13 gelombang bertanggal lengkap di horison (4-22 hari, median **10 hari**) -- hari-dalam-
+bulan dipilih tanggal 15 (titik tengah, bukan klaim presisi), tutup = buka+10.
+
+**Implementasi:** `angkatan.yaml` tiap gelombang kini punya `tgl_status: nyata|estimasi` +
+(untuk yang bulan-saja) field `tgl_buka`/`tgl_tutup` terpisah dari `buka` -- `buka` TETAP
+bulan-saja untuk 2019 karena generator 06 memakainya untuk mencocokkan judul arsip Wayback
+per-bulan (`per_bulan` dict, regex `\d{4}-\d{2}` ketat); mengubah presisinya akan MEMATAHKAN
+pencocokan itu (ditangkap sebelum commit -- lihat "Errors and fixes"). `06_gelombang_
+program_profesi.py` dapat fungsi `tgl_rencana()` yang membaca tanggal presisi-penuh dari
+`buka`/`tutup` kalau ada, else fallback ke `tgl_buka`/`tgl_tutup`. Kolom baru `tgl_status`
+ditambahkan ke gelombang.csv/program.csv/profesi.csv (nyata/estimasi), roll-up gelombang
+memakai status TERBURUK di antara profesinya. `00b_verifikasi_keluaran.py` dapat 2 cek baru:
+nol gelombang tanpa tanggal, dan pelaporan (bukan gagal) berapa yang estimasi -- hasil saat
+ini **7/19 gelombang pakai tanggal ESTIMASI**, sisanya nyata dari sumber primer.
+Sumber: F-063 (siaran pers Sep 2019, Kompas Des 2021), F-046 (RBB 2024), median dihitung dari
+13 jendela nyata di `angkatan.yaml`/`gelombang.csv` · Keyakinan: tinggi (3 nyata, sumber sudah
+tersitasi sebelumnya), rendah-disengaja (7 taksiran, ditandai eksplisit `tgl_status`) · Dampak:
+gelombang.csv sekarang 0/19 tanpa tanggal (dari 10/19 sebelumnya); dashboard WAJIB tampilkan
+badge "estimasi" memakai kolom `tgl_status` baru, jangan tampilkan tanggal taksiran seolah pasti.
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

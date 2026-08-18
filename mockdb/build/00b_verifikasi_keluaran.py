@@ -338,8 +338,23 @@ def cek_katalog(R: dict, gel: list[dict], prog: list[dict], prof: list[dict],
     ipk_aneh = [p["profesi_id"] for p in prof if not 2.0 <= float(p["min_ipk"]) <= 4.0]
     cek("IPK minimal dalam rentang wajar", not ipk_aneh, f"{len(ipk_aneh)} di luar 2,0-4,0")
 
+    # --- setiap jenis_program non-RBB harus punya arketipe funnel (F-064) ---
+    peta_arketipe = R["funnel"]["pemilihan_arketipe"]["peta"]
+    muncul = {p["jenis_program"] for p in prof} - {"RBB"}
+    tak_terpetakan = muncul - set(peta_arketipe)
+    cek("tiap jenis_program non-RBB punya arketipe funnel", not tak_terpetakan,
+        f"{tak_terpetakan} tidak ada di funnel.yaml pemilihan_arketipe.peta" if tak_terpetakan else
+        f"{sorted(muncul)} semua terpetakan")
+
     kosong = [g["gelombang_id"] for g in gel if int(g["n_profesi"]) == 0]
     cek("setiap gelombang punya profesi", not kosong, f"kosong: {kosong}")
+
+    tanpa_tanggal = [g["gelombang_id"] for g in gel if not g["tgl_buka"] or not g["tgl_tutup"]]
+    cek("semua gelombang punya tgl_buka & tgl_tutup", not tanpa_tanggal,
+        f"{tanpa_tanggal} tidak ada tanggal" if tanpa_tanggal else "0 kosong (F-076)")
+    n_estimasi = sum(1 for g in gel if g["tgl_status"] == "estimasi")
+    cek("tgl_status terisi utk tiap gelombang", all(g["tgl_status"] in ("nyata", "estimasi") for g in gel),
+        f"{n_estimasi}/{len(gel)} gelombang pakai tanggal ESTIMASI (F-076) -- wajib ditandai di dashboard")
 
     # Kursi subholding hanya boleh jatuh ke entri berpenempatan subholding. `sub_diterima`
     # di kohort.yaml diturunkan dari jumlah entri itu (F-003), jadi kalau alokasi memakai

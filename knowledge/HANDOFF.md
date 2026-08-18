@@ -1,7 +1,7 @@
 # HANDOFF — dari fase RISET ke fase BANGUN DATABASE
 
 > **Sesi baru: baca file ini dulu, lalu `knowledge/findings.md`.**
-> Riset selesai (78 temuan tersitasi). Fondasi + langkah 01 revisi, 03, 04, 05, 06, 07 & 08 selesai. Tugas berikutnya: generator 09.
+> Riset selesai (79 temuan tersitasi). Fondasi + langkah 01 revisi, 03–09 selesai. Tugas berikutnya: generator 10 (kontrak/prajabatan/OJT).
 > Terakhir diperbarui: 2026-08-19.
 
 ---
@@ -20,7 +20,8 @@
 | Generator 06 (gelombang/program/profesi) | ✅ **SELESAI** — katalog 2019–2025, arketipe funnel (F-075), tgl_tutup (F-076) |
 | Generator 07 (kota/updl/vendor/tahap_ref) | ✅ **SELESAI** — 43 kota, 11 UPDL, 10 vendor (1 real: Prodia/F-061, sisanya DIMODELKAN), 16 tahap_ref |
 | Generator 08 (kandidat & pendaftaran) | ✅ **SELESAI** — 368.912 kandidat, 218.928 pendaftaran, administrasi dijalankan sungguhan per biodata (F-078) |
-| **Generator 09–12** | ⬜ **BELUM — ini tugas sesi baru** |
+| Generator 09 (tahapan seleksi) | ✅ **SELESAI** — 464.688 baris `seleksi_tahap.csv` + 9 baris agregat FHCI, dijabarkan dari hasil final langkah 08 (F-079) |
+| **Generator 10–12** | ⬜ **BELUM — ini tugas sesi baru** |
 
 ### Yang selesai di sesi 2026-08-17
 
@@ -201,7 +202,7 @@ file aturannya masing-masing, dengan alasan & cara membatalkannya):
 
 Generate bertahap: unit ✅ → rumpun jurusan ✅ → attrition & kekosongan ✅ →
 usulan & pagu ✅ → 06 program/angkatan & profesi ✅ → 07 vendor & lokasi ✅ →
-08 kandidat & pendaftaran ✅ → **09 tahapan seleksi** → 10 kontrak/prajabatan/OJT →
+08 kandidat & pendaftaran ✅ → 09 tahapan seleksi ✅ → **10 kontrak/prajabatan/OJT** →
 11 penempatan → 12 load ke DuckDB.
 
 ⚠️ **Bawa F-050 ke langkah 11.** Bauran jurusan yang diundang kurang memasok Distribusi
@@ -264,7 +265,8 @@ mockdb/
                         gelombang · program · profesi · profesi_prodi (langkah 06) ·
                         kota(43) · updl(11) · vendor(10) · tahap_ref(16) (langkah 07) ·
                         kandidat(368.912) · pendaftaran(218.928) · kandidat_pendidikan ·
-                        kandidat_sertifikasi · kandidat_keluarga · kandidat_berkas (langkah 08)
+                        kandidat_sertifikasi · kandidat_keluarga · kandidat_berkas (langkah 08) ·
+                        seleksi_tahap(464.688) · seleksi_tahap_agregat(9) (langkah 09)
 data sintetis/          SUMBER ASLI + PII (DAPEG 37rb pegawai). GITIGNORED. Jangan commit.
 referensi/              perdir PDF, chat WA, screenshot. GITIGNORED.
 ```

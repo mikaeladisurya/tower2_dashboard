@@ -418,6 +418,62 @@ def cek_vendor_lokasi(R: dict, kota: list[dict], updl: list[dict], vendor: list[
 
 
 # ---------------------------------------------------------------------------
+# 9b. Tahapan seleksi per kandidat (langkah 09)
+# ---------------------------------------------------------------------------
+def cek_seleksi_tahap(R: dict, seleksi_tahap: list[dict], seleksi_agregat: list[dict],
+                       pendaftaran: list[dict], profesi: list[dict]) -> None:
+    print("\n[ tahapan seleksi (langkah 09) ]")
+
+    pendaftaran_id = {r["pendaftaran_id"] for r in pendaftaran}
+    asing = [r["pendaftaran_id"] for r in seleksi_tahap if r["pendaftaran_id"] not in pendaftaran_id]
+    cek("seleksi_tahap.pendaftaran_id semua ada di pendaftaran.csv", not asing, f"{len(asing)} baris asing")
+
+    kode_valid = {t["kode"] for t in R["tahapan"]["tahap_seleksi"]}
+    asing_kode = {r["tahap_kode"] for r in seleksi_tahap} - kode_valid
+    cek("tahap_kode semuanya dikenal di tahapan.yaml", not asing_kode, f"asing: {asing_kode}")
+
+    # jalur mandiri wajib mulai dari administrasi, RBB dari akademik_inggris (F-046).
+    per_pendaftaran: dict[str, list[str]] = defaultdict(list)
+    for r in seleksi_tahap:
+        per_pendaftaran[r["pendaftaran_id"]].append(r["tahap_kode"])
+    jalur_map = {r["pendaftaran_id"]: r["sumber_rekrutmen"] for r in pendaftaran}
+    salah_masuk = [
+        pid for pid, kodes in per_pendaftaran.items()
+        if (jalur_map[pid] == "mandiri" and "administrasi" not in kodes)
+        or (jalur_map[pid] == "rbb" and "administrasi" in kodes)
+    ]
+    cek("titik masuk sesuai jalur (mandiri->administrasi, rbb->akademik_inggris)",
+        not salah_masuk, f"{len(salah_masuk)} pendaftaran menyimpang, mis. {salah_masuk[:3]}")
+
+    # wawancara LULUS harus persis = jumlah DITERIMA -- jangkar keras yang sama dgn langkah 08.
+    n_wawancara_lulus = sum(1 for r in seleksi_tahap if r["tahap_kode"] == "wawancara" and r["hasil"] == "LULUS")
+    n_diterima = sum(1 for r in pendaftaran if r["hasil_akhir"] == "DITERIMA")
+    cek("wawancara LULUS = DITERIMA di pendaftaran.csv", n_wawancara_lulus == n_diterima,
+        f"{n_wawancara_lulus} vs {n_diterima}")
+
+    # setiap pendaftaran GAGAL harus berhenti tepat di tahap_gugur-nya (baris terakhir GAGAL,
+    # baris sebelumnya semua LULUS).
+    salah_urut = []
+    hasil_per_pendaftaran: dict[str, list[tuple]] = defaultdict(list)
+    urutan_map = {t["kode"]: t["urutan"] for t in R["tahapan"]["tahap_seleksi"]}
+    for r in seleksi_tahap:
+        hasil_per_pendaftaran[r["pendaftaran_id"]].append((int(r["urutan"]), r["hasil"]))
+    for pid, lst in hasil_per_pendaftaran.items():
+        lst.sort()
+        gagal_di = [i for i, (_, h) in enumerate(lst) if h == "GAGAL"]
+        if gagal_di and (gagal_di != [len(lst) - 1]):
+            salah_urut.append(pid)
+    cek("baris GAGAL hanya di tahap TERAKHIR yang tercapai (tidak ada gugur ganda/di tengah)",
+        not salah_urut, f"{len(salah_urut)} pendaftaran, mis. {salah_urut[:3]}")
+
+    cek("seleksi_tahap_agregat hanya utk tahun berjalur RBB",
+        {r["tahun_program"] for r in seleksi_agregat} <=
+        {r["tahun_program"] for r in profesi if r["sumber_rekrutmen"] == "rbb"})
+    cek("seleksi_tahap_agregat: jumlah_lulus tak pernah > jumlah_masuk",
+        all(int(r["jumlah_lulus"]) <= int(r["jumlah_masuk"]) for r in seleksi_agregat))
+
+
+# ---------------------------------------------------------------------------
 # 9. Kandidat & pendaftaran (langkah 08)
 # ---------------------------------------------------------------------------
 def cek_kandidat_pendaftaran(R: dict, kandidat: list[dict], pendaftaran: list[dict],
@@ -535,6 +591,8 @@ def main() -> int:
     kand_sert = baca("kandidat_sertifikasi.csv")
     kand_kel = baca("kandidat_keluarga.csv")
     kand_berkas = baca("kandidat_berkas.csv")
+    seleksi_tahap = baca("seleksi_tahap.csv")
+    seleksi_agregat = baca("seleksi_tahap_agregat.csv")
     if gagal:
         print("\nInput belum lengkap -- hentikan.")
         return 1
@@ -547,6 +605,7 @@ def main() -> int:
     cek_katalog(R, gel, prog, prof, prodi)
     cek_vendor_lokasi(R, kota, updl, vendor, tahap_ref)
     cek_kandidat_pendaftaran(R, kandidat, pendaftaran, kand_didik, kand_sert, kand_kel, kand_berkas, prof)
+    cek_seleksi_tahap(R, seleksi_tahap, seleksi_agregat, pendaftaran, prof)
     cek_pii()
 
     print("\n" + "=" * 60)

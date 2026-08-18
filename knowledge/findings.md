@@ -1840,6 +1840,64 @@ PII diperluas (kandidat.csv/kandidat_keluarga.csv SENGAJA berbentuk PII sintetis
 dikecualikan dari guard kolom/nilai, diganti cek bahwa generatornya sendiri tidak pernah
 membaca sumber PII asli).
 
+### F-079 · Generator 09 (tahapan seleksi) -- baris per-tahap dijabarkan dari hasil final langkah 08, bukan mengundi ulang siapa lulus [sesi build]
+Klaim: `09_seleksi_tahap.py` membangkitkan 464.688 baris `seleksi_tahap.csv` (per
+pendaftaran x tahap yang benar-benar dicapai) + 9 baris `seleksi_tahap_agregat.csv`
+(FHCI, tanpa nama, HANDOFF butir 3b), TANPA mengubah lagi siapa DITERIMA/GAGAL --
+itu jangkar keras yang sudah final dari `pendaftaran.csv` (langkah 08,
+`tahap_gugur`/`hasil_akhir`). Langkah ini murni menjabarkan angka itu jadi
+perjalanan per-tahap:
+
+**(1) Tahap yang dicapai = urutan tahapan.yaml sampai persis di `tahap_gugur`
+(atau seluruhnya kalau DITERIMA).** Jalur mandiri mulai dari `administrasi` (6
+tahap); jalur RBB mulai dari `akademik_inggris` (4 tahap PLN, F-046) -- tahap FHCI
+di depannya tidak per-kandidat, direkap di `seleksi_tahap_agregat.csv` dgn metode
+mundur dari jumlah serah-terima AKTUAL (bukan taksiran pra-generate
+`pelamar_fhci_porsi_pln` di funnel.yaml yg TEBAKAN): `jumlah_lulus` tiap tahap FHCI
+dihitung dari `lulus_pct` (0,40/0,28/0,175) mundur dari titik akhir (jumlah
+pendaftaran RBB nyata per tahun_program), sehingga akurat terhadap data yang benar-
+benar dibangkitkan, bukan estimasi lama. Hasil: 3 tahun berjalur RBB di data
+aktual (2020/2021/2024, sesuai `sumber_rekrutmen` per profesi -- lihat catatan
+residual F-078 soal tag ini tidak 100% cocok komposisi_jalur asli).
+**(2) Tahap yang SUDAH dilalui (sebelum titik gugur) selalu HADIR+LULUS** --
+konsisten dengan fakta pendaftaran.csv (kalau tidak lulus tahap itu, tidak akan
+sampai ke tahap berikutnya). **Di titik gugur sendiri**, HADIR vs TIDAK_HADIR
+diundi dari rasio no-show relatif (`(1-hadir_pct)/(1-hadir_pct*lulus_pct)`,
+funnel.yaml per tahap/arketipe) -- supaya "gagal karena tidak datang" tidak
+disamakan begitu saja dengan "hadir tapi gagal tes".
+**(3) Skor 100% DIMODELKAN** (F-028: tidak ada passing grade di regulasi manapun),
+dikalibrasi supaya konsisten dgn ambang `tahapan.yaml.passing_grade` DAN dengan
+hasil LULUS/GAGAL yang sudah final dari langkah 08 (skor lulus selalu >= ambang,
+skor gagal selalu < ambang). Tahap kategorikal (psikologi/fisik_mcu/wawancara)
+diberi label (DISARANKAN/FIT/dst), bukan skor mentah -- cocok dgn F-017 (sistem
+asli memang cuma simpan lulus/gagal).
+**(4) Kota tes & vendor dikunci SEKALI per pendaftaran** (F-024, lokasi tes
+terkunci saat daftar) dan dipakai ulang di semua tahap offline pendaftaran itu.
+Profesi berkota spesifik (afirmasi 3T) memakai kota itu; profesi "Seluruh
+Indonesia" disebar 80% ke 6 kota offline utama (Jakarta/Medan/Surabaya/Makassar/
+Palembang/Balikpapan -- persis cakupan kota_basis vendor.csv) + 20% ke 43-kota
+penuh. Vendor dipilih cocok kota kalau ada (fisik_mcu 6 vendor, 1/kota); psikologi
+2 vendor "nasional" jadi fallback kalau kota tak match.
+Diuji: `wawancara.hasil==LULUS` dijumlah persis = `DITERIMA` di pendaftaran.csv
+(7.711=7.711); tiap pendaftaran GAGAL berhenti tepat 1x di tahap terakhirnya (tak
+ada gugur ganda/di tengah); titik masuk sesuai jalur. Semua diuji otomatis di
+`00b_verifikasi_keluaran.py`.
+⚠️ **Simplifikasi yang disengaja, tidak dikejar presisi lebih jauh:** (a) skor
+disimpan sebagai satu `skor_total`/`kategori_hasil` per tahap, bukan per-komponen
+(tahapan.yaml mencatat `komponen`, mis. wartegg/pauli_kraepelin/papi_kostick utk
+psikologi) -- dashboard cukup dilayani level tahap; (b) `buta_warna_wajib_lulus_
+untuk: [TEKNIK]` (tahapan.yaml) TIDAK ditegakkan silang ke field `buta_warna`
+kandidat.csv, karena `bidang` pekerjaan (Distribusi/Transmisi/dst) belum ada
+sebagai kolom di profesi.csv (beda taksonomi dari `bidang` prodi TEKNIK/NON-TEKNIK
+yang sudah dipakai administrasi) -- kalau field itu ditambahkan di langkah
+berikutnya, konsistensi ini bisa ditutup.
+Sumber: tahapan.yaml (kosakata tahap, passing_grade, kehadiran), funnel.yaml
+(hadir_pct/lulus_pct per arketipe & RBB), kohort.yaml (durasi_hari_setelah_tutup) ·
+Keyakinan: tinggi (mekanika & jangkar keras diuji otomatis; skor & kota/vendor
+DIMODELKAN sesuai peringatan tahapan.yaml sendiri) · Dampak: `out/master/`
+bertambah `seleksi_tahap.csv`(464.688), `seleksi_tahap_agregat.csv`(9);
+`00b_verifikasi_keluaran.py` dapat blok cek baru.
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

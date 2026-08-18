@@ -1,0 +1,10 @@
+tahun_program,tahap_kode,nama,urutan,jumlah_masuk,jumlah_lulus,tanggal_estimasi,pemilik_proses,status_sumber
+2020,fhci_administrasi,Seleksi Administrasi (FHCI),-3,23215,9286,2020-01-16,FHCI,AGREGAT_TANPA_NAMA
+2020,fhci_tes_online_1,"Tes Online 1: TKD, AKHLAK, TWK",-2,9286,2600,2020-02-16,FHCI,AGREGAT_TANPA_NAMA
+2020,fhci_tes_online_2,"Tes Online 2: Inggris, Learning Agility",-1,2600,455,2020-03-16,FHCI,AGREGAT_TANPA_NAMA
+2021,fhci_administrasi,Seleksi Administrasi (FHCI),-3,9135,3654,2021-01-16,FHCI,AGREGAT_TANPA_NAMA
+2021,fhci_tes_online_1,"Tes Online 1: TKD, AKHLAK, TWK",-2,3654,1023,2021-02-16,FHCI,AGREGAT_TANPA_NAMA
+2021,fhci_tes_online_2,"Tes Online 2: Inggris, Learning Agility",-1,1023,179,2021-03-16,FHCI,AGREGAT_TANPA_NAMA
+2024,fhci_administrasi,Seleksi Administrasi (FHCI),-3,237045,94818,2024-01-16,FHCI,AGREGAT_TANPA_NAMA
+2024,fhci_tes_online_1,"Tes Online 1: TKD, AKHLAK, TWK",-2,94818,26549,2024-02-16,FHCI,AGREGAT_TANPA_NAMA
+2024,fhci_tes_online_2,"Tes Online 2: Inggris, Learning Agility",-1,26549,4646,2024-03-16,FHCI,AGREGAT_TANPA_NAMA

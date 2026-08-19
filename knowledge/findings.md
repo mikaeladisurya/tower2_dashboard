@@ -1898,6 +1898,53 @@ DIMODELKAN sesuai peringatan tahapan.yaml sendiri) · Dampak: `out/master/`
 bertambah `seleksi_tahap.csv`(464.688), `seleksi_tahap_agregat.csv`(9);
 `00b_verifikasi_keluaran.py` dapat blok cek baru.
 
+### F-080 · Generator 10 (pasca-seleksi) -- kontrak/SAMAPTA/pembidangan/OJT/SK dipotong tepat di `tanggal_sekarang`, bukan diasumsikan semuanya sudah selesai [sesi build]
+Klaim: `10_pasca_seleksi.py` membangkitkan 49.977 baris `pasca_tahap.csv`, satu baris
+per (pendaftaran DITERIMA x tahap `tahapan.yaml.tahap_pasca` yang SUDAH terjadi
+pada tanggal potong 2026-09-15). Jangkar keras: hanya 7.711 pendaftaran `hasil_akhir
+== DITERIMA` (persis sama dengan jangkar F-079) yang diproses; kedua jalur
+(mandiri/rbb) memakai kosakata pasca yang SAMA tanpa percabangan (HANDOFF butir 4b
+poin 2 -- "setelah serah-terima, RBB memakai pipeline PLN yang identik").
+**(1) Tanggal tiap tahap = `tgl_tutup` profesi + offset dari
+`kohort.yaml.durasi_hari_setelah_tutup`.** Untuk tahap bertitik-tunggal
+(pengumuman_akhir, ttd_kontrak, samapta, pembidangan, ujian_ojt, sk_penempatan)
+offset diundi uniform dalam rentang `[mulai,selesai]` (persis pola langkah 09) --
+kalau rentangnya satu titik (mulai==selesai) hasilnya otomatis deterministik.
+**(2) OJT beda perlakuan.** `durasi.ojt = {mulai:195, selesai:375}` (rentang 180
+hari) BUKAN jendela sampling sekali-titik seperti tahap lain -- ia adalah tanggal
+MULAI & SELESAI program itu sendiri (prajabatan berjalan sbg KELAS/kohort, 30-60
+orang/UPDL, bukan per-individu -- HANDOFF §6 keputusan "batas ±500/angkatan
+dilepas"). Diverifikasi persis: gelombang 2025 (tutup 2025-10-05) menghasilkan
+`ojt_mulai=2026-04-18`, `ojt_selesai=2026-10-15` -- SAMA PERSIS dengan angka yang
+sudah didokumentasikan manual di `kohort.yaml §2b.status_pada_tanggal_potong`
+sebelum generator ini ditulis (bukan dicocokkan mundur).
+**(3) Pemotongan di tanggal_sekarang (F-018, "diterima != sudah jadi pegawai").**
+Iterasi tahap_pasca berurutan; begitu satu tahap jatuh SETELAH 2026-09-15, loop
+berhenti -- tahap itu dan seluruhnya sesudahnya TIDAK ditulis (bukan ditulis dengan
+status "BELUM" kosong, supaya tabel tidak perlu kolom NULL masif). Untuk OJT
+spesifik: kalau tanggal potong jatuh DI DALAM jendela mulai-selesai, statusnya
+`BERJALAN` dengan `progres = (tanggal_sekarang - mulai)/(selesai - mulai)`, dan
+loop berhenti di situ (ujian_ojt/sk_penempatan belum ditulis). Hasil generate:
+5.711 pendaftaran sudah ber-SK (pegawai penuh), 2.000 sedang OJT progres
+0,83-0,91 (tergantung tgl_tutup persis profesinya) -- angka 2.000 ini SEJALAN
+dengan narasi manual "±2.000 orang sudah kontrak tapi belum SK" di
+`kohort.yaml §2b`, dan seluruh sisa gelombang 2025 (angkatan 91/92) adalah SATU-
+SATUNYA tahun yang OJT-nya masih berjalan (diverifikasi: `tahun_program` &
+`angkatan` OJT BERJALAN semuanya {2025}/{91,92}) -- persis klaim dokumen.
+`urutan` kolom melanjutkan dari `seleksi_tahap.csv` (1-6) jadi 7-13, supaya
+perjalanan lintas dua tabel punya satu deret urutan tunggal.
+Diuji (`00b_verifikasi_keluaran.py`): tiap pendaftaran menempuh tahap_pasca sbg
+PREFIKS berurutan tanpa lompat; sk_penempatan hanya muncul kalau ketujuh tahap
+sebelumnya lengkap; OJT BERJALAN selalu jadi baris TERAKHIR pendaftaran itu;
+progres selalu [0,1] dan selalu 1,0 utk tahap non-OJT. Determinisme diuji manual
+(hash MD5 identik lintas 2x jalan, seed tunggal 20260915).
+Sumber: tahapan.yaml (tahap_pasca), kohort.yaml (durasi_hari_setelah_tutup,
+tanggal_sekarang, §2b status_pada_tanggal_potong sbg angka pembanding) ·
+Keyakinan: tinggi (mekanika & jangkar keras diuji otomatis; tanggal & progres
+COCOK PERSIS dgn contoh manual yang sudah didokumentasikan sebelum kode ditulis) ·
+Dampak: `out/master/` bertambah `pasca_tahap.csv`(49.977); `00b_verifikasi_
+keluaran.py` dapat blok cek baru.
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

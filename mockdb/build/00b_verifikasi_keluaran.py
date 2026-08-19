@@ -474,6 +474,57 @@ def cek_seleksi_tahap(R: dict, seleksi_tahap: list[dict], seleksi_agregat: list[
 
 
 # ---------------------------------------------------------------------------
+# 9c. Pasca-seleksi: kontrak/SAMAPTA/pembidangan/OJT/SK (langkah 10)
+# ---------------------------------------------------------------------------
+def cek_pasca_tahap(R: dict, pasca: list[dict], pendaftaran: list[dict]) -> None:
+    print("\n[ pasca-seleksi (langkah 10) ]")
+
+    diterima_id = {r["pendaftaran_id"] for r in pendaftaran if r["hasil_akhir"] == "DITERIMA"}
+    asing = [r["pendaftaran_id"] for r in pasca if r["pendaftaran_id"] not in diterima_id]
+    cek("pasca_tahap.pendaftaran_id semua berasal dari pendaftaran DITERIMA",
+        not asing, f"{len(asing)} baris asing")
+
+    kode_valid = {t["kode"] for t in R["tahapan"]["tahap_pasca"]}
+    asing_kode = {r["tahap_kode"] for r in pasca} - kode_valid
+    cek("tahap_kode semuanya dikenal di tahapan.yaml.tahap_pasca", not asing_kode, f"asing: {asing_kode}")
+
+    ORDER = [t["kode"] for t in R["tahapan"]["tahap_pasca"]]
+    per_pendaftaran: dict[str, list[str]] = defaultdict(list)
+    for r in sorted(pasca, key=lambda r: int(r["urutan"])):
+        per_pendaftaran[r["pendaftaran_id"]].append(r["tahap_kode"])
+    bukan_prefiks = [
+        pid for pid, kodes in per_pendaftaran.items() if kodes != ORDER[: len(kodes)]
+    ]
+    cek("tiap pendaftaran menempuh tahap_pasca sbg PREFIKS berurutan (tidak ada yang dilompati)",
+        not bukan_prefiks, f"{len(bukan_prefiks)} pendaftaran, mis. {bukan_prefiks[:3]}")
+
+    cek("setiap pendaftaran DITERIMA punya >=1 baris pasca_tahap (pengumuman min. sudah lewat cutoff)",
+        diterima_id <= set(per_pendaftaran), f"{len(diterima_id - set(per_pendaftaran))} tanpa baris")
+
+    # sk_penempatan cuma boleh muncul kalau ketujuh tahap sebelumnya juga ada (prefiks penuh)
+    ber_sk = [pid for pid, kodes in per_pendaftaran.items() if "sk_penempatan" in kodes]
+    cek("pendaftaran ber-sk_penempatan menempuh ketujuh tahap pasca secara penuh",
+        all(len(per_pendaftaran[pid]) == len(ORDER) for pid in ber_sk),
+        f"{sum(1 for pid in ber_sk if len(per_pendaftaran[pid]) != len(ORDER))} pendaftaran tidak penuh")
+
+    # OJT BERJALAN harus jadi baris TERAKHIR pendaftaran itu (belum lanjut ke ujian_ojt/sk)
+    ojt_berjalan = [r for r in pasca if r["tahap_kode"] == "ojt" and r["status"] == "BERJALAN"]
+    bukan_terakhir = [r["pendaftaran_id"] for r in ojt_berjalan
+                       if per_pendaftaran[r["pendaftaran_id"]][-1] != "ojt"]
+    cek("OJT BERJALAN selalu jadi tahap terakhir yang tercapai (belum ujian_ojt/sk)",
+        not bukan_terakhir, f"{len(bukan_terakhir)} pendaftaran, mis. {bukan_terakhir[:3]}")
+
+    progres_aneh = [r["pasca_id"] for r in pasca if not 0.0 <= float(r["progres"]) <= 1.0]
+    cek("progres selalu di rentang [0,1]", not progres_aneh, f"{len(progres_aneh)} baris")
+
+    progres_bukan_ojt = [
+        r["pasca_id"] for r in pasca if r["tahap_kode"] != "ojt" and float(r["progres"]) != 1.0
+    ]
+    cek("tahap bertitik-tunggal (bukan ojt) selalu progres=1.0 (SELESAI)",
+        not progres_bukan_ojt, f"{len(progres_bukan_ojt)} baris")
+
+
+# ---------------------------------------------------------------------------
 # 9. Kandidat & pendaftaran (langkah 08)
 # ---------------------------------------------------------------------------
 def cek_kandidat_pendaftaran(R: dict, kandidat: list[dict], pendaftaran: list[dict],
@@ -593,6 +644,7 @@ def main() -> int:
     kand_berkas = baca("kandidat_berkas.csv")
     seleksi_tahap = baca("seleksi_tahap.csv")
     seleksi_agregat = baca("seleksi_tahap_agregat.csv")
+    pasca = baca("pasca_tahap.csv")
     if gagal:
         print("\nInput belum lengkap -- hentikan.")
         return 1
@@ -606,6 +658,7 @@ def main() -> int:
     cek_vendor_lokasi(R, kota, updl, vendor, tahap_ref)
     cek_kandidat_pendaftaran(R, kandidat, pendaftaran, kand_didik, kand_sert, kand_kel, kand_berkas, prof)
     cek_seleksi_tahap(R, seleksi_tahap, seleksi_agregat, pendaftaran, prof)
+    cek_pasca_tahap(R, pasca, pendaftaran)
     cek_pii()
 
     print("\n" + "=" * 60)

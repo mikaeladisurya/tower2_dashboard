@@ -1,0 +1,236 @@
+# demografi.yaml — profil kandidat: gender, pendidikan, usia, asal, fisik
+# Rujukan: F-038, F-020, F-004, F-034, F-006
+#
+# PENTING: sebaran di sini berlaku untuk PELAMAR. Sebaran YANG DITERIMA muncul sebagai
+# HASIL dari funnel + syarat administrasi, bukan diatur langsung. Kalau keduanya diatur
+# terpisah, angkanya akan saling bertentangan.
+
+meta:
+  versi: 1
+  seed_nama: 20260915
+  peringatan_pii: >
+    Nama kandidat 100% SINTETIS -- dibangkitkan dari daftar nama Indonesia umum + seed.
+    JANGAN pernah mengambil nama dari DAPEG (`data sintetis/`) maupun dump area member
+    (`knowledge/sources/rekrutmen_pln/akun/`, gitignored, memuat PII pihak ketiga nyata).
+
+# ---------------------------------------------------------------------------
+# 1. GENDER
+# ---------------------------------------------------------------------------
+gender:
+  pelamar:   {P: 0.62, W: 0.38}
+  status_sumber_pelamar: TURUNAN
+  diterima_target: {P: 0.75, W: 0.25}
+  rujukan_diterima: "rata-rata runtun 2020-2024 (F-048); JANGAN dipakai sebagai angka tetap"
+
+  # -------------------------------------------------------------------------
+  # GENDER PER TAHUN — angka NYATA, berayun jauh lebih lebar dari dugaan
+  # -------------------------------------------------------------------------
+  # KOREKSI v2: F-038 memberi kesan 75:25 tetap. Runtun penuh dari SR-2021 & SR-2024
+  # (F-048) menunjukkan ayunan 65:35 sampai 86:14. Satu angka global akan menyembunyikan
+  # variasi yang justru bisa dijelaskan.
+  diterima_per_tahun_program:
+    2019: {P: 0.70, W: 0.30, sumber: "SR-2020/2021 -- masuk 2020: 763P/325W", status: NYATA}
+    2020: {P: 0.65, W: 0.35, sumber: "SR-2021 -- masuk 2021: 212P/113W",       status: NYATA}
+    2021: {P: 0.72, W: 0.28, sumber: "SR-2024 -- pra-jabatan 2022: 496P/193W", status: NYATA}
+    2022: {P: 0.73, W: 0.27, sumber: "SR-2024 -- pra-jabatan 2023: 506P/183W", status: NYATA}
+    2023: {P: 0.86, W: 0.14, sumber: "SR-2024 -- pra-jabatan 2024: 1.104P/173W", status: NYATA}
+    2024: {P: 0.7696, W: 0.2304, sumber: "SR-2025 hal. 203 -- pra-jabatan 2025: 845P/253W", status: NYATA}
+    2025: {P: 0.78, W: 0.22, sumber: "TURUNAN -- SR-2026 belum terbit",         status: TURUNAN}
+  penjelasan_2023: >
+    Lonjakan ke 86:14 di gelombang 2023 PUNYA SEBAB, bukan derau: tahun itu didominasi
+    afirmasi 3T (OAP 8 kota + Maluku & Nusa Tenggara), dan rekrutmen afirmasi teknis di
+    wilayah timur jauh lebih timpang gender. Generator harus menghasilkan angka ini LEWAT
+    bauran program, bukan dengan memaksa 0,86 di sisi kandidat.
+
+  catatan: >
+    Sebaran pelamar dibuat lebih seimbang dari sebaran diterima, karena ketimpangan
+    diperbesar oleh bauran jurusan (teknik didominasi pria) yang bekerja LEWAT funnel.
+    Jangan paksa target di sisi pelamar -- biarkan muncul sendiri. Kalau hasil generator
+    meleset >3 poin dari target tahun bersangkutan, setel `gender.pelamar`, bukan hasilnya.
+  variasi_per_bidang:
+    TEKNIK:     {P: 0.82, W: 0.18}
+    NON-TEKNIK: {P: 0.45, W: 0.55}
+  jangan_50_50: true
+
+# ---------------------------------------------------------------------------
+# 2. JENJANG PENDIDIKAN
+# ---------------------------------------------------------------------------
+jenjang_pelamar:
+  "S1/D-IV": 0.67
+  "D-III":   0.26
+  "SMK":     0.06
+  "S2":      0.01
+  rujukan: "F-020 -- donut kehadiran per jenjang (S1 67% / D3 26% / SMK 6% / S2 1%)"
+  keyakinan: tinggi
+  catatan_smk: >
+    Porsi SMK 6% adalah angka KUMULATIF sejak awal, yang di dalamnya termuat era 2017
+    ketika 25 program SMK dibuka sekaligus (F-031). Di horison 2019-2025 katalog memuat
+    NOL program SMK, jadi sebaran per tahun di bawah TIDAK memuat SMK sama sekali --
+    alasan lengkapnya di angkatan.yaml -> smk_pelaksana. Generator harus memakai sebaran
+    PER TAHUN di bawah, bukan angka kumulatif ini.
+  per_tahun_program:
+    2019: {"S1/D-IV": 0.62, "D-III": 0.35, "S2": 0.03}   # era per-kota: porsi D3 paling besar
+    2020: {"S1/D-IV": 0.68, "D-III": 0.30, "S2": 0.02}
+    2021: {"S1/D-IV": 0.68, "D-III": 0.30, "S2": 0.02}
+    2022: {"S1/D-IV": 0.64, "D-III": 0.27, "S2": 0.09}   # dua gelombang S2 (ICE Fresh + Pro Hire)
+    2023: {"S1/D-IV": 0.70, "D-III": 0.26, "S2": 0.04}   # Diaspora S2 Fresh & Experienced
+    2024: {"S1/D-IV": 0.72, "D-III": 0.27, "S2": 0.01}
+    2025: {"S1/D-IV": 0.71, "D-III": 0.26, "S2": 0.03}   # Hukum S2 & S1
+    # 2026: TIDAK ADA -- belum ada gelombang, jadi tidak ada pelamar (kohort.yaml)
+    status_sumber: TURUNAN
+    catatan: >
+      Porsi S2 naik-turun mengikuti ADA-TIDAKNYA gelombang S2 di tahun itu, bukan tren
+      mulus. 2022 melonjak ke 9% karena dua gelombang S2 dibuka serentak 7 Okt.
+
+# ---------------------------------------------------------------------------
+# 3. USIA SAAT MENDAFTAR
+# ---------------------------------------------------------------------------
+# Sengaja dibuat sebagian MELEBIHI batas umur, supaya kegagalan administrasi karena
+# umur punya sebab yang sungguhan (lihat administrasi.yaml -> alasan_gagal).
+usia_saat_daftar:
+  SMK:       {mode: 19, min: 17, maks: 26, sd: 1.8}
+  "D-III":   {mode: 22, min: 20, maks: 29, sd: 2.0}
+  "S1/D-IV": {mode: 23, min: 21, maks: 31, sd: 2.2}
+  "S2":      {mode: 26, min: 23, maks: 34, sd: 2.4}
+  distribusi: lognormal_tergeser
+  target_pct_melebihi_batas: 0.09
+  status_sumber: TURUNAN
+  rujukan_kewajaran: "F-038 -- usia pegawai <30 th 27,31%; usia minimum kerja 20 th"
+
+# ---------------------------------------------------------------------------
+# 4. IPK
+# ---------------------------------------------------------------------------
+ipk:
+  distribusi: beta_terskala
+  rentang: [2.20, 3.95]
+  rata2: 3.28
+  sd: 0.28
+  target_pct_di_bawah_3: 0.20
+  status_sumber: TURUNAN
+  catatan: >
+    Disetel agar +-20% pelamar jatuh di bawah 3,00 -- ini yang membuat "gagal karena IPK"
+    (bobot 0.28 di administrasi.yaml) mendarat pada orang yang IPK-nya memang kurang.
+  nem_smk: {rentang: [6.0, 9.5], rata2: 7.8, sd: 0.7}
+
+# ---------------------------------------------------------------------------
+# 5. PROGRAM STUDI
+# ---------------------------------------------------------------------------
+program_studi:
+  sumber: "F-004 -- 49 prodi unik asli dari programs.csv, JANGAN dikarang"
+  bobot_teratas:
+    "TEKNIK ELEKTRO": 23
+    "TEKNIK MESIN": 22
+    "TEKNIK INDUSTRI": 22
+    "AKUNTANSI": 22
+    "MANAJEMEN": 20
+    "TEKNIK SIPIL": 19
+    "MANAJEMEN BISNIS": 17
+    "MANAJEMEN PEMASARAN": 14
+    "HUKUM": 10
+    "KESELAMATAN DAN KESEHATAN KERJA": 8
+    "KOMUNIKASI": 8
+    "PSIKOLOGI": 8
+  keterangan_bobot: "angka = jumlah program yang membuka prodi tsb (proksi permintaan)"
+  payung: ["PROGRAM STUDI LAINNYA TEKNIK", "PROGRAM STUDI LAINNYA NON TEKNIK"]
+  prodi_di_luar_daftar_pct: 0.18
+  catatan_luar_daftar: >
+    Pelamar dengan prodi di luar daftar profesi yang dilamar TETAP boleh mendaftar
+    (sistem tidak memblokir di muka) tapi gugur di administrasi -- inilah sumber
+    terbesar kegagalan administrasi (bobot 0.30).
+
+# ---------------------------------------------------------------------------
+# 6. ASAL & DOMISILI (dua alamat terpisah -- F-034)
+# ---------------------------------------------------------------------------
+alamat:
+  dua_blok: [domisili, asal]
+  rujukan: "F-034 -- skema CV asli memisahkan Alamat/Kota/Propinsi/Kode Pos Domisili vs Asal"
+  pct_domisili_beda_provinsi_dari_asal: 0.34
+  status_sumber: TURUNAN
+  sebaran_provinsi_asal:
+    metode: >
+      Diturunkan dari sebaran pegawai per unit induk (`out/master/unit_induk.csv`) --
+      proksi wajar untuk dari mana orang melamar. Jawa dominan, Papua kecil kecuali
+      pada gelombang afirmasi.
+  afirmasi:
+    aturan: "pelamar program afirmasi WAJIB berprovinsi asal sesuai jalurnya"
+    OAP: ["Papua", "Papua Barat", "Papua Selatan", "Papua Tengah", "Papua Pegunungan", "Papua Barat Daya"]
+    MALUKU_NUSRA: ["Maluku", "Maluku Utara", "Nusa Tenggara Timur", "Nusa Tenggara Barat"]
+    rujukan: "F-006"
+
+# ---------------------------------------------------------------------------
+# 7. BLOK FISIK & VISUS (temuan baru F-034)
+# ---------------------------------------------------------------------------
+# Kandidat mengisi data fisik SEJAK BIODATA, jauh sebelum MCU. Ini yang menyambungkan
+# tabel kandidat ke tahap fisik_mcu -- hasil MCU harus konsisten dengan angka di sini.
+fisik:
+  rujukan: "F-034"
+  kelengkapan_bertahap: "lihat kelengkapan.yaml -- kolom ini KOSONG di kohort lama"
+  tinggi_cm:
+    P: {rata2: 168, sd: 6.0}
+    W: {rata2: 156, sd: 5.5}
+  berat_kg:
+    P: {rata2: 66, sd: 10.5}
+    W: {rata2: 54, sd: 9.0}
+  bmi: "dihitung dari tinggi & berat -- JANGAN dibangkitkan terpisah"
+  bmi_rentang_sehat: [18.5, 25.0]
+  pct_bmi_di_luar_rentang: 0.22
+  lingkar_perut_cm:
+    P: {rata2: 82, sd: 9}
+    W: {rata2: 74, sd: 8}
+    ambang_berisiko: {P: 90, W: 80}
+  visus:
+    normal: "6/6"
+    sebaran: {"6/6": 0.58, "6/9": 0.21, "6/12": 0.12, "6/18": 0.06, "6/24": 0.03}
+    silinder_pct: 0.24
+    kiri_dan_kanan_terpisah: true
+  buta_warna_pct: 0.035
+  catatan_buta_warna: >
+    +-3,5% lelaki dan +-0,4% perempuan. Wajib lulus untuk profesi bidang TEKNIK
+    (F-023) -- jadi ini penyebab UNFIT yang sah dan bisa dijelaskan di dashboard.
+  tato_pct: 0.028
+  ukuran: [baju, celana, sepatu]
+
+# ---------------------------------------------------------------------------
+# 8. BLOK LAIN DARI SKEMA ASLI
+# ---------------------------------------------------------------------------
+agama:
+  sebaran: {Islam: 0.85, Kristen: 0.075, Katolik: 0.031, Hindu: 0.017, Buddha: 0.008, Konghucu: 0.001, Lainnya: 0.018}
+  status_sumber: ASUMSI
+  catatan: "Sebaran nasional umum; tidak ada sumber PLN. Ditandai asumsi."
+
+status_perkawinan:
+  sebaran_pelamar: {"BELUM MENIKAH": 0.94, "MENIKAH": 0.055, "CERAI": 0.005}
+  catatan: "5,5% yang menikah gugur di administrasi -- bobot 0.04 di administrasi.yaml."
+
+kontak_keluarga:
+  tabel_terpisah: true
+  rujukan: "F-034"
+  kolom: [hubungan_keluarga, alamat, no_telp, pekerjaan]
+  hubungan: [Ayah, Ibu, Kakak, Adik, Wali, Suami, Istri]
+  jumlah_baris_per_kandidat: {min: 1, maks: 2}
+
+pendidikan:
+  tabel_terpisah: true
+  rujukan: "F-034"
+  kolom: [degree, sekolah_universitas, program_studi, skhu_ipk, pendidikan_terakhir, tahun_masuk, tahun_lulus]
+  jenjang_wajib_diisi: [SD, SMP, "SMA/SMK"]
+  catatan_wajib: >
+    Validasi sistem asli MEWAJIBKAN SD, SMP, dan SMA/SMK diisi -- bukan cuma pendidikan
+    tinggi. Jadi tiap kandidat S1 punya minimal 4 baris pendidikan. Ini bukan hiasan:
+    tabel pendidikan jadi +-4x jumlah kandidat, dan itu memang bentuk aslinya.
+  baris_per_kandidat:
+    SMK: 3
+    "D-III": 4
+    "S1/D-IV": 4
+    "S2": 5
+
+sertifikasi:
+  tabel_terpisah: true
+  rujukan: "F-034"
+  kolom: [kategori_sertifikasi, tahun, skor]
+  pct_kandidat_punya: 0.31
+  jumlah_baris: {min: 1, maks: 3}
+  kategori_umum: [TOEFL, IELTS, TOEIC, "Sertifikat Kompetensi", "Pelatihan Bahasa", "Sertifikasi K3", "Microsoft Office"]
+  catatan: >
+    Skor sertifikasi adalah satu-satunya SKOR yang benar-benar ada di sistem asli
+    (diisi sendiri oleh kandidat). Skor TES tidak ada (F-017). Jangan tertukar.

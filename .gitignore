@@ -60,3 +60,22 @@ knowledge/sources/rekrutmen_pln/.browser_profile/
 knowledge/sources/laporan_pln/pdf/
 
 knowledge/sources/rbb_fhci/raw_*.json
+
+# ---- mockdb: keluaran generator (besar & bisa dibangkitkan ulang dari rules/) ----
+mockdb/out/*.duckdb
+mockdb/out/csv/
+mockdb/out/parquet/
+# out/master/*.csv: blokir semua, lalu buka lagi 7 berkas FONDASI (langkah 01/02) yang
+# TIDAK bisa dibangkitkan ulang tanpa akses DAPEG asli (data sintetis/, di-gitignore di
+# atas) -- keduanya kecil (<2,2 MB) dan aman di-track (agregat, bukan baris per-orang).
+# Sisanya (langkah 03-12: kandidat/pendaftaran/seleksi/pasca/penempatan/dst) 100%
+# regenerable dari fondasi + rules/ + knowledge/sources/ + seed tunggal (kohort.yaml),
+# jadi tidak perlu ikut repo -- sudah menembus 90+ MB per berkas (F-083).
+mockdb/out/master/*.csv
+!mockdb/out/master/unit_induk.csv
+!mockdb/out/master/unit_pelaksana.csv
+!mockdb/out/master/realisasi_bulanan.csv
+!mockdb/out/master/jabatan_katalog.csv
+!mockdb/out/master/jabatan_klasifikasi.csv
+!mockdb/out/master/posisi_unit_induk.csv
+!mockdb/out/master/posisi_unit_pelaksana.csv

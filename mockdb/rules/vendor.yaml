@@ -1,0 +1,94 @@
+# vendor.yaml — vendor pelaksana tahap psikologi & fisik/MCU
+# Rujukan: F-061 (satu-satunya vendor bernama di sumber asli), ERD.md area A
+#
+# PRINSIP: psikologi & fisik/MCU dikerjakan pemilik_proses=VENDOR (tahapan.yaml),
+# offline di kota_terkunci. Sistem asli PLN tidak menyimpan daftar vendor per kota
+# (F-017 pola: domain operasional, bukan HTD) -- satu-satunya nama vendor yang
+# muncul di sumber tersitasi adalah "Klinik Prodia, Medan" (F-061, blog rekrutmen
+# 2015). Vendor lain di bawah ini DIMODELKAN: nama perusahaan REAL yang memang
+# bergerak di jasa lab-kesehatan/assessment-psikologi di Indonesia (bukan nama
+# karangan), ditempatkan di kota_offline_utama (F-024) sebagai taksiran wajar
+# untuk cakupan multi-kota. Tandai status_sumber supaya dashboard bisa memisahkan.
+
+meta:
+  versi: 1
+  jumlah_target: "±10 (ERD.md area A)"
+
+vendor:
+  - kode: VEND01
+    nama: "Klinik Prodia"
+    tipe_layanan: fisik_mcu
+    kota_basis: Medan
+    status_sumber: null
+    rujukan: "F-061 -- 'Klinik Prodia, Medan', tes fisik & lab 2015"
+
+  - kode: VEND02
+    nama: "Prodia Widyahusada"
+    tipe_layanan: fisik_mcu
+    kota_basis: Jakarta
+    status_sumber: DIMODELKAN
+    catatan: "Jaringan lab nasional yang sama dgn VEND01 (real, multi-cabang) -- cakupan kota lain DIMODELKAN"
+
+  - kode: VEND03
+    nama: "Prodia Widyahusada"
+    tipe_layanan: fisik_mcu
+    kota_basis: Surabaya
+    status_sumber: DIMODELKAN
+    catatan: "cabang Prodia lain (jaringan real, penempatan kota DIMODELKAN)"
+
+  - kode: VEND04
+    nama: "Kimia Farma Diagnostika"
+    tipe_layanan: fisik_mcu
+    kota_basis: Makassar
+    status_sumber: DIMODELKAN
+    catatan: "BUMN farmasi, punya lini lab klinik nasional -- nama real, penempatan kota DIMODELKAN"
+
+  - kode: VEND05
+    nama: "Kimia Farma Diagnostika"
+    tipe_layanan: fisik_mcu
+    kota_basis: Palembang
+    status_sumber: DIMODELKAN
+    catatan: "cabang Kimia Farma Diagnostika lain -- DIMODELKAN"
+
+  - kode: VEND06
+    nama: "Kimia Farma Diagnostika"
+    tipe_layanan: fisik_mcu
+    kota_basis: Balikpapan
+    status_sumber: DIMODELKAN
+    catatan: "cabang Kimia Farma Diagnostika lain -- DIMODELKAN"
+
+  - kode: VEND07
+    nama: "Lembaga Psikologi Terapan UI (LPT UI)"
+    tipe_layanan: psikologi
+    kota_basis: Jakarta
+    status_sumber: DIMODELKAN
+    catatan: "unit layanan psikologi terapan Fakultas Psikologi UI -- nama real, penunjukan DIMODELKAN"
+
+  - kode: VEND08
+    nama: "Daya Dimensi Indonesia (DDI)"
+    tipe_layanan: psikologi
+    kota_basis: nasional
+    status_sumber: DIMODELKAN
+    catatan: "assessment center nasional real, mewakili vendor psikotes yg melayani banyak kota_terkunci sekaligus"
+
+  - kode: VEND09
+    nama: "UPAC PLN (Corporate University)"
+    tipe_layanan: psikologi
+    kota_basis: nasional
+    status_sumber: DIMODELKAN
+    catatan: "unit assessment center internal PLN Corporate University -- nama real, dipakai utk kota tanpa vendor eksternal"
+
+  - kode: VEND10
+    nama: "Bina Talenta"
+    tipe_layanan: psikologi
+    kota_basis: Surabaya
+    status_sumber: DIMODELKAN
+    catatan: "biro psikologi real yg beroperasi di beberapa kota besar -- penunjukan DIMODELKAN"
+
+catatan_penunjukan: >
+  Langkah 07 hanya membangun MASTER vendor (bukan penugasan per-tahap-per-kandidat --
+  itu langkah 09). Aturan penugasan sementara: kota_terkunci yang sama dgn kota_basis
+  vendor tipe sesuai tahap dapat vendor itu; kota lain dapat vendor tipe sesuai dgn
+  kota_basis == nasional (VEND08 psikologi, VEND09 psikologi cadangan; fisik_mcu tanpa
+  cadangan nasional eksplisit -- kota_terkunci di luar 6 kota vendor pakai vendor
+  fisik_mcu terdekat berdasarkan pulau, ditandai DIMODELKAN di langkah 09).

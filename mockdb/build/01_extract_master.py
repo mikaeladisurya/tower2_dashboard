@@ -39,6 +39,16 @@ NS_MAIN = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
 SHEET_DAPEG = "xl/worksheets/sheet4.xml"
 SHEET_FTK = "xl/worksheets/sheet3.xml"
 
+# Runtun realisasi bulanan di sheet FTK: kolom -> label bulan.
+# ⚠️ Header sumber MELOMPATI September & Oktober 2025 (Agt langsung ke November),
+#    dan kolom April 2026 rusak (#VALUE! di 47 dari 49 baris). Keduanya cacat
+#    di file sumber, bukan di sini — jangan "diperbaiki" dengan interpolasi diam-diam.
+BULAN_FTK = {
+    6: "2024-12", 7: "2025-01", 8: "2025-02", 9: "2025-03", 10: "2025-04",
+    11: "2025-05", 12: "2025-06", 13: "2025-07", 14: "2025-08", 15: "2025-11",
+    16: "2025-12", 17: "2026-01", 18: "2026-02", 19: "2026-03", 20: "2026-04",
+}
+
 # Prefix nama unit induk -> jenis unit. Diurutkan: yang lebih panjang dicek duluan.
 JENIS_UNIT_INDUK = [
     ("UNIT INDUK PENYALURAN DAN PUSAT PENGATUR BEBAN", "UIP3B"),
@@ -156,7 +166,12 @@ def extract_ftk(z: zipfile.ZipFile, shared: list[str]) -> dict[str, dict[str, st
             "ftk_2024": clean(row.get(4, "")),
             "ftk_2025": clean(row.get(5, "")),
             "realisasi_des_2025": clean(row.get(16, "")),
+            # Kolom Maret 2026 lengkap 49/49; kolom April 2026 hanya 2/49 numerik,
+            # 47 sisanya #VALUE! di FILE SUMBERNYA. Jadi realisasi termutakhir yang
+            # bisa dipakai adalah MARET 2026, bukan April.
+            "realisasi_mar_2026": clean(row.get(19, "")),
             "realisasi_apr_2026": clean(row.get(20, "")),
+            **{f"real_{k}": clean(row.get(i, "")) for i, k in BULAN_FTK.items()},
         }
     return out
 
@@ -263,6 +278,7 @@ def main() -> int:
     matched = 0
     consumed: set[int] = set()
     rows = []
+    bulanan: list[dict] = []
     for rec in sorted(induk.values(), key=lambda r: (r["jenis_unit"], r["nama_pendek"])):
         f = ftk_by_norm.get(normalize_for_match(rec["unit_induk"]))
         if f is None:
@@ -279,10 +295,23 @@ def main() -> int:
             "ftk_2024": (f or {}).get("ftk_2024", ""),
             "ftk_2025": (f or {}).get("ftk_2025", ""),
             "realisasi_des_2025": (f or {}).get("realisasi_des_2025", ""),
+            "realisasi_mar_2026": (f or {}).get("realisasi_mar_2026", ""),
             "realisasi_apr_2026": (f or {}).get("realisasi_apr_2026", ""),
         })
+        for bulan in BULAN_FTK.values():
+            nilai = (f or {}).get(f"real_{bulan}", "")
+            if nilai:
+                bulanan.append({
+                    "unit_induk": rec["unit_induk"],
+                    "nama_pendek": rec["nama_pendek"],
+                    "bulan": bulan,
+                    "realisasi": nilai,
+                })
     write_csv(OUT / "unit_induk.csv", rows)
     print(f"  unit_induk.csv           {len(rows):>7,} baris  ({matched} ter-match ke angka FTK)")
+    write_csv(OUT / "realisasi_bulanan.csv", bulanan)
+    n_bulan = len({b["bulan"] for b in bulanan})
+    print(f"  realisasi_bulanan.csv    {len(bulanan):>7,} baris  ({n_bulan} bulan x unit)")
 
     for key, rec in pelaksana.items():
         if pel_nama[key]:

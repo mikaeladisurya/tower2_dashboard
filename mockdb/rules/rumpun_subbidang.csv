@@ -1,0 +1,54 @@
+rumpun,sub_bidang,bobot,catatan
+Elektro dan Ketenagalistrikan,Distribusi,0.40,rumpun terbesar mengisi sub bidang terbesar
+Elektro dan Ketenagalistrikan,Transmisi dan Gardu Induk,0.28,
+Elektro dan Ketenagalistrikan,Proteksi dan Kontrol,0.12,satu-satunya rumpun yang mengisi Proteksi dan Kontrol
+Elektro dan Ketenagalistrikan,Pembangkitan,0.10,porsi kecil karena pembangkitan sudah pindah ke subholding
+Elektro dan Ketenagalistrikan,Perencanaan Sistem,0.10,
+Mesin dan Konversi Energi,Pembangkitan,0.40,
+Mesin dan Konversi Energi,Transmisi dan Gardu Induk,0.22,
+Mesin dan Konversi Energi,Distribusi,0.18,
+Mesin dan Konversi Energi,Manajemen Konstruksi dan Pengadaan,0.12,
+Mesin dan Konversi Energi,Perencanaan Sistem,0.08,
+Sipil dan Geodesi,Manajemen Konstruksi dan Pengadaan,0.62,
+Sipil dan Geodesi,Transmisi dan Gardu Induk,0.22,pembangunan tower & gardu induk
+Sipil dan Geodesi,Distribusi,0.16,
+Industri dan Rekayasa,Perencanaan dan Kinerja,0.32,
+Industri dan Rekayasa,Manajemen Konstruksi dan Pengadaan,0.28,
+Industri dan Rekayasa,Niaga dan Pemasaran,0.18,
+Industri dan Rekayasa,Distribusi,0.12,
+Industri dan Rekayasa,K3 dan Lingkungan,0.10,
+Informatika dan Data,Teknologi Informasi,0.70,
+Informatika dan Data,Perencanaan dan Kinerja,0.18,data analitik & kinerja korporat
+Informatika dan Data,Niaga dan Pemasaran,0.12,
+Kimia dan Lingkungan,K3 dan Lingkungan,0.55,
+Kimia dan Lingkungan,Pembangkitan,0.30,kimia bahan bakar & air
+Kimia dan Lingkungan,Perencanaan Sistem,0.15,
+K3,K3 dan Lingkungan,0.82,
+K3,Distribusi,0.10,K3 lapangan distribusi
+K3,Transmisi dan Gardu Induk,0.08,
+Akuntansi dan Perpajakan,Keuangan dan Akuntansi,0.72,
+Akuntansi dan Perpajakan,Audit dan Risiko,0.18,
+Akuntansi dan Perpajakan,Perencanaan dan Kinerja,0.10,
+Keuangan,Keuangan dan Akuntansi,0.68,
+Keuangan,Audit dan Risiko,0.17,
+Keuangan,Perencanaan dan Kinerja,0.15,
+Manajemen dan Bisnis,Niaga dan Pemasaran,0.30,
+Manajemen dan Bisnis,Perencanaan dan Kinerja,0.24,
+Manajemen dan Bisnis,Komunikasi dan Umum,0.20,
+Manajemen dan Bisnis,Manajemen Konstruksi dan Pengadaan,0.14,sisi administrasi kontrak & pengadaan
+Manajemen dan Bisnis,Sumber Daya Manusia,0.12,
+Pemasaran dan Niaga,Niaga dan Pemasaran,0.85,
+Pemasaran dan Niaga,Komunikasi dan Umum,0.15,
+Hukum,Hukum dan Kepatuhan,0.78,
+Hukum,Audit dan Risiko,0.14,
+Hukum,Manajemen Konstruksi dan Pengadaan,0.08,legal kontrak
+Komunikasi dan Humas,Komunikasi dan Umum,0.68,
+Komunikasi dan Humas,Niaga dan Pemasaran,0.32,pelayanan pelanggan
+Psikologi dan SDM,Sumber Daya Manusia,0.84,
+Psikologi dan SDM,Komunikasi dan Umum,0.16,
+Administrasi,Komunikasi dan Umum,0.44,
+Administrasi,Niaga dan Pemasaran,0.22,
+Administrasi,Keuangan dan Akuntansi,0.20,
+Administrasi,Sumber Daya Manusia,0.14,
+Logistik dan Rantai Pasok,Manajemen Konstruksi dan Pengadaan,0.78,
+Logistik dan Rantai Pasok,Perencanaan dan Kinerja,0.22,

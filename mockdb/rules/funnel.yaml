@@ -1,0 +1,374 @@
+# funnel.yaml — konversi tiap tahap, kehadiran, dan volume pendaftar
+# Rujukan: F-019, F-020, F-039, F-047, F-046
+#
+# CARA BACA: generator bekerja MUNDUR. Jumlah diterima dikunci oleh kohort.yaml
+# (angka nyata dari laporan PLN), lalu jumlah pendaftar dihitung dari laju di sini.
+# Jadi laju konversi adalah alat, dan jumlah diterima adalah kebenaran.
+
+meta:
+  versi: 1
+  jangkar_keras:                     # dua angka ini TIDAK boleh digeser generator
+    lulus_administrasi_pct: 0.64     # 382.744 / 598.395 -- F-019
+    end_to_end_pct: 0.0205           # 12.248 / 598.395 -- F-019
+  rasio_pelamar_diterima: 49         # = 1 / 0.0205 -- lihat F-047 kenapa BUKAN 1:200
+
+# ---------------------------------------------------------------------------
+# 1. KENAPA BUKAN 1:200
+# ---------------------------------------------------------------------------
+penolakan_rasio_200:
+  ringkas: >
+    F-039 memberi 1:223, tapi mencampur pembilang cakupan Group (245.217 pelamar 2025)
+    dengan penyebut cakupan Induk (1.098 prajabatan). F-019 memberi 1:49 dari satu sistem,
+    satu tanggal, satu cakupan. Dipakai F-019. Rincian argumen di temuan F-047.
+  konsekuensi_kalau_salah: >
+    Kalau HTD mengonfirmasi 598.395 itu APLIKASI (bukan orang), rasio sebenarnya lebih
+    ketat dan seluruh volume pendaftar naik +-2,5x. Cukup ubah `end_to_end_pct` di sini;
+    jumlah diterima tidak berubah karena dijangkar terpisah.
+
+# ---------------------------------------------------------------------------
+# 2. FUNNEL JALUR MANDIRI — DUA ARKETIPE (F-064 Sumbu 1)
+# ---------------------------------------------------------------------------
+# F-058/F-061: satu funnel nasional tunggal TIDAK cocok semua gelombang -- ada dua
+# arketipe laju eliminasi berbeda STRUKTUR (bukan cuma beda angka), dipilih per
+# gelombang lewat `jenis_program` (angkatan.yaml -> generator 06), BUKAN satu angka
+# dipaksa ke semua baris `seleksi_tahap`.
+#   - nasional_mandiri : eliminasi berat tiap tahap (Medan 2015, F-061: majemuk
+#     ~7,4% administrasi->wawancara). Funnel INI yang menutup jangkar keras F-019
+#     (64%/2,05%) secara eksak -- jangkar itu berlaku sebagai rata-rata TERTIMBANG
+#     seluruh gelombang (lihat `meta.jangkar_keras`), tapi karena nasional_mandiri
+#     menyerap mayoritas volume horison, praktiknya jangkarnya ditutup di sini.
+#   - afirmasi_remote : eliminasi nyaris nol setelah administrasi (Biak 2025,
+#     F-058: 99,3% bertahan begitu hadir administrasi). Tes digelar borongan
+#     2-4 hari di satu venue karena lokasi terpencil -- logistik tak memungkinkan
+#     gelombang berjenjang. TIDAK punya jangkar nasional independen setara F-019 --
+#     lihat validasi masing-masing.
+# RBB (jenis_program RBB, jalur: rbb) tidak lewat sini sama sekali -- funnel sendiri,
+# lihat bagian 3. Ikatan dinas juga funnel sendiri, lihat bagian 3b.
+
+pemilihan_arketipe:
+  keterangan: >
+    Generator 06 menghitung `jenis_program` per gelombang dari judul+jalur
+    (06_gelombang_program_profesi.py -> POLA_JENIS). Nilai itu dipetakan ke SALAH
+    SATU arketipe di bawah. Kalau `jenis_program` baru muncul di generator tanpa
+    entri di peta ini, 00b_verifikasi_keluaran.py akan menggagalkan cek.
+  peta:
+    REGULER: nasional_mandiri
+    S2: nasional_mandiri
+    PRO_HIRE: nasional_mandiri
+    DIASPORA: nasional_mandiri      # tidak ada data khusus jalur ini -- default konservatif
+    BIDANG: nasional_mandiri        # Matematika/Hukum -- rekrutmen khusus tapi bukan remote/3T
+    CAMPUS: nasional_mandiri        # campus hiring (F-059 UGM 2017) -- venue tunggal per kampus,
+                                      # bentuknya lebih dekat nasional_mandiri daripada afirmasi_remote
+    AFIRMASI: afirmasi_remote       # OAP/Papua/Maluku & Nusa Tenggara
+  default_residu: nasional_mandiri  # siluman (angkatan.yaml seri.siluman) BUKAN gelombang
+    # katalog nyata, tidak punya jenis_program sama sekali -- dianggap "rekrutmen
+    # terbuka generik" (F-067/F-068), bukan afirmasi. Default eksplisit, bukan celah.
+
+funnel_mandiri:
+  # hadir_pct   = dari yang DIUNDANG (no-show; F-020 rata-rata ~44% no-show lintas tahapan)
+  # lulus_pct   = dari yang HADIR (bukan dari yang diundang)
+  # multiplier  = fraksi pendaftar awal yang mencapai tahap ini (untuk sanity-check generator)
+
+  nasional_mandiri:
+    keterangan: >
+      Bentuk & laju IDENTIK dengan funnel_mandiri versi sebelum F-064 -- kini
+      eksplisit sebagai salah satu dari dua arketipe, bukan aturan tunggal semua gelombang.
+    tahapan:
+      - tahap: administrasi
+        hadir_pct: null              # penilaian dokumen, tidak ada undangan/kehadiran
+        lulus_pct: 0.640
+        multiplier_undangan: 1.0000
+        multiplier_lulus: 0.6400
+        rujukan: "F-019 (keras)"
+      - tahap: adaptif
+        hadir_pct: 0.45
+        lulus_pct: 0.67
+        multiplier_undangan: 0.6400
+        multiplier_lulus: 0.1930
+        rujukan: "TURUNAN, dikalibrasi ke jangkar"
+        catatan: >
+          No-show tertinggi ada di sini (55%). Ini tes massal pertama dan gratis, jadi
+          pelamar iseng rontok di titik ini. Lulus|hadir tinggi (67%) karena ambangnya longgar --
+          fungsinya menyaring yang tidak serius, bukan menyaring kemampuan.
+      - tahap: akademik_inggris
+        hadir_pct: 0.80
+        lulus_pct: 0.45
+        multiplier_undangan: 0.1930
+        multiplier_lulus: 0.0695
+        rujukan: "TURUNAN"
+        catatan: "Penyaring terberat. Yang tersisa sudah serius, jadi no-show turun ke 20%."
+      - tahap: psikologi
+        hadir_pct: 0.88
+        lulus_pct: 0.55
+        multiplier_undangan: 0.0695
+        multiplier_lulus: 0.0336
+        rujukan: "TURUNAN"
+      - tahap: fisik_mcu
+        hadir_pct: 0.92
+        lulus_pct: 0.82
+        multiplier_undangan: 0.0336
+        multiplier_lulus: 0.0254
+        rujukan: "TURUNAN"
+        catatan: "Lulus tinggi -- MCU menggugurkan karena temuan medis, bukan karena kuota."
+      - tahap: wawancara
+        hadir_pct: 0.95
+        lulus_pct: 0.85
+        multiplier_undangan: 0.0254
+        multiplier_lulus: 0.0205    # = end_to_end_pct, jangkar F-019 TERCAPAI
+        rujukan: "TURUNAN, ditutup ke jangkar F-019"
+    validasi:
+      end_to_end_tercapai: 0.0205
+      kehadiran_rata2_tertimbang: 0.581  # target F-020 ~0.56 -- selisih 2 poin, diterima
+      catatan_selisih: >
+        F-020 menyebut kehadiran 566.774/1.015.830 = 56%. Penyebut 1.015.830 tidak bisa
+        direkonsiliasi persis dengan funnel F-019 (kemungkinan menghitung sub-tes terpisah,
+        mis. akademik dan Inggris sebagai dua baris). Kami tidak memaksa cocok; kami kunci
+        ke dua angka F-019 yang tidak ambigu dan menerima kehadiran 58%.
+
+  afirmasi_remote:
+    keterangan: >
+      Kalibrasi dari SATU gelombang terobservasi penuh (PLN UP3 Biak, OAP Okt 2025,
+      F-058) + korroborasi kualitatif (Nabire 83% hadir-offline, UIW Papua 1.186
+      pendaftar se-provinsi -- F-060). TIDAK punya jangkar nasional independen
+      setara F-019 -- dua tahap ("administrasi", "akademik_inggris"+"psikologi")
+      punya angka terverifikasi tinggi (2 media independen); tiga sisanya ("adaptif",
+      "fisik_mcu", "wawancara") TURUNAN, diekstrapolasi dari tesis arketipe
+      (eliminasi nyaris nol pasca-administrasi) -- keyakinan lebih rendah dari
+      nasional_mandiri secara keseluruhan.
+    status_sumber: campuran
+    tahapan:
+      - tahap: administrasi
+        hadir_pct: null
+        lulus_pct: 0.515              # 155/301, Biak (F-058)
+        multiplier_undangan: 1.0000
+        multiplier_lulus: 0.5150
+        rujukan: "F-058 (Biak -- RRI + Cenderawasih Pos, tinggi)"
+      - tahap: adaptif
+        hadir_pct: 0.95
+        lulus_pct: 0.97
+        multiplier_undangan: 0.5150
+        multiplier_lulus: 0.4746
+        rujukan: "TURUNAN"
+        catatan: >
+          Biak TIDAK punya baris terpisah untuk tahap ini -- laporan nasional Papua
+          2025 menyebut TAP digelar SERENTAK dengan akademik/Inggris (F-058). Angka
+          di sini murni konsisten-tesis (eliminasi nyaris nol), BUKAN diverifikasi.
+      - tahap: akademik_inggris
+        hadir_pct: 0.897
+        lulus_pct: 1.000
+        multiplier_undangan: 0.4746
+        multiplier_lulus: 0.4257
+        rujukan: "F-058 (Biak: 139/155 hadir, 0 gugur, tinggi)"
+      - tahap: psikologi
+        hadir_pct: 0.993
+        lulus_pct: 1.000
+        multiplier_undangan: 0.4257
+        multiplier_lulus: 0.4227
+        rujukan: "F-058 (Biak: 138/139 hadir, 0 gugur tanpa keterangan, tinggi)"
+      - tahap: fisik_mcu
+        hadir_pct: 0.95
+        lulus_pct: 0.90
+        multiplier_undangan: 0.4227
+        multiplier_lulus: 0.3614
+        rujukan: "TURUNAN -- Biak tidak sampai merekam tahap ini"
+      - tahap: wawancara
+        hadir_pct: 0.95
+        lulus_pct: 0.55
+        multiplier_undangan: 0.3614
+        multiplier_lulus: 0.1888
+        rujukan: >
+          TURUNAN, DISENGAJA lebih ketat dari tahap lain -- inilah titik penyempitan
+          kuota yang sesungguhnya. Bukti tak langsung: Papua 2025 nasional 1.658
+          lulus administrasi (F-059) vs target diterima gelombang 91 = 979 -->
+          rasio administrasi->diterima keseluruhan ~59%, padahal tahap TEREKAM
+          (akademik/psikologi) nyaris tanpa gugur. Penyempitan sesungguhnya pasti
+          terjadi di wawancara/tahap akhir yang tak terekam, bukan tersebar merata.
+    validasi:
+      end_to_end: 0.1888
+      catatan: >
+        TIDAK dijangkarkan ke angka nasional independen (beda dari nasional_mandiri
+        yang ditutup persis ke F-019). Jauh lebih longgar (1:5,3) dari nasional_mandiri
+        (1:49) -- kontras itu memang tesis intinya, tapi presisi angkanya rendah-sedang.
+        Dipakai untuk BENTUK funnel (tahap mana longgar, tahap mana ketat), bukan
+        angka final yang bisa dikutip presisi.
+
+# ---------------------------------------------------------------------------
+# 3. FUNNEL JALUR RBB
+# ---------------------------------------------------------------------------
+# Tahap FHCI: AGREGAT SAJA (tanggal + jumlah), tanpa baris per-kandidat -- HANDOFF butir 1.
+# Tahap PLN: identik strukturnya dengan mandiri, tapi laju lulus lebih tinggi karena
+# kandidat sudah tersaring FHCI (F-046: "kandidat sudah tersaring saat sampai ke PLN").
+
+funnel_rbb:
+  fhci_agregat:
+    status_sumber: AGREGAT_TANPA_NAMA
+    catatan: >
+      Data per-kandidat memang TIDAK ADA di PLN -- itu faktanya, dan justru jadi temuan
+      yang ditampilkan dashboard. Tapi PLN pasti tahu berapa orang yang diserahkan ke TKB,
+      jadi jumlahnya dicatat. Tanpa angka ini funnel tahun RBB kosong dan tak bisa
+      dibandingkan antar-jalur.
+    tahapan:
+      - {tahap: fhci_administrasi,  pemilik: FHCI, lulus_pct: 0.400}
+      - {tahap: fhci_tes_online_1,  pemilik: FHCI, lulus_pct: 0.280, isi: "TKD, AKHLAK, TWK"}
+      - {tahap: fhci_tes_online_2,  pemilik: FHCI, lulus_pct: 0.175, isi: "Bahasa Inggris, Learning Agility"}
+    lolos_kumulatif_fhci: 0.0196     # 0.400 * 0.280 * 0.175
+    rasio_pelamar_serahterima: 51    # 1 / 0.0196 -- sisi FHCI saja
+    rasio_gabungan_rbb: 186          # 1 / (0.0196 * 0.2749) -- FHCI x PLN
+    rasio_nasional_rujukan: 186      # TIDAK ANDAL -- lihat F-069: 5.900 ternyata kumulatif
+                                      # 2022-2024, dipasangkan keliru dengan pendaftar 2024 saja
+                                      # (jebakan sama dgn F-039/F-047). Dipertahankan sementara
+                                      # karena belum ada pengganti; audit ulang sebelum langkah 08.
+    catatan_kalibrasi: >
+      Laju FHCI dipilih supaya rasio GABUNGAN mendarat di 1:186, angka nasional RBB 2024
+      yang bisa diperiksa dari F-043. Jadi yang dijangkar adalah ujung-ke-ujungnya;
+      pemecahan ke tiga tahap di dalamnya bebas dan memang tidak diketahui.
+    pelamar_fhci_porsi_pln:
+      2020: 60300                    # gelombang PPB Papua saja -- paling kecil
+      2021: 127800
+      2024: 292800
+      catatan: >
+        TEBAKAN. Untuk 2024 ini berarti +-27% dari 1,1 juta pendaftar RBB nasional melamar
+        ke lowongan PLN Group. Tinggi, tapi masuk akal: PLN termasuk BUMN paling diminati
+        dan tiap pelamar boleh memilih beberapa lowongan.
+    keyakinan: rendah
+    catatan_keyakinan: >
+      Volume pendaftar sisi FHCI adalah angka paling lemah di seluruh mockdb. RBB nasional
+      1:186 jauh lebih ketat dari mandiri 1:49 -- kontras itu nyata dan sengaja dipertahankan
+      (portal tunggal, semua BUMN sekaligus), tapi porsi PLN dari 1,1jt pendaftar itu
+      TEBAKAN. Tandai kualitas rendah di dashboard.
+
+  pln_per_kandidat:
+    titik_masuk: akademik_inggris
+    varian: "TKB saja -- komponen Bahasa Inggris DIKERJAKAN FHCI, tidak diulang PLN (F-046)"
+    tahapan:
+      - {tahap: akademik_inggris, hadir_pct: 0.92, lulus_pct: 0.65}
+      - {tahap: psikologi,        hadir_pct: 0.93, lulus_pct: 0.70}
+      - {tahap: fisik_mcu,        hadir_pct: 0.95, lulus_pct: 0.88}
+      - {tahap: wawancara,        hadir_pct: 0.96, lulus_pct: 0.88}
+    end_to_end_pct: 0.2749           # dari serah-terima ke diterima; 13,4x lebih longgar dari mandiri
+    catatan: >
+      Kehadiran jauh lebih tinggi dari mandiri di semua tahap. Kandidat sudah melewati
+      3 tahap FHCI, jadi yang tersisa berkomitmen. Ini pembeda antar-jalur yang paling
+      terlihat di dashboard, dan sepenuhnya masuk akal secara perilaku.
+
+# ---------------------------------------------------------------------------
+# 3b. FUNNEL IKATAN DINAS/KELAS KERJASAMA — TIDAK ADA PENDAFTARAN TERBUKA
+# ---------------------------------------------------------------------------
+# Peserta sudah diseleksi lewat jalur kampus (masuk kuliah kelas kerjasama + syarat PLN
+# terpisah, ikatan_dinas.yaml) -- mereka TIDAK PERNAH mendaftar di portal rekrutmen PLN.
+# Jadi tidak ada administrasi/adaptif/akademik_inggris/psikologi/fisik_mcu/wawancara sama
+# sekali. Mendarat langsung di tahap pasca-seleksi (samapta dst, sama seperti jalur lain).
+
+funnel_ikatan_dinas:
+  status_sumber: TURUNAN
+  catatan: >
+    Bukan funnel dalam arti pendaftar->diundang->lulus. 100% dari `diterima` di
+    angkatan.yaml (seri.ikatan_dinas) langsung masuk hitungan "lulus seleksi", karena
+    seleksinya sudah selesai di tingkat kampus, bertahun-tahun sebelum prajabatan.
+  titik_masuk: samapta
+  multiplier_lulus: 1.0000             # tidak ada penyusutan sebelum titik masuk
+  pendaftaran: tidak_ada
+  catatan_dashboard: >
+    Jangan tampilkan baris "pendaftar ikatan dinas" di funnel dashboard -- kosongkan atau
+    beri keterangan "seleksi kampus, di luar sistem pendaftaran PLN", supaya tidak terbaca
+    seolah 1.140 orang mendaftar terbuka dan semuanya lolos (itu akan menyesatkan).
+
+# ---------------------------------------------------------------------------
+# 4. SESUDAH LULUS WAWANCARA (kedua jalur sama)
+# ---------------------------------------------------------------------------
+pasca_seleksi:
+  status_sumber: TURUNAN
+  mengundurkan_diri_sebelum_kontrak_pct: 0.040
+  catatan_mundur: "Dapat tawaran lain / gagal SAMAPTA / alasan keluarga."
+  gagal_samapta_pct: 0.008
+  gagal_ujian_ojt_pct: 0.015
+  catatan_ojt: >
+    Yang gagal ujian OJT umumnya mengulang, bukan diberhentikan. Modelkan sebagai
+    `status_ojt = MENGULANG` lalu lulus di percobaan kedua, kecuali 0,3% yang keluar.
+
+# ---------------------------------------------------------------------------
+# 5. VOLUME HASIL (dihitung generator, ditulis di sini untuk verifikasi)
+# ---------------------------------------------------------------------------
+volume_target:
+  # KOREKSI 2026-08-18 (4x, F-067/F-069/F-070/F-071): (1) 2020/2021/2024 tidak 100%
+  # RBB/PPB; (2) RBB 2024 pakai realisasi riil 1.378 bukan kuota 1.830; (3) 2022 ternyata
+  # JUGA tidak 100% tercakup katalog nyata (induknya 100% angkatan 79/80 sintetis); (4) PLN
+  # TERNYATA JUGA ikut RBB 2022 (9 lowongan, data primer loadRecord) & RBB 2023 (32
+  # lowongan, siaran pers PLN) -- dua tahun yang sebelumnya dianggap 100% mandiri.
+  pendaftaran_total: 341838          # TIDAK termasuk ikatan dinas -- mereka tidak mendaftar
+  rincian_pendaftaran:
+    mandiri: 339073                  # 6.951 diterima / 0,0205
+    rbb_serah_terima: 2765           # 760 diterima / 0,2749 (280 induk RBB/PPB asli + 480 sub 2024)
+    ikatan_dinas: 0                  # TIDAK ADA -- seleksi kampus, di luar sistem pendaftaran
+  akun_kandidat_melamar: 253213      # rata-rata 1,35 lamaran per akun (F-025 lifetime)
+  akun_kandidat_tanpa_lamaran: 288663
+  baris_seleksi_tahap: 671487
+  rincian_baris_tahap:
+    mandiri: 665092                  # 1,9615 baris per pendaftaran (6 tahap, funnel menyempit)
+    rbb: 6395                        # 2,3127 baris per pendaftaran (4 tahap)
+  baris_seleksi_tahap_agregat: 27    # tahap FHCI, tahun RBB x tahap x beberapa lowongan
+  diterima_selesai: 8851             # = LULUS SELEKSI (via funnel ATAU ikatan dinas), belum tentu ber-SK
+  rincian_diterima:
+    mandiri: 6951                    # 2019+2025 (induk+sub murni) + 2023 mandiri+sub + sub 2022 + tidak_diketahui (2020/2021/2022/2024)
+    rbb: 760                         # ppb2020(50)+ppb2021(49)+rbb2022(30)+ppb2022(51)+rbb2023(60)+rbb2024(40)+sub2024(480)
+    ikatan_dinas: 1140               # 200+340+300 (D3) + 300 (D4) -- lihat angkatan.yaml
+
+  porsi_plafon_f019: 0.5713          # 341.838 / 598.395 pelamar kumulatif sejak +-2013
+  catatan_plafon: >
+    Naik dari 0,53 (versi lama) ke 0,57 setelah siluman/tidak_diketahui dipindah ke
+    funnel_mandiri -- logis, mereka MENAMBAH pendaftar mandiri, bukan lagi "gratis" lewat
+    RBB. Ikatan dinas (1.140) TIDAK dihitung di porsi ini sama sekali (bukan pendaftar).
+
+  # -------------------------------------------------------------------------
+  # STATUS PADA TANGGAL POTONG 15 SEP 2026
+  # -------------------------------------------------------------------------
+  # "Diterima" BUKAN berarti "sudah jadi pegawai". Kohort 2025 (+-2.000 orang) sudah
+  # ttd kontrak Mar-2026 tapi masih di tengah OJT; SK-nya baru 9 Nov 2026.
+  # KOREKSI 2026-08-18: `lulus_wawancara` sekarang HANYA yang benar2 lewat tahap wawancara
+  # (mandiri+rbb = 7.711). Ikatan dinas (1.140) skip wawancara -- ditambahkan terpisah,
+  # baru gabung lagi di titik yang sama (samapta) karena funnel_ikatan_dinas.titik_masuk.
+  status_per_15sep2026:
+    lulus_wawancara: 7711            # mandiri(7.078) + rbb(633) -- YANG LEWAT FUNNEL SELEKSI
+    ikatan_dinas_langsung: 1140      # skip administrasi..wawancara, lihat funnel_ikatan_dinas
+    total_masuk_pasca_seleksi: 8851  # 7.711 + 1.140 -- baru di sini kedua jalur GABUNG
+    ttd_kontrak: 8497                # 8.851 x 0,96 (4% mundur sebelum kontrak)
+    lulus_samapta: 8429              # x 0,992
+    sudah_sk_penempatan: 6427        # HANYA gelombang 2019-2024
+    sedang_ojt: 1905                 # gelombang 2025 -- angkatan 91 & 92
+    belum_ada_gelombang_2026: true
+    catatan: >
+      Angka `sudah_sk_penempatan` inilah yang boleh disebut "pegawai baru" di dashboard.
+      Selisih 1.905 orang antara lulus seleksi dan ber-SK bukan kebocoran data -- itu
+      pipeline yang memang sedang berjalan, dan justru salah satu tampilan paling
+      berguna: "berapa orang sedang OJT sekarang, kapan mereka ber-SK".
+
+  cara_verifikasi: >
+    rincian_pendaftaran.mandiri x 0,0205 harus = rincian_diterima.mandiri;
+    rincian_pendaftaran.rbb_serah_terima x 0,2749 harus = rincian_diterima.rbb;
+    rincian_diterima dijumlah (termasuk ikatan_dinas) harus = kohort.yaml totals_cek.group;
+    lulus_wawancara + ikatan_dinas_langsung harus = total_masuk_pasca_seleksi;
+    status_per_15sep2026 harus menurun monoton dari total_masuk_pasca_seleksi ke sudah_sk.
+    Semuanya diuji otomatis -- jangan ubah satu angka tanpa menyetel yang lain.
+
+  perlu_dihitung_ulang_saat_langkah_08: >
+    lamaran_per_akun/akun_tanpa_lamaran di bawah masih pakai RASIO lama (belum tentu
+    berubah, cuma basis pendaftaran_total-nya yang naik) -- baris_seleksi_tahap juga.
+    Ini cukup presisi untuk perencanaan langkah 07-12, tapi kalkulasi ulang yang teliti
+    baru relevan saat generator 08 (kandidat & pendaftaran) benar-benar ditulis.
+
+  lamaran_per_akun:
+    rata2: 1.35
+    sebaran: {1: 0.76, 2: 0.16, 3: 0.06, 4: 0.02}
+    rujukan: "F-025 & F-033 -- akun lifetime, gagal tahun ini boleh melamar lagi tahun depan"
+
+  akun_tanpa_lamaran:
+    sertakan: true
+    rasio_terhadap_pelamar: 1.14     # 1.282.833 akun / 598.395 pelamar = 2,14 (F-019)
+    rincian:
+      belum_aktivasi_email_pct: 0.075
+      profil_tidak_lengkap_pct: 0.42
+      lengkap_tapi_tidak_melamar_pct: 0.505
+    rujukan: "F-019 (1,28jt akun vs 598rb pelamar), F-033 (aktivasi email +-3 jam)"
+    catatan: >
+      Baris ini murah dan membuat angka '1,28 juta akun' bisa direproduksi di dashboard.
+      Set `sertakan: false` kalau tabel kandidat mau diringkas.

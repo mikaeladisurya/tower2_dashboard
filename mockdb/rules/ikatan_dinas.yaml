@@ -1,0 +1,192 @@
+# ikatan_dinas.yaml — linimasa program D3 Kelas Kerjasama / D4 & S1 Ikatan Dinas
+# Rujukan: F-067(b) (hipotesis awal), sesi 2026-08-18 (verifikasi + keputusan user)
+#
+# TUJUAN FILE INI: dokumentasi linimasa program ikatan dinas/kelas kerjasama PLN dan
+# taksiran headcount yang dipakai untuk mengisi `komposisi_jalur` di kohort.yaml pada
+# tahun 2020, 2021, 2024 -- tahun-tahun di mana katalog gelombang publik TIDAK bisa
+# menjelaskan seluruh kohort NYATA (lihat F-067).
+#
+# PERINGATAN SUMBER: linimasa & jumlah PTN di bawah berasal dari kombinasi (a) sumber
+# PRIMER resmi (siaran pers PLN, halaman kampus, berita bertanggal -- ditandai per baris)
+# dan (b) taksiran MANUAL user yang dibangun dari (a) dengan formula kasar
+# "jumlah PTN x kelas/PTN x mahasiswa/kelas". (b) BUKAN angka bersumber -- jangan
+# diperlakukan sebagai fakta, hanya sebagai isian residu yang lebih baik daripada nol.
+
+meta:
+  keyakinan_keseluruhan: rendah
+  status: >
+    Dipakai untuk mengisi SEBAGIAN residu 2020/2021/2024 di kohort.yaml, TIDAK untuk
+    mengklaim closure penuh. Sisa yang tidak tertutup tetap `tidak_diketahui` secara
+    eksplisit -- lihat komposisi_jalur di kohort.yaml.
+
+# ---------------------------------------------------------------------------
+# 1. LINIMASA TERVERIFIKASI (2016-2026) -- status per baris, bukan taksiran
+# ---------------------------------------------------------------------------
+# jenis verifikasi:
+#   nyata_primer   = ada siaran pers PLN / halaman kampus resmi / berita bertanggal
+#   nyata_parsial  = program terkonfirmasi jalan, tapi jumlah PTN/institusi tak lengkap
+#   plausibel      = disebut berjalan oleh sumber sekunder, belum ada pengumuman spesifik
+#   tidak_terjadi  = terkonfirmasi TIDAK ada intake baru tahun itu
+
+linimasa:
+  - tahun_masuk_kuliah: 2016
+    program: "D3 Kelas Kerjasama"
+    jenjang: D3
+    jumlah_ptn: 18
+    status: nyata_primer
+    sumber: "PLN, siaran pers Mei 2016 -- 'PLN Buka Rekrutmen Program D3 Kerjasama dengan 18 PT' (judul terindeks, isi arsip situs sudah mati, pola sama dgn F-057)"
+
+  - tahun_masuk_kuliah: 2017
+    program: "D3 Kelas Kerjasama T.A 2017/2018"
+    jenjang: D3
+    jumlah_ptn: "15 diasumsikan (2 konfirmasi individual: PENS, PNUP; 13 sisanya TIDAK diverifikasi satu-satu)"
+    status: nyata_parsial
+    sumber: "Mediasulsel 26 Mar 2017 (PENS); situs PNUP 10 Apr 2017 (PNUP)"
+
+  - tahun_masuk_kuliah: 2018
+    program: "D3 Kelas Kerjasama T.A 2018/2019"
+    jenjang: D3
+    jumlah_ptn: 17
+    status: nyata_primer
+    sumber: "PLN, siaran pers Mar 2018 -- 'Jaring Tenaga Muda Handal, PLN kerjasama dengan 17 Perguruan Tinggi'"
+
+  - tahun_masuk_kuliah: 2019
+    program: "D3 Kelas Kerjasama T.A 2019/2020"
+    jenjang: D3
+    jumlah_ptn: 15
+    status: nyata_primer
+    sumber: "rekrutmen.pln.co.id; tirto.id 'PLN Buka Rekrutmen D3 dan D4 Ikatan Dinas 2019 di 5 Kampus'"
+
+  - tahun_masuk_kuliah: 2019
+    program: "D4 Ikatan Dinas T.A 2019/2020 (PERDANA & satu-satunya angkatan era PTN)"
+    jenjang: D4
+    jumlah_ptn: 5
+    daftar_ptn: [UNDIP, "UGM (Sekolah Vokasi)", POLBAN, PENS, PNUP]
+    status: nyata_primer
+    sumber: "PNUP, 1 Apr 2019 -- 'Perdana, PNUP Buka Pendaftaran Program D4 Ikatan Dinas PLN'"
+
+  - tahun_masuk_kuliah: 2020
+    program: "D3+D4 T.A 2020/2021"
+    jenjang: [D3, D4]
+    jumlah_ptn: 0
+    status: tidak_terjadi
+    sumber: "PNUP, 20 Apr 2020 -- 'PENUNDAAN SELEKSI PROGRAM D3 & D4 KKS PLN 2020 KE 2021' (ditunda karena COVID-19)"
+
+  - tahun_masuk_kuliah: 2021
+    program: "D3+D4 T.A 2021/2022 (cohort tunda dari 2020)"
+    jenjang: [D3, D4]
+    jumlah_ptn: "tidak diketahui"
+    status: plausibel
+    sumber: >
+      Tidak ada pengumuman pembukaan spesifik yang ditemukan. Program disebut berjalan
+      "T.A 2019/2020 sampai dengan T.A 2021/2022" di sumber sekunder -- konsisten dengan
+      cohort tunda benar-benar dibuka, tapi belum terkonfirmasi primer per-kampus.
+
+  - tahun_masuk_kuliah: 2022
+    program: "(tidak ada)"
+    jumlah_ptn: 0
+    status: tidak_terjadi
+    sumber: >
+      Tidak ditemukan pengumuman intake baru. Konsisten dengan RBB edisi perdana April
+      2022 (terkonfirmasi) menggantikan skema kerjasama PTN eksternal.
+
+  - tahun_masuk_kuliah: 2023
+    program: "Ikatan Kerja ITPLN (skema baru, terpusat)"
+    jenjang: S1
+    jumlah_ptn: 1
+    kuota: 250            # 150 ikatan kerja awal + 100 lulusan terbaik reguler
+    realisasi_kontrak: 147   # tanda tangan 12 Jul 2023 -- INI KONTRAK MASUK KULIAH, bukan lulus
+    status: nyata_primer
+    sumber: "PLN, siaran pers Apr 2023; Antara News; ften.itpln.ac.id (147 mhs ttd kontrak 12 Jul 2023)"
+
+  - tahun_masuk_kuliah: 2024
+    program: "Ikatan Kerja ITPLN"
+    jenjang: S1
+    jumlah_ptn: 1
+    kuota: 250
+    realisasi_kontrak: 135   # ttd 3 Sep 2024, "tahun kedua"
+    status: nyata_primer
+    sumber: "PLN, siaran pers Sep 2024 -- '135 Mahasiswa ITPLN Teken Kontrak Program Ikatan Kerja dengan PLN'"
+
+  - tahun_masuk_kuliah: 2025
+    program: "Ikatan Kerja ITPLN"
+    jenjang: S1
+    jumlah_ptn: 1
+    kuota: 250
+    realisasi_kontrak: 109   # ttd 2 Sep 2025
+    status: nyata_primer
+    sumber: "Bernas.id Sep 2025; ften.itpln.ac.id"
+
+  - tahun_masuk_kuliah: 2026
+    program: "Ikatan Kerja ITPLN (berjalan)"
+    jenjang: S1
+    jumlah_ptn: 1
+    kuota: 250
+    realisasi_kontrak: null
+    status: nyata_primer
+    sumber: "infopmb.itpln.ac.id -- gelombang berjalan, realisasi belum tersedia per tanggal potong"
+
+# ---------------------------------------------------------------------------
+# 2. ANGKA KUMULATIF REALISASI RIIL (bukan kuota nominal) -- PENEMUAN PENTING
+# ---------------------------------------------------------------------------
+realisasi_kumulatif_d3_2018:
+  sumber: "PLN, siaran pers 31 Agustus 2018 -- 'Pelepasan Mahasiswa Program D3 Kelas Kerjasama PLN-UGM'"
+  kutipan_verbatim: >
+    "Sejak tahun 2013 sampai dengan saat ini Program D3 Kerjasama PLN telah diikuti
+    sebanyak 1.673 orang mahasiswa. 159 orang telah lulus dan diangkat pegawai. 186 orang
+    telah lulus dan sedang mengikuti Diklat Prajabatan serta 1.328 sedang menjalani kuliah
+    tingkat I, II dan III."
+  implikasi: >
+    Kumulatif 2013-2018 (~3 angkatan lulus): cuma 159+186=345 orang total pernah sampai
+    tahap pegawai/prajabatan. Rata-rata ~100-140/tahun -- JAUH di bawah taksiran kuota
+    nominal (PTN x kelas x mahasiswa bisa >300/tahun). Realisasi riil selalu di bawah
+    kuota, pola yang sama terlihat di ITPLN (kuota 150 -> realisasi 147/135/109).
+  peringatan: >
+    Angka ini snapshot Agustus 2018, mencakup cohort intake ~2013-2015 (institusi PTN
+    lebih sedikit dari era matang 2016-2019). Cohort yang relevan untuk 2020/2021
+    (intake 2017-2019, 15-17 PTN) KEMUNGKINAN lebih besar dari rata-rata historis ini --
+    tidak ada data langsung untuk memverifikasi seberapa besar.
+
+# ---------------------------------------------------------------------------
+# 3. TAKSIRAN MANUAL YANG DIPAKAI DI kohort.yaml (keputusan user 2026-08-18)
+# ---------------------------------------------------------------------------
+# Formula: jumlah PTN x kelas/PTN x mahasiswa/kelas. SEMUA angka di bawah MANUAL,
+# ditentukan langsung oleh user setelah melihat linimasa & realisasi_kumulatif di atas.
+# Dipakai sebagai isian `komposisi_jalur` di kohort.yaml, BUKAN sebagai finding baru.
+
+taksiran_dipakai:
+  - target_tahun_program: 2020
+    sumber_cohort: "D3 intake 2017"
+    formula: "15 PTN x 1 kelas x ~13-15 mhs"
+    hasil: 200
+    keyakinan: rendah
+    catatan: "13 dari 15 PTN untuk intake 2017 TIDAK terverifikasi individual (lihat linimasa)."
+
+  - target_tahun_program: 2021
+    sumber_cohort: "D3 intake 2018"
+    formula: "17 PTN x 1 kelas x ~20 mhs"
+    hasil: 340
+    keyakinan: rendah
+
+  - target_tahun_program: 2021
+    sumber_cohort: "D3 intake 2019"
+    formula: "15 PTN x 1 kelas x ~20 mhs"
+    hasil: 300
+    keyakinan: rendah
+
+  - target_tahun_program: 2024
+    sumber_cohort: "D4 intake 2019 (perdana & satu-satunya)"
+    formula: "5 PTN x 2 kelas x ~30 mhs"
+    hasil: 300
+    keyakinan: rendah
+
+  - target_tahun_program: 2024
+    sumber_cohort: "ITPLN S1 -- DITARIK 2026-08-18"
+    formula: "n/a"
+    hasil: 0
+    keyakinan: n/a
+    catatan: >
+      Sempat diusulkan pakai ulang angka kontrak 147 (ITPLN 2023) sebagai taksiran
+      lulusan 2024, tapi user membatalkan: 147 itu kontrak MASUK KULIAH mahasiswa baru
+      2023 (program S1 4 tahun, lulus ~2027), bukan lulusan 2024 -- salah tafsir.
+      Residu 2024 dibiarkan berlubang (`tidak_diketahui`) sampai ada info lebih baik.

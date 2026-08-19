@@ -1,0 +1,181 @@
+# jabatan.yaml — aturan penempatan: non-struktural saja, grade per jenjang pendidikan
+# Rujukan: F-042, F-022, F-005, langkah 02 mockdb
+#
+# Ini file aturan PALING KERAS di seluruh mockdb. Melanggarnya menghasilkan data yang
+# langsung terlihat salah oleh siapa pun di PLN (mis. fresh graduate jadi Manager).
+
+meta:
+  versi: 1
+  keyakinan: tinggi
+  sumber_master: "out/master/jabatan_klasifikasi.csv (6.148 posisi, tervalidasi DAPEG)"
+
+# ---------------------------------------------------------------------------
+# 1. LARANGAN MUTLAK — jabatan struktural
+# ---------------------------------------------------------------------------
+larangan_struktural:
+  aturan: "Pegawai baru TIDAK PERNAH ditempatkan ke jabatan struktural."
+  rujukan: "F-042 (dari user, diverifikasi ke DAPEG)"
+  filter_pakai_kolom: kelompok_jabatan
+  JANGAN_filter_pakai: jenjang
+  alasan_jangan_pakai_jenjang: >
+    TEAM LEADER juga bergrade G2 -- SAMA dengan OFFICER dan TECHNICIAN. Menyaring pakai
+    kolom `jenjang` akan meloloskan Team Leader ke daftar target rekrutmen. Ini jebakan
+    yang paling mudah terinjak; dites eksplisit di verifikasi generator.
+  kelompok_jabatan_terlarang:
+    - TEAM LEADER            # G2  -- perhatikan: grade-nya sama dengan Officer
+    - ASSISTANT MANAGER      # G3
+    - MANAGER                # MD/G3
+    - SENIOR MANAGER         # MM
+    - VICE PRESIDENT         # MM
+    - GENERAL MANAGER        # MA
+    - EXECUTIVE VICE PRESIDENT  # MA
+  dampak_angka:
+    posisi_struktural: 3979
+    pegawai_struktural: 14907
+    posisi_non_struktural_g1_g2: 1493
+    pegawai_non_struktural_g1_g2: 16973
+
+# ---------------------------------------------------------------------------
+# 2. GRADE MASUK MENURUT JENJANG PENDIDIKAN
+# ---------------------------------------------------------------------------
+grade_masuk:
+  peringatan: >
+    JANGAN tempatkan semua pendaftar ke Junior. Ini kesalahan mock lama.
+  pemetaan:
+    SMK:       {grade: G1, kelompok: [JUNIOR OFFICER, JUNIOR TECHNICIAN]}
+    "D-III":   {grade: G1, kelompok: [JUNIOR OFFICER, JUNIOR TECHNICIAN]}
+    "S1/D-IV": {grade: G2, kelompok: [OFFICER, TECHNICIAN]}
+    "S2":      {grade: G3, kelompok: [SENIOR OFFICER]}
+    PRO_HIRE:  {grade: SPC, kelompok: [SPECIALIST]}
+  rujukan: "F-042, tervalidasi F-054"
+  keyakinan: tinggi                  # naik dari "sedang" -- lihat di bawah
+  catatan_keyakinan: >
+    Semula keyakinan SEDANG: pemetaan ini berasal dari pengetahuan domain user dan tidak
+    dapat diverifikasi dari DAPEG (DAPEG tidak punya kolom pendidikan).
+    NAIK KE TINGGI berkat F-054: dokumen pagu asli tim HR punya kolom PENDIDIKAN dan
+    JABATAN sekaligus, dan 20 dari 20 barisnya konsisten dengan aturan ini --
+    D3 -> JUNIOR OFFICER/JUNIOR TECHNICIAN (15 baris), S1 -> OFFICER (5 baris),
+    nol pengecualian. Ini validasi independen dari sumber yang sama sekali berbeda.
+
+tangga_jabatan_non_struktural:
+  rujukan: "F-042 -- terverifikasi DAPEG"
+  pola: "Junior X (G1) -> X (G2) -> Senior X (G3) -> Specialist (SPC/SSP)"
+  populasi:
+    G1:      {kelompok: {JUNIOR TECHNICIAN: 4968, JUNIOR OFFICER: 1198}, total: 6166}
+    G2:      {kelompok: {OFFICER: 7976, TECHNICIAN: 2831},               total: 10807}
+    G3:      {kelompok: {SENIOR OFFICER: 4384, SENIOR TECHNICIAN: 269},  total: 4653}
+    SPC_SSP: {kelompok: {SPECIALIST: 461, "SENIOR SPECIALIST": 59},      total: 520}
+
+# ---------------------------------------------------------------------------
+# 3. PENAMAAN POSISI
+# ---------------------------------------------------------------------------
+penamaan:
+  pakai: "nama posisi formal DAPEG (Officer / Technician / Specialist)"
+  jangan_pakai: "Analyst / Engineer"
+  rujukan: "F-022, Catatan penamaan di findings.md"
+  alasan: >
+    "Analyst"/"Engineer" dipakai kolokial di LinkedIn, tapi posisi FORMAL di DAPEG
+    (37rb pegawai, April 2026) nol "Analyst". Mock lama memakai "Analyst/Analis Logistik"
+    -- itu keliru untuk holding. PLN menerima LULUSAN logistik/SCM, tapi POSISI-nya
+    bernama "Officer Logistik".
+  yang_dipilih_pelamar: minat_profesi
+  catatan_minat_profesi: >
+    Yang dipilih pelamar saat mendaftar BUKAN nama jabatan, melainkan "minat profesi"
+    (bidang) dari profesi.csv: Enjiniring Distribusi/Transmisi & GI/Pembangkitan,
+    Pemeliharaan, Perencanaan Pembangkitan, Niaga, Pemasaran & Pelayanan Pelanggan,
+    Akuntansi, Manajemen Keuangan, Manajemen Konstruksi, Hukum, Data Analitik,
+    Manajemen Digital (F-005). Nama jabatan formal baru muncul di SK penempatan.
+
+# ---------------------------------------------------------------------------
+# 4. PEMBIDANGAN (lokasi OJT di UPDL)
+# ---------------------------------------------------------------------------
+pembidangan:
+  peringatan: >
+    Pembidangan BERAT SEBELAH dan harus tetap begitu. Di holding, Pembangkitan tinggal
+    761 pegawai G1+G2 (praktis cuma UIK Tanjung Jati B) karena pembangkitan sudah pindah
+    ke subholding. Kalau generator membagi rata 9 bidang, hasilnya langsung salah:
+    porsi UPDL Suralaya (Pembangkitan) akan membengkak +-10x dari semestinya.
+  sumber_bobot: "out/master/jabatan_klasifikasi.csv -- pegawai G1+G2 per bidang_pembidangan"
+  bobot_holding:
+    Distribusi:                    {pegawai: 7709, porsi: 0.2964}
+    "Transmisi dan Gardu Induk":   {pegawai: 4021, porsi: 0.1546}
+    Niaga:                         {pegawai: 3919, porsi: 0.1507}
+    "Manajemen Konstruksi dan Pengadaan": {pegawai: 2963, porsi: 0.1139}
+    Keuangan:                      {pegawai: 2811, porsi: 0.1081}
+    SDM:                           {pegawai: 2428, porsi: 0.0934}
+    "Perencanaan Sistem":          {pegawai: 990,  porsi: 0.0381}
+    Pembangkitan:                  {pegawai: 761,  porsi: 0.0293}
+    "Proteksi dan Kontrol":        {pegawai: 402,  porsi: 0.0155}
+  total_pegawai: 26004
+  catatan_subholding: >
+    Untuk penempatan ke SUBHOLDING bobotnya TERBALIK -- IP dan NP adalah perusahaan
+    pembangkitan, jadi porsi Pembangkitan di sana dominan. Jangan pakai bobot holding
+    untuk kandidat berpenempatan subholding.
+  bobot_subholding:
+    IP:   {Pembangkitan: 0.72, "Perencanaan Sistem": 0.10, Keuangan: 0.09, SDM: 0.09}
+    NP:   {Pembangkitan: 0.74, "Perencanaan Sistem": 0.09, Keuangan: 0.08, SDM: 0.09}
+    ND:   {"Manajemen Konstruksi dan Pengadaan": 0.45, Niaga: 0.25, Keuangan: 0.15, SDM: 0.15}
+    EPI:  {"Perencanaan Sistem": 0.40, Niaga: 0.30, Keuangan: 0.20, SDM: 0.10}
+    ES:   {"Transmisi dan Gardu Induk": 0.40, Distribusi: 0.35, "Proteksi dan Kontrol": 0.15, SDM: 0.10}
+    ICON: {"Manajemen Digital": 0.70, Niaga: 0.18, Keuangan: 0.07, SDM: 0.05}
+    BTM:  {Distribusi: 0.45, Pembangkitan: 0.25, Niaga: 0.20, SDM: 0.10}
+    HLY:  {Distribusi: 0.60, "Transmisi dan Gardu Induk": 0.25, SDM: 0.15}
+    status_sumber: TURUNAN
+  lokasi_ojt:
+    unit: UPDL
+    jumlah: 11
+    sumber: "out/master/unit_pelaksana.csv"
+
+# ---------------------------------------------------------------------------
+# 5. ATURAN PENEMPATAN AKHIR (SK)
+# ---------------------------------------------------------------------------
+penempatan:
+  urutan_keputusan:
+    - "1. Pilih unit induk berdasarkan KEBUTUHAN (gap FTK vs realisasi), bukan acak."
+    - "2. Pilih posisi dari jabatan_klasifikasi.csv yang kelompok_jabatan-nya SAH untuk grade masuk."
+    - "3. Pastikan posisi tsb memang ADA di unit induk terpilih (posisi_unit_induk.csv)."
+    - "4. Turunkan ke unit pelaksana (posisi_unit_pelaksana.csv) bila unitnya punya."
+    - "5. Cocokkan bidang posisi dengan bidang_pembidangan hasil OJT."
+  larangan:
+    - "Jangan menempatkan ke unit induk yang tidak punya posisi tsb sama sekali."
+    - "Jangan menempatkan ke jabatan struktural (lihat butir 1)."
+    - "Jangan menempatkan lulusan SMK/D3 ke G2+."
+    - "JANGAN menempatkan berdasarkan KOTA TES. Lihat butir di bawah."
+
+  lokasi_tes_bukan_lokasi_penempatan:
+    rujukan: "keterangan user, 2026-08-18"
+    aturan: >
+      Penempatan TIDAK mengikuti kota tes. Ini jebakan paling mudah terinjak: `kota_rekrutmen`
+      di profesi.csv terkunci saat mendaftar (F-024/F-033) dan terlihat seperti penanda wilayah,
+      padahal itu cuma tempat orang mengikuti seleksi.
+    yang_menentukan: "FTK yang kosong -- penempatan mengisi kebutuhan unit, bukan kedekatan geografis."
+    bukti: >
+      Di wawancara kandidat ditanya apakah SIAP DITEMPATKAN DI SELURUH INDONESIA. Pertanyaan itu
+      tidak ada artinya kalau penempatan mengikuti kota tes.
+    kecenderungan_ktp:
+      ada: true
+      keterangan: >
+        Ada kecenderungan -- bukan aturan -- menempatkan dekat alamat KTP, LEBIH KUAT untuk
+        kandidat perempuan. Modelkan sebagai bobot lunak yang bisa dikalahkan kebutuhan FTK,
+        bukan sebagai batasan keras.
+      status_sumber: DIMODELKAN
+    pengecualian_historis:
+      berlaku: false
+      periode: "2016/17 ke bawah"
+      keterangan: >
+        Dulu ada angkatan SMA/SMK yang seleksinya REGIONAL: peserta seleksi Sumatera Bagian Utara
+        hanya ditempatkan di unit-unit Sumbagut (pembangkitan, transmisi, distribusi Sumbagut).
+        DI LUAR HORISON 2019-2025 dan tidak dimodelkan -- konsisten dengan
+        `angkatan.yaml -> smk_pelaksana.dimodelkan: false`. Dicatat supaya kalau nanti horison
+        dimundurkan ke <=2017, aturan penempatan ikut berubah, bukan diteruskan begitu saja.
+  level_unit_terdalam: unit_pelaksana
+  catatan_level_unit: >
+    KEPUTUSAN SADAR, bukan keterbatasan. Dokumen pagu asli tim HR (F-054) turun sampai
+    UNIT LAYANAN -- "ULP BOBONG", "UNIT LAYANAN PELANGGAN". Master kita berhenti di unit
+    pelaksana karena kunci DAPEG yang dipakai (`BusA`) memang berhenti di situ, dan user
+    memutuskan cukup sampai level ini. Kolom `unit_pelaksana` di pagu_rekrutmen.csv
+    sengaja dibiarkan kosong daripada diisi nama ULP karangan.
+  subholding:
+    detail: "nama perusahaan + bidang saja -- TANPA struktur unit internal"
+    rujukan: "DECISION-01 -- 'holding kaya, subholding ringkas'"
+    alasan: "DAPEG tidak mencakup subholding, jadi tidak ada master unit untuk mereka."

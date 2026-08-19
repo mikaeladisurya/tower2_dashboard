@@ -10,9 +10,13 @@ tambahkan metriknya di dokumen itu dulu, baru di sini.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
 from core.db import query, skalar
+
+_KOORDINAT_PATH = Path(__file__).resolve().parents[1] / "data" / "koordinat.csv"
 
 # ──────────────────────────────────────────────────────────────────────────────
 # A. Ringkasan (halaman 1)
@@ -374,6 +378,18 @@ def volume_tes_per_kota() -> pd.DataFrame:
         GROUP BY 1
         ORDER BY 2 DESC
         """
+    )
+
+
+def volume_tes_per_kota_geo() -> pd.DataFrame:
+    """M35 + koordinat statis (`data/koordinat.csv`) — jangkar peta halaman Kandidat.
+
+    43 kota tes offline diketik tangan (lat/lon kota, bukan alamat lokasi tes persis)
+    karena DuckDB tidak punya kolom geografis untuk `lokasi_kota`.
+    """
+    koordinat = pd.read_csv(_KOORDINAT_PATH)
+    return volume_tes_per_kota().merge(
+        koordinat, left_on="lokasi_kota", right_on="kota", how="inner"
     )
 
 

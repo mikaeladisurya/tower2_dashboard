@@ -1,7 +1,10 @@
 # HANDOFF — dari fase RISET ke fase BANGUN DATABASE
 
 > **Sesi baru: baca file ini dulu, lalu `knowledge/findings.md`.**
-> Riset selesai (81 temuan tersitasi). Fondasi + langkah 01 revisi, 03–11 selesai. Tugas berikutnya: generator 12 (load ke DuckDB).
+> Riset selesai (82 temuan tersitasi). **Seluruh pipeline generator (langkah 01-12) SELESAI.**
+> `mockdb/out/rekrutmen.duckdb` siap dipakai (34 tabel, 4.224.925 baris, regenerate via
+> `python mockdb/build/01_*.py` s/d `12_load_duckdb.py` berurutan). Tugas berikutnya:
+> di luar scope mockdb -- membangun dashboard-nya sendiri.
 > Terakhir diperbarui: 2026-08-19.
 
 ---
@@ -23,7 +26,7 @@
 | Generator 09 (tahapan seleksi) | ✅ **SELESAI** — 464.688 baris `seleksi_tahap.csv` + 9 baris agregat FHCI, dijabarkan dari hasil final langkah 08 (F-079) |
 | Generator 10 (pasca-seleksi: kontrak/SAMAPTA/pembidangan/OJT/SK) | ✅ **SELESAI** — 49.977 baris `pasca_tahap.csv`, dipotong tepat di tanggal_sekarang (F-080) |
 | Generator 11 (penempatan) | ✅ **SELESAI** — 7.711 baris `penempatan.csv`, unit/posisi ditarik dari pagu_rekrutmen.csv (F-081) |
-| **Generator 12** | ⬜ **BELUM — ini tugas sesi baru** |
+| Generator 12 (load DuckDB) | ✅ **SELESAI** — `rekrutmen.duckdb`, 34 tabel, 4.224.925 baris, 59,8 MB (F-082) |
 
 ### Yang selesai di sesi 2026-08-17
 
@@ -42,8 +45,14 @@
   F-056: 161 cek aturan lulus sementara langkah 05 menaruh 143 orang di jabatan struktural,
   karena tak satu pun cek pernah membuka CSV hasil. **Aturan benar ≠ generator menaatinya.**
 
-**Skala yang disepakati user: penuh 1:1.** ±315rb pendaftaran · ±499rb akun kandidat ·
-±621rb baris tahapan · 8.851 lulus seleksi (6.427 sudah ber-SK) · DuckDB ±350 MB.
+**Skala yang disepakati user: penuh 1:1.** Target awal (sebelum generate): ±315rb
+pendaftaran · ±499rb akun kandidat · ±621rb baris tahapan · 8.851 lulus seleksi (6.427
+sudah ber-SK) · DuckDB ±350 MB. **Realisasi setelah langkah 03-12 (2026-08-19):**
+368.912 akun kandidat · 218.928 pendaftaran · 464.688 baris seleksi_tahap · 7.711
+DITERIMA (di luar 1.140 ikatan-dinas yang tidak dimodelkan per-kandidat, F-078) · 5.711
+sudah ber-SK · **34 tabel, 4.224.925 baris, `rekrutmen.duckdb` 59,8 MB** (lebih kecil
+dari taksiran awal -- taksiran itu dihitung sebelum funnel per-arketipe F-064
+memperbaiki laju eliminasi, lihat F-061/F-064).
 
 **Distribusi ke tim: REGENERATE, bukan salin file.** `.duckdb` di-gitignore. Generator
 03–12 hanya butuh `out/master/` + `rules/` + CSV di `knowledge/sources/` — semuanya
@@ -205,7 +214,7 @@ file aturannya masing-masing, dengan alasan & cara membatalkannya):
 Generate bertahap: unit ✅ → rumpun jurusan ✅ → attrition & kekosongan ✅ →
 usulan & pagu ✅ → 06 program/angkatan & profesi ✅ → 07 vendor & lokasi ✅ →
 08 kandidat & pendaftaran ✅ → 09 tahapan seleksi ✅ → 10 kontrak/prajabatan/OJT ✅ →
-11 penempatan ✅ → **12 load ke DuckDB**.
+11 penempatan ✅ → 12 load ke DuckDB ✅. **PIPELINE GENERATOR SELESAI TOTAL.**
 
 ⚠️ **F-050 dibawa ke sini (sesuai catatan lama):** bidang OJT/penempatan ditentukan dari
 `nama_profesi` -> minat_profesi.csv (fallback: rumpun jurusan asli kandidat), BUKAN
@@ -275,6 +284,7 @@ mockdb/
                         kandidat_sertifikasi · kandidat_keluarga · kandidat_berkas (langkah 08) ·
                         seleksi_tahap(464.688) · seleksi_tahap_agregat(9) (langkah 09) ·
                         pasca_tahap(49.977) (langkah 10) · penempatan(7.711) (langkah 11)
+       rekrutmen.duckdb  <- GITIGNORED. 34 tabel/4.224.925 baris, regenerate via build/ (langkah 12)
 data sintetis/          SUMBER ASLI + PII (DAPEG 37rb pegawai). GITIGNORED. Jangan commit.
 referensi/              perdir PDF, chat WA, screenshot. GITIGNORED.
 ```

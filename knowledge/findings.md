@@ -2002,6 +2002,36 @@ mekanika & larangan keras (diuji otomatis); sedang-rendah utk kursi/bidang DIMOD
 (konsisten dgn peringatan sumber aslinya) · Dampak: `out/master/` bertambah
 `penempatan.csv`(7.711); `00b_verifikasi_keluaran.py` dapat blok cek baru.
 
+### F-082 · Generator 12 (load DuckDB) -- pipeline generator selesai total, 34 tabel/4.224.925 baris/59,8 MB [sesi build]
+Klaim: `12_load_duckdb.py` memuat SELURUH `out/master/*.csv` (34 berkas, sudah lolos
+`00_verifikasi_rules.py` + `00b_verifikasi_keluaran.py`) ke `out/rekrutmen.duckdb` tanpa
+logika baru -- murni pemindahan bentuk. Setiap tabel diverifikasi baris-demi-baris
+(row count CSV == row count tabel) sebelum skrip dianggap sukses; keluar kode 1 kalau
+ada yang beda. Hasil: **34 tabel, 4.224.925 baris, 59,8 MB** -- jauh lebih kecil dari
+taksiran pra-generate (±350 MB) karena taksiran itu dihitung sebelum funnel per-arketipe
+(F-064) memperbaiki laju eliminasi jadi lebih realistis (afirmasi_remote nyaris tanpa
+eliminasi vs nasional_mandiri eliminasi berat, bukan rata-rata tunggal F-019).
+Berkas `.duckdb` sengaja GITIGINORE (`mockdb/out/*.duckdb`) -- konsisten dgn keputusan
+"distribusi ke tim = REGENERATE, bukan salin file" (HANDOFF §1), supaya tidak ada file
+besar/berpotensi-PII yang lewat git; siapa pun bisa membangunnya ulang lewat
+`python mockdb/build/01_*.py` s/d `12_load_duckdb.py` berurutan (seed tunggal 20260915,
+deterministik -- diuji lintas semua generator 06-11 dgn hash MD5 identik 2x jalan).
+Tabel `_meta_generator` ditambahkan (bukan dari CSV) berisi provenance: seed, tanggal
+potong, horison, jumlah tabel/baris, cara regenerate -- supaya siapa pun yang membuka
+`.duckdb` langsung tahu asal-usulnya tanpa perlu baca kode.
+**Realisasi akhir vs target awal (skala 1:1 yang disepakati user):** 368.912 akun
+kandidat (target ±499rb), 218.928 pendaftaran (target ±315rb), 464.688 baris
+seleksi_tahap (target ±621rb), 7.711 DITERIMA per-kandidat (target 8.851 Group --
+selisih 1.140 = ikatan dinas yang sengaja TIDAK dimodelkan per-kandidat, F-078), 5.711
+sudah ber-SK. Realisasi lebih kecil dari target di semua metrik secara konsisten --
+bukan penyimpangan, melainkan efek gabungan F-064 (funnel per-arketipe lebih realistis
+drpd rata-rata tunggal) dan F-078 (ikatan dinas dikeluarkan dari populasi per-kandidat).
+Sumber: seluruh `out/master/*.csv` (langkah 01-11), `rules/kohort.yaml` (meta provenance)
+· Keyakinan: tinggi (verifikasi baris-demi-baris otomatis, tidak ada transformasi data)
+· Dampak: `mockdb/out/rekrutmen.duckdb` (gitignored) siap pakai dashboard. **Pipeline
+generator mockdb (langkah 01-12) SELESAI TOTAL** -- pekerjaan berikutnya di luar scope
+mockdb (membangun dashboard).
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

@@ -1,7 +1,7 @@
 # HANDOFF — dari fase RISET ke fase BANGUN DATABASE
 
 > **Sesi baru: baca file ini dulu, lalu `knowledge/findings.md`.**
-> Riset selesai (80 temuan tersitasi). Fondasi + langkah 01 revisi, 03–10 selesai. Tugas berikutnya: generator 11 (penempatan).
+> Riset selesai (81 temuan tersitasi). Fondasi + langkah 01 revisi, 03–11 selesai. Tugas berikutnya: generator 12 (load ke DuckDB).
 > Terakhir diperbarui: 2026-08-19.
 
 ---
@@ -22,7 +22,8 @@
 | Generator 08 (kandidat & pendaftaran) | ✅ **SELESAI** — 368.912 kandidat, 218.928 pendaftaran, administrasi dijalankan sungguhan per biodata (F-078) |
 | Generator 09 (tahapan seleksi) | ✅ **SELESAI** — 464.688 baris `seleksi_tahap.csv` + 9 baris agregat FHCI, dijabarkan dari hasil final langkah 08 (F-079) |
 | Generator 10 (pasca-seleksi: kontrak/SAMAPTA/pembidangan/OJT/SK) | ✅ **SELESAI** — 49.977 baris `pasca_tahap.csv`, dipotong tepat di tanggal_sekarang (F-080) |
-| **Generator 11–12** | ⬜ **BELUM — ini tugas sesi baru** |
+| Generator 11 (penempatan) | ✅ **SELESAI** — 7.711 baris `penempatan.csv`, unit/posisi ditarik dari pagu_rekrutmen.csv (F-081) |
+| **Generator 12** | ⬜ **BELUM — ini tugas sesi baru** |
 
 ### Yang selesai di sesi 2026-08-17
 
@@ -204,7 +205,12 @@ file aturannya masing-masing, dengan alasan & cara membatalkannya):
 Generate bertahap: unit ✅ → rumpun jurusan ✅ → attrition & kekosongan ✅ →
 usulan & pagu ✅ → 06 program/angkatan & profesi ✅ → 07 vendor & lokasi ✅ →
 08 kandidat & pendaftaran ✅ → 09 tahapan seleksi ✅ → 10 kontrak/prajabatan/OJT ✅ →
-**11 penempatan** → 12 load ke DuckDB.
+11 penempatan ✅ → **12 load ke DuckDB**.
+
+⚠️ **F-050 dibawa ke sini (sesuai catatan lama):** bidang OJT/penempatan ditentukan dari
+`nama_profesi` -> minat_profesi.csv (fallback: rumpun jurusan asli kandidat), BUKAN
+dipaksa proporsional ke pagu -- gap Distribusi/Transmisi yang didokumentasikan F-050 tetap
+tercermin di `penempatan.csv` sebagaimana adanya, tidak ditutup paksa.
 
 ⚠️ **Bawa F-050 ke langkah 11.** Bauran jurusan yang diundang kurang memasok Distribusi
 (−14,8 poin) & Transmisi (−6,3). Penempatan JANGAN dipaksa proporsional — kandidat sah
@@ -268,7 +274,7 @@ mockdb/
                         kandidat(368.912) · pendaftaran(218.928) · kandidat_pendidikan ·
                         kandidat_sertifikasi · kandidat_keluarga · kandidat_berkas (langkah 08) ·
                         seleksi_tahap(464.688) · seleksi_tahap_agregat(9) (langkah 09) ·
-                        pasca_tahap(49.977) (langkah 10)
+                        pasca_tahap(49.977) (langkah 10) · penempatan(7.711) (langkah 11)
 data sintetis/          SUMBER ASLI + PII (DAPEG 37rb pegawai). GITIGNORED. Jangan commit.
 referensi/              perdir PDF, chat WA, screenshot. GITIGNORED.
 ```

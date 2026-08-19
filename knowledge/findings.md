@@ -1945,6 +1945,63 @@ COCOK PERSIS dgn contoh manual yang sudah didokumentasikan sebelum kode ditulis)
 Dampak: `out/master/` bertambah `pasca_tahap.csv`(49.977); `00b_verifikasi_
 keluaran.py` dapat blok cek baru.
 
+### F-081 · Generator 11 (penempatan) -- bidang OJT & unit/posisi definitif ditarik dari pagu_rekrutmen.csv yang sudah ada sejak langkah 05, bukan dikarang baru [sesi build]
+Klaim: `11_penempatan.py` membangkitkan 7.711 baris `penempatan.csv` (satu baris per
+pendaftaran DITERIMA), menjawab "ke mana" setelah langkah 10 menjawab "kapan sampai
+pegawai penuh". Jangkar: `pasca_tahap.sk_penempatan==SELESAI` (langkah 10) menentukan
+siapa yang boleh dapat unit/posisi DEFINITIF vs siapa yang cuma dapat bidang (masih OJT).
+**(1) Bidang (`sub_bidang`/`bidang_pembidangan`) dari `nama_profesi` -> minat_profesi.csv**
+(107/176 profesi INDUK cocok langsung -- itu literally "minat profesi" yang dipilih
+pelamar, F-005). Sisanya (gelombang generik "REKRUTMEN ... LOKASI X") jatuh ke fallback:
+klasifikasi TEKNIK/NON-TEKNIK dari `program_studi` pendidikan terakhir kandidat sendiri,
+lalu sampel tertimbang `rumpun_subbidang.csv` x `rumpun_jurusan.porsi_permintaan` (bobot
+ASLI langkah 03, tidak dikarang ulang).
+**(2) Unit+posisi definitif ditarik sbg "kursi" dari `pagu_rekrutmen.csv`** (4.975 baris,
+langkah 05) -- `kode_grade` WAJIB cocok (larangan keras jabatan.yaml, tidak pernah
+dilonggarkan), `sub_bidang` disukai tapi boleh longgar kalau kursi persis habis.
+**Ditemukan konsistensi yang tidak direncanakan:** `pagu_rekrutmen` per tahun SELALU
+lebih besar dari populasi kandidat per-orang yang bisa ditempatkan, karena pagu dihitung
+dari `induk_diterima` PENUH (F-054) sedangkan `pendaftaran.csv` TIDAK memuat kandidat
+ikatan-dinas (F-078, mereka tidak lewat seleksi PLN). Sisa kursi tak terpakai per tahun
+COCOK PERSIS dengan porsi `ikatan_dinas` di `komposisi_jalur` kohort.yaml untuk 2020 (sisa
+200 = ikatan_dinas 200) dan 2021 (sisa 640 = ikatan_dinas 640) -- bukti independen bahwa
+dua sumbu (kursi pagu vs headcount kandidat per-orang) memang seharusnya tidak pas persis,
+dan gap-nya adalah gap ikatan-dinas yang sudah didokumentasikan, bukan bug. 2024 meleset
+lebih jauh (sisa 210 vs ikatan_dinas 300) karena distribusi grade kandidat riil vs kursi
+pagu tidak selalu rata per grade -- lihat simplifikasi (b) di bawah.
+**(3) Bobot lunak KTP** (jabatan.yaml, DIMODELKAN): di antara kursi yang sama-sama valid
+(tahun+grade, sub_bidang disukai), kursi di unit_induk yang namanya memuat propinsi_asal
+kandidat diberi bobot 3x (6x untuk perempuan, sesuai peringatan "lebih kuat untuk
+kandidat perempuan").
+**(4) SUBHOLDING** (2.540 baris) tidak dapat unit/posisi granular (DECISION-01, "holding
+kaya subholding ringkas") -- cuma nama perusahaan (dari `nama_profesi` kalau tersurat,
+mis. "(Icon+)"/"PT PLN Indonesia Power"; else sampel tertimbang, RBB dgn bobot 7:5:3
+Icon Plus:Batam:Haleyora sesuai catatan lowongan 2024 di kohort.yaml, mandiri uniform
+antar 6 perusahaan non-RBB) + `bidang_pembidangan` dari `bobot_subholding` perusahaan itu
+(arahnya TERBALIK dari holding -- Pembangkitan dominan di IP/NP, sesuai peringatan
+jabatan.yaml).
+**(5) Lokasi OJT (`updl_id`)** disampel tertimbang oleh `jumlah_pegawai` UPDL --
+DIMODELKAN, tidak ada data rute bidang->UPDL spesifik di sumber manapun.
+Diuji (`00b_verifikasi_keluaran.py`): grade selalu sesuai jenjang (larangan struktural &
+grade tidak pernah dilanggar -- diuji ulang lewat `nama_posisi` tidak mengandung kelompok
+struktural manapun); SUBHOLDING/INDUK tidak saling bocor kolom; `status_sk` konsisten
+dengan `pasca_tahap`; INDUK yang belum ber-SK tidak pernah punya unit/posisi (F-018);
+semua `unit_induk` yang terisi dikenal di `unit_induk.csv`.
+⚠️ **Simplifikasi yang disengaja:** (a) 148/4.121 (3,6%) kandidat ber-SK tidak dapat
+unit/posisi karena kursi pagu tahun+grade itu sudah habis duluan (residu dibiarkan kosong,
+tidak dipaksa lintas-tahun) -- akibat distribusi grade riil kandidat vs pagu tidak identik
+per tahun; (b) pemetaan `sub_bidang` (15 kategori, dari rumpun_subbidang.csv/pagu) ->
+`bidang_pembidangan` (9-10 kategori, dari jabatan.yaml) untuk 5 sub_bidang yang tidak
+muncul di minat_profesi.csv (K3 dan Lingkungan, Sumber Daya Manusia, Audit dan Risiko,
+Komunikasi dan Umum, Proteksi dan Kontrol) memakai penugasan manual DIMODELKAN keyakinan
+rendah (mis. "Audit dan Risiko"->"Keuangan"), bukan data bersumber.
+Sumber: jabatan.yaml (grade_masuk, larangan_struktural, pembidangan, penempatan),
+kohort.yaml (subholding.daftar), pagu_rekrutmen.csv (langkah 05), minat_profesi.csv +
+rumpun_subbidang.csv + rumpun_jurusan.csv (langkah 03/06) · Keyakinan: tinggi utk
+mekanika & larangan keras (diuji otomatis); sedang-rendah utk kursi/bidang DIMODELKAN
+(konsisten dgn peringatan sumber aslinya) · Dampak: `out/master/` bertambah
+`penempatan.csv`(7.711); `00b_verifikasi_keluaran.py` dapat blok cek baru.
+
 ### Catatan penamaan "Analyst/Engineer" vs DAPEG
 Gemini + LinkedIn menunjukkan istilah "Analyst"/"Engineer" dipakai kolokial (mis. "Assistant Analyst
 Logistik at PLN UIP JBB"), tapi **posisi FORMAL di DAPEG (April 2026, 37rb pegawai) = Officer/

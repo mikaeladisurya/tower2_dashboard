@@ -525,6 +525,75 @@ def cek_pasca_tahap(R: dict, pasca: list[dict], pendaftaran: list[dict]) -> None
 
 
 # ---------------------------------------------------------------------------
+# 9d. Penempatan (langkah 11)
+# ---------------------------------------------------------------------------
+def cek_penempatan(R: dict, penempatan: list[dict], pendaftaran: list[dict],
+                    profesi: list[dict], pasca: list[dict], unit_induk: list[dict]) -> None:
+    print("\n[ penempatan (langkah 11) ]")
+
+    diterima_id = {r["pendaftaran_id"] for r in pendaftaran if r["hasil_akhir"] == "DITERIMA"}
+    pid_penempatan = [r["pendaftaran_id"] for r in penempatan]
+    cek("satu baris penempatan per pendaftaran DITERIMA, tanpa dobel/hilang",
+        set(pid_penempatan) == diterima_id and len(pid_penempatan) == len(diterima_id),
+        f"{len(pid_penempatan)} baris vs {len(diterima_id)} DITERIMA")
+
+    # grade masuk sesuai jenjang -- larangan keras jabatan.yaml, ditegakkan lewat profesi.jenjang
+    prof_map = {p["profesi_id"]: p for p in profesi}
+    pend_map = {p["pendaftaran_id"]: p for p in pendaftaran}
+    peta_grade = R["jabatan"]["grade_masuk"]["pemetaan"]
+    salah_grade = [
+        r["pendaftaran_id"] for r in penempatan
+        if r["kode_grade"] != peta_grade[prof_map[pend_map[r["pendaftaran_id"]]["profesi_id"]]["jenjang"]]["grade"]
+    ]
+    cek("kode_grade penempatan = grade_masuk sesuai jenjang profesi",
+        not salah_grade, f"{len(salah_grade)} baris, mis. {salah_grade[:3]}")
+
+    # SUBHOLDING: tidak boleh punya unit/posisi granular; INDUK: tidak boleh punya nama perusahaan
+    sh_salah = [r["pendaftaran_id"] for r in penempatan
+                if r["jenis_penempatan"] == "SUBHOLDING" and (r["unit_induk"] or r["nama_posisi"])]
+    cek("SUBHOLDING tidak diberi unit_induk/nama_posisi granular (DECISION-01)",
+        not sh_salah, f"{len(sh_salah)} baris")
+    induk_salah = [r["pendaftaran_id"] for r in penempatan
+                   if r["jenis_penempatan"] == "INDUK" and r["perusahaan_subholding"]]
+    cek("INDUK tidak diberi perusahaan_subholding", not induk_salah, f"{len(induk_salah)} baris")
+
+    perusahaan_valid = {s["kode"] for s in R["kohort"]["subholding"]["daftar"]}
+    asing_sh = {r["perusahaan_subholding"] for r in penempatan
+                if r["jenis_penempatan"] == "SUBHOLDING"} - perusahaan_valid
+    cek("perusahaan_subholding semuanya dikenal di kohort.yaml", not asing_sh, f"asing: {asing_sh}")
+
+    # status_sk harus konsisten dgn ada/tidaknya baris sk_penempatan SELESAI di pasca_tahap
+    sudah_sk_pasca = {r["pendaftaran_id"] for r in pasca
+                       if r["tahap_kode"] == "sk_penempatan" and r["status"] == "SELESAI"}
+    beda_status = [
+        r["pendaftaran_id"] for r in penempatan
+        if (r["status_sk"] == "SUDAH") != (r["pendaftaran_id"] in sudah_sk_pasca)
+    ]
+    cek("status_sk penempatan konsisten dgn sk_penempatan SELESAI di pasca_tahap",
+        not beda_status, f"{len(beda_status)} baris, mis. {beda_status[:3]}")
+
+    # INDUK yang BELUM ber-SK tidak boleh punya unit/posisi definitif (F-018)
+    belum_tapi_terisi = [
+        r["pendaftaran_id"] for r in penempatan
+        if r["jenis_penempatan"] == "INDUK" and r["status_sk"] == "BELUM"
+        and (r["unit_induk"] or r["nama_posisi"])
+    ]
+    cek("INDUK yang belum ber-SK tidak punya unit/posisi definitif (masih OJT, F-018)",
+        not belum_tapi_terisi, f"{len(belum_tapi_terisi)} baris")
+
+    unit_valid = {u["unit_induk"] for u in unit_induk}
+    asing_unit = {r["unit_induk"] for r in penempatan if r["unit_induk"]} - unit_valid
+    cek("unit_induk yang terisi semuanya dikenal di unit_induk.csv", not asing_unit,
+        f"asing: {list(asing_unit)[:3]}")
+
+    terlarang = {s.strip().upper() for s in R["jabatan"]["larangan_struktural"]["kelompok_jabatan_terlarang"]}
+    struktural = [r["pendaftaran_id"] for r in penempatan
+                  if any(r["nama_posisi"].strip().upper().startswith(t) for t in terlarang)]
+    cek("tidak ada nama_posisi berkelompok jabatan struktural", not struktural,
+        f"{len(struktural)} baris, mis. {struktural[:3]}")
+
+
+# ---------------------------------------------------------------------------
 # 9. Kandidat & pendaftaran (langkah 08)
 # ---------------------------------------------------------------------------
 def cek_kandidat_pendaftaran(R: dict, kandidat: list[dict], pendaftaran: list[dict],
@@ -645,6 +714,7 @@ def main() -> int:
     seleksi_tahap = baca("seleksi_tahap.csv")
     seleksi_agregat = baca("seleksi_tahap_agregat.csv")
     pasca = baca("pasca_tahap.csv")
+    penempatan = baca("penempatan.csv")
     if gagal:
         print("\nInput belum lengkap -- hentikan.")
         return 1
@@ -659,6 +729,7 @@ def main() -> int:
     cek_kandidat_pendaftaran(R, kandidat, pendaftaran, kand_didik, kand_sert, kand_kel, kand_berkas, prof)
     cek_seleksi_tahap(R, seleksi_tahap, seleksi_agregat, pendaftaran, prof)
     cek_pasca_tahap(R, pasca, pendaftaran)
+    cek_penempatan(R, penempatan, pendaftaran, prof, pasca, unit)
     cek_pii()
 
     print("\n" + "=" * 60)

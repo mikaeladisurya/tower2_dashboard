@@ -450,12 +450,19 @@ def timeline_kohort() -> pd.DataFrame:
 
 
 def treemap_penempatan() -> pd.DataFrame:
-    """M38 — penempatan per unit induk x bidang pembidangan. Jangkar treemap halaman 6."""
+    """M38 — penempatan per unit induk x bidang pembidangan. Jangkar treemap halaman 6.
+
+    Dijoin ke `unit_induk.nama_pendek` — `penempatan.unit_induk` sendiri berisi nama
+    resmi panjang ("PT PLN (PERSERO) UNIT INDUK DISTRIBUSI JAWA BARAT"), tidak layak
+    jadi label sel treemap.
+    """
     return query(
         """
-        SELECT unit_induk, bidang_pembidangan, count(*) AS n
-        FROM penempatan
-        WHERE unit_induk IS NOT NULL
+        SELECT coalesce(u.nama_pendek, p.unit_induk) AS unit_induk,
+               p.bidang_pembidangan, count(*) AS n
+        FROM penempatan p
+        LEFT JOIN unit_induk u ON u.unit_induk = p.unit_induk
+        WHERE p.unit_induk IS NOT NULL
         GROUP BY 1, 2
         ORDER BY 3 DESC
         """

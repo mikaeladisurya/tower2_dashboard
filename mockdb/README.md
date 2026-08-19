@@ -125,6 +125,13 @@ ditulis ke `out/`. **Jangan ubah perilaku ini.**
 Nama kandidat di database mock **100% sintetis** (dibangkitkan dari daftar nama Indonesia
 umum + seed), tidak diambil dari DAPEG maupun dump area member.
 
+## ⚠️ Cacat sebaran diketahui, belum diperbaiki
+
+Lima bidang di `kandidat`/`kandidat_pendidikan` dibagikan acak seragam padahal seharusnya
+berpola (kota domisili, kota asal, tempat lahir, ukuran baju, almamater). Bukti, dampak ke
+dashboard, dan rencana perbaikan ada di **[`ISSUES_SEBARAN.md`](ISSUES_SEBARAN.md)** — baca
+sebelum menyentuh `08_kandidat_pendaftaran.py` atau merencanakan rebuild berikutnya.
+
 ## Status
 
 ### ✅ 01 — Master data (`build/01_extract_master.py`)

@@ -25,7 +25,9 @@ env/
 .ipynb_checkpoints/
 
 # ---- Streamlit / app runtime ----
-.streamlit/secrets.toml
+# **/ supaya cocok di semua subproyek (recruitment_dashboard/, recruitment_dashboardv2/,
+# dst) -- pola tanpa **/ hanya cocok di root repo karena mengandung slash di tengah.
+**/.streamlit/secrets.toml
 *.db
 *.sqlite
 *.sqlite3

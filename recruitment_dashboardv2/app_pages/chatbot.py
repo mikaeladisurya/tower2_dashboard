@@ -1,14 +1,18 @@
 """Halaman 8 — Chatbot.
 
-Port dari recruitment_dashboard/app_pages/chatbot.py (v1). Beda utama: klik saran
-langsung mengirim pertanyaan (bukan mengisi kotak input via JS deprecated), dan
-tidak ada parameter `dataframes` — chat/chatbot.py membuka koneksi read-only
-sendiri ke berkas .duckdb tiap giliran percakapan.
+Port dari recruitment_dashboard/app_pages/chatbot.py (v1), termasuk trik JS untuk
+mengisi kotak tanya saat saran diklik (lihat komentar di blok "kanan" di bawah —
+st.chat_input tidak punya parameter isi awal, jadi tanpa trik ini klik saran
+harus langsung mengirim). Beda dari v1: tidak ada parameter `dataframes` —
+chat/chatbot.py membuka koneksi read-only sendiri ke berkas .duckdb tiap giliran.
 """
 
 from __future__ import annotations
 
+import json
+
 import streamlit as st
+import streamlit.components.v1 as components
 
 from chat import chat_store, chat_ui
 from chat.chatbot import list_llm_profiles
@@ -91,29 +95,68 @@ with kiri:
 with kanan:
     typed_question = st.chat_input("Tanya mengenai rekrutmen...", key="chatpage_question")
     just_answered = False
-    suggestion_clicked: str | None = None
+
+    prefill = st.session_state.pop("chatpage_prefill", None)
+    if prefill:
+        # st.chat_input tidak punya parameter `value`/default (bukan keterbatasan
+        # buatan v2 — API bawaan Streamlit memang tidak menyediakannya), jadi klik
+        # saran tidak bisa native mengisi kotaknya. Trik ini menaruh teksnya
+        # langsung ke elemen <textarea> lewat JS (window.parent.document, sama
+        # seperti shortcut Ctrl+/ v1) — TIDAK mengirim apa pun, kotak tetap bisa
+        # diedit, pengguna sendiri yang menekan Enter.
+        components.html(
+            """
+            <script>
+            (function() {
+                const doc = window.parent.document;
+                const text = __TEXT_JSON__;
+                let attempts = 0;
+                function trySet() {
+                    const textarea = Array.from(doc.querySelectorAll('textarea')).find(
+                        (el) => el.placeholder === 'Tanya mengenai rekrutmen...'
+                    );
+                    if (textarea) {
+                        const setter = Object.getOwnPropertyDescriptor(
+                            window.parent.HTMLTextAreaElement.prototype, 'value'
+                        ).set;
+                        setter.call(textarea, text);
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                        textarea.focus();
+                        return;
+                    }
+                    attempts += 1;
+                    if (attempts < 20) {
+                        setTimeout(trySet, 50);
+                    }
+                }
+                trySet();
+            })();
+            </script>
+            """.replace("__TEXT_JSON__", json.dumps(prefill)),
+            height=0,
+        )
 
     with st.container(key="chatpage_answers_box", border=True):
-        turns = chat_store.load_turns(active_id)
-
-        if not turns and not typed_question:
-            st.markdown("##### Tanyakan apa saja tentang data rekrutmen PLN")
-            st.caption("Atau coba salah satu contoh di bawah — pertanyaan langsung dikirim.")
-            saran_row = st.container(horizontal=True, horizontal_alignment="center")
-            for i, saran in enumerate(chat_ui.SUGGESTIONS):
-                if saran_row.button(saran, key=f"chatpage_suggestion_{i}"):
-                    suggestion_clicked = saran
-
-        pertanyaan = typed_question or suggestion_clicked
-        if pertanyaan and pertanyaan.strip():
+        if typed_question and typed_question.strip():
             active_id = chat_ui.submit_question(
-                active_id, pertanyaan, selected_profile, key_prefix="chatpage"
+                active_id, typed_question, selected_profile, key_prefix="chatpage"
             )
             just_answered = True
 
         turns = chat_store.load_turns(active_id)
-        history_to_draw = turns[:-1] if just_answered else turns
-        for idx, (question, response, answer_icon, created_at) in reversed(list(enumerate(history_to_draw))):
-            chat_ui.render_turn(
-                question, response, answer_icon, idx, key_prefix="chatpage", created_at=created_at
-            )
+        if not turns:
+            st.markdown("##### Tanyakan apa saja tentang data rekrutmen PLN")
+            st.caption("Atau coba salah satu contoh di bawah — klik untuk mengisi kotak tanya.")
+            saran_row = st.container(horizontal=True, horizontal_alignment="center")
+            for i, saran in enumerate(chat_ui.SUGGESTIONS):
+                if saran_row.button(saran, key=f"chatpage_suggestion_{i}"):
+                    # Hanya mengisi — pertanyaan baru terkirim saat pengguna menekan
+                    # Enter sendiri di kotak (lihat blok prefill JS di atas).
+                    st.session_state["chatpage_prefill"] = saran
+                    st.rerun()
+        else:
+            history_to_draw = turns[:-1] if just_answered else turns
+            for idx, (question, response, answer_icon, created_at) in reversed(list(enumerate(history_to_draw))):
+                chat_ui.render_turn(
+                    question, response, answer_icon, idx, key_prefix="chatpage", created_at=created_at
+                )

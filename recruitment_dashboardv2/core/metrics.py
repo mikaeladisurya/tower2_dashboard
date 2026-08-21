@@ -11,10 +11,11 @@ tambahkan metriknya di dokumen itu dulu, baru di sini.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
-from core.db import query, skalar
+from core.db import TANGGAL_POTONG, query, skalar
 
 _KOORDINAT_PATH = Path(__file__).resolve().parents[1] / "data" / "koordinat.csv"
 
@@ -291,6 +292,28 @@ def akun_ringkas() -> dict[str, float]:
     }
 
 
+def kelengkapan_akun() -> dict[str, float]:
+    """M42 — kelengkapan biodata & aktivasi akun kandidat.
+
+    `ukuran_baju`/`body_height`/`visus_*` SENGAJA tidak dipakai sebagai sinyal
+    "belum lengkap" — NULL besar (220-258 ribu) di kolom itu bukan biodata akun,
+    tapi data tes fisik/MCU yang memang cuma terisi kalau kandidat sampai ke
+    tahap itu.
+    """
+    return {
+        "email_belum_aktif": skalar(
+            "SELECT count(*) FROM kandidat WHERE NOT email_teraktivasi"
+        ),
+        "biodata_belum_lengkap": skalar(
+            "SELECT count(*) FROM kandidat WHERE alamat_domisili IS NULL"
+        ),
+        "lengkap_dan_aktif": skalar(
+            "SELECT count(*) FROM kandidat "
+            "WHERE email_teraktivasi AND alamat_domisili IS NOT NULL"
+        ),
+    }
+
+
 def jenjang_pendidikan() -> pd.DataFrame:
     """M18 — jenjang pendidikan terakhir pelamar.
 
@@ -304,6 +327,63 @@ def jenjang_pendidikan() -> pd.DataFrame:
         WHERE pendidikan_terakhir
         GROUP BY 1
         ORDER BY 2 DESC
+        """
+    )
+
+
+def akun_baru(hari: int = 30) -> dict[str, Any]:
+    """M43 — akun baru dalam `hari` terakhir, dihitung dari TANGGAL_POTONG.
+
+    Dashboard ini alat monitoring HARIAN: "baru" berarti baru relatif hari ini
+    (TANGGAL_POTONG), BUKAN relatif bulan terakhir yang kebetulan ada isinya.
+    Kalau hasilnya 0, itu jawaban yang benar — artinya memang tidak ada
+    pendaftaran masuk belakangan, dan itu justru yang perlu terlihat.
+
+    `hari_sejak_gelombang_tutup` dibawa serta supaya angka 0 punya konteks:
+    0 karena sepi sementara, atau 0 karena tidak ada gelombang dibuka sama sekali.
+    """
+    return {
+        "hari": hari,
+        "n": skalar(
+            "SELECT count(*) FROM kandidat WHERE tanggal_daftar_akun > ? - ?",
+            [TANGGAL_POTONG, hari],
+        ),
+        "lamaran": skalar(
+            "SELECT count(*) FROM pendaftaran WHERE tanggal_lamar > ? - ?",
+            [TANGGAL_POTONG, hari],
+        ),
+        "gelombang_aktif": skalar(
+            "SELECT count(*) FROM gelombang WHERE tgl_buka <= ? AND tgl_tutup >= ?",
+            [TANGGAL_POTONG, TANGGAL_POTONG],
+        ),
+        "hari_sejak_gelombang_tutup": skalar(
+            "SELECT date_diff('day', max(tgl_tutup), ?) FROM gelombang "
+            "WHERE tgl_tutup <= ?",
+            [TANGGAL_POTONG, TANGGAL_POTONG],
+        ),
+    }
+
+
+def pendaftar_per_bulan() -> pd.DataFrame:
+    """M44 — jumlah pendaftaran per bulan, bulan kosong diisi 0 (bukan dilompati).
+
+    Polanya SENGAJA bergelombang, bukan mengalir rata — lonjakan bertepatan
+    pembukaan gelombang rekrutmen, diselingi bulan-bulan nol panjang di antaranya.
+    """
+    return query(
+        """
+        WITH bulan_semua AS (
+            SELECT unnest(generate_series(
+                (SELECT date_trunc('month', min(tanggal_lamar)) FROM pendaftaran),
+                (SELECT date_trunc('month', max(tanggal_lamar)) FROM pendaftaran),
+                INTERVAL 1 MONTH
+            )) AS bulan
+        )
+        SELECT b.bulan::DATE AS bulan, count(p.tanggal_lamar) AS n
+        FROM bulan_semua b
+        LEFT JOIN pendaftaran p ON date_trunc('month', p.tanggal_lamar) = b.bulan
+        GROUP BY 1
+        ORDER BY 1
         """
     )
 
@@ -334,6 +414,23 @@ def umur_pelamar() -> pd.DataFrame:
         FROM kandidat
         WHERE pernah_melamar AND tanggal_lahir IS NOT NULL
         GROUP BY 1
+        ORDER BY 1
+        """
+    )
+
+
+def umur_gender() -> pd.DataFrame:
+    """M41 — sebaran umur (per tahun) x gender, untuk piramida penduduk.
+
+    Kode gender adalah P=Pria, W=Wanita — BUKAN L/P. Salah baca membalik chart.
+    """
+    return query(
+        """
+        SELECT date_diff('year', tanggal_lahir, tanggal_daftar_akun) AS umur,
+               jenis_kelamin, count(*) AS n
+        FROM kandidat
+        WHERE pernah_melamar AND tanggal_lahir IS NOT NULL
+        GROUP BY 1, 2
         ORDER BY 1
         """
     )

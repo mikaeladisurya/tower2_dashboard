@@ -545,6 +545,110 @@ SELECT DISTINCT sumber_skor FROM seleksi_tahap
 Satu nilai: `DIMODELKAN` di seluruh 464.688 baris — konfirmasi bahwa skor tes memang
 tidak pernah ada di sumber nyata (F-017), bukan sebagian dimodelkan.
 
+### M41 · Umur (per tahun) x gender — `NYATA`
+```sql
+SELECT date_diff('year', tanggal_lahir, tanggal_daftar_akun) AS umur,
+       jenis_kelamin, count(*) AS n
+FROM kandidat WHERE pernah_melamar AND tanggal_lahir IS NOT NULL
+GROUP BY 1, 2 ORDER BY 1
+```
+
+| umur | pria | wanita |
+|---|---:|---:|
+| 20 | 6.980 | 3.833 |
+| 21 | 23.857 | 12.929 |
+| 22 | 18.344 | 9.886 |
+| 23 | 19.865 | 10.558 |
+| 24 | 16.495 | 8.878 |
+| 25 | 12.123 | 6.458 |
+| 26 | 7.341 | 3.887 |
+| 27 | 3.854 | 2.137 |
+| 28 | 1.858 | 1.002 |
+| 29 | 836 | 459 |
+| 30 | 309 | 187 |
+| 31 | 132 | 86 |
+| 32 | 50 | 20 |
+| 33 | 11 | 7 |
+| 34 | 7 | 0 |
+
+Rentang umur pelamar sempit (20-34, konsisten dengan M33), puncak di umur 21 lalu turun
+landai — berpola benar (bukan seragam), aman dipakai untuk chart piramida per tahun di
+halaman Kandidat.
+
+### M42 · Kelengkapan biodata & aktivasi akun — `NYATA`
+```sql
+SELECT
+    sum(CASE WHEN NOT email_teraktivasi THEN 1 ELSE 0 END) AS email_belum_aktif,
+    sum(CASE WHEN alamat_domisili IS NULL THEN 1 ELSE 0 END) AS biodata_belum_lengkap,
+    sum(CASE WHEN email_teraktivasi AND alamat_domisili IS NOT NULL THEN 1 ELSE 0 END)
+        AS lengkap_dan_aktif
+FROM kandidat
+```
+
+| sinyal | jumlah akun |
+|---|---:|
+| Email belum aktivasi | 14.944 |
+| Biodata belum lengkap (alamat domisili kosong) | 13.788 |
+| Profil lengkap & aktif | 340.561 |
+
+Dua sinyal ini independen — overlap keduanya cuma 381 akun. Semua akun `email_teraktivasi
+= False` juga `pernah_melamar = False` (logis: tanpa aktivasi tidak bisa lanjut apply),
+sedangkan mayoritas akun dengan alamat kosong (13.407/13.788) justru emailnya SUDAH aktif —
+dua kelompok masalah yang berbeda, bukan orang yang sama.
+
+**Jebakan data:** `ukuran_baju`/`ukuran_celana`/`ukuran_sepatu`/`body_height`/`body_weight`
+(NULL 220.362 baris) dan `visus_kiri`/`visus_kanan` (NULL 258.616 baris) TIDAK dipakai
+sebagai sinyal "belum lengkap" — itu kolom tes fisik/MCU yang memang cuma terisi kalau
+kandidat sampai ke tahap tersebut, bukan biodata akun saat mendaftar.
+
+### M43 · Akun baru N hari terakhir (relatif TANGGAL_POTONG) — `NYATA`
+```sql
+-- ? = TANGGAL_POTONG (core/db.py, 2026-09-15), ? = jendela hari (default 30)
+SELECT count(*) FROM kandidat WHERE tanggal_daftar_akun > ? - ?
+```
+Per 2026-09-15, jendela 30 hari → **0** akun baru (dan 0 lamaran).
+
+**Kenapa TANGGAL_POTONG, bukan `max(tanggal_daftar_akun)`.** Dashboard ini alat monitoring
+HARIAN, bukan laporan sekali baca: "baru" harus berarti baru relatif hari ini. Mengambil
+"bulan terakhir yang kebetulan ada isinya" akan menyembunyikan justru hal yang paling perlu
+terlihat — bahwa sudah lama tidak ada pendaftaran masuk. Angka 0 di sini adalah jawaban yang
+BENAR, bukan kartu rusak.
+
+**Konteks yang dibawa serta** supaya 0 tidak ambigu (0 karena sepi sementara, atau 0 karena
+memang tidak ada gelombang):
+
+| konteks | nilai per 2026-09-15 |
+|---|---:|
+| Gelombang aktif (buka ≤ potong ≤ tutup) | 0 |
+| Hari sejak gelombang terakhir tutup | 345 |
+| Peserta pasca-seleksi/OJT masih berjalan | 2.000 |
+
+Keadaan ini koheren, bukan cacat data: gelombang terakhir tutup 2025-10-05, kohortnya
+sekarang sedang menjalani pasca-seleksi/OJT (`pasca_tahap` memang berlanjut sampai
+2026-10-15), dan belum ada gelombang baru dibuka. Horizon tabel rekrutmen (`kandidat`,
+`pendaftaran`, `gelombang`) berhenti Okt 2025 — kartu ini otomatis hidup lagi begitu
+generator diperpanjang atau gelombang baru dibuka, tanpa ubah kode.
+
+### M44 · Pendaftaran per bulan (bulan kosong = 0) — `NYATA`
+```sql
+WITH bulan_semua AS (
+    SELECT unnest(generate_series(
+        (SELECT date_trunc('month', min(tanggal_lamar)) FROM pendaftaran),
+        (SELECT date_trunc('month', max(tanggal_lamar)) FROM pendaftaran),
+        INTERVAL 1 MONTH
+    )) AS bulan
+)
+SELECT b.bulan::DATE AS bulan, count(p.tanggal_lamar) AS n
+FROM bulan_semua b
+LEFT JOIN pendaftaran p ON date_trunc('month', p.tanggal_lamar) = b.bulan
+GROUP BY 1 ORDER BY 1
+```
+76 bulan (Jul 2019 – Okt 2025). Polanya bergelombang tajam, BUKAN mengalir rata — puncak
+49.801 (Okt 2025), lalu deretan bulan bernilai 0 di antara pembukaan gelombang (mis. seluruh
+2020 nyaris kosong kecuali Des 86). Bulan kosong SENGAJA diisi 0 lewat `generate_series`,
+bukan dilompati — kalau dilompati, line chart akan menyambungkan titik-titik yang jaraknya
+bertahun-tahun seolah tren menurun landai, padahal sebenarnya nol total di antara gelombang.
+
 ---
 
 ## I. Dampak cacat data ke metrik halaman 4 (lihat `mockdb/ISSUES_SEBARAN.md`)

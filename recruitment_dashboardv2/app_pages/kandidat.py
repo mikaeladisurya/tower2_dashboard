@@ -15,22 +15,69 @@ import streamlit as st
 
 from components import ui
 from core import metrics, theme
-from core.format import angka, desimal
+from core.db import TANGGAL_POTONG
+from core.format import angka, persen
 
 ui.judul_halaman("Kandidat & Pasar Tenaga Kerja")
 
 akun = metrics.akun_ringkas()
+akun_baru = metrics.akun_baru()
+kelengkapan = metrics.kelengkapan_akun()
 jenjang = metrics.jenjang_pendidikan()
-gender = metrics.gender_per_kohort()
+piramida = metrics.umur_gender()
 kota = metrics.volume_tes_per_kota_geo()
+pendaftar_bulanan = metrics.pendaftar_per_bulan()
 
 # ── Baris KPI ────────────────────────────────────────────────────────────────
 ui.baris_kpi(
     [
-        {"label": "Akun", "value": angka(akun["akun"])},
-        {"label": "Pelamar unik", "value": angka(akun["pelamar"])},
-        {"label": "Lamaran/akun", "value": desimal(akun["lamaran_per_akun"], 2)},
-        {"label": "Tidak melamar", "value": angka(akun["tidak_melamar"])},
+        {
+            "label": "Pelamar / Akun",
+            "value": f"{angka(akun['pelamar'])} / {angka(akun['akun'])}",
+            "help": (
+                f"{persen(akun['pelamar'] / akun['akun'] * 100)} akun pernah melamar "
+                f"minimal satu lowongan; sisanya ({angka(akun['tidak_melamar'])}) baru "
+                "bikin akun."
+            ),
+        },
+        {
+            "label": f"Akun baru ({akun_baru['hari']} hari)",
+            "value": angka(akun_baru["n"]),
+            "help": (
+                f"Akun terdaftar dalam {akun_baru['hari']} hari terakhir sampai "
+                f"{TANGGAL_POTONG.strftime('%d %B %Y')}. "
+                + (
+                    f"Nol karena tidak ada gelombang dibuka — gelombang terakhir "
+                    f"tutup {akun_baru['hari_sejak_gelombang_tutup']} hari lalu."
+                    if akun_baru["n"] == 0 and not akun_baru["gelombang_aktif"]
+                    else f"Lamaran masuk periode sama: {angka(akun_baru['lamaran'])}."
+                )
+            ),
+        },
+        {
+            "label": "Belum aktivasi surel",
+            "value": angka(kelengkapan["email_belum_aktif"]),
+            "help": (
+                "Akun yang belum aktivasi surel — semuanya juga belum pernah melamar, "
+                "karena tanpa aktivasi tidak bisa lanjut apply."
+            ),
+        },
+        {
+            "label": "Biodata belum lengkap",
+            "value": angka(kelengkapan["biodata_belum_lengkap"]),
+            "help": (
+                "Alamat domisili belum diisi. Kelompok ini beda dari 'belum aktivasi "
+                "surel' — sebagian besar surelnya justru sudah aktif."
+            ),
+        },
+        {
+            "label": "Profil lengkap & aktif",
+            "value": angka(kelengkapan["lengkap_dan_aktif"]),
+            "help": (
+                "Surel aktif DAN alamat domisili terisi — akun yang datanya siap "
+                "diproses lebih lanjut."
+            ),
+        },
     ]
 )
 
@@ -87,13 +134,11 @@ peta.update_geos(
 theme.plotly_layout(peta, height=440)
 
 with ui.temuan_halaman("Kota dengan volume tes terbanyak"):
-    st.plotly_chart(peta, width="stretch", config={"displayModeBar": False})
-
-# ── Dua blok pendukung (maks 2, D5) ──────────────────────────────────────────
-kiri, kanan = st.columns(2)
-
-with kiri:
-    with ui.blok_chart("S1/D-IV mendominasi pelamar"):
+    peta_col, jenjang_col = st.columns([2, 1])
+    with peta_col:
+        st.plotly_chart(peta, width="stretch", config={"displayModeBar": False})
+    with jenjang_col:
+        st.markdown("**S1/D-IV mendominasi pelamar**")
         st.altair_chart(
             alt.Chart(jenjang)
             .mark_bar(cornerRadiusTopRight=4, cornerRadiusBottomRight=4, color=theme.warna_seri(0))
@@ -105,21 +150,55 @@ with kiri:
                     alt.Tooltip("n:Q", title="Jumlah", format=","),
                 ],
             )
+            .properties(height=440)
+        )
+
+# ── Dua blok pendukung (maks 2, D5) ──────────────────────────────────────────
+kiri, kanan = st.columns(2)
+
+with kiri:
+    with ui.blok_chart("Pendaftaran bergelombang, bukan mengalir rata"):
+        st.altair_chart(
+            alt.Chart(pendaftar_bulanan)
+            .mark_area(color=theme.warna_seri(0), opacity=0.85, line=True)
+            .encode(
+                x=alt.X("bulan:T", title=None),
+                y=alt.Y("n:Q", title=None),
+                tooltip=[
+                    alt.Tooltip("bulan:T", title="Bulan", format="%b %Y"),
+                    alt.Tooltip("n:Q", title="Pendaftaran", format=","),
+                ],
+            )
             .properties(height=260)
         )
 
 with kanan:
-    with ui.blok_chart("Proporsi pria berayun 62-74% per tahun"):
+    piramida = piramida.copy()
+    piramida["gender_label"] = piramida["jenis_kelamin"].map({"P": "Pria", "W": "Wanita"})
+    piramida["nilai"] = piramida["n"].where(piramida["jenis_kelamin"] == "W", -piramida["n"])
+    batas = int(piramida["n"].max() * 1.1)
+
+    with ui.blok_chart("Pelamar pria dua kali lipat wanita di tiap umur"):
         st.altair_chart(
-            alt.Chart(gender)
-            .mark_bar(cornerRadiusTopLeft=4, cornerRadiusTopRight=4, color=theme.warna_seri(0))
+            alt.Chart(piramida)
+            .mark_bar()
             .encode(
-                x=alt.X("tahun:O", title=None),
-                y=alt.Y("pct_pria:Q", title=None, scale=alt.Scale(domain=[0, 100])),
+                y=alt.Y("umur:O", sort=alt.SortField("umur", order="descending"), title=None),
+                x=alt.X(
+                    "nilai:Q",
+                    title=None,
+                    scale=alt.Scale(domain=[-batas, batas]),
+                    axis=alt.Axis(labelExpr="abs(datum.value)"),
+                ),
+                color=alt.Color(
+                    "gender_label:N",
+                    scale=alt.Scale(domain=["Pria", "Wanita"], range=[theme.warna_seri(0), theme.warna_seri(1)]),
+                    legend=alt.Legend(title=None, orient="top"),
+                ),
                 tooltip=[
-                    alt.Tooltip("tahun:O", title="Tahun"),
-                    alt.Tooltip("n:Q", title="Pelamar", format=","),
-                    alt.Tooltip("pct_pria:Q", title="Persen pria", format=".1f"),
+                    alt.Tooltip("umur:O", title="Umur"),
+                    alt.Tooltip("gender_label:N", title="Gender"),
+                    alt.Tooltip("n:Q", title="Jumlah", format=","),
                 ],
             )
             .properties(height=260)

@@ -46,60 +46,98 @@ ui.baris_kpi(
 )
 
 # ── Blok jangkar: Sankey alur gugur ─────────────────────────────────────────
-NODE_URUT = [
-    "Pendaftaran",
-    "Administrasi",
-    "Adaptif",
-    "Akademik & Inggris",
-    "Psikologi",
-    "Fisik & MCU",
-    "Wawancara",
-    "Diterima",
-    "Gugur",
+# Tiap tahap punya node gugur SENDIRI, ditaruh satu kolom sejajar dengan tahap
+# berikutnya (seperti "Rejections"/"No replies" pada Sankey pada umumnya) —
+# BUKAN satu node "Gugur" bersama di ujung kanan, yang membuat pita gugur harus
+# menyeberangi seluruh lebar chart dan bertumpuk di atas jalur lulus.
+#
+# Gugur dipecah dua sebab (kecuali Administrasi, seleksi dokumen tanpa konsep
+# hadir): "Gugur X" = hadir tapi tidak lulus tes, "NoShow X" = tidak hadir.
+# Kolom (x=0..7): Pendaftaran | Administrasi | Adaptif+GugurAdministrasi |
+# Akademik+GugurAdaptif | Psikologi+GugurAkademik | Fisik+GugurPsikologi |
+# Wawancara+GugurFisik | Diterima+GugurWawancara
+TAHAP_HADIR = [
+    ("adaptif", "Adaptif"),
+    ("akademik_inggris", "Akademik & Inggris"),
+    ("psikologi", "Psikologi"),
+    ("fisik_mcu", "Fisik & MCU"),
+    ("wawancara", "Wawancara"),
 ]
-IDX = {nama: i for i, nama in enumerate(NODE_URUT)}
-IDX_GUGUR = IDX["Gugur"]
+
+NODE = [
+    # (label, nilai, kolom, baris "atas"=jalur lulus / "lolos"/"hadir"=gugur)
+    ("Pendaftaran", pendaftaran, 0, "atas"),
+    ("Administrasi", int(f.loc["administrasi", "masuk"]), 1, "atas"),
+    ("Adaptif", int(f.loc["adaptif", "masuk"]), 2, "atas"),
+    ("Gugur Administrasi", int(f.loc["administrasi", "masuk"] - f.loc["administrasi", "lulus"]), 2, "lolos"),
+    ("Akademik & Inggris", masuk_akademik, 3, "atas"),
+    ("Psikologi", int(f.loc["akademik_inggris", "lulus"]), 4, "atas"),
+    ("Fisik & MCU", int(f.loc["psikologi", "lulus"]), 5, "atas"),
+    ("Wawancara", int(f.loc["fisik_mcu", "lulus"]), 6, "atas"),
+    ("Diterima", int(f.loc["wawancara", "lulus"]), 7, "atas"),
+]
+for i, (kode, _nama) in enumerate(TAHAP_HADIR):
+    kolom = i + 3  # adaptif gugur -> kolom 3 (sejajar Akademik), dst.
+    tidak_lolos = int(f.loc[kode, "hadir"] - f.loc[kode, "lulus"])
+    tidak_hadir = int(f.loc[kode, "masuk"] - f.loc[kode, "hadir"])
+    NODE.append((f"Gugur {_nama}", tidak_lolos, kolom, "lolos"))
+    NODE.append((f"NoShow {_nama}", tidak_hadir, kolom, "hadir"))
+
+IDX = {nama: i for i, (nama, *_r) in enumerate(NODE)}
 
 alur = [
     ("Pendaftaran", "Administrasi", int(f.loc["administrasi", "masuk"])),
     ("Pendaftaran", "Akademik & Inggris", rbb_langsung),
     ("Administrasi", "Adaptif", int(f.loc["administrasi", "lulus"])),
-    ("Administrasi", "Gugur", int(f.loc["administrasi", "masuk"] - f.loc["administrasi", "lulus"])),
-    ("Adaptif", "Akademik & Inggris", lulus_adaptif),
-    ("Adaptif", "Gugur", int(f.loc["adaptif", "masuk"] - f.loc["adaptif", "lulus"])),
-    ("Akademik & Inggris", "Psikologi", int(f.loc["akademik_inggris", "lulus"])),
-    ("Akademik & Inggris", "Gugur", int(f.loc["akademik_inggris", "masuk"] - f.loc["akademik_inggris", "lulus"])),
-    ("Psikologi", "Fisik & MCU", int(f.loc["psikologi", "lulus"])),
-    ("Psikologi", "Gugur", int(f.loc["psikologi", "masuk"] - f.loc["psikologi", "lulus"])),
-    ("Fisik & MCU", "Wawancara", int(f.loc["fisik_mcu", "lulus"])),
-    ("Fisik & MCU", "Gugur", int(f.loc["fisik_mcu", "masuk"] - f.loc["fisik_mcu", "lulus"])),
-    ("Wawancara", "Diterima", int(f.loc["wawancara", "lulus"])),
-    ("Wawancara", "Gugur", int(f.loc["wawancara", "masuk"] - f.loc["wawancara", "lulus"])),
+    ("Administrasi", "Gugur Administrasi", int(f.loc["administrasi", "masuk"] - f.loc["administrasi", "lulus"])),
 ]
+tahap_ke_kolom_atas = {
+    "adaptif": "Akademik & Inggris",
+    "akademik_inggris": "Psikologi",
+    "psikologi": "Fisik & MCU",
+    "fisik_mcu": "Wawancara",
+    "wawancara": "Diterima",
+}
+tahap_ke_nama_atas = {
+    "adaptif": "Adaptif",
+    "akademik_inggris": "Akademik & Inggris",
+    "psikologi": "Psikologi",
+    "fisik_mcu": "Fisik & MCU",
+    "wawancara": "Wawancara",
+}
+for kode, nama in TAHAP_HADIR:
+    asal = tahap_ke_nama_atas[kode]
+    tujuan_lulus = tahap_ke_kolom_atas[kode]
+    alur.append((asal, tujuan_lulus, int(f.loc[kode, "lulus"])))
+    alur.append((asal, f"Gugur {nama}", int(f.loc[kode, "hadir"] - f.loc[kode, "lulus"])))
+    alur.append((asal, f"NoShow {nama}", int(f.loc[kode, "masuk"] - f.loc[kode, "hadir"])))
 
-throughput = {nama: 0 for nama in NODE_URUT}
-for asal, tujuan, nilai in alur:
-    throughput[asal] += nilai
-    if tujuan != "Gugur":
-        throughput[tujuan] = max(throughput[tujuan], throughput.get(tujuan, 0))
-throughput["Pendaftaran"] = pendaftaran
-throughput["Gugur"] = sum(v for a, t, v in alur if t == "Gugur")
-
-label_node = [f"{nama}<br>{angka(throughput[nama])}" for nama in NODE_URUT]
+label_node = [f"{nama}<br>{angka(nilai)}" for nama, nilai, _kolom, _baris in NODE]
 warna_seri = theme.seri()
-warna_node = [warna_seri[0]] * (len(NODE_URUT) - 1) + [theme.STATUS["kritis"]]
+warna_node = [
+    warna_seri[0] if baris == "atas" else (theme.STATUS["kritis"] if baris == "lolos" else theme.STATUS["peringatan"])
+    for _n, _v, _k, baris in NODE
+]
+x_node = [0.001 + kolom * (0.998 / 7) for _n, _v, kolom, _b in NODE]
+y_node = [
+    {"atas": 0.05, "lolos": 0.45, "hadir": 0.9}[baris] for _n, _v, _k, baris in NODE
+]
 warna_link = [
-    "rgba(208,59,59,0.35)" if tujuan == "Gugur" else "rgba(0,119,200,0.35)"
+    "rgba(208,59,59,0.35)"
+    if tujuan.startswith("Gugur ")
+    else ("rgba(250,178,25,0.4)" if tujuan.startswith("NoShow ") else "rgba(0,119,200,0.35)")
     for _, tujuan, _ in alur
 ]
 
 sankey = go.Figure(
     go.Sankey(
-        arrangement="snap",
+        arrangement="fixed",
         node=dict(
             label=label_node,
             color=warna_node,
-            pad=18,
+            x=x_node,
+            y=y_node,
+            pad=22,
             thickness=16,
             line=dict(width=0),
         ),
@@ -109,10 +147,10 @@ sankey = go.Figure(
             value=[v for _, _, v in alur],
             color=warna_link,
         ),
-        textfont=dict(size=13),
+        textfont=dict(size=12),
     )
 )
-theme.plotly_layout(sankey, height=440)
+theme.plotly_layout(sankey, height=460)
 
 with ui.temuan_halaman("Dari pendaftar sampai diterima: enam gerbang, satu jalan keluar"):
     st.plotly_chart(sankey, width="stretch", config={"displayModeBar": False})

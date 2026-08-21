@@ -14,7 +14,30 @@ from chat import chat_store, chat_ui
 from chat.chatbot import list_llm_profiles
 from components import ui
 
-ui.judul_halaman("Chatbot")
+ui.judul_halaman("RecruitMan")
+
+# Tinggi dinamis mengikuti viewport (bukan px tetap) — sama seperti v1
+# (recruitment_dashboard/app.py). st.container(height=N) yang tetap membuat kotak
+# terasa "kurang ke bawah" di layar besar; calc(100vh - Npx) mengisi sampai
+# mentok bawah dan tetap scroll internal sendiri kalau isinya lebih panjang.
+st.html(
+    """
+    <style>
+      .st-key-chatpage_history_box {
+        max-height: calc(100vh - 520px);
+        min-height: 160px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+      .st-key-chatpage_answers_box {
+        max-height: calc(100vh - 300px);
+        min-height: 300px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+    </style>
+    """
+)
 
 llm_profiles = list_llm_profiles()
 active_id = st.session_state.setdefault("active_conversation_id", None)
@@ -29,7 +52,7 @@ with kiri:
         selected_profile = chat_ui.render_model_status_selector(llm_profiles)
 
     st.markdown("**Riwayat**")
-    with st.container(height=360, border=True):
+    with st.container(key="chatpage_history_box", border=True):
         for conv in chat_store.list_conversations():
             is_active = conv["id"] == active_id
             label_col, menu_col = st.columns([5, 1], vertical_alignment="center")
@@ -44,7 +67,7 @@ with kiri:
                     st.session_state["active_conversation_id"] = conv["id"]
                     st.rerun()
             with menu_col:
-                with st.popover("", icon=":material/more_vert:", key=f"chatpage_menu_{conv['id']}"):
+                with st.popover("", key=f"chatpage_menu_{conv['id']}"):
                     new_title = st.text_input(
                         "Ubah judul",
                         value=label,
@@ -70,7 +93,7 @@ with kanan:
     just_answered = False
     suggestion_clicked: str | None = None
 
-    with st.container(height=520, border=True):
+    with st.container(key="chatpage_answers_box", border=True):
         turns = chat_store.load_turns(active_id)
 
         if not turns and not typed_question:

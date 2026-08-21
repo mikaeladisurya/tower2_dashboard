@@ -27,7 +27,7 @@ HALAMAN = [
     st.Page("app_pages/pasca.py", title="Pasca-seleksi & OJT", icon=":material/school:"),
     st.Page("app_pages/penempatan.py", title="Penempatan", icon=":material/location_on:"),
     st.Page("app_pages/kualitas.py", title="Kualitas data", icon=":material/fact_check:"),
-    st.Page("app_pages/chatbot.py", title="Chatbot", icon=":material/chat:"),
+    st.Page("app_pages/chatbot.py", title="RecruitMan", icon=":material/chat:"),
 ]
 
 halaman = st.navigation(HALAMAN, position="sidebar")

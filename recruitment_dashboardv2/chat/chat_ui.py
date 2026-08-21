@@ -60,7 +60,7 @@ def render_model_status_selector(llm_profiles: list[dict[str, str]]) -> dict[str
         selected_id = st.selectbox(
             "Model LLM",
             list(profile_by_id.keys()),
-            format_func=lambda pid: profile_by_id[pid]["label"],
+            format_func=lambda pid: f"{profile_by_id[pid]['icon']} {profile_by_id[pid]['label']}",
             key="copilot_llm_profile",
             label_visibility="collapsed",
         )

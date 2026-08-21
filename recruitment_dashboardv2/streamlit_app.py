@@ -75,7 +75,7 @@ if halaman.title != "RecruitMan":
         if llm_profiles:
             with st.container(border=True):
                 selected_profile = chat_ui.render_model_status_selector(
-                    llm_profiles, show_new_chat_button=True
+                    llm_profiles, show_new_chat_button=True, auto_check=False
                 )
         else:
             selected_profile = None

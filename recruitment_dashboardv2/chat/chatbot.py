@@ -1,14 +1,20 @@
 """Agen chatbot text-to-SQL — port dari recruitment_dashboard/chatbot.py (v1).
 
-Tiga perubahan dari v1 (lihat plan Tahap 3):
+Perubahan dari v1 (lihat plan Tahap 3):
 1. Koneksi DuckDB **read-only ke berkas** `mockdb/out/rekrutmen.duckdb`, bukan
    DataFrame di-`register` ke koneksi in-memory — database ini 4,22 juta baris,
    tidak boleh dimuat ke memori.
 2. Prompt skema dibangkitkan dari katalog (`information_schema`) + nilai contoh
-   kolom kategori, bukan dari `df.dtypes` DataFrame yang sudah dimuat.
-3. Aturan & jebakan data dari `docs/metrik.md` **dimuat saat runtime** ke system
-   prompt, bukan disalin ke kode — setiap metrik baru otomatis diketahui chatbot
-   tanpa perubahan kode di sini.
+   kolom kategori, bukan dari `df.dtypes` DataFrame yang sudah dimuat. Di-cache
+   sekali per proses (`_build_schema_prompt` pakai `functools.lru_cache`) — kalau
+   tidak, biaya query live (~1,3 detik) terulang di SETIAP giliran percakapan.
+3. `docs/metrik.md` (kamus metrik & jebakan data) SENGAJA TIDAK dimasukkan ke
+   prompt untuk saat ini (keputusan 2026-08-21) — ukurannya ~22,7 KB (~5.700
+   token), dikirim ulang tiap giliran tool-loop, menambah latensi nyata tanpa
+   terukur seberapa besar manfaatnya. Chatbot sekarang menjelajah database bebas
+   dengan SQL yang dibangkitkannya sendiri, hanya berbekal skema + contoh.
+   `_muat_kamus_metrik()` dibiarkan ada, tidak dipanggil — gampang diaktifkan
+   lagi nanti, idealnya dalam bentuk ringkasan jebakan yang lebih kecil.
 
 Guard `_is_safe_select`, blacklist regex, batas iterasi, budget waktu, alur agentic
 (tool loop run_sql_query + render_chart), multi-profil LLM, dan ringkasan percakapan
@@ -23,6 +29,7 @@ polos (lihat `answer_question`).
 
 from __future__ import annotations
 
+import functools
 import json
 import os
 import re
@@ -300,16 +307,34 @@ TABEL_INTI = [
 ]
 
 
-def _build_schema_prompt(con: Any) -> str:
-    return "\n\n".join(_describe_table(con, t) for t in TABEL_INTI)
+@functools.lru_cache(maxsize=1)
+def _build_schema_prompt() -> str:
+    """Deskripsi skema (18 tabel inti) — di-cache SEKALI per proses, bukan dibangun
+    ulang tiap giliran percakapan.
 
-
-def _muat_kamus_metrik() -> str:
-    """Muat docs/metrik.md saat runtime — SATU-SATUNYA sumber aturan & jebakan data.
-
-    Ini yang membuat chatbot tidak pernah tertinggal saat metrik baru ditambahkan:
-    tidak ada salinan aturan di kode chatbot yang bisa basi.
+    Beda dari v1 (yang baca df.dtypes dari DataFrame yang sudah di memori, jadi
+    gratis): v2 harus tanya langsung ke DuckDB (information_schema + sampel nilai
+    kategori per kolom), diukur ~1,3 detik. Skema tidak berubah selama proses
+    Streamlit hidup, jadi cache sekali cukup — tanpa ini, 1,3 detik itu terulang
+    di SETIAP giliran, sebelum langkah pertama sempat terlihat di UI.
     """
+    import duckdb
+
+    con = duckdb.connect(str(DB_PATH), read_only=True)
+    try:
+        return "\n\n".join(_describe_table(con, t) for t in TABEL_INTI)
+    finally:
+        con.close()
+
+
+# Kamus metrik (docs/metrik.md) SENGAJA TIDAK dimasukkan ke prompt untuk saat ini —
+# ukurannya ~22,7 KB (~5.700 token), dikirim ulang di SETIAP giliran tool-loop,
+# menambah latensi nyata. Keputusan (2026-08-21): biarkan chatbot menjelajah
+# database bebas dengan SQL yang dibangkitkannya sendiri (skema + contoh saja),
+# tanpa kamus metrik. Fungsi ini dibiarkan ada, tidak dipanggil, supaya gampang
+# diaktifkan lagi nanti (idealnya dalam bentuk ringkasan jebakan yang lebih kecil,
+# bukan seluruh berkas apa adanya).
+def _muat_kamus_metrik() -> str:
     berkas = DOCS_DIR / "metrik.md"
     if not berkas.exists():
         return "(docs/metrik.md tidak ditemukan)"
@@ -346,7 +371,6 @@ Aturan:
 - Kalau pertanyaan butuh angka/data spesifik dari tabel, WAJIB panggil run_sql_query dulu - jangan pernah mengarang angka.
 - Kalau pertanyaan bersifat umum/definisi/sapaan seputar rekrutmen/HR yang tidak butuh data tabel, jawab langsung tanpa memanggil tool apapun.
 - SQL: hanya gunakan tabel & kolom yang benar-benar ada pada skema di bawah, jangan mengarang nama kolom/tabel. Nama kolom berspasi HARUS dibungkus tanda kutip dua. Hanya satu statement SELECT (boleh diawali WITH untuk CTE), tanpa titik koma ganda. Batasi hasil ke maksimal 200 baris (tambahkan LIMIT jika query berpotensi mengembalikan banyak baris).
-- WAJIB patuhi kamus metrik & jebakan data di bawah — terutama filter/join yang disebutkan eksplisit (mis. gap FTK harus pakai realisasi_mar_2026 bukan apr_2026; gender adalah P=Pria/W=Wanita bukan L/P; jangan JOIN langsung seleksi_tahap_agregat ke pendaftaran).
 - Kalau run_sql_query gagal (error atau ditolak), coba perbaiki query sekali berdasarkan pesan errornya; kalau masih gagal, jelaskan keterbatasannya ke user alih-alih mengarang jawaban.
 - Setelah dapat hasil query, jawab pertanyaan user berdasarkan hasil (preview) itu saja.
 - render_chart: panggil kalau hasil query lebih dari 1 baris dan ada kolom kategori/nilai yang bermakna divisualisasikan.
@@ -360,9 +384,6 @@ Skema tabel:
 
 Contoh pertanyaan dan SQL:
 {examples}
-
-Kamus metrik & jebakan data (SUMBER KEBENARAN — sama dengan yang dipakai dashboard):
-{metrik}
 """
 
 TOOLS = [
@@ -550,13 +571,11 @@ def llm_answer(
 
         con = duckdb.connect(str(DB_PATH), read_only=True)
         try:
-            schema_prompt = _build_schema_prompt(con)
+            schema_prompt = _build_schema_prompt()
             messages: list[dict[str, Any]] = [
                 {
                     "role": "system",
-                    "content": AGENTIC_SYSTEM_PROMPT.format(
-                        schema=schema_prompt, examples=SQL_FEW_SHOT, metrik=_muat_kamus_metrik()
-                    ),
+                    "content": AGENTIC_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
                 }
             ]
             if conversation_context:

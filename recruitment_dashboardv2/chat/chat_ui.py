@@ -52,12 +52,22 @@ def get_selected_profile(llm_profiles: list[dict[str, str]]) -> dict[str, str] |
 def render_model_status_selector(
     llm_profiles: list[dict[str, str]],
     show_new_chat_button: bool = False,
+    auto_check: bool = True,
 ) -> dict[str, str] | None:
     """Selectbox + status/recheck, dipakai bersama oleh popover mengambang (lintas
     halaman) dan halaman RecruitMan sendiri — satu sumber kebenaran untuk model aktif.
     Popover mengambang juga dapat tombol "Percakapan baru" ringkas di sebelah tombol
     cek ulang (halaman RecruitMan penuh sudah punya tombol lebar sendiri di sidebar,
-    jadi tidak perlu yang kedua di sini)."""
+    jadi tidak perlu yang kedua di sini).
+
+    `auto_check=False` (dipakai popover mengambang) mematikan ping otomatis saat
+    status basi/kosong — isi `with st.popover(...):` DIEKSEKUSI di server pada
+    SETIAP render halaman, bukan cuma saat popover-nya benar-benar dibuka (ini
+    terukur menambah ~5 detik ke SETIAP navigasi halaman, karena tiap sesi baru
+    langsung memicu ping jaringan nyata ke API LLM). Dengan auto_check=False,
+    status cuma tampil dari cache sesi kalau ada (mis. sudah dicek dari halaman
+    RecruitMan penuh) atau "belum dicek" — ping baru terjadi saat pengguna
+    menekan tombol cek ulang sendiri."""
     if not llm_profiles:
         st.caption("Mode demo tanpa API — belum ada profil LLM di secrets.toml")
         return None
@@ -90,14 +100,16 @@ def render_model_status_selector(
                 st.session_state["active_conversation_id"] = None
                 st.rerun()
 
-    if stale or force_recheck:
+    if force_recheck or (auto_check and stale):
         with st.spinner("Mengecek koneksi..."):
             ok, detail = check_llm_connection(selected_profile)
         status_cache[selected_id] = {"ok": ok, "detail": detail, "checked_at": time.time()}
         cached = status_cache[selected_id]
 
     note = f" · {selected_profile['note']}" if selected_profile.get("note") else ""
-    if cached["ok"]:
+    if cached is None:
+        st.badge("Belum dicek", icon=":material/help:", color="gray")
+    elif cached["ok"]:
         st.badge(f"Terhubung{note}", icon=":material/check_circle:", color="green")
     else:
         st.badge(f"Gagal terhubung{note}", icon=":material/error:", color="red")

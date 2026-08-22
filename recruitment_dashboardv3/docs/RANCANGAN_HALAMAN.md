@@ -131,7 +131,14 @@ seiring tanggal maju — itu inti rancangannya, bukan tambahan.
 
 **Contoh keadaan saat dokumen ini ditulis (22 Agustus 2026)** — akan berbeda tiap hari, dan
 memang itu maksudnya: 979 orang selesai OJT dalam 40 hari · 1.021 orang dalam 54 hari · 2.000
-menunggu SK · **0 dari 2.000 sudah ditetapkan unit penempatannya** · 0 gelombang terbuka.
+sedang OJT · **0 menunggu SK** · **0 dari 2.000 sudah ditetapkan unit penempatannya** ·
+0 gelombang terbuka.
+
+> Dikoreksi di G6 setelah metriknya dijalankan. Revisi 3 sempat menulis “2.000 menunggu SK”,
+> memakai bacaan longgar `status_sk = 'BELUM'`. Yang benar **0**: pada 22 Agustus 2026 kedua
+> kohort masih **di dalam** OJT, jadi belum menunggu apa pun — mereka sudah terhitung di kartu
+> “sedang OJT”. Menghitung mereka dua kali akan melipatgandakan orang yang sama di satu layar.
+> Angka itu naik jadi 979 pada 2026-10-05 dan 2.000 pada 2027-01-06, seiring OJT selesai.
 
 **Metrik dibutuhkan:** hitungan pipeline per tahap terhadap hari ini · tenggat N hari ke depan ·
 peristiwa terakhir & berikutnya.
@@ -289,6 +296,13 @@ punya jendela pelaksanaan nyata per kohort — bukan peristiwa titik.
   diputuskan; itu keadaan nyata, bukan data hilang.
 - Rentang tiap tahap **konstan lintas kohort** (13/14/180/10 hari), jadi perbandingan durasi
   antar kohort tidak bermakna. Lini masa **posisi** tetap bermakna.
+- **2.000 orang kohort 2025 berhenti di OJT dan tidak pernah bergerak lagi** (J9). Di
+  `denyut_pipeline` mereka muncul sebagai `sudah_tuntas` di tahap OJT — label yang harfiahnya
+  berarti “beres, tinggal tahap berikutnya”, padahal `ujian_ojt` dan `sk_penempatan` untuk
+  kohort ini **tidak punya baris sama sekali**. Menampilkan `sudah_tuntas` sendirian akan
+  menenangkan pembaca atas orang-orang yang justru macet. Halaman ini wajib menyandingkannya
+  dengan jumlah di `ujian_ojt`/`sk_penempatan` supaya selisih 2.000 yang menggantung terlihat.
+  Ditemukan saat audit G6; **jangan ditambal di SQL**, tampilkan apa adanya.
 
 **Metrik dibutuhkan:** lini masa tahap per kohort dengan posisi hari ini · peserta & jendela per
 tahap · pembidangan per kohort · sebaran UPDL · status SK.

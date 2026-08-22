@@ -68,8 +68,8 @@ tuntas lalu lapor. **Tidak ada penerusan otomatis** ke goal berikutnya.
 | G2 | Susunan halaman `[GATE]` | opus | SELESAI |
 | G3 | Tema `[GATE]` | sonnet → opus | SELESAI |
 | G4 | Aturan tampilan v3 | opus | SELESAI |
-| G5 | `core/db.py` + `core/format.py` | sonnet | BELUM |
-| G6 | `core/metrics.py` | opus | BELUM |
+| G5 | `core/db.py` + `core/format.py` | sonnet | SELESAI |
+| G6 | `core/metrics.py` | opus | SELESAI |
 | G7 | Kerangka aplikasi + navigasi | sonnet | BELUM |
 | G8 | Port chatbot apa adanya | opus | BELUM |
 | G9 | Harness tes 3 lapis | sonnet | BELUM |
@@ -255,16 +255,24 @@ Port pola `recruitment_dashboardv2/core/db.py` (58 baris) apa adanya (P9):
 
 Penyesuaian v3:
 
-- `TANGGAL_POTONG` **dibaca/diverifikasi dari tabel `_meta_generator`**
-  (`kunci = 'tanggal_sekarang'` → `2026-09-15`), tidak diketik dari ingatan.
-- Tambah helper P3, mis. `jendela(hari) -> tuple[date, date]`, supaya setiap hitungan
-  "N hari terakhir" terikat `TANGGAL_POTONG` dan tidak pernah ke `max(tanggal)`.
+- **`hari_ini()` adalah jangkar waktu** (revisi P3 di G4, keputusan pemilik di G2).
+  Default tanggal berjalan sungguhan; bisa di-override pemilih tanggal lewat `session_state`.
+  **Satu-satunya sumber waktu** — halaman tidak pernah memanggil `date.today()` sendiri.
+- `TANGGAL_POTONG` **dibaca dari tabel `_meta_generator`** (`kunci = 'tanggal_sekarang'` →
+  `2026-09-15`), tidak diketik dari ingatan. Perannya turun jadi penanda **horison data**,
+  bukan patokan tampilan.
+- Tambah helper P3 `jendela(hari) -> tuple[date, date]`, terikat **`hari_ini()`** — bukan
+  `TANGGAL_POTONG`, dan tidak pernah ke `max(tanggal)`.
 - Buang `daftar_tabel()` — tidak dipakai siapa pun di v2 (chatbot punya `TABEL_INTI` sendiri).
 
 `core/format.py` diport dari v2 (44 baris, pemformat angka Indonesia).
 
 **Selesai bila:** skrip verifikasi mencetak **35 tabel** dan **4.224.925 baris**, dan
 `TANGGAL_POTONG` yang terbaca sama dengan `_meta_generator`.
+
+⚠️ Kedua angka itu berbeda basis, dan itu memang benar: 35 tabel **termasuk**
+`_meta_generator`, sedangkan 4.224.925 baris **tidak** menghitung 7 baris tabel itu (total
+sesungguhnya 4.224.932). Tes harus menyebut basisnya eksplisit — lihat `CATATAN_DATA.md` §1.
 
 ---
 

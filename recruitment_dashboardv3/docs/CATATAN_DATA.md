@@ -108,8 +108,10 @@ Tapi jangan pula menyimpulkan tidak ada yang berjalan — pipeline pasca-seleksi
 
 ## 4. Jebakan data terverifikasi
 
-Delapan butir di bawah diuji ulang di G1. **Tiga di antaranya ternyata tidak akurat seperti
-yang tercatat sebelumnya di `GOALS_V3.md`** — versi yang benar ada di sini.
+Delapan butir pertama (J1–J8) diuji ulang di G1; **tiga di antaranya ternyata tidak akurat
+seperti yang tercatat sebelumnya di `GOALS_V3.md`** — versi yang benar ada di sini. Dua butir
+terakhir (J9–J10) ditemukan di G2 saat menguji perilaku dashboard dengan jangkar tanggal
+berjalan; keduanya tidak terlihat selama jangkar waktunya dibekukan di tanggal potong.
 
 ### J1 · Kolom yang dibagikan acak seragam — jangan bangun analisis di atasnya
 
@@ -199,6 +201,46 @@ disengaja: PLN memang tidak pernah memegang data per-kandidat tahap FHCI.
 |---|---|
 | `realisasi_mar_2026` | **701** ← benar |
 | `realisasi_apr_2026` | 33.934 ← palsu |
+### J9 · Kohort 2025 tidak punya baris `ujian_ojt` dan `sk_penempatan`
+
+Ditemukan saat menguji perilaku dashboard dengan jangkar tanggal berjalan.
+
+| Gelombang | `ojt` | `ujian_ojt` | `sk_penempatan` |
+|---|---|---|---|
+| G2024-087 | 990 | 990 | 990 |
+| G2025-091 | 979 | **0** | **0** |
+| G2025-092 | 1.021 | **0** | **0** |
+
+Generator berhenti menulis peristiwa pasca-OJT untuk kohort 2025. Akibatnya, begitu tanggal
+berjalan melewati **2026-10-15** (OJT terakhir selesai), 2.000 orang **selesai OJT tapi tidak
+pernah ujian dan tidak pernah ber-SK** — mereka lenyap dari pipeline:
+
+| Tanggal | OJT kelar | Ujian kelar | SK terbit | Menggantung |
+|---|---|---|---|---|
+| 2026-10-15 | 7.711 | 5.711 | 5.711 | **2.000** |
+| 2027-01-06 | 7.711 | 5.711 | 5.711 | **2.000** |
+
+Cacat ini **tidak terlihat** kalau jangkar waktunya dibekukan di tanggal potong. Halaman
+Pasca-Seleksi harus menampilkan keadaan ini apa adanya, bukan menyembunyikannya.
+
+### J10 · Horison data berakhir 2026-10-15
+
+Peristiwa terjadwal paling akhir di seluruh database adalah `pasca_tahap.tanggal_selesai`
+maksimum = **2026-10-15**. Sesudah tanggal itu tidak ada apa pun yang pernah berstatus
+"sedang berjalan" lagi.
+
+Horison per tabel:
+
+| Kolom | Terjauh |
+|---|---|
+| `gelombang.tgl_tutup` · `profesi.tgl_tutup` · `pendaftaran.tanggal_lamar` | 2025-10-05 |
+| `seleksi_tahap.tanggal_tahap` | 2026-02-16 |
+| `pasca_tahap.tanggal_mulai` | 2026-04-18 |
+| `pasca_tahap.tanggal_selesai` | **2026-10-15** |
+
+Halaman yang bergantung pada "sedang berjalan" harus punya keadaan kosong yang bermartabat,
+karena keadaan itu **pasti** akan tiba.
+
 
 ---
 

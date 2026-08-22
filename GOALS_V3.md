@@ -65,21 +65,23 @@ tuntas lalu lapor. **Tidak ada penerusan otomatis** ke goal berikutnya.
 |---|---|---|---|
 | G0 | Kerangka folder v3 | sonnet | SELESAI |
 | G1 | Konteks kerja tim rekrutmen | haiku → opus | SELESAI |
-| G2 | Susunan halaman `[GATE]` | opus | BELUM |
-| G3 | Tema `[GATE]` | sonnet → opus | BELUM |
-| G4 | Aturan tampilan v3 | opus | BELUM |
+| G2 | Susunan halaman `[GATE]` | opus | SELESAI |
+| G3 | Tema `[GATE]` | sonnet → opus | SELESAI |
+| G4 | Aturan tampilan v3 | opus | SELESAI |
 | G5 | `core/db.py` + `core/format.py` | sonnet | BELUM |
 | G6 | `core/metrics.py` | opus | BELUM |
 | G7 | Kerangka aplikasi + navigasi | sonnet | BELUM |
 | G8 | Port chatbot apa adanya | opus | BELUM |
 | G9 | Harness tes 3 lapis | sonnet | BELUM |
-| G10 | Halaman 1 — *judul diisi G2* `[GATE]` | sonnet | BELUM |
-| G11 | Halaman 2 — *judul diisi G2* `[GATE]` | sonnet | BELUM |
-| G12 | Halaman 3 — *judul diisi G2* `[GATE]` | sonnet | BELUM |
-| G13 | Halaman 4 — *judul diisi G2* `[GATE]` | sonnet | BELUM |
-| G14 | Halaman 5 — *judul diisi G2* `[GATE]` | sonnet | BELUM |
-| G15 | Halaman Eksplorasi `[GATE]` | sonnet | BELUM |
-| G16 | Konsolidasi & serah terima | opus | BELUM |
+| G10 | Halaman 1 — Beranda `[GATE]` | sonnet | BELUM |
+| G11 | Halaman 2 — Perencanaan Formasi `[GATE]` | sonnet | BELUM |
+| G12 | Halaman 3 — Seleksi Berjalan `[GATE]` | sonnet | BELUM |
+| G13 | Halaman 4 — Corong Seleksi `[GATE]` | sonnet | BELUM |
+| G14 | Halaman 5 — Pasca-Seleksi `[GATE]` | sonnet | BELUM |
+| G15 | Halaman 6 — Rencana & Realisasi `[GATE]` | sonnet | BELUM |
+| G16 | Halaman 7 — Profil Pelamar `[GATE]` | sonnet | BELUM |
+| G17 | Halaman Eksplorasi `[GATE]` | sonnet | BELUM |
+| G18 | Konsolidasi & serah terima | opus | BELUM |
 
 Legenda: `BELUM` · `JALAN` · `MENUNGGU KEPUTUSAN` · `SELESAI`
 
@@ -224,7 +226,7 @@ hindari pola generik, jaga hierarki tipografi, disiplin spasi, kendalikan kepada
 Tulis ulang P1–P11 sebagai aturan yang bisa ditegakkan. Tiap aturan diberi tanda:
 
 - **[mekanis]** — bisa diuji regex di `tests/uji_disiplin.py` (G9)
-- **[manual]** — harus dilihat mata; masuk daftar periksa tinjauan visual G16
+- **[manual]** — harus dilihat mata; masuk daftar periksa tinjauan visual G18
 
 Termasuk satu keputusan arsitektur: **apakah v3 punya primitif tata letak sama sekali**, dan
 kalau ya apa saja. `components/ui.py` milik v2 dibuang seluruhnya
@@ -390,7 +392,26 @@ curigai ping jaringan di jalur render — itu penyebabnya di v2.
 
 # FASE 3 — Halaman, satu per satu
 
-## G10–G14 · Halaman 1…5 `[GATE tiap goal]`
+## G10–G16 · Halaman 1…7 `[GATE tiap goal]`
+
+Judul hasil G2 (**tujuh halaman**, bukan lima): **G10 Beranda** · **G11 Perencanaan Formasi** ·
+**G12 Seleksi Berjalan** · **G13 Corong Seleksi** · **G14 Pasca-Seleksi** ·
+**G15 Rencana & Realisasi** · **G16 Profil Pelamar**. Rincian tiap halaman di
+`recruitment_dashboardv3/docs/RANCANGAN_HALAMAN.md`.
+
+**Mengikat semua halaman — dashboard ini realtime.** Keputusan pemilik: jangkar waktu adalah
+**`date()` sungguhan**, ditambah pemilih "lihat per tanggal" yang defaultnya hari ini.
+`TANGGAL_POTONG` bukan patokan tampilan, hanya penanda horison data.
+
+Status apa pun (berjalan/selesai/belum mulai) **dihitung dari perbandingan tanggal terhadap
+`hari_ini()`**, tidak pernah dibaca dari kolom `status` yang beku saat generate — kolom itu
+akan menyatakan "2.000 sedang OJT" selamanya, bahkan di 2027. Tidak boleh ada angka hari yang
+di-hardcode. Tiap halaman wajib punya keadaan kosong yang bermartabat: fakta keadaan, bukan
+pesan galat atau penjelasan developer.
+
+Horison data berakhir **2026-10-15**; sesudahnya halaman live memang kosong. Perbaikan
+generator untuk v4 dicatat di `recruitment_dashboardv3/docs/USULAN_DATABASE.md` bagian A —
+**bukan lingkup v3**.
 
 - **Prasyarat:** G4, G6, G7, G9 — dan halaman sebelumnya sudah disetujui
 - **Subagent:** `v3-pembangun` · **sonnet** → audit `v3-auditor` · **sonnet** →
@@ -411,7 +432,7 @@ naikkan halaman itu ke **opus** — itu tanda rancangannya, bukan penulisannya, 
 
 ---
 
-## G15 · Halaman Eksplorasi `[GATE]`
+## G17 · Halaman Eksplorasi `[GATE]`
 
 - **Prasyarat:** semua halaman berdata nyata selesai
 - **Subagent:** `v3-pembangun` · **sonnet**
@@ -432,9 +453,9 @@ fitur apa · data apa yang kurang · tabel/kolom yang perlu ditambah.
 
 # FASE 4 — Penutup
 
-## G16 · Konsolidasi & serah terima
+## G18 · Konsolidasi & serah terima
 
-- **Prasyarat:** G15
+- **Prasyarat:** G17
 - **Model:** **opus**; suite penuh oleh `v3-pemeriksa` · **haiku**
 
 1. Rapikan `docs/CATATAN_DATA.md` — semua "kenapa angkanya begini", jebakan data, asumsi

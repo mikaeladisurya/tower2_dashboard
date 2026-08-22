@@ -1,0 +1,99 @@
+# Tema Dashboard Rekrutmen PLN v3 — keputusan pemilik di G3.
+#
+# Basis: tema "fluent" dari templat resmi Streamlit (Microsoft Fluent / Windows 11).
+# Ditambah palet gelap supaya pengguna bisa mengganti terang/gelap dari menu aplikasi.
+#
+# Struktur penting: warna diletakkan di [theme.light] dan [theme.dark], BUKAN di [theme].
+# Streamlit hanya menampilkan pengalih mode kalau kedua blok itu ada — config dengan
+# [theme] saja mengunci aplikasi ke satu mode.
+# Nilai yang tidak bergantung mode (tipografi, radius, border) tetap di [theme].
+
+[theme]
+# Tipografi — sama di terang dan gelap
+font = "'Segoe UI', 'Open Sans':https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+codeFont = "'Cascadia Code', 'Fira Code':https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+codeFontSize = "0.875rem"
+baseFontSize = 14
+baseFontWeight = 400
+headingFontSizes = ["28px", "24px", "20px", "16px", "14px", "12px"]
+headingFontWeights = [600, 600, 600, 600, 600, 600]
+linkUnderline = false
+
+# Bentuk — radius kecil khas Fluent, tegas tanpa terkesan main-main
+baseRadius = "4px"
+buttonRadius = "4px"
+showWidgetBorder = true
+showSidebarBorder = false
+
+# ---------------------------------------------------------------- TERANG
+[theme.light]
+primaryColor = "#0078D4"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F5F5"
+codeBackgroundColor = "#F3F3F3"
+textColor = "#1A1A1A"
+linkColor = "#0078D4"
+borderColor = "#E0E0E0"
+codeTextColor = "#1A1A1A"
+
+chartCategoricalColors = ["#0078D4", "#107C10", "#D83B01", "#FFB900", "#8764B8", "#00B7C3", "#E81123"]
+chartSequentialColors = ["#EFF6FC", "#DEECF9", "#C7E0F4", "#A9D3F2", "#8AC2EC", "#66AFE6", "#3C9BDE", "#0078D4", "#005A9E", "#004578"]
+
+blueColor = "#0078D4"
+greenColor = "#107C10"
+redColor = "#E81123"
+yellowColor = "#FFB900"
+orangeColor = "#D83B01"
+violetColor = "#8764B8"
+grayColor = "#737373"
+
+dataframeBorderColor = "#E0E0E0"
+dataframeHeaderBackgroundColor = "#F5F5F5"
+
+[theme.light.sidebar]
+backgroundColor = "#F3F3F3"
+secondaryBackgroundColor = "#EBEBEB"
+codeBackgroundColor = "#E5E5E5"
+textColor = "#1A1A1A"
+borderColor = "#D1D1D1"
+primaryColor = "#0078D4"
+dataframeHeaderBackgroundColor = "#EBEBEB"
+dataframeBorderColor = "#D1D1D1"
+
+# ---------------------------------------------------------------- GELAP
+# Padanan Fluent untuk mode gelap: permukaan Windows 11 (#1F1F1F / #2B2B2B) dan
+# biru merek Fluent 2 versi gelap (#479EF5), yang tetap terbaca dengan teks putih
+# pada tombol primer.
+[theme.dark]
+primaryColor = "#479EF5"
+backgroundColor = "#1F1F1F"
+secondaryBackgroundColor = "#2B2B2B"
+codeBackgroundColor = "#181818"
+textColor = "#F3F3F3"
+linkColor = "#479EF5"
+borderColor = "#3D3D3D"
+codeTextColor = "#E6E6E6"
+
+chartCategoricalColors = ["#479EF5", "#6CCB5F", "#FF8C42", "#FCE100", "#B4A0FF", "#4CC2FF", "#FF6B6B"]
+chartSequentialColors = ["#0A1A2B", "#0F2942", "#13385A", "#164876", "#175893", "#1A6BB0", "#2680CE", "#479EF5", "#7BBAF8", "#B3D6FB"]
+
+blueColor = "#479EF5"
+greenColor = "#6CCB5F"
+redColor = "#FF6B6B"
+yellowColor = "#FCE100"
+orangeColor = "#FF8C42"
+violetColor = "#B4A0FF"
+grayColor = "#9D9D9D"
+
+dataframeBorderColor = "#3D3D3D"
+dataframeHeaderBackgroundColor = "#2B2B2B"
+
+[theme.dark.sidebar]
+backgroundColor = "#181818"
+secondaryBackgroundColor = "#2B2B2B"
+codeBackgroundColor = "#141414"
+textColor = "#F3F3F3"
+borderColor = "#3D3D3D"
+primaryColor = "#479EF5"
+dataframeHeaderBackgroundColor = "#2B2B2B"
+dataframeBorderColor = "#3D3D3D"

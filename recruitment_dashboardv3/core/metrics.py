@@ -402,6 +402,27 @@ def kekosongan_per_unit(tahun: int, minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT
     )
 
 
+def kekosongan_nasional_per_tahun(minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT) -> pd.DataFrame:
+    """Total proyeksi kekosongan nasional per tahun, seluruh rentang yang
+    tersedia (2019-2026).
+
+    Dipakai halaman Eksplorasi sebagai titik jangkar nyata sebelum
+    diekstrapolasi ke tahun-tahun yang belum tersedia -- lihat
+    `core/eksplorasi_sintetis.py`.
+    """
+    return db.query(
+        """
+        SELECT pk.tahun, round(sum(pk.kekosongan)) AS kekosongan
+        FROM proyeksi_kekosongan pk
+        JOIN unit_induk u ON u.unit_induk = pk.unit_induk
+        WHERE u.jumlah_pegawai > ?
+        GROUP BY 1
+        ORDER BY 1
+        """,
+        [minimal_pegawai],
+    )
+
+
 def daftar_unit_induk(minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT) -> pd.DataFrame:
     """Daftar unit induk untuk filter halaman -- kode & nama pendek, disaring
     anomali J4.

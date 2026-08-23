@@ -2220,9 +2220,49 @@ tapi dua penyimpangan itu nyata di data, bukan diabaikan demi narasi rapi (P11).
 
 ---
 
+## M41 · `kekosongan_nasional_per_tahun(minimal_pegawai=50) -> DataFrame`
+
+**Definisi bisnis:** total proyeksi kekosongan nasional per tahun, seluruh rentang yang
+tersedia (2019–2026). Dipakai halaman Eksplorasi (G17) sebagai titik jangkar nyata sebelum
+diekstrapolasi secara sintetis ke tahun-tahun yang belum tersedia di data
+(`core/eksplorasi_sintetis.py`) — halaman itu sendiri **bukan** halaman berdata nyata dan
+ditandai demikian di puncaknya.
+
+### SQL
+
+```sql
+SELECT pk.tahun, round(sum(pk.kekosongan)) AS kekosongan
+FROM proyeksi_kekosongan pk
+JOIN unit_induk u ON u.unit_induk = pk.unit_induk
+WHERE u.jumlah_pegawai > ?
+GROUP BY 1
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+**8 baris (2019–2026):**
+
+```
+   tahun  kekosongan
+0   2019      2356.0
+1   2020      1844.0
+2   2021      1426.0
+3   2022      1290.0
+4   2023      1158.0
+5   2024      1029.0
+6   2025      1014.0
+7   2026       918.0
+```
+
+Tren menurun konsisten tiap tahun, 2356 -> 918 (2019 ke 2026) — sejalan proporsi pensiun
+dominan yang sudah dicatat M06 (85% penyebab kekosongan 2026).
+
+---
+
 ## Yang belum ada di modul ini
 
-Seluruh tujuh halaman kini punya metriknya sendiri di `core/metrics.py`.
+Seluruh tujuh halaman berdata nyata kini punya metriknya sendiri di `core/metrics.py`.
 
 Metrik Beranda (M01–M04) dipakai `app_pages/beranda.py`, dibangun di G10. Metrik Perencanaan
 Formasi (M05–M11) dipakai `app_pages/perencanaan.py`, dibangun di G11. Metrik Seleksi
@@ -2230,4 +2270,6 @@ Berjalan (M12–M18) dipakai `app_pages/seleksi.py`, dibangun di G12. Metrik Cor
 (M19–M23) dipakai `app_pages/corong.py`, dibangun di G13. Metrik Pasca-Seleksi (M24–M31)
 dipakai `app_pages/pasca.py`, dibangun di G14. Metrik Rencana & Realisasi (M32–M34) dipakai
 `app_pages/rencana_realisasi.py`, dibangun di G15. Metrik Profil Pelamar (M35–M40) dipakai
-`app_pages/profil.py`, dibangun di G16.
+`app_pages/profil.py`, dibangun di G16. Metrik M41 dipakai halaman Eksplorasi (bukan halaman
+berdata nyata) di `app_pages/eksplorasi.py`, dibangun di G17 — sisa isi halaman itu memakai
+data sintetis di `core/eksplorasi_sintetis.py`, bukan metrik di modul ini.

@@ -1964,14 +1964,270 @@ dingin · 0,3 ms saat kena cache**, **M33 7,6 ms**, **M34 1,9 ms**.
 
 ---
 
+## G. Profil Pelamar (halaman 7, G16)
+
+Pertanyaan harian: siapa yang melamar, dan cocok tidak dengan yang dibutuhkan? Seperti
+bagian D dan F, seluruh fungsi di bagian ini **tidak terikat `hari_ini()`** (penyimpangan
+disetujui `ATURAN_TAMPILAN.md` §4.5) — profil demografis pelamar 2019–2025 adalah riwayat
+tuntas.
+
+Kolom terlarang mutlak (J1, acak seragam di generator) — tidak satu pun dipakai di bagian
+ini: `kota_domisili` · `kota_asal` · `tempat_lahir` · `ukuran_baju` · `sekolah_universitas`.
+
+---
+
+## M35 · `umur_gender_pelamar() -> DataFrame`
+
+**Definisi bisnis:** umur pelamar (tahun genap) x jenis kelamin, dihitung pada tanggal
+**melamar** (`pendaftaran.tanggal_lamar`), bukan tanggal daftar akun maupun hari ini.
+
+**Perbedaan sengaja dari v2.** `recruitment_dashboardv2` (M41) memakai
+`kandidat.tanggal_daftar_akun` untuk basis umur. `docs/RANCANGAN_HALAMAN.md` §9 v3 secara
+eksplisit meminta umur saat melamar — momen yang relevan untuk pertanyaan "siapa yang
+melamar", bukan momen kandidat pertama kali membuat akun (bisa jauh sebelum melamar). Kode
+gender **P = Pria, W = Wanita** (J5) — membalik keduanya membalik seluruh piramida.
+
+### SQL
+
+```sql
+SELECT date_diff('year', k.tanggal_lahir, p.tanggal_lamar) AS umur,
+       k.jenis_kelamin,
+       CAST(count(*) AS BIGINT) AS jumlah
+FROM pendaftaran p
+JOIN kandidat k USING (kandidat_id)
+GROUP BY 1, 2
+ORDER BY 1, 2
+```
+
+### Keluaran nyata
+
+**36 baris**, umur 20–39 tahun (mayoritas 20–34, ekor tipis sampai 39), kedua kode gender
+hadir di tiap umur sampai 33. Total per gender: **P 142.465 · W 76.463** — rasio ~1,86:1,
+konsisten dengan proporsi nasional P/W di `kandidat` (J5: 233.982 vs 134.930). Rentang umur
+masuk akal untuk pelamar rekrutmen entry-level; tidak dipotong ke kelompok 5 tahunan (P5),
+granularitas penuh per tahun.
+
+### Biaya
+
+34,8 ms dingin atas join `pendaftaran` (218.928 baris) x `kandidat` (367.041 baris),
+hasilnya 36 baris.
+
+---
+
+## M36 · `jenjang_pendidikan_pelamar() -> DataFrame`
+
+**Definisi bisnis:** jenjang pendidikan pelamar, dihitung dari riwayat pendidikan
+**terakhir** kandidat saja.
+
+Wajib filter `pendidikan_terakhir` — tanpa itu tiap kandidat menyumbang sampai 4 baris
+riwayat sekolah (SD/SMP/SMA/S1 sekaligus) sekaligus, dan `kandidat_pendidikan` punya
+1.071.976 baris total vs 367.041 baris `pendidikan_terakhir = true` — nyaris 3x lipat kalau
+lupa filter.
+
+### SQL
+
+```sql
+SELECT degree, CAST(count(*) AS BIGINT) AS jumlah
+FROM kandidat_pendidikan
+WHERE pendidikan_terakhir
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+### Keluaran nyata
+
+**4 jenjang, 367.041 baris total:**
+
+```
+    degree  jumlah
+0  S1/D-IV  245553
+1    D-III   98161
+2      SMK   11696
+3       S2   11631
+```
+
+S1/D-IV mendominasi (66,9%), diikuti D-III (26,7%). SD/SMP/SMA muncul di data
+`kandidat_pendidikan` sebagai jenjang riwayat sebelumnya, tapi tidak pernah menjadi
+`pendidikan_terakhir` seorang pelamar — konsisten dengan populasi rekrutmen pegawai PLN.
+
+### Biaya
+
+6,6 ms dingin atas 1.071.976 baris `kandidat_pendidikan`, hasilnya 4 baris.
+
+---
+
+## M37 · `rumpun_jurusan_konversi() -> DataFrame`
+
+**Definisi bisnis:** rumpun jurusan pendidikan terakhir pelamar — yang melamar dibanding
+yang diterima (`pendaftaran.hasil_akhir = 'DITERIMA'`).
+
+Join lewat `program_studi.rumpun` — **bukan** `profesi_prodi` atau `rumpun_jurusan`,
+keduanya salah tabel untuk pertanyaan ini (nama kolom terlihat mirip, referensi rancangan
+menandainya eksplisit). `program_studi` adalah kamus referensi program studi -> rumpun,
+di-join dari nama program studi pendidikan terakhir kandidat.
+
+### SQL
+
+```sql
+SELECT ps.rumpun,
+       CAST(count(*) AS BIGINT) AS melamar,
+       CAST(sum(CASE WHEN p.hasil_akhir = 'DITERIMA' THEN 1 ELSE 0 END) AS BIGINT) AS diterima
+FROM pendaftaran p
+JOIN kandidat_pendidikan kp
+     ON kp.kandidat_id = p.kandidat_id AND kp.pendidikan_terakhir
+JOIN program_studi ps ON ps.program_studi = kp.program_studi
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+### Keluaran nyata
+
+**18 rumpun.** Total melamar **216.958**, total diterima **7.429** — pct konversi nasional
+3,4%. Lima rumpun terbesar (melamar):
+
+```
+                          rumpun  melamar  diterima
+           Manajemen dan Bisnis    36073      1206
+           Informatika dan Data    24639       768
+      Mesin dan Konversi Energi    24372       899
+  Elektro dan Ketenagalistrikan    23440      1062
+       Akuntansi dan Perpajakan    18410       618
+```
+
+Total `melamar` (216.958) sedikit di bawah total pendaftaran (218.928) — sebagian program
+studi pelamar tidak punya padanan di kamus referensi `program_studi` (rumpun bernilai NULL
+di kamus itu sendiri), baris itu tersaring lewat INNER JOIN, bukan dihitung sebagai rumpun
+"Lainnya" semu.
+
+### Biaya
+
+22,5 ms dingin atas tiga tabel gabungan (`pendaftaran` 218.928, `kandidat_pendidikan`
+1.071.976 baris disaring `pendidikan_terakhir`, `program_studi` kamus referensi kecil),
+hasilnya 18 baris.
+
+---
+
+## M38 · `provinsi_domisili_pelamar() -> DataFrame`
+
+**Definisi bisnis:** sebaran provinsi domisili, seluruh basis `kandidat` (bukan hanya yang
+pernah melamar).
+
+`propinsi_domisili` berpola benar (rasio 16,4 — CATATAN_DATA.md J1), aman dipakai — beda
+dengan `kota_domisili`/`kota_asal`/`tempat_lahir` yang acak seragam (J1) dan **tidak pernah**
+dipakai di dashboard ini.
+
+### SQL
+
+```sql
+SELECT propinsi_domisili, CAST(count(*) AS BIGINT) AS jumlah
+FROM kandidat
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+### Keluaran nyata
+
+**32 baris** (31 provinsi + 1 baris NULL). Rasio terbesar/terkecil = **16,36x** (Jawa Barat
+50.806 vs Kepulauan Riau 3.106) — cocok dengan CATATAN_DATA.md J1. Lima terbesar: Jawa Barat
+(50.806), Jawa Timur (47.701), Jawa Tengah (40.956), DKI Jakarta (28.707), Banten (19.092) —
+pola konsentrasi Jawa yang masuk akal untuk basis kandidat nasional. **13.788** kandidat
+tidak mengisi provinsi domisili (baris `NULL`) — ditampilkan apa adanya, bukan disaring
+diam-diam.
+
+### Biaya
+
+8,8 ms dingin atas 367.041 baris `kandidat`, hasilnya 32 baris.
+
+---
+
+## M39 · `volume_tes_per_kota() -> DataFrame`
+
+**Definisi bisnis:** volume pelaksanaan tes tatap muka per kota, seluruh tahap seleksi dan
+gelombang.
+
+Hanya `mode = 'offline'` — tes daring (`mode = 'online'`) dan dokumen tidak terikat kota
+pelaksanaan. `lokasi_kota` berpola benar (rasio 37,7x — CATATAN_DATA.md J1), aman dipakai.
+
+### SQL
+
+```sql
+SELECT lokasi_kota, CAST(count(*) AS BIGINT) AS jumlah
+FROM seleksi_tahap
+WHERE mode = 'offline'
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+### Keluaran nyata
+
+**43 kota.** Rasio terbesar/terkecil = **37,68x** (Makassar 5.162 vs Bandung/Ende 137–138) —
+cocok dengan CATATAN_DATA.md J1. Enam kota volume tertinggi berkerumun rapat di 4.900–5.200
+(Makassar, Surabaya, Palembang, Balikpapan, Jakarta, Medan), lalu turun tajam ke klaster kota
+Indonesia timur (Merauke 2.596 dst.), lalu ke ekor panjang puluhan kota kecil di bawah 200.
+
+### Biaya
+
+5,3 ms dingin atas 1.276.720 baris `seleksi_tahap`, hasilnya 43 baris.
+
+---
+
+## M40 · `kelengkapan_akun_per_kohort() -> DataFrame`
+
+**Definisi bisnis:** kelengkapan & aktivasi akun kandidat, per **tahun kohort**
+(`kandidat.tahun_kohort`) — bukan `kualitas_kohort`, yang tidak membawa dimensi waktu.
+"Lengkap & aktif" = `email_teraktivasi AND alamat_domisili IS NOT NULL`, definisi identik
+dengan agregat nasional `recruitment_dashboardv2` M42 (340.561 akun lengkap & aktif secara
+nasional) — di sini dipecah per tahun untuk menunjukkan kurva kematangan sistem, bukan
+dihitung ulang dengan definisi baru.
+
+### SQL
+
+```sql
+SELECT tahun_kohort,
+       CAST(count(*) AS BIGINT) AS total,
+       CAST(sum(CASE WHEN email_teraktivasi AND alamat_domisili IS NOT NULL
+                      THEN 1 ELSE 0 END) AS BIGINT) AS lengkap,
+       round(100.0 * sum(CASE WHEN email_teraktivasi AND alamat_domisili IS NOT NULL
+                               THEN 1 ELSE 0 END) / count(*), 1) AS pct_lengkap
+FROM kandidat
+GROUP BY 1
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+**7 baris (2019–2025):**
+
+```
+   tahun_kohort  total  lengkap  pct_lengkap
+0          2019  96875    84773         87.5
+1          2020   3522     2936         83.4
+2          2021   1432     1239         86.5
+3          2022  70868    66685         94.1
+4          2023  73197    69127         94.4
+5          2024  35547    32252         90.7
+6          2025  87471    83549         95.5
+```
+
+**Bukan kenaikan mulus tiap tahun** — 2020 turun ke 83,4% (kohort terkecil, 3.522 baris,
+paling rentan sensitif terhadap sedikit akun tidak lengkap) dan 2024 turun ke 90,7% sebelum
+2025 naik lagi ke 95,5%. Tren keseluruhan tetap membaik (87,5% -> 95,5% dari 2019 ke 2025),
+tapi dua penyimpangan itu nyata di data, bukan diabaikan demi narasi rapi (P11).
+
+### Biaya
+
+5,6 ms dingin atas 367.041 baris `kandidat`, hasilnya 7 baris.
+
+---
+
 ## Yang belum ada di modul ini
 
-Halaman 7 belum punya metrik sama sekali — itu lingkup G16, menambah metriknya sendiri ke
-`core/metrics.py` dan bagian barunya ke dokumen ini.
+Seluruh tujuh halaman kini punya metriknya sendiri di `core/metrics.py`.
 
 Metrik Beranda (M01–M04) dipakai `app_pages/beranda.py`, dibangun di G10. Metrik Perencanaan
 Formasi (M05–M11) dipakai `app_pages/perencanaan.py`, dibangun di G11. Metrik Seleksi
 Berjalan (M12–M18) dipakai `app_pages/seleksi.py`, dibangun di G12. Metrik Corong Seleksi
 (M19–M23) dipakai `app_pages/corong.py`, dibangun di G13. Metrik Pasca-Seleksi (M24–M31)
 dipakai `app_pages/pasca.py`, dibangun di G14. Metrik Rencana & Realisasi (M32–M34) dipakai
-`app_pages/rencana_realisasi.py`, dibangun di G15.
+`app_pages/rencana_realisasi.py`, dibangun di G15. Metrik Profil Pelamar (M35–M40) dipakai
+`app_pages/profil.py`, dibangun di G16.

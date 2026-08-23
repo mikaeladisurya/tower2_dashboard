@@ -776,3 +776,83 @@ def test_pemenuhan_per_tahun_anchor_tahun_rbb():
 
     non_rbb = df[~df["tahun_rbb"]]
     assert round(float(non_rbb["pct_pemenuhan"].mean()), 1) == 100.0
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# G -- Profil Pelamar (halaman 7, G16)
+#
+# Tidak terikat hari_ini() -- riwayat pelamar 2019-2025 sudah tuntas, sama
+# seperti bagian D dan F.
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def test_umur_gender_pelamar_anchor():
+    df = metrics.umur_gender_pelamar()
+    assert list(df.columns) == ["umur", "jenis_kelamin", "jumlah"]
+    assert len(df) == 36
+    assert df["umur"].min() == 20
+    assert df["umur"].max() == 39
+    total = df.groupby("jenis_kelamin")["jumlah"].sum()
+    assert int(total["P"]) == 142465
+    assert int(total["W"]) == 76463
+    baris = df.set_index(["umur", "jenis_kelamin"])
+    assert int(baris.loc[(20, "P"), "jumlah"]) == 7241
+    assert int(baris.loc[(20, "W"), "jumlah"]) == 3999
+
+
+def test_jenjang_pendidikan_pelamar_anchor():
+    df = metrics.jenjang_pendidikan_pelamar()
+    assert list(df.columns) == ["degree", "jumlah"]
+    assert len(df) == 4
+    baris = df.set_index("degree")
+    assert int(baris.loc["S1/D-IV", "jumlah"]) == 245553
+    assert int(baris.loc["D-III", "jumlah"]) == 98161
+    assert int(baris.loc["SMK", "jumlah"]) == 11696
+    assert int(baris.loc["S2", "jumlah"]) == 11631
+    assert int(df["jumlah"].sum()) == 367041
+
+
+def test_rumpun_jurusan_konversi_anchor():
+    df = metrics.rumpun_jurusan_konversi()
+    assert list(df.columns) == ["rumpun", "melamar", "diterima"]
+    assert len(df) == 18
+    assert int(df["melamar"].sum()) == 216958
+    assert int(df["diterima"].sum()) == 7429
+    baris = df.set_index("rumpun")
+    assert int(baris.loc["Manajemen dan Bisnis", "melamar"]) == 36073
+    assert int(baris.loc["Manajemen dan Bisnis", "diterima"]) == 1206
+    assert int(baris.loc["Informatika dan Data", "melamar"]) == 24639
+
+
+def test_provinsi_domisili_pelamar_anchor():
+    """Rasio terbesar/terkecil 16,4x -- CATATAN_DATA.md J1 (kolom berpola benar)."""
+    df = metrics.provinsi_domisili_pelamar()
+    assert list(df.columns) == ["propinsi_domisili", "jumlah"]
+    assert len(df) == 32  # 31 provinsi + 1 baris None
+    baris = df.set_index("propinsi_domisili")
+    assert int(baris.loc["Jawa Barat", "jumlah"]) == 50806
+    assert int(baris.loc["Kepulauan Riau", "jumlah"]) == 3106
+    assert round(df["jumlah"].max() / df["jumlah"].min(), 1) == 16.4
+    assert int(baris.loc[None, "jumlah"]) == 13788
+
+
+def test_volume_tes_per_kota_anchor():
+    """43 kota, rasio 37,7x -- CATATAN_DATA.md J1 (kolom berpola benar)."""
+    df = metrics.volume_tes_per_kota()
+    assert list(df.columns) == ["lokasi_kota", "jumlah"]
+    assert len(df) == 43
+    baris = df.set_index("lokasi_kota")
+    assert int(baris.loc["Makassar", "jumlah"]) == 5162
+    assert round(df["jumlah"].max() / df["jumlah"].min(), 1) == 37.7
+
+
+def test_kelengkapan_akun_per_kohort_anchor():
+    df = metrics.kelengkapan_akun_per_kohort()
+    assert list(df.columns) == ["tahun_kohort", "total", "lengkap", "pct_lengkap"]
+    assert list(df["tahun_kohort"]) == [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+    baris = df.set_index("tahun_kohort")
+    assert int(baris.loc[2019, "total"]) == 96875
+    assert int(baris.loc[2019, "lengkap"]) == 84773
+    assert float(baris.loc[2019, "pct_lengkap"]) == 87.5
+    assert float(baris.loc[2020, "pct_lengkap"]) == 83.4  # penyimpangan tren, bukan monoton
+    assert float(baris.loc[2025, "pct_lengkap"]) == 95.5

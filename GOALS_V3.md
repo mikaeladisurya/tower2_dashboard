@@ -79,7 +79,7 @@ tuntas lalu lapor. **Tidak ada penerusan otomatis** ke goal berikutnya.
 | G13 | Halaman 4 — Corong Seleksi `[GATE]` | sonnet | SELESAI |
 | G14 | Halaman 5 — Pasca-Seleksi `[GATE]` | sonnet | SELESAI |
 | G15 | Halaman 6 — Rencana & Realisasi `[GATE]` | sonnet | SELESAI |
-| G16 | Halaman 7 — Profil Pelamar `[GATE]` | sonnet | BELUM |
+| G16 | Halaman 7 — Profil Pelamar `[GATE]` | sonnet | SELESAI |
 | G17 | Halaman Eksplorasi `[GATE]` | sonnet | BELUM |
 | G18 | Konsolidasi & serah terima | opus | BELUM |
 

@@ -390,6 +390,7 @@ docstring halaman (P9). Disetujui untuk:
 
 - **Corong Seleksi** (G13) — corong per tahap & pembanding antar gelombang, riwayat final.
 - **Rencana & Realisasi** (G15) — pagu/target/realisasi per tahun program, riwayat final 2019-2025.
+- **Profil Pelamar** (G16) — profil demografis pelamar 2019-2025, riwayat final, tidak ada status yang berubah terhadap tanggal.
 
 Kalau halaman berikutnya (mis. Pasca-Seleksi) punya karakter serupa — historis, tuntas, tidak
 ada status yang bisa berubah terhadap tanggal — penyimpangan yang sama berlaku dengan alasan

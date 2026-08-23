@@ -1168,3 +1168,146 @@ def pemenuhan_per_tahun() -> pd.DataFrame:
         """,
         list(_TAHUN_RBB),
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# G. Profil Pelamar (halaman 7)
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Pertanyaan harian: siapa yang melamar, dan cocok tidak dengan yang
+# dibutuhkan? Seperti bagian D dan F, seluruh fungsi di bagian ini TIDAK
+# terikat `hari_ini()`/`acuan` (penyimpangan disetujui ATURAN_TAMPILAN.md
+# §4.5): profil demografis pelamar 2019-2025 adalah riwayat tuntas, tidak
+# ada status yang bergerak terhadap tanggal berjalan.
+#
+# Kolom terlarang mutlak (J1, acak seragam di generator): `kota_domisili`,
+# `kota_asal`, `tempat_lahir`, `ukuran_baju`, `sekolah_universitas`. Tidak
+# satu pun dipakai di bagian ini -- tidak ada analisis almamater, tidak ada
+# peta asal-vs-tes.
+
+
+def umur_gender_pelamar() -> pd.DataFrame:
+    """Umur (tahun genap) x jenis kelamin, dihitung pada tanggal MELAMAR --
+    bukan tanggal daftar akun maupun hari ini.
+
+    Kolom: umur, jenis_kelamin, jumlah. Kode gender P = Pria, W = Wanita (J5)
+    -- membalik keduanya membalik seluruh piramida. Rentang nyata di data
+    20-39 tahun, mayoritas 20-34; tidak dipotong (P5), granularitas per
+    tahun umur.
+    """
+    return db.query(
+        """
+        SELECT date_diff('year', k.tanggal_lahir, p.tanggal_lamar) AS umur,
+               k.jenis_kelamin,
+               CAST(count(*) AS BIGINT) AS jumlah
+        FROM pendaftaran p
+        JOIN kandidat k USING (kandidat_id)
+        GROUP BY 1, 2
+        ORDER BY 1, 2
+        """
+    )
+
+
+def jenjang_pendidikan_pelamar() -> pd.DataFrame:
+    """Jenjang pendidikan pelamar, dihitung dari riwayat pendidikan TERAKHIR
+    saja.
+
+    Kolom: degree, jumlah. Wajib filter `pendidikan_terakhir` -- tanpa itu
+    tiap kandidat menyumbang sampai 4 baris riwayat sekolah (SD/SMP/SMA/S1
+    sekaligus) dan jumlahnya menggelembung 3x lipat.
+    """
+    return db.query(
+        """
+        SELECT degree, CAST(count(*) AS BIGINT) AS jumlah
+        FROM kandidat_pendidikan
+        WHERE pendidikan_terakhir
+        GROUP BY 1
+        ORDER BY 2 DESC
+        """
+    )
+
+
+def rumpun_jurusan_konversi() -> pd.DataFrame:
+    """Rumpun jurusan pendidikan terakhir: yang melamar vs yang diterima.
+
+    Kolom: rumpun, melamar, diterima. Join lewat `program_studi.rumpun`
+    (BUKAN `profesi_prodi`/`rumpun_jurusan` -- keduanya salah tabel untuk
+    pertanyaan ini). Total `melamar` sedikit di bawah total pendaftaran --
+    sebagian `program_studi` pelamar tidak punya padanan rumpun di kamus
+    referensi (rumpun None), baris itu tersaring lewat INNER JOIN.
+    """
+    return db.query(
+        """
+        SELECT ps.rumpun,
+               CAST(count(*) AS BIGINT) AS melamar,
+               CAST(sum(CASE WHEN p.hasil_akhir = 'DITERIMA' THEN 1 ELSE 0 END) AS BIGINT) AS diterima
+        FROM pendaftaran p
+        JOIN kandidat_pendidikan kp
+             ON kp.kandidat_id = p.kandidat_id AND kp.pendidikan_terakhir
+        JOIN program_studi ps ON ps.program_studi = kp.program_studi
+        GROUP BY 1
+        ORDER BY 2 DESC
+        """
+    )
+
+
+def provinsi_domisili_pelamar() -> pd.DataFrame:
+    """Sebaran provinsi domisili kandidat, seluruh basis kandidat.
+
+    Kolom: propinsi_domisili, jumlah. Kolom ini berpola benar (rasio
+    16,4 -- CATATAN_DATA.md J1), aman dipakai. `propinsi_domisili` kosong
+    untuk sebagian kandidat -- baris itu tetap tampil sebagai NULL, bukan
+    disaring diam-diam.
+    """
+    return db.query(
+        """
+        SELECT propinsi_domisili, CAST(count(*) AS BIGINT) AS jumlah
+        FROM kandidat
+        GROUP BY 1
+        ORDER BY 2 DESC
+        """
+    )
+
+
+def volume_tes_per_kota() -> pd.DataFrame:
+    """Volume pelaksanaan tes tatap muka per kota, seluruh tahap seleksi.
+
+    Kolom: lokasi_kota, jumlah. Hanya `mode = 'offline'` -- tes online tidak
+    terikat kota. 43 kota, berpola benar (rasio 37,7x -- CATATAN_DATA.md
+    J1), aman dipakai.
+    """
+    return db.query(
+        """
+        SELECT lokasi_kota, CAST(count(*) AS BIGINT) AS jumlah
+        FROM seleksi_tahap
+        WHERE mode = 'offline'
+        GROUP BY 1
+        ORDER BY 2 DESC
+        """
+    )
+
+
+def kelengkapan_akun_per_kohort() -> pd.DataFrame:
+    """Kelengkapan & aktivasi akun kandidat, per tahun kohort (bukan
+    `kualitas_kohort`).
+
+    Kolom: tahun_kohort, total, lengkap, pct_lengkap. "Lengkap & aktif" =
+    `email_teraktivasi AND alamat_domisili IS NOT NULL`, definisi yang sama
+    dengan agregat nasional di `recruitment_dashboardv2` (M42) -- di sini
+    dipecah per tahun untuk menunjukkan kurva kematangan sistem. Tren naik
+    dengan dua penyimpangan (2020, 2024) -- lihat CATATAN_DATA.md, bukan
+    kenaikan mulus tiap tahun.
+    """
+    return db.query(
+        """
+        SELECT tahun_kohort,
+               CAST(count(*) AS BIGINT) AS total,
+               CAST(sum(CASE WHEN email_teraktivasi AND alamat_domisili IS NOT NULL
+                              THEN 1 ELSE 0 END) AS BIGINT) AS lengkap,
+               round(100.0 * sum(CASE WHEN email_teraktivasi AND alamat_domisili IS NOT NULL
+                                       THEN 1 ELSE 0 END) / count(*), 1) AS pct_lengkap
+        FROM kandidat
+        GROUP BY 1
+        ORDER BY 1
+        """
+    )

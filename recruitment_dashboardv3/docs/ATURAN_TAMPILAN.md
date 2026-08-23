@@ -381,6 +381,19 @@ Yang dilarang: **jumlah hari** yang di-hardcode dalam teks yang tampil (`"345 ha
 karena besok angkanya sudah salah. Yang boleh: **tanggal kalender** yang memang tetap, seperti
 horison data 2026-10-15 di `CATATAN_DATA.md` — itu fakta yang tidak bergerak.
 
+### 4.5 Penyimpangan disetujui dari jangkar `hari_ini()`
+
+Halaman analisis **lintas-gelombang atas riwayat yang sudah tuntas** (bukan pemantauan satu
+gelombang yang sedang berjalan) boleh tidak terikat `hari_ini()` — nilainya historis, bukan
+snapshot hari ini, dan datanya (2019–2025) tidak berubah lagi. Alasannya wajib dituliskan di
+docstring halaman (P9). Disetujui untuk:
+
+- **Corong Seleksi** (G13) — corong per tahap & pembanding antar gelombang, riwayat final.
+
+Kalau halaman berikutnya (mis. Pasca-Seleksi) punya karakter serupa — historis, tuntas, tidak
+ada status yang bisa berubah terhadap tanggal — penyimpangan yang sama berlaku dengan alasan
+yang sama, dicatat di sini.
+
 ---
 
 ## 5. Daftar periksa tinjauan visual manual — G18

@@ -707,3 +707,128 @@ def gugur_per_tahap_gelombang(gelombang_id: str) -> pd.DataFrame:
         """,
         [gelombang_id],
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# D. Corong Seleksi (halaman 4)
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Analisis lintas gelombang -- beda dari posisi_tahap_seleksi() (halaman 3),
+# yang membaca posisi peserta pada SATU gelombang yang sedang berjalan. Di sini
+# pertanyaannya "di tahap mana orang hilang, dan kenapa?" atas riwayat yang
+# sudah tuntas, jadi tidak terikat ke hari_ini() -- lihat
+# docs/RANCANGAN_HALAMAN.md §6. Enam tahap seleksi mandiri (`kategori =
+# 'seleksi'`), terpisah dari tiga tahap agregat FHCI (`kategori =
+# 'fhci_agregat'`, hanya ada di `seleksi_tahap_agregat` -- CATATAN_DATA.md J7,
+# jangan pernah JOIN tabel itu ke `pendaftaran`).
+
+
+def corong_tahap_seleksi(gelombang_id: str | None = None) -> pd.DataFrame:
+    """Corong enam tahap seleksi mandiri, seluruh gelombang atau satu gelombang.
+
+    Kolom: urutan, tahap_kode, nama, masuk, hadir, tidak_hadir, lulus, gagal.
+    `hadir`/`tidak_hadir` bernilai 0 untuk Seleksi Administrasi -- tahap itu
+    berbasis dokumen, tidak ada sesi kehadiran (`tahap_ref.ada_kehadiran =
+    False`). `gagal` adalah `masuk - lulus`, sudah mencakup yang tidak hadir.
+    """
+    return db.query(
+        """
+        SELECT r.urutan, r.tahap_kode, r.nama,
+               count(*) AS masuk,
+               CAST(sum(CASE WHEN t.status_hadir = 'HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS hadir,
+               CAST(sum(CASE WHEN t.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS tidak_hadir,
+               CAST(sum(CASE WHEN t.hasil = 'LULUS' THEN 1 ELSE 0 END) AS BIGINT) AS lulus,
+               CAST(count(*) - sum(CASE WHEN t.hasil = 'LULUS' THEN 1 ELSE 0 END) AS BIGINT) AS gagal
+        FROM seleksi_tahap t
+        JOIN tahap_ref r USING (tahap_kode)
+        WHERE r.kategori = 'seleksi'
+          AND (CAST(? AS VARCHAR) IS NULL OR t.gelombang_id = ?)
+        GROUP BY 1, 2, 3
+        ORDER BY 1
+        """,
+        [gelombang_id, gelombang_id],
+    )
+
+
+def no_show_per_tahap_mode() -> pd.DataFrame:
+    """Persentase tidak hadir per tahap seleksi x mode pelaksanaan, seluruh
+    gelombang.
+
+    Kolom: urutan, tahap_kode, nama, mode, tidak_hadir, total, pct_no_show.
+    Seleksi Administrasi tidak muncul -- tidak punya konsep kehadiran.
+    """
+    return db.query(
+        """
+        SELECT r.urutan, t.tahap_kode, r.nama, t.mode,
+               CAST(sum(CASE WHEN t.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS tidak_hadir,
+               CAST(count(t.status_hadir) AS BIGINT) AS total,
+               round(
+                   100.0 * sum(CASE WHEN t.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END)
+                   / nullif(count(t.status_hadir), 0), 1
+               ) AS pct_no_show
+        FROM seleksi_tahap t
+        JOIN tahap_ref r USING (tahap_kode)
+        WHERE r.kategori = 'seleksi' AND t.status_hadir IS NOT NULL
+        GROUP BY 1, 2, 3, 4
+        ORDER BY 1
+        """
+    )
+
+
+def rbb_masuk_akademik_inggris(gelombang_id: str | None = None) -> int:
+    """Jumlah pelamar yang masuk sistem PLN langsung di tahap Akademik &
+    Inggris -- titik serah-terima dari jalur RBB (FHCI).
+
+    `pendaftaran.titik_masuk = 'akademik_inggris'` menandai pelamar yang tidak
+    pernah melalui Seleksi Administrasi maupun Tes Adaptif PLN sendiri; mereka
+    sudah disaring FHCI sebelum diserahkan (CATATAN_DATA.md §7). Tanpa filter,
+    selisih ini persis sama dengan selisih `masuk` tahap Akademik & Inggris
+    dikurangi `lulus` Tes Adaptif pada `corong_tahap_seleksi()`. Hanya empat
+    gelombang RBB (G2020-074, G2021-075, G2024-087, G2024-088) yang punya
+    pelamar dengan titik masuk ini -- gelombang mandiri lain akan mengembalikan
+    0, itu jawaban yang benar.
+    """
+    return db.skalar(
+        """
+        SELECT count(*) FROM pendaftaran
+        WHERE titik_masuk = 'akademik_inggris'
+          AND (CAST(? AS VARCHAR) IS NULL OR gelombang_id = ?)
+        """,
+        [gelombang_id, gelombang_id],
+    )
+
+
+def corong_fhci() -> pd.DataFrame:
+    """Corong agregat tiga tahap FHCI, dijumlah lintas tahun program.
+
+    Kolom: urutan, tahap_kode, nama, masuk, lulus, pct_lulus. Sumber
+    `seleksi_tahap_agregat` tidak punya `kandidat_id`/`pendaftaran_id` --
+    fakta struktural jalur ini (CATATAN_DATA.md J7), bukan JOIN ke
+    `pendaftaran`.
+    """
+    return db.query(
+        """
+        SELECT urutan, tahap_kode, nama,
+               CAST(sum(jumlah_masuk) AS BIGINT) AS masuk,
+               CAST(sum(jumlah_lulus) AS BIGINT) AS lulus,
+               round(100.0 * sum(jumlah_lulus) / sum(jumlah_masuk), 1) AS pct_lulus
+        FROM seleksi_tahap_agregat
+        GROUP BY 1, 2, 3
+        ORDER BY 1
+        """
+    )
+
+
+def daftar_gelombang() -> pd.DataFrame:
+    """Seluruh gelombang (2019-2025), untuk pembanding corong antar gelombang.
+
+    Kolom: gelombang_id, nama_gelombang, tgl_tutup. Diurutkan dari yang
+    paling baru.
+    """
+    return db.query(
+        """
+        SELECT gelombang_id, nama_gelombang, tgl_tutup
+        FROM gelombang
+        ORDER BY tgl_tutup DESC
+        """
+    )

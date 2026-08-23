@@ -449,3 +449,116 @@ def test_gugur_per_tahap_gelombang_g2025_092():
     assert int(baris.loc["administrasi", "jumlah"]) == 18623
     assert int(baris.loc["adaptif", "jumlah"]) == 21760
     assert int(df["jumlah"].sum()) == 48780  # cocok dengan "gagal" di atas
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# D -- Corong Seleksi (halaman 4, G13)
+#
+# Analisis lintas gelombang -- tidak terikat `hari_ini()`, jadi tidak butuh
+# dua tanggal acuan seperti bagian C. Dua ragam parameter WAJIB diuji:
+# tanpa filter (seluruh gelombang, angka anchor rancangan) dan dengan filter
+# satu gelombang (G2025-092, dibandingkan langsung ke M18/test C di atas).
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def test_corong_tahap_seleksi_seluruh_gelombang_angka_anchor():
+    df = metrics.corong_tahap_seleksi()
+    assert list(df.columns) == [
+        "urutan",
+        "tahap_kode",
+        "nama",
+        "masuk",
+        "hadir",
+        "tidak_hadir",
+        "lulus",
+        "gagal",
+    ]
+    assert len(df) == 6
+    baris = df.set_index("tahap_kode")
+    assert int(baris.loc["administrasi", "masuk"]) == 213648
+    assert int(baris.loc["administrasi", "lulus"]) == 143831
+    assert int(baris.loc["administrasi", "hadir"]) == 0
+    assert int(baris.loc["administrasi", "tidak_hadir"]) == 0
+    assert int(baris.loc["adaptif", "masuk"]) == 143831
+    assert int(baris.loc["adaptif", "hadir"]) == 68896
+    assert int(baris.loc["adaptif", "tidak_hadir"]) == 74935
+    assert int(baris.loc["adaptif", "lulus"]) == 48627
+    assert int(baris.loc["akademik_inggris", "masuk"]) == 53907
+    assert int(baris.loc["akademik_inggris", "hadir"]) == 44358
+    assert int(baris.loc["akademik_inggris", "lulus"]) == 24699
+    assert int(baris.loc["akademik_inggris", "tidak_hadir"]) == 9549
+    assert int(baris.loc["psikologi", "lulus"]) == 15980
+    assert int(baris.loc["fisik_mcu", "lulus"]) == 12623
+    assert int(baris.loc["wawancara", "masuk"]) == 12623
+    assert int(baris.loc["wawancara", "lulus"]) == 7711
+    assert int(baris.loc["wawancara", "tidak_hadir"]) == 764
+
+
+def test_corong_tahap_seleksi_filter_gelombang_cocok_gugur_per_tahap():
+    """Difilter satu gelombang, harus cocok persis dengan M18 (angka `gagal`
+    == `gugur_per_tahap_gelombang`) dan dengan posisi_tahap_seleksi (`masuk`
+    == `jumlah`)."""
+    df = metrics.corong_tahap_seleksi("G2025-092").set_index("tahap_kode")
+    gugur = metrics.gugur_per_tahap_gelombang("G2025-092").set_index("tahap_kode")
+    assert int(df.loc["administrasi", "masuk"]) == 49801
+    assert int(df.loc["administrasi", "gagal"]) == int(gugur.loc["administrasi", "jumlah"]) == 18623
+    assert int(df.loc["adaptif", "gagal"]) == int(gugur.loc["adaptif", "jumlah"]) == 21760
+    assert int(df.loc["wawancara", "lulus"]) == 1021  # diterima_target G2025-092
+
+
+def test_corong_tahap_seleksi_gelombang_tanpa_data_kosong():
+    """Gelombang yang tidak pernah ada -- kosong, bukan galat."""
+    df = metrics.corong_tahap_seleksi("G0000-000")
+    assert df.empty
+
+
+def test_no_show_per_tahap_mode_anchor_tap_online():
+    df = metrics.no_show_per_tahap_mode()
+    assert list(df.columns) == [
+        "urutan",
+        "tahap_kode",
+        "nama",
+        "mode",
+        "tidak_hadir",
+        "total",
+        "pct_no_show",
+    ]
+    assert len(df) == 5  # administrasi tidak berkehadiran, tidak muncul
+    baris = df.set_index("tahap_kode")
+    assert baris.loc["adaptif", "mode"] == "online"
+    assert float(baris.loc["adaptif", "pct_no_show"]) == 52.1
+    assert float(baris.loc["akademik_inggris", "pct_no_show"]) == 17.7
+    assert baris.loc["wawancara", "mode"] == "offline"
+    assert float(baris.loc["wawancara", "pct_no_show"]) == 6.1
+
+
+def test_rbb_masuk_akademik_inggris_nasional():
+    assert metrics.rbb_masuk_akademik_inggris() == 5280
+
+
+def test_rbb_masuk_akademik_inggris_per_gelombang():
+    """Hanya gelombang RBB yang punya nilai bukan nol; gelombang mandiri 0 --
+    jawaban yang benar, bukan galat."""
+    assert metrics.rbb_masuk_akademik_inggris("G2020-074") == 455
+    assert metrics.rbb_masuk_akademik_inggris("G2021-075") == 179
+    assert metrics.rbb_masuk_akademik_inggris("G2024-087") == 3599
+    assert metrics.rbb_masuk_akademik_inggris("G2024-088") == 1047
+    assert metrics.rbb_masuk_akademik_inggris("G2025-092") == 0
+
+
+def test_corong_fhci_tiga_tahap():
+    df = metrics.corong_fhci()
+    assert list(df.columns) == ["urutan", "tahap_kode", "nama", "masuk", "lulus", "pct_lulus"]
+    assert len(df) == 3
+    baris = df.set_index("tahap_kode")
+    assert int(baris.loc["fhci_administrasi", "masuk"]) == 269395
+    assert int(baris.loc["fhci_administrasi", "lulus"]) == 107758
+    assert int(baris.loc["fhci_tes_online_2", "lulus"]) == 5280  # cocok M21
+
+
+def test_daftar_gelombang_19_baris_terbaru_dulu():
+    df = metrics.daftar_gelombang()
+    assert list(df.columns) == ["gelombang_id", "nama_gelombang", "tgl_tutup"]
+    assert len(df) == 19
+    assert df.iloc[0]["gelombang_id"] == "G2025-092"
+    assert df.iloc[-1]["gelombang_id"] == "G2019-070"

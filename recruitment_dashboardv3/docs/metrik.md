@@ -1267,11 +1267,204 @@ dengan `gagal` di M17:
 
 ---
 
+## D. Corong Seleksi (halaman 4, G13)
+
+Analisis **lintas gelombang** — beda dari M12–M18 (halaman 3), yang membaca satu gelombang
+yang sedang berjalan pada tanggal acuan. Di sini pertanyaannya "di tahap mana orang hilang,
+dan kenapa?" atas riwayat yang sudah tuntas, jadi tidak terikat `hari_ini()`.
+
+---
+
+## M19 · `corong_tahap_seleksi(gelombang_id=None) -> DataFrame`
+
+**Definisi bisnis:** corong enam tahap seleksi mandiri (Administrasi → Wawancara), seluruh
+gelombang atau satu gelombang terpilih. Memisahkan `hadir`/`tidak_hadir` dari `lulus`/`gagal`
+supaya UI bisa memisahkan "gugur karena gagal" dari "gugur karena tidak hadir".
+
+### SQL
+
+```sql
+SELECT r.urutan, r.tahap_kode, r.nama,
+       count(*) AS masuk,
+       CAST(sum(CASE WHEN t.status_hadir = 'HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS hadir,
+       CAST(sum(CASE WHEN t.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS tidak_hadir,
+       CAST(sum(CASE WHEN t.hasil = 'LULUS' THEN 1 ELSE 0 END) AS BIGINT) AS lulus,
+       CAST(count(*) - sum(CASE WHEN t.hasil = 'LULUS' THEN 1 ELSE 0 END) AS BIGINT) AS gagal
+FROM seleksi_tahap t
+JOIN tahap_ref r USING (tahap_kode)
+WHERE r.kategori = 'seleksi'
+  AND (CAST(? AS VARCHAR) IS NULL OR t.gelombang_id = ?)
+GROUP BY 1, 2, 3
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+`corong_tahap_seleksi()` (seluruh gelombang) — cocok persis dengan angka anchor rancangan:
+
+```
+   urutan        tahap_kode                                 nama   masuk  hadir  tidak_hadir   lulus  gagal
+0       1      administrasi                 Seleksi Administrasi  213648      0            0  143831  69817
+1       2           adaptif                Tes Adaptif PLN (TAP)  143831  68896        74935   48627  95204
+2       3  akademik_inggris  Tes Akademik (TKB) & Bahasa Inggris   53907  44358         9549   24699  29208
+3       4         psikologi                        Tes Psikologi   24699  22651         2048   15980   8719
+4       5         fisik_mcu         Tes Fisik & Medical Check-Up   15980  14826         1154   12623   3357
+5       6         wawancara                  Wawancara User & HR   12623  11859          764    7711   4912
+```
+
+`corong_tahap_seleksi('G2025-092')` — total gagal 48.780, cocok persis M18:
+
+```
+   urutan        tahap_kode                                 nama  masuk  hadir  tidak_hadir  lulus  gagal
+0       1      administrasi                 Seleksi Administrasi  49801      0            0  31178  18623
+1       2           adaptif                Tes Adaptif PLN (TAP)  31178  14102        17076   9418  21760
+2       3  akademik_inggris  Tes Akademik (TKB) & Bahasa Inggris   9418   7494         1924   3406   6012
+3       4         psikologi                        Tes Psikologi   3406   2977          429   1658   1748
+4       5         fisik_mcu         Tes Fisik & Medical Check-Up   1658   1535          123   1259    399
+5       6         wawancara                  Wawancara User & HR   1259   1190           69   1021    238
+```
+
+`administrasi` tidak punya kehadiran — `hadir`/`tidak_hadir` selalu 0, bukan `NULL`; UI wajib
+membedakan ini dari "0% tidak hadir" (tahap itu memang tidak punya konsep kehadiran sama
+sekali, seleksi berbasis dokumen).
+
+---
+
+## M20 · `no_show_per_tahap_mode() -> DataFrame`
+
+**Definisi bisnis:** persentase tidak hadir per tahap seleksi × mode pelaksanaan, seluruh
+gelombang — temuan inti halaman ini. Seleksi Administrasi tidak muncul (tidak berkehadiran).
+
+### SQL
+
+```sql
+SELECT r.urutan, t.tahap_kode, r.nama, t.mode,
+       CAST(sum(CASE WHEN t.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS tidak_hadir,
+       CAST(count(t.status_hadir) AS BIGINT) AS total,
+       round(
+           100.0 * sum(CASE WHEN t.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END)
+           / nullif(count(t.status_hadir), 0), 1
+       ) AS pct_no_show
+FROM seleksi_tahap t
+JOIN tahap_ref r USING (tahap_kode)
+WHERE r.kategori = 'seleksi' AND t.status_hadir IS NOT NULL
+GROUP BY 1, 2, 3, 4
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+```
+   urutan        tahap_kode                                 nama     mode  tidak_hadir   total  pct_no_show
+0       2           adaptif                Tes Adaptif PLN (TAP)   online        74935  143831         52.1
+1       3  akademik_inggris  Tes Akademik (TKB) & Bahasa Inggris   online         9549   53907         17.7
+2       4         psikologi                        Tes Psikologi  offline         2048   24699          8.3
+3       5         fisik_mcu         Tes Fisik & Medical Check-Up  offline         1154   15980          7.2
+4       6         wawancara                  Wawancara User & HR  offline          764   12623          6.1
+```
+
+Cocok persis dengan angka anchor rancangan: Tes Adaptif online **52,1%** tidak hadir, jauh di
+atas seluruh tahap offline (6,1–8,3%). `mode` berpola benar (CATATAN_DATA.md §5), jadi temuan
+ini kokoh meski `kota_domisili` cacat.
+
+---
+
+## M21 · `rbb_masuk_akademik_inggris(gelombang_id=None) -> int`
+
+**Definisi bisnis:** jumlah pelamar yang masuk sistem PLN langsung di tahap Akademik &
+Inggris — titik serah-terima dari jalur RBB (FHCI), yang sudah disaring FHCI sebelum
+diserahkan ke PLN.
+
+### SQL
+
+```sql
+SELECT count(*) FROM pendaftaran
+WHERE titik_masuk = 'akademik_inggris'
+  AND (CAST(? AS VARCHAR) IS NULL OR gelombang_id = ?)
+```
+
+### Keluaran nyata
+
+`rbb_masuk_akademik_inggris()` (seluruh gelombang) → **5.280** — persis sama dengan selisih
+`masuk` tahap Akademik & Inggris (53.907) dikurangi `lulus` Tes Adaptif (48.627) di M19.
+`pendaftaran.titik_masuk` adalah penanda langsung untuk aliran ini, dipakai alih-alih
+menghitung selisih dua angka funnel yang terpisah.
+
+Per gelombang, hanya empat gelombang RBB yang punya nilai bukan nol:
+
+```
+gelombang_id  jumlah
+G2020-074        455
+G2021-075        179
+G2024-087       3599
+G2024-088       1047
+```
+
+Gelombang mandiri lain (mis. `G2025-092`) mengembalikan **0** — jawaban yang benar, bukan
+galat; gelombang itu tidak punya jalur RBB.
+
+---
+
+## M22 · `corong_fhci() -> DataFrame`
+
+**Definisi bisnis:** corong agregat tiga tahap FHCI, dijumlah lintas tahun program (2020,
+2021, 2024) — fakta struktural terpisah dari corong jalur mandiri, karena
+`seleksi_tahap_agregat` **tidak punya `kandidat_id`/`pendaftaran_id`** (CATATAN_DATA.md J7).
+JOIN langsung ke `pendaftaran` melipatgandakan hasil 3× — tidak pernah dilakukan di sini.
+
+### SQL
+
+```sql
+SELECT urutan, tahap_kode, nama,
+       CAST(sum(jumlah_masuk) AS BIGINT) AS masuk,
+       CAST(sum(jumlah_lulus) AS BIGINT) AS lulus,
+       round(100.0 * sum(jumlah_lulus) / sum(jumlah_masuk), 1) AS pct_lulus
+FROM seleksi_tahap_agregat
+GROUP BY 1, 2, 3
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+```
+   urutan         tahap_kode                                     nama   masuk   lulus  pct_lulus
+0      -3  fhci_administrasi              Seleksi Administrasi (FHCI)  269395  107758       40.0
+1      -2  fhci_tes_online_1           Tes Online 1: TKD, AKHLAK, TWK  107758   30172       28.0
+2      -1  fhci_tes_online_2  Tes Online 2: Inggris, Learning Agility   30172    5280       17.5
+```
+
+`lulus` tahap terakhir (5.280) sama persis dengan M21 — dua sumber independen menyatakan
+angka yang sama, titik serah-terima ini konsisten dari kedua sisi.
+
+---
+
+## M23 · `daftar_gelombang() -> DataFrame`
+
+**Definisi bisnis:** seluruh gelombang 2019–2025, untuk pemilih pembanding corong antar
+gelombang. Beda dari `gelombang_terbuka()` (M12, halaman 3) yang hanya gelombang yang sedang
+buka — di sini seluruh 19 gelombang historis boleh dipilih, karena halaman ini analisis
+lintas gelombang, bukan snapshot hari ini.
+
+### SQL
+
+```sql
+SELECT gelombang_id, nama_gelombang, tgl_tutup
+FROM gelombang
+ORDER BY tgl_tutup DESC
+```
+
+### Keluaran nyata
+
+19 baris, dari `G2025-092` (tutup 2025-10-05) sampai `G2019-070` (tutup 2019-07-25).
+
+---
+
 ## Yang belum ada di modul ini
 
-Halaman 4–7 belum punya metrik sama sekali — itu lingkup G13–G16, tiap goal menambah
+Halaman 5–7 belum punya metrik sama sekali — itu lingkup G14–G16, tiap goal menambah
 metriknya sendiri ke `core/metrics.py` dan bagian barunya ke dokumen ini.
 
 Metrik Beranda (M01–M04) dipakai `app_pages/beranda.py`, dibangun di G10. Metrik Perencanaan
 Formasi (M05–M11) dipakai `app_pages/perencanaan.py`, dibangun di G11. Metrik Seleksi
-Berjalan (M12–M18) dipakai `app_pages/seleksi.py`, dibangun di G12.
+Berjalan (M12–M18) dipakai `app_pages/seleksi.py`, dibangun di G12. Metrik Corong Seleksi
+(M19–M23) dipakai `app_pages/corong.py`, dibangun di G13.

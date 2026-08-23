@@ -81,7 +81,7 @@ tuntas lalu lapor. **Tidak ada penerusan otomatis** ke goal berikutnya.
 | G15 | Halaman 6 — Rencana & Realisasi `[GATE]` | sonnet | SELESAI |
 | G16 | Halaman 7 — Profil Pelamar `[GATE]` | sonnet | SELESAI |
 | G17 | Halaman Eksplorasi `[GATE]` | sonnet | SELESAI |
-| G18 | Konsolidasi & serah terima | opus | BELUM |
+| G18 | Konsolidasi & serah terima | opus | SELESAI |
 
 Legenda: `BELUM` · `JALAN` · `MENUNGGU KEPUTUSAN` · `SELESAI`
 

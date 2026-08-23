@@ -832,3 +832,212 @@ def daftar_gelombang() -> pd.DataFrame:
         ORDER BY tgl_tutup DESC
         """
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# E. Pasca-Seleksi (halaman 5)
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Beda dari Corong Seleksi (bagian D): pertanyaan halaman ini "yang sudah lulus
+# sekarang prosesnya di mana?" -- posisi hari ini di masing-masing kohort, yang
+# bergerak seiring tanggal. Terikat penuh ke `acuan`/`hari_ini()`, tidak seperti
+# Corong Seleksi yang historis-tuntas. Satu "kohort" di sini = satu gelombang;
+# dipilih halaman lewat `daftar_kohort_pasca()` / `kohort_relevan()`.
+#
+# Tujuh tahap pasca (`tahap_ref.kategori = 'pasca'`, urutan 100-106) dibaca lewat
+# LEFT JOIN dari `tahap_ref` supaya tahap yang belum punya baris sama sekali
+# (ujian_ojt, sk_penempatan untuk kohort 2025 -- CATATAN_DATA.md J9) tetap
+# tampil dengan peserta=0, bukan hilang dari tabel. Itulah mekanisme
+# rekonsiliasi J9: `lini_masa_pasca_kohort()` menaruh "OJT selesai=979" dan
+# "Ujian OJT peserta=0" berdampingan di baris yang sama, tanpa perlu fungsi
+# tambahan yang menjelaskan sebabnya (P2 -- itu ada di CATATAN_DATA.md).
+
+
+def daftar_kohort_pasca() -> pd.DataFrame:
+    """Seluruh kohort (gelombang) yang punya jejak pasca-seleksi, terbaru dulu.
+
+    Kolom: gelombang_id, nama_gelombang, peserta, tanggal_mulai,
+    tanggal_terakhir. `tanggal_mulai` -- awal pengumuman hasil seleksi;
+    `tanggal_terakhir` -- tanggal selesai terjauh dari tahap yang memang
+    sudah punya baris (kohort 2025 berhenti di selesainya OJT, karena
+    ujian_ojt/sk_penempatan belum punya baris sama sekali).
+    """
+    return db.query(
+        """
+        SELECT pt.gelombang_id, g.nama_gelombang,
+               CAST(count(DISTINCT pt.pendaftaran_id) AS BIGINT) AS peserta,
+               min(pt.tanggal_mulai) AS tanggal_mulai,
+               max(pt.tanggal_selesai) AS tanggal_terakhir
+        FROM pasca_tahap pt
+        JOIN gelombang g USING (gelombang_id)
+        GROUP BY 1, 2
+        ORDER BY tanggal_mulai DESC
+        """
+    )
+
+
+def kohort_relevan(acuan: date | None = None) -> str:
+    """Kohort paling relevan untuk dibuka pertama kali pada tanggal acuan.
+
+    Prioritas: kohort yang jendela pasca-nya (`tanggal_mulai` s.d.
+    `tanggal_terakhir`) mencakup acuan, yang paling baru mulai -- itu kohort
+    yang sedang berproses sekarang. Kalau tidak ada yang sedang berjalan,
+    kohort terakhir yang jendelanya sudah lewat sebelum acuan. Kalau acuan
+    lebih awal dari kohort mana pun, kohort paling awal.
+    """
+    acuan = _acuan(acuan)
+    daftar = daftar_kohort_pasca()
+    ts = pd.Timestamp(acuan)
+    aktif = daftar[(daftar["tanggal_mulai"] <= ts) & (daftar["tanggal_terakhir"] >= ts)]
+    if not aktif.empty:
+        return aktif.sort_values("tanggal_mulai", ascending=False).iloc[0]["gelombang_id"]
+    lewat = daftar[daftar["tanggal_terakhir"] < ts]
+    if not lewat.empty:
+        return lewat.sort_values("tanggal_terakhir", ascending=False).iloc[0]["gelombang_id"]
+    return daftar.sort_values("tanggal_mulai", ascending=True).iloc[0]["gelombang_id"]
+
+
+def lini_masa_pasca_kohort(gelombang_id: str, acuan: date | None = None) -> pd.DataFrame:
+    """Posisi satu kohort di ketujuh tahap pasca-seleksi, pada tanggal acuan.
+
+    Kolom: urutan, tahap_kode, nama, peserta, tanggal_mulai, tanggal_selesai,
+    selesai, berjalan, belum_mulai. `peserta` -- jumlah baris nyata yang ada
+    untuk tahap itu pada kohort ini (bisa 0 -- lihat catatan bagian di atas).
+    `selesai`/`berjalan`/`belum_mulai` dihitung dari perbandingan
+    `tanggal_mulai`/`tanggal_selesai` terhadap acuan, bukan dari kolom
+    `pasca_tahap.status` yang beku (ATURAN_TAMPILAN.md §4.1).
+    """
+    acuan = _acuan(acuan)
+    return db.query(
+        """
+        SELECT r.urutan, r.tahap_kode, r.nama,
+               CAST(count(pt.pendaftaran_id) AS BIGINT) AS peserta,
+               min(pt.tanggal_mulai) AS tanggal_mulai,
+               max(pt.tanggal_selesai) AS tanggal_selesai,
+               CAST(sum(CASE WHEN pt.tanggal_selesai <= ? THEN 1 ELSE 0 END) AS BIGINT) AS selesai,
+               CAST(sum(CASE WHEN pt.tanggal_mulai <= ? AND pt.tanggal_selesai > ?
+                         THEN 1 ELSE 0 END) AS BIGINT) AS berjalan,
+               CAST(sum(CASE WHEN pt.tanggal_mulai > ? THEN 1 ELSE 0 END) AS BIGINT) AS belum_mulai
+        FROM tahap_ref r
+        LEFT JOIN pasca_tahap pt ON pt.tahap_kode = r.tahap_kode AND pt.gelombang_id = ?
+        WHERE r.kategori = 'pasca'
+        GROUP BY 1, 2, 3
+        ORDER BY 1
+        """,
+        [acuan, acuan, acuan, acuan, gelombang_id],
+    )
+
+
+def status_samapta_kohort(gelombang_id: str) -> dict[str, object] | None:
+    """Jendela pelaksanaan SAMAPTA untuk satu kohort.
+
+    Kolom kembalian: peserta, tanggal_mulai, tanggal_selesai, durasi_hari.
+    Tidak ada kolom lokasi -- `pasca_tahap` tidak menyimpan lokasi
+    pelaksanaan SAMAPTA (CATATAN_DATA.md). `None` kalau kohort ini belum
+    punya satu baris SAMAPTA pun.
+    """
+    df = db.query(
+        """
+        SELECT CAST(count(*) AS BIGINT) AS peserta,
+               min(pt.tanggal_mulai) AS tanggal_mulai,
+               max(pt.tanggal_selesai) AS tanggal_selesai,
+               date_diff('day', min(pt.tanggal_mulai), max(pt.tanggal_selesai)) AS durasi_hari
+        FROM pasca_tahap pt
+        WHERE pt.tahap_kode = 'samapta' AND pt.gelombang_id = ?
+        """,
+        [gelombang_id],
+    )
+    if df.empty or df.iloc[0]["peserta"] == 0:
+        return None
+    return df.iloc[0].to_dict()
+
+
+def pembidangan_per_kohort(gelombang_id: str) -> pd.DataFrame:
+    """Sebaran bidang pembidangan untuk satu kohort.
+
+    Kolom: bidang_pembidangan, jumlah. Diurutkan dari yang terbanyak.
+    """
+    return db.query(
+        """
+        SELECT pe.bidang_pembidangan, CAST(count(*) AS BIGINT) AS jumlah
+        FROM penempatan pe
+        JOIN pendaftaran p USING (pendaftaran_id)
+        WHERE p.gelombang_id = ?
+        GROUP BY 1
+        ORDER BY 2 DESC
+        """,
+        [gelombang_id],
+    )
+
+
+def ojt_per_updl_kohort(gelombang_id: str) -> pd.DataFrame:
+    """Sebaran peserta OJT per UPDL untuk satu kohort.
+
+    Kolom: nama_updl, jumlah. Seluruh 11 UPDL selalu tampil, termasuk yang
+    bernilai 0 untuk kohort ini (P5 -- granularitas penuh).
+    """
+    return db.query(
+        """
+        SELECT u.nama AS nama_updl, CAST(coalesce(count(pe.penempatan_id), 0) AS BIGINT) AS jumlah
+        FROM updl u
+        LEFT JOIN (
+            SELECT pe.* FROM penempatan pe
+            JOIN pendaftaran p USING (pendaftaran_id)
+            WHERE p.gelombang_id = ?
+        ) pe ON pe.updl_id = u.updl_id
+        GROUP BY 1
+        ORDER BY 2 DESC
+        """,
+        [gelombang_id],
+    )
+
+
+def status_sk_kohort(gelombang_id: str, acuan: date | None = None) -> dict[str, int]:
+    """Berapa SK penempatan sudah terbit vs masih menunggu, untuk satu kohort.
+
+    Kolom kembalian: total, terbit, menunggu. `terbit` dihitung dari baris
+    `pasca_tahap` tahap `sk_penempatan` yang `tanggal_selesai`-nya sudah lewat
+    acuan -- bukan dari kolom `penempatan.status_sk` yang beku.
+    """
+    acuan = _acuan(acuan)
+    df = db.query(
+        """
+        WITH total AS (
+            SELECT count(DISTINCT pendaftaran_id) AS n FROM pasca_tahap WHERE gelombang_id = ?
+        ),
+        terbit AS (
+            SELECT count(*) AS n FROM pasca_tahap
+            WHERE gelombang_id = ? AND tahap_kode = 'sk_penempatan' AND tanggal_selesai <= ?
+        )
+        SELECT total.n AS total, terbit.n AS terbit, total.n - terbit.n AS menunggu
+        FROM total, terbit
+        """,
+        [gelombang_id, gelombang_id, acuan],
+    )
+    baris = df.iloc[0]
+    return {
+        "total": int(baris["total"]),
+        "terbit": int(baris["terbit"]),
+        "menunggu": int(baris["menunggu"]),
+    }
+
+
+def unit_tujuan_sk_kohort(gelombang_id: str) -> pd.DataFrame:
+    """Unit tujuan penempatan untuk satu kohort, hanya yang sudah punya unit.
+
+    Kolom: nama_pendek, jumlah. Kosong kalau seluruh kohort ini belum
+    memiliki unit tujuan -- keadaan nyata (belum diputuskan), bukan data
+    hilang (CATATAN_DATA.md).
+    """
+    return db.query(
+        """
+        SELECT u.nama_pendek, CAST(count(*) AS BIGINT) AS jumlah
+        FROM penempatan pe
+        JOIN pendaftaran p USING (pendaftaran_id)
+        JOIN unit_induk u ON u.unit_induk = pe.unit_induk
+        WHERE p.gelombang_id = ?
+        GROUP BY 1
+        ORDER BY 2 DESC
+        """,
+        [gelombang_id],
+    )

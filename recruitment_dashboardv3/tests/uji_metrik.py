@@ -532,6 +532,148 @@ def test_no_show_per_tahap_mode_anchor_tap_online():
     assert float(baris.loc["wawancara", "pct_no_show"]) == 6.1
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# E -- Pasca-Seleksi (halaman 5, G14)
+#
+# Terikat penuh ke `hari_ini()` -- beda dari bagian D. Angka jangkar utama:
+# 2.000 orang kohort 2025 (G2025-091 979 + G2025-092 1.021) berhenti di OJT,
+# ujian_ojt/sk_penempatan tidak punya baris sama sekali (J9) -- diuji di
+# beberapa `acuan`, termasuk yang jauh melewati horison data, untuk
+# membuktikan selisihnya tidak pernah bergerak.
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def test_daftar_kohort_pasca_bentuk_dan_anchor():
+    df = metrics.daftar_kohort_pasca()
+    assert list(df.columns) == [
+        "gelombang_id",
+        "nama_gelombang",
+        "peserta",
+        "tanggal_mulai",
+        "tanggal_terakhir",
+    ]
+    assert len(df) == 17
+    baris = df.set_index("gelombang_id")
+    assert int(baris.loc["G2025-091", "peserta"]) == 979
+    assert int(baris.loc["G2025-092", "peserta"]) == 1021
+    assert int(baris.loc["G2024-088", "peserta"]) == 288
+
+
+def test_kohort_relevan_mengikuti_acuan():
+    assert metrics.kohort_relevan(date(2026, 8, 23)) == "G2025-092"
+    assert metrics.kohort_relevan(date(2027, 1, 6)) == "G2025-092"
+    assert metrics.kohort_relevan(date(2025, 3, 1)) == "G2024-088"
+    assert metrics.kohort_relevan(date(2019, 1, 1)) == "G2019-070"
+
+
+def test_lini_masa_pasca_kohort_2025_091_selisih_ojt_menggantung():
+    """Kolom peserta ujian_ojt/sk_penempatan tetap 0 di kedua acuan -- J9."""
+    for acuan in (date(2026, 8, 23), date(2027, 1, 6)):
+        df = metrics.lini_masa_pasca_kohort("G2025-091", acuan=acuan)
+        assert list(df.columns) == [
+            "urutan",
+            "tahap_kode",
+            "nama",
+            "peserta",
+            "tanggal_mulai",
+            "tanggal_selesai",
+            "selesai",
+            "berjalan",
+            "belum_mulai",
+        ]
+        assert len(df) == 7
+        baris = df.set_index("tahap_kode")
+        assert int(baris.loc["pengumuman_akhir", "peserta"]) == 979
+        assert int(baris.loc["ojt", "peserta"]) == 979
+        assert int(baris.loc["ujian_ojt", "peserta"]) == 0
+        assert int(baris.loc["sk_penempatan", "peserta"]) == 0
+
+    tuntas = metrics.lini_masa_pasca_kohort("G2025-091", acuan=date(2026, 10, 20)).set_index(
+        "tahap_kode"
+    )
+    assert int(tuntas.loc["ojt", "selesai"]) == 979
+    assert int(tuntas.loc["ujian_ojt", "peserta"]) == 0
+
+
+def test_lini_masa_pasca_kohort_lama_punya_ketujuh_tahap():
+    """Kohort G2024-088 sudah tuntas -- ujian_ojt & sk_penempatan berisi
+    penuh, pembanding bahwa J9 khusus kohort 2025."""
+    df = metrics.lini_masa_pasca_kohort("G2024-088", acuan=date(2025, 3, 1)).set_index(
+        "tahap_kode"
+    )
+    assert int(df.loc["samapta", "peserta"]) == 288
+    assert int(df.loc["samapta", "selesai"]) == 268
+    assert int(df.loc["samapta", "belum_mulai"]) == 20
+    assert int(df.loc["ujian_ojt", "peserta"]) == 288
+    assert int(df.loc["sk_penempatan", "peserta"]) == 288
+
+
+def test_status_samapta_kohort_anchor():
+    s91 = metrics.status_samapta_kohort("G2025-091")
+    assert s91["peserta"] == 979
+    assert s91["durasi_hari"] == 14
+    s92 = metrics.status_samapta_kohort("G2025-092")
+    assert s92["peserta"] == 1021
+    assert s92["durasi_hari"] == 14
+
+
+def test_status_samapta_kohort_tanpa_data_none():
+    assert metrics.status_samapta_kohort("G0000-000") is None
+
+
+def test_pembidangan_per_kohort_gabungan_2025_cocok_anchor_rancangan():
+    a = metrics.pembidangan_per_kohort("G2025-091").set_index("bidang_pembidangan")["jumlah"]
+    b = metrics.pembidangan_per_kohort("G2025-092").set_index("bidang_pembidangan")["jumlah"]
+    total = a.add(b, fill_value=0)
+    assert len(total) == 9
+    assert int(total["Pembangkitan"]) == 481
+    assert int(total["SDM"]) == 362
+    assert int(total["Distribusi"]) == 258
+    assert int(total["Transmisi dan Gardu Induk"]) == 215
+    assert int(total["Manajemen Konstruksi dan Pengadaan"]) == 197
+    assert int(total["Keuangan"]) == 169
+    assert int(total["Niaga"]) == 165
+    assert int(total["Perencanaan Sistem"]) == 91
+    assert int(total["Proteksi dan Kontrol"]) == 62
+
+
+def test_ojt_per_updl_kohort_selalu_11_baris_gabungan_cocok_anchor():
+    df91 = metrics.ojt_per_updl_kohort("G2025-091")
+    assert len(df91) == 11  # granularitas penuh (P5), termasuk yang bernilai 0
+    u91 = df91.set_index("nama_updl")["jumlah"]
+    u92 = metrics.ojt_per_updl_kohort("G2025-092").set_index("nama_updl")["jumlah"]
+    total = u91.add(u92, fill_value=0)
+    assert int(total["UPDL Semarang"]) == 257
+    assert int(total["UPDL Pandaan"]) == 234
+    assert int(total["UPDL Surabaya"]) == 228
+    assert int(total["UPDL Tuntungan"]) == 201
+    assert int(total["UPDL Palembang"]) == 195
+    assert int(total["UPDL Padang"]) == 162
+    assert int(total["UPDL Makassar"]) == 158
+    assert int(total["UPDL Jakarta"]) == 152
+    assert int(total["UPDL Bogor"]) == 141
+    assert int(total["UPDL Suralaya"]) == 136
+    assert int(total["UPDL Banjarbaru"]) == 136
+
+
+def test_status_sk_kohort_2025_selalu_nol_terbit_berapa_pun_acuan():
+    for acuan in (date(2026, 8, 23), date(2027, 1, 6)):
+        s = metrics.status_sk_kohort("G2025-091", acuan=acuan)
+        assert s == {"total": 979, "terbit": 0, "menunggu": 979}
+
+
+def test_status_sk_kohort_lama_sudah_terbit_semua():
+    s = metrics.status_sk_kohort("G2024-088", acuan=date(2026, 8, 23))
+    assert s == {"total": 288, "terbit": 288, "menunggu": 0}
+
+
+def test_unit_tujuan_sk_kohort_2025_kosong_lama_terisi():
+    assert metrics.unit_tujuan_sk_kohort("G2025-091").empty
+    df = metrics.unit_tujuan_sk_kohort("G2024-088")
+    assert len(df) == 45
+    assert int(df.set_index("nama_pendek").loc["Kantor Pusat", "jumlah"]) == 38
+
+
 def test_rbb_masuk_akademik_inggris_nasional():
     assert metrics.rbb_masuk_akademik_inggris() == 5280
 

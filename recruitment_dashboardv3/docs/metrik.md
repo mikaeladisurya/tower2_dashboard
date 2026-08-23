@@ -1459,12 +1459,317 @@ ORDER BY tgl_tutup DESC
 
 ---
 
+## M24 · `daftar_kohort_pasca() -> DataFrame`
+
+**Definisi bisnis:** seluruh kohort (satu kohort = satu gelombang) yang punya jejak
+pasca-seleksi, terbaru dulu — sumber pemilih kohort di Halaman 5.
+
+### SQL
+
+```sql
+SELECT pt.gelombang_id, g.nama_gelombang,
+       CAST(count(DISTINCT pt.pendaftaran_id) AS BIGINT) AS peserta,
+       min(pt.tanggal_mulai) AS tanggal_mulai,
+       max(pt.tanggal_selesai) AS tanggal_terakhir
+FROM pasca_tahap pt
+JOIN gelombang g USING (gelombang_id)
+GROUP BY 1, 2
+ORDER BY tanggal_mulai DESC
+```
+
+### Keluaran nyata
+
+17 kohort, dari `G2025-092` (mulai 2026-02-27, terakhir 2026-10-15, 1.021 orang) sampai
+`G2019-070` (mulai 2019-12-17, terakhir 2020-08-28, 267 orang). Dua kohort terbaru:
+
+```
+gelombang_id  nama_gelombang                                              peserta  tanggal_mulai  tanggal_terakhir
+G2025-092     REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025            1021     2026-02-27        2026-10-15
+G2025-091     REKRUTMEN PUTRA-PUTRI ASLI PAPUA PLN GROUP TAHUN 2025           979     2026-02-13        2026-10-01
+```
+
+`tanggal_terakhir` kohort 2025 berhenti di selesainya OJT (2026-10-01 / 2026-10-15) — bukan
+di SK penempatan, karena `ujian_ojt` dan `sk_penempatan` belum punya satu baris pun untuk
+kedua kohort ini (J9).
+
+---
+
+## M25 · `kohort_relevan(acuan=None) -> str`
+
+**Definisi bisnis:** kohort paling relevan untuk dibuka pertama kali pada tanggal acuan —
+default pemilih kohort di Halaman 5. Prioritas: kohort yang jendela pasca-nya mencakup
+acuan, dipilih yang paling baru mulai; kalau tidak ada yang sedang berjalan, kohort terakhir
+yang jendelanya sudah lewat sebelum acuan; kalau acuan lebih awal dari kohort mana pun,
+kohort paling awal.
+
+### Implementasi
+
+Dibangun di atas `daftar_kohort_pasca()` (M24), disaring lewat pandas — bukan SQL baru;
+tabelnya sudah teragregasi jadi 17 baris, aman dinalar di memori.
+
+### Keluaran nyata
+
+```python
+kohort_relevan(date(2026, 8, 23))  # -> 'G2025-092' (kedua kohort 2025 sedang OJT)
+kohort_relevan(date(2027, 1, 6))   # -> 'G2025-092' (masih dalam jendela sampai 2026-10-15)
+kohort_relevan(date(2025, 3, 1))   # -> 'G2024-088' (satu-satunya yang sedang berjalan)
+kohort_relevan(date(2019, 1, 1))   # -> 'G2019-070' (sebelum kohort mana pun mulai)
+```
+
+---
+
+## M26 · `lini_masa_pasca_kohort(gelombang_id, acuan=None) -> DataFrame`
+
+**Definisi bisnis:** posisi satu kohort di ketujuh tahap pasca-seleksi pada tanggal acuan —
+jawaban langsung "sekarang prosesnya di mana?". `selesai`/`berjalan`/`belum_mulai` dihitung
+dari tanggal, bukan dari `pasca_tahap.status` yang beku (ATURAN_TAMPILAN.md §4.1). LEFT JOIN
+dari `tahap_ref` membuat tahap yang belum punya baris sama sekali tetap tampil dengan
+`peserta = 0`, alih-alih hilang dari tabel — ini mekanisme rekonsiliasi J9.
+
+### SQL
+
+```sql
+SELECT r.urutan, r.tahap_kode, r.nama,
+       CAST(count(pt.pendaftaran_id) AS BIGINT) AS peserta,
+       min(pt.tanggal_mulai) AS tanggal_mulai,
+       max(pt.tanggal_selesai) AS tanggal_selesai,
+       CAST(sum(CASE WHEN pt.tanggal_selesai <= ? THEN 1 ELSE 0 END) AS BIGINT) AS selesai,
+       CAST(sum(CASE WHEN pt.tanggal_mulai <= ? AND pt.tanggal_selesai > ?
+                 THEN 1 ELSE 0 END) AS BIGINT) AS berjalan,
+       CAST(sum(CASE WHEN pt.tanggal_mulai > ? THEN 1 ELSE 0 END) AS BIGINT) AS belum_mulai
+FROM tahap_ref r
+LEFT JOIN pasca_tahap pt ON pt.tahap_kode = r.tahap_kode AND pt.gelombang_id = ?
+WHERE r.kategori = 'pasca'
+GROUP BY 1, 2, 3
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+`lini_masa_pasca_kohort('G2025-091', acuan=date(2026, 8, 23))`:
+
+```
+urutan  tahap_kode         nama                            peserta  tanggal_mulai  tanggal_selesai  selesai  berjalan  belum_mulai
+   100  pengumuman_akhir   Pengumuman Hasil Seleksi             979     2026-02-13       2026-02-13      979         0            0
+   101  ttd_kontrak        Penandatanganan Perjanjian           979     2026-02-23       2026-03-08      979         0            0
+   102  samapta            SAMAPTA                               979     2026-03-15       2026-03-29      979         0            0
+   103  pembidangan        Penetapan Pembidangan                979     2026-03-30       2026-03-30      979         0            0
+   104  ojt                Diklat Prajabatan / First OJT        979     2026-04-04       2026-10-01        0       979            0
+   105  ujian_ojt          Ujian Akhir OJT                         0            NaT              NaT        0         0            0
+   106  sk_penempatan      SK Pengangkatan & Penempatan            0            NaT              NaT        0         0            0
+```
+
+Baris `ojt` tuntas (`selesai` akan jadi 979 begitu acuan lewat 2026-10-01), sementara
+`ujian_ojt` dan `sk_penempatan` tetap `peserta = 0` **berapa pun acuan yang dicoba** — selisih
+979 yang menggantung terlihat langsung di tabel, tanpa fungsi tambahan.
+
+Sebagai pembanding, kohort lama `G2024-088` (acuan 2025-03-01, SAMAPTA masih berjalan) punya
+ketujuh baris terisi penuh, termasuk `ujian_ojt`/`sk_penempatan` — bukti bahwa J9 memang
+spesifik pada kohort 2025, bukan cacat query:
+
+```
+urutan  tahap_kode      peserta  selesai  berjalan  belum_mulai
+   102  samapta             288      268         0           20
+   103  pembidangan         288        0         0          288
+   104  ojt                 288        0         0          288
+   105  ujian_ojt           288        0         0          288
+   106  sk_penempatan       288        0         0          288
+```
+
+---
+
+## M27 · `status_samapta_kohort(gelombang_id) -> dict | None`
+
+**Definisi bisnis:** jendela pelaksanaan SAMAPTA untuk satu kohort — jumlah peserta, kapan
+mulai, kapan selesai, berapa lama. Tidak ada kolom lokasi di sumber data; halaman tidak
+menampilkan/mengasumsikan lokasi pelaksanaan.
+
+### SQL
+
+```sql
+SELECT CAST(count(*) AS BIGINT) AS peserta,
+       min(tanggal_mulai) AS tanggal_mulai,
+       max(tanggal_selesai) AS tanggal_selesai,
+       date_diff('day', min(tanggal_mulai), max(tanggal_selesai)) AS durasi_hari
+FROM pasca_tahap
+WHERE tahap_kode = 'samapta' AND gelombang_id = ?
+```
+
+### Keluaran nyata
+
+```python
+status_samapta_kohort('G2025-091')
+# {'peserta': 979, 'tanggal_mulai': 2026-03-15, 'tanggal_selesai': 2026-03-29, 'durasi_hari': 14}
+status_samapta_kohort('G2025-092')
+# {'peserta': 1021, 'tanggal_mulai': 2026-03-29, 'tanggal_selesai': 2026-04-12, 'durasi_hari': 14}
+```
+
+`durasi_hari` konstan 14 di kedua kohort — sesuai temuan rentang tahap yang konstan lintas
+kohort (RANCANGAN_HALAMAN.md §7); tidak bermakna dibandingkan antar kohort, hanya
+dilaporkan sebagai fakta jendela kohort yang sedang dilihat.
+
+---
+
+## M28 · `pembidangan_per_kohort(gelombang_id) -> DataFrame`
+
+**Definisi bisnis:** sebaran bidang pembidangan untuk satu kohort.
+
+### SQL
+
+```sql
+SELECT pe.bidang_pembidangan, CAST(count(*) AS BIGINT) AS jumlah
+FROM penempatan pe
+JOIN pendaftaran p USING (pendaftaran_id)
+WHERE p.gelombang_id = ?
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+### Keluaran nyata
+
+`pembidangan_per_kohort('G2025-091')` (979 orang, 9 bidang):
+
+```
+bidang_pembidangan                     jumlah
+SDM                                       232
+Distribusi                                179
+Transmisi dan Gardu Induk                 131
+Niaga                                     104
+Manajemen Konstruksi dan Pengadaan         99
+Keuangan                                   84
+Pembangkitan                               78
+Perencanaan Sistem                         41
+Proteksi dan Kontrol                       31
+```
+
+Gabungan kedua kohort 2025 (091+092) sesuai anchor rancangan: Pembangkitan 481, SDM 362,
+Distribusi 258, Transmisi & GI 215, Konstruksi 197, Keuangan 169, Niaga 165, Perencanaan
+Sistem 91, Proteksi & Kontrol 62 — diverifikasi lewat penjumlahan manual kedua kohort di
+`../.venv/Scripts/python.exe`, cocok persis dengan brief goal.
+
+---
+
+## M29 · `ojt_per_updl_kohort(gelombang_id) -> DataFrame`
+
+**Definisi bisnis:** sebaran peserta OJT per UPDL untuk satu kohort — berguna untuk
+pertanyaan kapasitas diklat.
+
+### SQL
+
+```sql
+SELECT u.nama AS nama_updl, CAST(coalesce(count(pe.penempatan_id), 0) AS BIGINT) AS jumlah
+FROM updl u
+LEFT JOIN (
+    SELECT pe.* FROM penempatan pe
+    JOIN pendaftaran p USING (pendaftaran_id)
+    WHERE p.gelombang_id = ?
+) pe ON pe.updl_id = u.updl_id
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+### Keluaran nyata
+
+`ojt_per_updl_kohort('G2025-091')` — 11 baris (seluruh UPDL selalu tampil, P5):
+
+```
+nama_updl        jumlah
+UPDL Pandaan         122
+UPDL Surabaya         122
+UPDL Semarang         120
+UPDL Palembang         97
+UPDL Padang            84
+UPDL Jakarta           81
+UPDL Makassar          77
+UPDL Tuntungan         75
+UPDL Banjarbaru        69
+UPDL Suralaya          66
+UPDL Bogor             66
+```
+
+Gabungan kedua kohort 2025 sesuai anchor rancangan: Semarang 257, Pandaan 234, Surabaya 228,
+Tuntungan 201, Palembang 195, Padang 162, Makassar 158, Jakarta 152, Bogor 141, Suralaya
+136, Banjarbaru 136 — diverifikasi lewat penjumlahan manual kedua kohort.
+
+---
+
+## M30 · `status_sk_kohort(gelombang_id, acuan=None) -> dict`
+
+**Definisi bisnis:** berapa SK penempatan sudah terbit dan berapa masih menunggu, untuk satu
+kohort. `terbit` dihitung dari baris `pasca_tahap` tahap `sk_penempatan` yang sudah lewat
+acuan — bukan dari kolom `penempatan.status_sk` yang beku saat data digenerate, supaya
+konsisten dengan aturan realtime §4.1 yang sama berlaku di seluruh halaman ini.
+
+### SQL
+
+```sql
+WITH total AS (
+    SELECT count(DISTINCT pendaftaran_id) AS n FROM pasca_tahap WHERE gelombang_id = ?
+),
+terbit AS (
+    SELECT count(*) AS n FROM pasca_tahap
+    WHERE gelombang_id = ? AND tahap_kode = 'sk_penempatan' AND tanggal_selesai <= ?
+)
+SELECT total.n AS total, terbit.n AS terbit, total.n - terbit.n AS menunggu
+FROM total, terbit
+```
+
+### Keluaran nyata
+
+```python
+status_sk_kohort('G2025-091', acuan=date(2026, 8, 23))  # {'total': 979, 'terbit': 0, 'menunggu': 979}
+status_sk_kohort('G2025-091', acuan=date(2027, 1, 6))   # {'total': 979, 'terbit': 0, 'menunggu': 979}
+status_sk_kohort('G2024-088', acuan=date(2026, 8, 23))  # {'total': 288, 'terbit': 288, 'menunggu': 0}
+```
+
+Kohort 2025 tetap `terbit = 0` di kedua acuan yang dicoba, termasuk yang jauh melewati
+horison data (2027-01-06) — konsisten dengan M26: tidak ada satu baris `sk_penempatan` pun
+untuk kohort ini, jadi `terbit` tidak akan pernah bergerak berapa pun acuan dimajukan.
+
+---
+
+## M31 · `unit_tujuan_sk_kohort(gelombang_id) -> DataFrame`
+
+**Definisi bisnis:** unit tujuan penempatan untuk satu kohort, hanya yang sudah punya unit.
+
+### SQL
+
+```sql
+SELECT u.nama_pendek, CAST(count(*) AS BIGINT) AS jumlah
+FROM penempatan pe
+JOIN pendaftaran p USING (pendaftaran_id)
+JOIN unit_induk u ON u.unit_induk = pe.unit_induk
+WHERE p.gelombang_id = ?
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+### Keluaran nyata
+
+`unit_tujuan_sk_kohort('G2025-091')` → **DataFrame kosong** — unit penempatan kohort 2025
+memang belum diputuskan sama sekali (2.000 baris `unit_induk IS NULL` di `penempatan`),
+keadaan proses nyata, bukan data hilang.
+
+`unit_tujuan_sk_kohort('G2024-088')` → 45 unit terisi, lima teratas:
+
+```
+nama_pendek        jumlah
+Kantor Pusat            38
+UID Jawa Timur          17
+UIW Maluku&Malut        16
+UID Jawa Barat          15
+UIT JBT                 14
+```
+
+---
+
 ## Yang belum ada di modul ini
 
-Halaman 5–7 belum punya metrik sama sekali — itu lingkup G14–G16, tiap goal menambah
+Halaman 6–7 belum punya metrik sama sekali — itu lingkup G15–G16, tiap goal menambah
 metriknya sendiri ke `core/metrics.py` dan bagian barunya ke dokumen ini.
 
 Metrik Beranda (M01–M04) dipakai `app_pages/beranda.py`, dibangun di G10. Metrik Perencanaan
 Formasi (M05–M11) dipakai `app_pages/perencanaan.py`, dibangun di G11. Metrik Seleksi
 Berjalan (M12–M18) dipakai `app_pages/seleksi.py`, dibangun di G12. Metrik Corong Seleksi
-(M19–M23) dipakai `app_pages/corong.py`, dibangun di G13.
+(M19–M23) dipakai `app_pages/corong.py`, dibangun di G13. Metrik Pasca-Seleksi (M24–M31)
+dipakai `app_pages/pasca.py`, dibangun di G14.

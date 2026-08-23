@@ -81,6 +81,26 @@ def test_pemilih_tanggal_widget_date_input_tanpa_exception():
     assert not at.exception, [str(e) for e in at.exception]
 
 
+def test_pasca_dengan_tanggal_jauh_melewati_horison_tanpa_exception():
+    """Pasca-Seleksi terikat `hari_ini()` (beda dari Corong Seleksi) -- harus
+    tetap hidup pada tanggal yang jauh melewati horison data (J9: SK kohort
+    2025 tidak akan pernah terbit berapa pun acuan dimajukan)."""
+    at = _muat("app_pages/pasca.py")
+    at.session_state["tanggal_acuan"] = date(2027, 1, 6)
+    at.run(timeout=30)
+    assert not at.exception, [str(e) for e in at.exception]
+
+
+def test_pasca_ganti_kohort_tanpa_exception():
+    at = _muat("app_pages/pasca.py")
+    assert len(at.selectbox) >= 1
+    pemilih_kohort = at.selectbox[0]
+    opsi_lain = [o for o in pemilih_kohort.options if o != pemilih_kohort.value]
+    assert opsi_lain
+    pemilih_kohort.set_value(opsi_lain[0]).run(timeout=30)
+    assert not at.exception, [str(e) for e in at.exception]
+
+
 def _popover_mengambang(at: AppTest):
     """Popover RecruitMan mengambang berkunci `floating_chatbot` -- dibedakan
     dari popover lain milik halaman itu sendiri (mis. menu percakapan di

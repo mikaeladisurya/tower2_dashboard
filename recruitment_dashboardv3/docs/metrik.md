@@ -1763,13 +1763,215 @@ UIT JBT                 14
 
 ---
 
+---
+
+# F · Metrik Halaman 6 — Rencana & Realisasi (G15)
+
+Pertanyaan harian: seberapa tepat perencanaan kami ternyata? Analisis lintas-tahun atas
+riwayat yang sudah tuntas (2019–2025) — seperti bagian D (Corong Seleksi), fungsi-fungsi di
+bagian ini **tidak terikat `hari_ini()`/`acuan`** (penyimpangan disetujui
+ATURAN_TAMPILAN.md §4.5): nilainya historis, datanya tidak berubah lagi, dan tidak ada status
+yang bisa berubah terhadap tanggal berjalan.
+
+Tahun RBB — **2020, 2021, 2024** — diverifikasi dari `CATATAN_DATA.md` §7: `usulan_kebutuhan`
+dan `penempatan` tahun-tahun itu hanya menyimpan sisa pelamar yang lolos saringan FHCI, bukan
+seluruh kohort. Dijadikan konstanta `_TAHUN_RBB` di `core/metrics.py`, bukan diketik ulang di
+tiap fungsi.
+
+---
+
+## M32 · `pagu_target_realisasi_tahunan() -> DataFrame`
+
+**Definisi bisnis:** tiga angka rencana & realisasi per tahun program — pagu yang disetujui
+pusat, target penerimaan yang ditulis di gelombang pendaftaran, dan jumlah yang benar-benar
+ditempatkan. `selisih_pagu_target` = target gelombang dikurangi pagu.
+
+Ini Temuan A `docs/RANCANGAN_HALAMAN.md` §8: dua angka rencana (`pagu_rekrutmen.jumlah` dan
+`gelombang.diterima_target`) **tidak pernah didamaikan**, dan realisasi konsisten mengikuti
+target gelombang, bukan pagu. Angka bicara sendiri berdampingan — bukan penjelasan di sini
+maupun di halaman (P2).
+
+### SQL
+
+```sql
+WITH pagu AS (
+    SELECT tahun_program AS tahun, sum(jumlah) AS pagu
+    FROM pagu_rekrutmen GROUP BY 1
+),
+target AS (
+    SELECT tahun_program AS tahun, sum(diterima_target) AS target_gelombang
+    FROM gelombang GROUP BY 1
+),
+ditempatkan AS (
+    SELECT tahun_program AS tahun, count(*) AS ditempatkan
+    FROM penempatan GROUP BY 1
+)
+SELECT p.tahun, p.pagu, t.target_gelombang, d.ditempatkan,
+       t.target_gelombang - p.pagu AS selisih_pagu_target
+FROM pagu p
+JOIN target t USING (tahun)
+JOIN ditempatkan d USING (tahun)
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+**7 baris (2019–2025)** — cocok persis dengan tabel Temuan A di
+`docs/RANCANGAN_HALAMAN.md` §8:
+
+```
+   tahun    pagu  target_gelombang  ditempatkan  selisih_pagu_target
+0   2019  1093.0            1353.0         1353                260.0
+1   2020   325.0             325.0          125                  0.0
+2   2021   689.0             689.0           49                  0.0
+3   2022   689.0            1109.0         1109                420.0
+4   2023  1277.0            1797.0         1797                520.0
+5   2024  1098.0            1578.0         1278                480.0
+6   2025  1050.0            2000.0         2000                950.0
+```
+
+---
+
+## M33 · `rencana_realisasi_per_unit(minimal_pegawai=50) -> DataFrame`
+
+**Definisi bisnis:** rencana penempatan (usulan unit) dibanding realisasi (jumlah baris
+penempatan nyata) per unit induk, tahun program **2019–2024**.
+
+Ini Temuan B `docs/RANCANGAN_HALAMAN.md` §8. Kohort **2025 sengaja di luar rentang** —
+`penempatan` kohort itu belum sepenuhnya diisi (unit tujuan 2.000 baris masih kosong, lihat
+M31/J9) sehingga tidak bisa dibandingkan adil dengan rencananya; itu keadaan proses, bukan
+data hilang. Memakai filter anomali J4 (`jumlah_pegawai > 50`) yang sama dengan bagian B,
+supaya jumlah baris tetap 47 seperti tabel per-unit lain di dashboard ini.
+
+### SQL
+
+```sql
+WITH rencana AS (
+    SELECT unit_induk, round(sum(usulan)) AS rencana
+    FROM usulan_kebutuhan
+    WHERE tahun_program BETWEEN 2019 AND 2024
+    GROUP BY 1
+),
+realisasi AS (
+    SELECT unit_induk, count(*) AS realisasi
+    FROM penempatan
+    WHERE tahun_program BETWEEN 2019 AND 2024 AND unit_induk IS NOT NULL
+    GROUP BY 1
+)
+SELECT r.unit_induk AS kode_unit, iu.nama_pendek, r.rencana,
+       CAST(coalesce(rl.realisasi, 0) AS BIGINT) AS realisasi,
+       CAST(coalesce(rl.realisasi, 0) AS BIGINT) - r.rencana AS selisih
+FROM rencana r
+LEFT JOIN realisasi rl USING (unit_induk)
+JOIN unit_induk iu ON iu.unit_induk = r.unit_induk
+WHERE iu.jumlah_pegawai > ?
+ORDER BY 5 DESC
+```
+
+⚠️ **Jebakan diverifikasi sebelum ditulis:** `FULL OUTER JOIN rencana/realisasi` dan
+`LEFT JOIN` dari `rencana` dijalankan berdampingan untuk memastikan tidak ada unit yang
+hilang. Hanya **1 unit** yang punya baris `penempatan` di rentang 2019–2024 tapi tidak
+pernah punya baris `usulan_kebutuhan` — di luar 47 baris yang lolos filter J4, jadi
+`LEFT JOIN` dari `rencana` (lebih sederhana) menghasilkan tabel yang identik dengan
+`FULL OUTER JOIN`.
+
+### Keluaran nyata
+
+**47 baris.** Seluruh `selisih` negatif — realisasi selalu di bawah rencana di setiap unit,
+konsisten dengan pagu nasional yang jauh di bawah usulan nasional (M11). Lima terbesar
+(realisasi paling jauh dari rencana):
+
+```
+                                                   nama_pendek  rencana  realisasi  selisih
+                                                  Kantor Pusat   2056.0        447  -1609.0
+                                                UID Jawa Barat    773.0        236   -537.0
+                                              UIW Maluku&Malut    724.0        225   -499.0
+                                                UID Jawa Timur    697.0        219   -478.0
+                                                  P3B Sumatera    555.0        175   -380.0
+```
+
+Lima terkecil (realisasi paling dekat dengan rencana):
+
+```
+                       nama_pendek  rencana  realisasi  selisih
+                        PUSLITBANG     41.0         15    -26.0
+                UIK Tanjung Jati B     39.0          6    -33.0
+                          PUSHARLIS     82.0         28    -54.0
+          UIP Kalimantan Bag Barat     71.0         14    -57.0
+        UIP Sumatera Bag Selatan     70.0         13    -57.0
+```
+
+`Kantor Pusat` berada di kedua ujung rancangan yang berbeda dengan M09/M10 (kekosongan &
+gap FTK terbesar) — konsisten: unit dengan kebutuhan paling besar juga paling jauh dari
+rencananya.
+
+---
+
+## M34 · `pemenuhan_per_tahun() -> DataFrame`
+
+**Definisi bisnis:** persentase realisasi terhadap target gelombang, per tahun program
+2019–2025, dengan penanda tahun RBB.
+
+`tahun_rbb` menandai 2020/2021/2024 — bukan dihitung ulang rata-ratanya di sini. Halaman
+yang memutuskan mengeluarkannya dari rata-rata dan menandainya secara visual (bukan
+penjelasan teks, P2/§8 rancangan).
+
+### SQL
+
+```sql
+WITH target AS (
+    SELECT tahun_program AS tahun, sum(diterima_target) AS target_gelombang
+    FROM gelombang GROUP BY 1
+),
+ditempatkan AS (
+    SELECT tahun_program AS tahun, count(*) AS ditempatkan
+    FROM penempatan GROUP BY 1
+)
+SELECT t.tahun, t.target_gelombang, d.ditempatkan,
+       round(100.0 * d.ditempatkan / t.target_gelombang, 1) AS pct_pemenuhan,
+       t.tahun IN (2020, 2021, 2024) AS tahun_rbb
+FROM target t
+JOIN ditempatkan d USING (tahun)
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+```
+   tahun  target_gelombang  ditempatkan  pct_pemenuhan  tahun_rbb
+0   2019            1353.0         1353          100.0      False
+1   2020             325.0          125           38.5       True
+2   2021             689.0           49            7.1       True
+3   2022            1109.0         1109          100.0      False
+4   2023            1797.0         1797          100.0      False
+5   2024            1578.0         1278           81.0       True
+6   2025            2000.0         2000          100.0      False
+```
+
+Rata-rata tahun **non-RBB** (2019, 2022, 2023, 2025): **100,0%**. Rata-rata **seluruh tahun**
+tanpa pengecualian: **75,2%** — angka yang menyesatkan kalau dipakai sendirian, karena
+menyeret turun tahun-tahun yang datanya memang cuma sisa saringan FHCI. 2021 sebagai
+"pemenuhan 7,1%" persis kutipan jebakan penyajian di `CATATAN_DATA.md` §7 — dikonfirmasi di
+sini lewat query nyata, bukan disalin dari dokumen itu tanpa verifikasi.
+
+### Biaya
+
+Ketiga fungsi dijalankan langsung terhadap agregat `pagu_rekrutmen` (4.975 baris), `gelombang`
+(19 baris), `penempatan` (7.711 baris), dan `usulan_kebutuhan` (34.006 baris) — tidak ada
+tabel yang dimuat penuh ke DataFrame, hasilnya masing-masing 7, 47, dan 7 baris. Diukur di
+luar konteks Streamlit (`db.query`/`db.skalar` tanpa `@st.cache_data` aktif): **M32 19,4 ms
+dingin · 0,3 ms saat kena cache**, **M33 7,6 ms**, **M34 1,9 ms**.
+
+---
+
 ## Yang belum ada di modul ini
 
-Halaman 6–7 belum punya metrik sama sekali — itu lingkup G15–G16, tiap goal menambah
-metriknya sendiri ke `core/metrics.py` dan bagian barunya ke dokumen ini.
+Halaman 7 belum punya metrik sama sekali — itu lingkup G16, menambah metriknya sendiri ke
+`core/metrics.py` dan bagian barunya ke dokumen ini.
 
 Metrik Beranda (M01–M04) dipakai `app_pages/beranda.py`, dibangun di G10. Metrik Perencanaan
 Formasi (M05–M11) dipakai `app_pages/perencanaan.py`, dibangun di G11. Metrik Seleksi
 Berjalan (M12–M18) dipakai `app_pages/seleksi.py`, dibangun di G12. Metrik Corong Seleksi
 (M19–M23) dipakai `app_pages/corong.py`, dibangun di G13. Metrik Pasca-Seleksi (M24–M31)
-dipakai `app_pages/pasca.py`, dibangun di G14.
+dipakai `app_pages/pasca.py`, dibangun di G14. Metrik Rencana & Realisasi (M32–M34) dipakai
+`app_pages/rencana_realisasi.py`, dibangun di G15.

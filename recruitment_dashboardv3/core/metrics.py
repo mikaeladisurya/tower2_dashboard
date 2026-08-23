@@ -1041,3 +1041,130 @@ def unit_tujuan_sk_kohort(gelombang_id: str) -> pd.DataFrame:
         """,
         [gelombang_id],
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# F. Rencana & Realisasi (halaman 6)
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Pertanyaan harian: seberapa tepat perencanaan kami ternyata? Analisis
+# lintas-tahun atas riwayat yang sudah tuntas (2019-2025) -- sama seperti
+# Corong Seleksi (bagian D), fungsi-fungsi di bagian ini TIDAK terikat
+# `hari_ini()`/`acuan` (penyimpangan disetujui ATURAN_TAMPILAN.md §4.5: nilai
+# analitisnya historis, datanya tidak berubah lagi, dan tidak ada status yang
+# bisa berubah terhadap tanggal berjalan).
+#
+# Dua angka rencana yang tidak pernah didamaikan (CATATAN_DATA.md §7):
+# `pagu_rekrutmen.jumlah` (sisi anggaran) dan `gelombang.diterima_target`
+# (sisi program). Realisasi (`penempatan`, dihitung per `tahun_program`)
+# konsisten mengikuti target gelombang, bukan pagu -- ditampilkan
+# berdampingan, tidak ditafsirkan di sini (penafsiran ada di halaman).
+#
+# Tahun RBB (2020, 2021, 2024): `usulan_kebutuhan`/`penempatan` tahun-tahun
+# itu hanya menyimpan sisa pelamar yang lolos saringan FHCI, bukan seluruh
+# kohort -- CATATAN_DATA.md §7 menyebut eksplisit "menyajikan 2021 sebagai
+# pemenuhan 7,1% adalah salah baca". Ditandai lewat kolom `tahun_rbb`, bukan
+# disembunyikan -- halaman yang memutuskan mengeluarkannya dari rata-rata.
+_TAHUN_RBB = (2020, 2021, 2024)
+
+
+def pagu_target_realisasi_tahunan() -> pd.DataFrame:
+    """Tiga angka rencana & realisasi per tahun program, 2019-2025.
+
+    Kolom: tahun, pagu, target_gelombang, ditempatkan, selisih_pagu_target.
+    `pagu` -- jumlah disetujui pusat (`pagu_rekrutmen`). `target_gelombang`
+    -- target penerimaan yang ditulis di gelombang pendaftaran
+    (`gelombang.diterima_target`). `ditempatkan` -- jumlah baris penempatan
+    nyata. `selisih_pagu_target` positif berarti target gelombang melebihi
+    pagu yang disetujui -- dua angka rencana yang tidak pernah didamaikan
+    (CATATAN_DATA.md §7), bukan galat penghitungan.
+    """
+    return db.query(
+        """
+        WITH pagu AS (
+            SELECT tahun_program AS tahun, sum(jumlah) AS pagu
+            FROM pagu_rekrutmen GROUP BY 1
+        ),
+        target AS (
+            SELECT tahun_program AS tahun, sum(diterima_target) AS target_gelombang
+            FROM gelombang GROUP BY 1
+        ),
+        ditempatkan AS (
+            SELECT tahun_program AS tahun, count(*) AS ditempatkan
+            FROM penempatan GROUP BY 1
+        )
+        SELECT p.tahun, p.pagu, t.target_gelombang, d.ditempatkan,
+               t.target_gelombang - p.pagu AS selisih_pagu_target
+        FROM pagu p
+        JOIN target t USING (tahun)
+        JOIN ditempatkan d USING (tahun)
+        ORDER BY 1
+        """
+    )
+
+
+def rencana_realisasi_per_unit(minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT) -> pd.DataFrame:
+    """Rencana vs realisasi penempatan per unit induk, tahun program 2019-2024.
+
+    Kolom: kode_unit, nama_pendek, rencana, realisasi, selisih. `rencana`
+    dari `usulan_kebutuhan.usulan`, `realisasi` dari jumlah baris
+    `penempatan`. Kohort 2025 (belum sepenuhnya ditempatkan) sengaja di luar
+    rentang -- keadaan proses, bukan data hilang. Memakai filter anomali J4
+    yang sama dengan bagian B (`jumlah_pegawai > 50`).
+    """
+    return db.query(
+        """
+        WITH rencana AS (
+            SELECT unit_induk, round(sum(usulan)) AS rencana
+            FROM usulan_kebutuhan
+            WHERE tahun_program BETWEEN 2019 AND 2024
+            GROUP BY 1
+        ),
+        realisasi AS (
+            SELECT unit_induk, count(*) AS realisasi
+            FROM penempatan
+            WHERE tahun_program BETWEEN 2019 AND 2024 AND unit_induk IS NOT NULL
+            GROUP BY 1
+        )
+        SELECT r.unit_induk AS kode_unit, iu.nama_pendek, r.rencana,
+               CAST(coalesce(rl.realisasi, 0) AS BIGINT) AS realisasi,
+               CAST(coalesce(rl.realisasi, 0) AS BIGINT) - r.rencana AS selisih
+        FROM rencana r
+        LEFT JOIN realisasi rl USING (unit_induk)
+        JOIN unit_induk iu ON iu.unit_induk = r.unit_induk
+        WHERE iu.jumlah_pegawai > ?
+        ORDER BY 5 DESC
+        """,
+        [minimal_pegawai],
+    )
+
+
+def pemenuhan_per_tahun() -> pd.DataFrame:
+    """Persentase pemenuhan target gelombang per tahun program, 2019-2025.
+
+    Kolom: tahun, target_gelombang, ditempatkan, pct_pemenuhan, tahun_rbb.
+    `tahun_rbb` menandai 2020/2021/2024 -- tahun-tahun itu tercatat cuma
+    sisa setelah saringan FHCI, jadi `pct_pemenuhan`-nya bukan gambaran
+    penuh kohort (CATATAN_DATA.md §7). Halaman yang memutuskan
+    mengeluarkannya dari rata-rata; fungsi ini hanya menandai, tidak
+    menghitung ulang rata-ratanya.
+    """
+    return db.query(
+        f"""
+        WITH target AS (
+            SELECT tahun_program AS tahun, sum(diterima_target) AS target_gelombang
+            FROM gelombang GROUP BY 1
+        ),
+        ditempatkan AS (
+            SELECT tahun_program AS tahun, count(*) AS ditempatkan
+            FROM penempatan GROUP BY 1
+        )
+        SELECT t.tahun, t.target_gelombang, d.ditempatkan,
+               round(100.0 * d.ditempatkan / t.target_gelombang, 1) AS pct_pemenuhan,
+               t.tahun IN ({",".join("?" * len(_TAHUN_RBB))}) AS tahun_rbb
+        FROM target t
+        JOIN ditempatkan d USING (tahun)
+        ORDER BY 1
+        """,
+        list(_TAHUN_RBB),
+    )

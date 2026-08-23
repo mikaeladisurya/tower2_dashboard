@@ -389,6 +389,7 @@ snapshot hari ini, dan datanya (2019–2025) tidak berubah lagi. Alasannya wajib
 docstring halaman (P9). Disetujui untuk:
 
 - **Corong Seleksi** (G13) — corong per tahap & pembanding antar gelombang, riwayat final.
+- **Rencana & Realisasi** (G15) — pagu/target/realisasi per tahun program, riwayat final 2019-2025.
 
 Kalau halaman berikutnya (mis. Pasca-Seleksi) punya karakter serupa — historis, tuntas, tidak
 ada status yang bisa berubah terhadap tanggal — penyimpangan yang sama berlaku dengan alasan

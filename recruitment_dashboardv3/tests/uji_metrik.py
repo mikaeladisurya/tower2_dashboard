@@ -704,3 +704,75 @@ def test_daftar_gelombang_19_baris_terbaru_dulu():
     assert len(df) == 19
     assert df.iloc[0]["gelombang_id"] == "G2025-092"
     assert df.iloc[-1]["gelombang_id"] == "G2019-070"
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# F -- Rencana & Realisasi (halaman 6, G15)
+#
+# Analisis lintas-tahun atas riwayat yang sudah tuntas (2019-2025) -- seperti
+# bagian D, tidak terikat `hari_ini()`.
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def test_pagu_target_realisasi_tahunan_anchor_rancangan():
+    """Cocok persis dengan tabel Temuan A di docs/RANCANGAN_HALAMAN.md §8."""
+    df = metrics.pagu_target_realisasi_tahunan()
+    assert list(df.columns) == [
+        "tahun",
+        "pagu",
+        "target_gelombang",
+        "ditempatkan",
+        "selisih_pagu_target",
+    ]
+    assert list(df["tahun"]) == [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+    baris = df.set_index("tahun")
+    assert int(baris.loc[2019, "pagu"]) == 1093
+    assert int(baris.loc[2019, "target_gelombang"]) == 1353
+    assert int(baris.loc[2019, "ditempatkan"]) == 1353
+    assert int(baris.loc[2019, "selisih_pagu_target"]) == 260
+    assert int(baris.loc[2020, "ditempatkan"]) == 125
+    assert int(baris.loc[2020, "selisih_pagu_target"]) == 0
+    assert int(baris.loc[2021, "ditempatkan"]) == 49
+    assert int(baris.loc[2024, "pagu"]) == 1098
+    assert int(baris.loc[2024, "target_gelombang"]) == 1578
+    assert int(baris.loc[2024, "ditempatkan"]) == 1278
+    assert int(baris.loc[2025, "pagu"]) == 1050
+    assert int(baris.loc[2025, "target_gelombang"]) == 2000
+    assert int(baris.loc[2025, "ditempatkan"]) == 2000
+    assert int(baris.loc[2025, "selisih_pagu_target"]) == 950
+
+
+def test_rencana_realisasi_per_unit_2019_2024_47_baris():
+    """Filter anomali J4 (jumlah_pegawai > 50) -- konsisten dengan bagian B."""
+    df = metrics.rencana_realisasi_per_unit()
+    assert list(df.columns) == ["kode_unit", "nama_pendek", "rencana", "realisasi", "selisih"]
+    assert len(df) == 47
+    baris = df.set_index("nama_pendek")
+    assert int(baris.loc["Kantor Pusat", "rencana"]) == 2056
+    assert int(baris.loc["Kantor Pusat", "realisasi"]) == 447
+    assert int(baris.loc["Kantor Pusat", "selisih"]) == -1609
+
+
+def test_pemenuhan_per_tahun_anchor_tahun_rbb():
+    df = metrics.pemenuhan_per_tahun()
+    assert list(df.columns) == [
+        "tahun",
+        "target_gelombang",
+        "ditempatkan",
+        "pct_pemenuhan",
+        "tahun_rbb",
+    ]
+    baris = df.set_index("tahun")
+    assert bool(baris.loc[2020, "tahun_rbb"])
+    assert bool(baris.loc[2021, "tahun_rbb"])
+    assert bool(baris.loc[2024, "tahun_rbb"])
+    assert not bool(baris.loc[2019, "tahun_rbb"])
+    assert not bool(baris.loc[2022, "tahun_rbb"])
+    assert not bool(baris.loc[2023, "tahun_rbb"])
+    assert not bool(baris.loc[2025, "tahun_rbb"])
+    assert float(baris.loc[2021, "pct_pemenuhan"]) == 7.1  # anchor CATATAN_DATA.md §7
+    assert float(baris.loc[2020, "pct_pemenuhan"]) == 38.5
+    assert float(baris.loc[2024, "pct_pemenuhan"]) == 81.0
+
+    non_rbb = df[~df["tahun_rbb"]]
+    assert round(float(non_rbb["pct_pemenuhan"].mean()), 1) == 100.0

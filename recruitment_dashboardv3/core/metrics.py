@@ -326,3 +326,178 @@ def aktivitas_sekitar(acuan: date | None = None) -> pd.DataFrame:
         """,
         [acuan, acuan, acuan, acuan],
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# B. Perencanaan Formasi (halaman 2)
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Rantai perencanaan yang ada di data: proyeksi_kekosongan (per unit x posisi,
+# 2019-2026) -> usulan_kebutuhan (kekosongan + gap FTK, 2019-2025) ->
+# pagu_rekrutmen (2019-2025). `proyeksi_kekosongan` berhenti di 2026 -- lihat
+# `rentang_tahun_proyeksi()`, yang dipakai halaman untuk mendeteksi batas ini
+# dan menampilkannya sebagai keadaan data, bukan galat.
+
+# Anomali `unit_induk` sudah terverifikasi (CATATAN_DATA.md J4): baris duplikat
+# "UID Jawa Tengah & DIY" berjumlah_pegawai=4 tersingkir dengan filter ini,
+# tanpa perlu tahu penyebabnya lebih dulu.
+_MINIMAL_PEGAWAI_UNIT = 50
+
+
+def rentang_tahun_proyeksi() -> tuple[int, int]:
+    """Tahun minimum & maksimum yang tersedia di `proyeksi_kekosongan`.
+
+    Batas horison data proyeksi -- dipakai halaman untuk menawarkan tahun
+    historis terakhir begitu `hari_ini()` melewati tahun maksimum ini.
+    """
+    df = db.query("SELECT min(tahun) AS mn, max(tahun) AS mx FROM proyeksi_kekosongan")
+    baris = df.iloc[0]
+    return int(baris["mn"]), int(baris["mx"])
+
+
+def kekosongan_per_sebab(acuan: date | None = None) -> pd.DataFrame:
+    """Proyeksi kekosongan per sebab, untuk tahun berjalan & tahun berikutnya.
+
+    `sebab` satu dari: pensiun, mengundurkan diri, meninggal dunia, PHK.
+    Tahun diturunkan dari `acuan` (tahun(acuan) dan tahun(acuan)+1) -- bukan
+    di-hardcode. Kalau kedua tahun berada di luar rentang data (lihat
+    `rentang_tahun_proyeksi()`), hasilnya kosong -- itu jawaban yang benar,
+    bukan galat.
+    """
+    acuan = _acuan(acuan)
+    return db.query(
+        """
+        SELECT tahun,
+               round(sum(pensiun)) AS pensiun,
+               round(sum(mengundurkan_diri)) AS mengundurkan_diri,
+               round(sum(meninggal_dunia)) AS meninggal_dunia,
+               round(sum(phk)) AS phk,
+               round(sum(kekosongan)) AS total
+        FROM proyeksi_kekosongan
+        WHERE tahun IN (?, ?)
+        GROUP BY 1
+        ORDER BY 1
+        """,
+        [acuan.year, acuan.year + 1],
+    )
+
+
+def kekosongan_per_unit(tahun: int, minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT) -> pd.DataFrame:
+    """Proyeksi kekosongan per unit induk (48 unit) pada satu tahun.
+
+    Kolom: unit_induk, nama_pendek, jenis_unit, kekosongan. Diurutkan dari yang
+    paling terancam. Kosong kalau `tahun` di luar rentang `proyeksi_kekosongan`.
+    """
+    return db.query(
+        """
+        SELECT pk.unit_induk, u.nama_pendek, u.jenis_unit,
+               round(sum(pk.kekosongan)) AS kekosongan
+        FROM proyeksi_kekosongan pk
+        JOIN unit_induk u ON u.unit_induk = pk.unit_induk
+        WHERE pk.tahun = ? AND u.jumlah_pegawai > ?
+        GROUP BY 1, 2, 3
+        ORDER BY 4 DESC
+        """,
+        [tahun, minimal_pegawai],
+    )
+
+
+def daftar_unit_induk(minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT) -> pd.DataFrame:
+    """Daftar unit induk untuk filter halaman -- kode & nama pendek, disaring
+    anomali J4.
+
+    Kolom kembalian sengaja diberi alias `kode_unit` (bukan nama kolom asli
+    `unit_induk`) supaya halaman yang memanggilnya tidak perlu menyebut nama
+    tabel/kolom sumber sebagai literal string.
+    """
+    return db.query(
+        """
+        SELECT unit_induk AS kode_unit, nama_pendek
+        FROM unit_induk
+        WHERE jumlah_pegawai > ?
+        ORDER BY nama_pendek
+        """,
+        [minimal_pegawai],
+    )
+
+
+def kekosongan_per_posisi(unit_induk: str, tahun: int) -> pd.DataFrame:
+    """Proyeksi kekosongan per posisi & sub-bidang, untuk satu unit pada satu
+    tahun.
+
+    Kolom: nama_posisi, sub_bidang, jenjang, kekosongan. Baris dengan
+    kekosongan 0 disaring supaya daftar tetap fokus pada yang benar-benar
+    terancam -- unit apa pun bisa punya ratusan kombinasi posisi x jenjang.
+    """
+    return db.query(
+        """
+        SELECT nama_posisi, sub_bidang, jenjang, round(sum(kekosongan)) AS kekosongan
+        FROM proyeksi_kekosongan
+        WHERE unit_induk = ? AND tahun = ?
+        GROUP BY 1, 2, 3
+        HAVING round(sum(kekosongan)) > 0
+        ORDER BY 4 DESC
+        """,
+        [unit_induk, tahun],
+    )
+
+
+def gap_ftk_nasional(minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT) -> dict[str, float]:
+    """Gap FTK nasional -- formasi (`ftk_2025`) vs realisasi.
+
+    WAJIB `realisasi_mar_2026`: kolom `realisasi_apr_2026` hanya terisi di 1
+    dari 48 unit dan menghasilkan gap palsu 33.934 (CATATAN_DATA.md J8).
+
+    Memakai filter anomali J4 yang sama dengan `gap_ftk_per_unit()` supaya
+    kartu nasional dan tabel per-unit di halaman selalu bisa dijumlahkan
+    saling cocok -- hasilnya **561**, bukan 701 (701 adalah seluruh 48 baris
+    apa adanya, termasuk baris duplikat J4; lihat CATATAN_DATA.md J8).
+    """
+    df = db.query(
+        """
+        SELECT sum(ftk_2025) AS ftk,
+               sum(realisasi_mar_2026) AS realisasi,
+               sum(ftk_2025) - sum(realisasi_mar_2026) AS gap
+        FROM unit_induk
+        WHERE jumlah_pegawai > ?
+        """,
+        [minimal_pegawai],
+    )
+    return df.iloc[0].to_dict()
+
+
+def gap_ftk_per_unit(minimal_pegawai: int = _MINIMAL_PEGAWAI_UNIT) -> pd.DataFrame:
+    """Gap FTK per unit induk -- formasi (`ftk_2025`) vs realisasi
+    (`realisasi_mar_2026`)."""
+    return db.query(
+        """
+        SELECT nama_pendek, jenis_unit, ftk_2025, realisasi_mar_2026,
+               ftk_2025 - realisasi_mar_2026 AS gap
+        FROM unit_induk
+        WHERE jumlah_pegawai > ?
+        ORDER BY gap DESC
+        """,
+        [minimal_pegawai],
+    )
+
+
+def usulan_vs_pagu() -> pd.DataFrame:
+    """Usulan unit vs pagu yang disetujui pusat, per tahun program (2019-2025).
+
+    Kolom: tahun, pagu, usulan, pct_disetujui.
+    """
+    return db.query(
+        """
+        SELECT p.tahun_program AS tahun,
+               sum(p.jumlah) AS pagu,
+               round(u.usulan) AS usulan,
+               round(100.0 * sum(p.jumlah) / u.usulan, 1) AS pct_disetujui
+        FROM pagu_rekrutmen p
+        JOIN (
+            SELECT tahun_program, sum(usulan) AS usulan
+            FROM usulan_kebutuhan GROUP BY 1
+        ) u USING (tahun_program)
+        GROUP BY 1, u.usulan
+        ORDER BY 1
+        """
+    )

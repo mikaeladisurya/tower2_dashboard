@@ -167,8 +167,10 @@ proyeksi kekosongan  →  usulan unit  →  pagu disetujui
    di-hardcode 2026.
 2. **Kekosongan per unit induk** — 48 unit, mana yang paling terancam.
 3. **Kekosongan per posisi & sub-bidang** — `posisi_unit_induk` punya 11.781 baris, granular.
-4. **Gap FTK per unit** — nasional 701. Wajib `realisasi_mar_2026`; `apr_2026` menghasilkan
-   33.934 yang palsu karena hanya 1 dari 48 unit terisi.
+4. **Gap FTK per unit** — nasional 561 setelah filter anomali J4 (`jumlah_pegawai > 50`);
+   701 adalah seluruh 48 baris apa adanya, termasuk baris duplikat J4 (lihat
+   `CATATAN_DATA.md` J8). Wajib `realisasi_mar_2026`; `apr_2026` menghasilkan 33.934 yang
+   palsu karena hanya 1 dari 48 unit terisi.
 5. **Usulan vs pagu per tahun** — berapa diminta unit, berapa disetujui pusat.
 
 **Batas jujur:** `proyeksi_kekosongan` berhenti di **2026**. Begitu hari ini melewati 2026,

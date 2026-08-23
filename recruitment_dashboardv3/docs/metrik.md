@@ -669,11 +669,322 @@ berikutnya Selesai tahap pasca-seleksi G2025-091 Penandatanganan Perjanjian 2026
 
 ---
 
+---
+
+# B · Metrik Halaman 2 — Perencanaan Formasi (G11)
+
+Rantai perencanaan yang ada di data:
+
+```
+proyeksi_kekosongan  →  usulan_kebutuhan  →  pagu_rekrutmen
+ (per unit x posisi,     (kekosongan +         (2019-2025)
+    2019-2026)            gap FTK, 2019-2025)
+```
+
+`proyeksi_kekosongan` **berhenti di 2026** — begitu `hari_ini()` melewatinya, fungsi yang
+bergantung pada tahun berjalan mengembalikan DataFrame kosong (bukan galat, bukan data lama
+disamarkan). Halaman menampilkan ini sebagai keadaan data lewat `keadaan_kosong()` lalu jatuh
+ke tahun historis terakhir — lihat `rentang_tahun_proyeksi()` di bawah.
+
+**Filter anomali J4 (`WHERE jumlah_pegawai > 50`)** dipakai konsisten di
+`kekosongan_per_unit`, `daftar_unit_induk`, `gap_ftk_nasional`, dan `gap_ftk_per_unit` — bukan
+cuma di tabel per-unit. Alasannya diuraikan di M08 di bawah: tanpa filter ini, KPI nasional
+(701) dan jumlah baris di tabel per-unit (yang sudah tersaring, 561) akan terlihat tidak
+cocok satu sama lain tanpa penjelasan apa pun di layar (P2 melarang menerangkan sebabnya di
+UI) — jadi filter yang sama dipakai di kedua tempat.
+
+---
+
+## M05 · `rentang_tahun_proyeksi() -> tuple[int, int]`
+
+**Definisi bisnis:** tahun minimum & maksimum yang tersedia di data proyeksi kekosongan —
+batas horison proyeksi.
+
+### SQL
+
+```sql
+SELECT min(tahun) AS mn, max(tahun) AS mx FROM proyeksi_kekosongan
+```
+
+### Keluaran nyata
+
+```
+(2019, 2026)
+```
+
+---
+
+## M06 · `kekosongan_per_sebab(acuan=None) -> DataFrame`
+
+**Definisi bisnis:** proyeksi kekosongan per sebab (pensiun, mengundurkan diri, meninggal
+dunia, PHK), untuk tahun berjalan dan tahun berikutnya dari `acuan`.
+
+Tahun **diturunkan dari `acuan`** (`acuan.year` dan `acuan.year + 1`), tidak pernah
+di-hardcode 2026/2027. Kalau kedua tahun di luar rentang `rentang_tahun_proyeksi()`,
+hasilnya kosong — jawaban yang benar, bukan galat.
+
+### SQL
+
+```sql
+SELECT tahun,
+       round(sum(pensiun)) AS pensiun,
+       round(sum(mengundurkan_diri)) AS mengundurkan_diri,
+       round(sum(meninggal_dunia)) AS meninggal_dunia,
+       round(sum(phk)) AS phk,
+       round(sum(kekosongan)) AS total
+FROM proyeksi_kekosongan
+WHERE tahun IN (?, ?)
+GROUP BY 1
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+**`acuan = 2026-08-23`** (satu baris — 2027 di luar rentang):
+
+```
+   tahun  pensiun  mengundurkan_diri  meninggal_dunia   phk  total
+0   2026    780.0               78.0             39.0  22.0  919.0
+```
+
+**`acuan = 2025-12-01`** (dua baris — 2025 dan 2026 keduanya ada):
+
+```
+   tahun  pensiun  mengundurkan_diri  meninggal_dunia   phk   total
+0   2025    864.0               85.0             43.0  23.0  1015.0
+1   2026    780.0               78.0             39.0  22.0   919.0
+```
+
+**`acuan = 2019-01-01`:**
+
+```
+   tahun  pensiun  mengundurkan_diri  meninggal_dunia   phk   total
+0   2019   2122.0              133.0             66.0  37.0  2357.0
+1   2020   1656.0              107.0             53.0  29.0  1845.0
+```
+
+**Batas jujur — `acuan = 2027-01-06`** (kosong, kedua tahun 2027/2028 di luar data):
+
+```
+Empty DataFrame
+Columns: [tahun, pensiun, mengundurkan_diri, meninggal_dunia, phk, total]
+Index: []
+```
+
+2026: 919 kekosongan, 780 karena pensiun — **85%**, seperti dicatat di
+`docs/RANCANGAN_HALAMAN.md` §4.
+
+---
+
+## M07 · `kekosongan_per_unit(tahun, minimal_pegawai=50) -> DataFrame`
+
+**Definisi bisnis:** proyeksi kekosongan per unit induk pada satu tahun, diurutkan dari yang
+paling terancam.
+
+Filter anomali J4 (`jumlah_pegawai > 50`) menyingkirkan baris duplikat pecahan Yogyakarta.
+
+### SQL
+
+```sql
+SELECT pk.unit_induk, u.nama_pendek, u.jenis_unit,
+       round(sum(pk.kekosongan)) AS kekosongan
+FROM proyeksi_kekosongan pk
+JOIN unit_induk u ON u.unit_induk = pk.unit_induk
+WHERE pk.tahun = ? AND u.jumlah_pegawai > ?
+GROUP BY 1, 2, 3
+ORDER BY 4 DESC
+```
+
+### Keluaran nyata
+
+**`tahun = 2026`** — 47 baris (48 unit dikurangi 1 anomali J4). Sepuluh teratas:
+
+```
+Kantor Pusat            153
+UID Jawa Timur           53
+UID Jawa Barat           46
+UID Jawa Tengah & DIY    40
+UID Jakarta Raya         36
+P3B Sumatera             32
+UID Sumut                30
+UIT JBT                  30
+UID Sulselrabar          27
+UID S2JB                 24
+```
+
+**Batas jujur — `tahun = 2027`:** kosong (di luar `rentang_tahun_proyeksi()`).
+
+---
+
+## M08 · `daftar_unit_induk(minimal_pegawai=50) -> DataFrame`
+
+**Definisi bisnis:** daftar unit induk untuk filter halaman — kode dan nama pendek.
+
+Kolom kembalian **`kode_unit`** (bukan `unit_induk`) — alias sengaja dipilih supaya halaman
+yang memanggilnya tidak perlu menyebut nama kolom sumber sebagai string literal.
+
+### SQL
+
+```sql
+SELECT unit_induk AS kode_unit, nama_pendek
+FROM unit_induk
+WHERE jumlah_pegawai > ?
+ORDER BY nama_pendek
+```
+
+### Keluaran nyata
+
+**47 baris** (48 dikurangi 1 anomali J4).
+
+---
+
+## M09 · `kekosongan_per_posisi(unit_induk, tahun) -> DataFrame`
+
+**Definisi bisnis:** proyeksi kekosongan per posisi & sub-bidang, untuk satu unit pada satu
+tahun. Baris dengan kekosongan 0 disaring — unit besar bisa punya ribuan kombinasi posisi
+x jenjang, mayoritas tanpa kekosongan.
+
+### SQL
+
+```sql
+SELECT nama_posisi, sub_bidang, jenjang, round(sum(kekosongan)) AS kekosongan
+FROM proyeksi_kekosongan
+WHERE unit_induk = ? AND tahun = ?
+GROUP BY 1, 2, 3
+HAVING round(sum(kekosongan)) > 0
+ORDER BY 4 DESC
+```
+
+⚠️ **Jebakan ditemukan saat diuji:** `HAVING sum(kekosongan) > 0` (tanpa pembulatan) meloloskan
+baris dengan kekosongan pecahan kecil (mis. 0,3) yang lalu **tampil sebagai 0** setelah
+`round()` di `SELECT` — inkonsisten dan membingungkan. Diperbaiki dengan membulatkan di kedua
+sisi: `HAVING round(sum(kekosongan)) > 0`.
+
+### Keluaran nyata
+
+**Kantor Pusat, 2026** — 14 baris (bukan 2.318 baris mentah posisi x jenjang unit ini;
+setelah agregasi sub_bidang dan penyaringan kekosongan=0). Tiga teratas:
+
+```
+SENIOR OFFICER VERIFIKASI                    Keuangan dan Akuntansi   G3   2
+SENIOR SPECIALIST KEUANGAN                   Keuangan dan Akuntansi  SSP   1
+SENIOR SPECIALIST HUMAN CAPITAL MANAGEMENT   Sumber Daya Manusia     SSP   1
+```
+
+---
+
+## M10 · `gap_ftk_nasional(minimal_pegawai=50) -> dict` · `gap_ftk_per_unit(minimal_pegawai=50) -> DataFrame`
+
+**Definisi bisnis:** formasi tenaga kerja (FTK 2025) dikurangi realisasi pegawai (Maret
+2026) — kekurangan pegawai terhadap formasi yang ditetapkan.
+
+**WAJIB `realisasi_mar_2026`**: `realisasi_apr_2026` hanya terisi di 1 dari 48 unit dan
+menghasilkan gap palsu 33.934 (CATATAN_DATA.md J8).
+
+### SQL
+
+```sql
+-- nasional
+SELECT sum(ftk_2025) AS ftk, sum(realisasi_mar_2026) AS realisasi,
+       sum(ftk_2025) - sum(realisasi_mar_2026) AS gap
+FROM unit_induk WHERE jumlah_pegawai > ?
+
+-- per unit
+SELECT nama_pendek, jenis_unit, ftk_2025, realisasi_mar_2026,
+       ftk_2025 - realisasi_mar_2026 AS gap
+FROM unit_induk WHERE jumlah_pegawai > ?
+ORDER BY gap DESC
+```
+
+### Keluaran nyata
+
+**Nasional (filter J4 diterapkan):**
+
+```
+{'ftk': 37710.0, 'realisasi': 37149.0, 'gap': 561.0}
+```
+
+**⚠️ Ini BUKAN 701.** 701 adalah jumlah seluruh **48 baris apa adanya**, termasuk baris
+duplikat J4 ("UID Jawa Tengah & DIY" pecahan Yogyakarta, `jumlah_pegawai=4`, gap sendiri
+140). `701 − 140 = 561`. Angka jangkar G6 (`gap_ftk = 701`, dikutip di `GOALS_V3.md`) dihitung
+**tanpa** filter J4. Keputusan G11: **561** dipakai konsisten di kartu nasional maupun tabel
+per-unit, supaya keduanya selalu bisa saling dijumlahkan cocok di halaman — kartu nasional
+701 berdampingan dengan tabel yang cuma berjumlah 561 akan terlihat seperti galat tanpa
+penjelasan apa pun yang boleh ditulis di UI (P2). Rinciannya di `docs/CATATAN_DATA.md` J8.
+
+**Per unit — 47 baris.** Lima gap terbesar:
+
+```
+UID Jawa Barat            59
+Kantor Pusat              55
+P3B Sumatera              50
+UIW Papua&Papua Barat     43
+UID Jawa Timur            41
+```
+
+Lima terkecil (realisasi melebihi formasi — gap negatif):
+
+```
+UIW NusaTenggaraTimur     -5
+UID Sumut                -13
+UID Riau & Kepri         -21
+UID Jawa Tengah & DIY   -138
+```
+
+**Cek silang J4:** tanpa filter, baris duplikat (gap=140) akan menempati **peringkat 1**
+secara palsu. Dengan filter, peringkat 1 adalah UID Jawa Barat (gap=59) — unit sungguhan.
+
+---
+
+## M11 · `usulan_vs_pagu() -> DataFrame`
+
+**Definisi bisnis:** berapa yang diusulkan unit (kekosongan + gap FTK) dibanding berapa yang
+disetujui pusat sebagai pagu, per tahun program.
+
+### SQL
+
+```sql
+SELECT p.tahun_program AS tahun,
+       sum(p.jumlah) AS pagu,
+       round(u.usulan) AS usulan,
+       round(100.0 * sum(p.jumlah) / u.usulan, 1) AS pct_disetujui
+FROM pagu_rekrutmen p
+JOIN (
+    SELECT tahun_program, sum(usulan) AS usulan
+    FROM usulan_kebutuhan GROUP BY 1
+) u USING (tahun_program)
+GROUP BY 1, u.usulan
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+**2019–2025** (7 baris, `usulan_kebutuhan` dan `pagu_rekrutmen` sama-sama berhenti di 2025):
+
+```
+   tahun    pagu  usulan  pct_disetujui
+0   2019  1093.0  3099.0           35.3
+1   2020   325.0  2528.0           12.9
+2   2021   689.0  2313.0           29.8
+3   2022   689.0  2023.0           34.1
+4   2023  1277.0  1816.0           70.3
+5   2024  1098.0  1741.0           63.1
+6   2025  1050.0  1238.0           84.8
+```
+
+2025 cocok dengan angka `docs/RANCANGAN_HALAMAN.md` §4: 906 kekosongan + 333 gap FTK =
+**1.238 usulan** → pagu **1.050**.
+
+Persentase disetujui **naik** dari 2019 ke 2025 (35,3% → 84,8%) — dilaporkan apa adanya,
+bukan ditafsirkan di dokumen ini (penafsiran ada di halaman/laporan, bukan di kamus metrik).
+
+---
+
 ## Yang belum ada di modul ini
 
-Halaman 2–7 belum punya metrik sama sekali — itu lingkup G11–G16, tiap goal menambah
+Halaman 3–7 belum punya metrik sama sekali — itu lingkup G12–G16, tiap goal menambah
 metriknya sendiri ke `core/metrics.py` dan bagian barunya ke dokumen ini.
 
-Empat metrik di atas **belum dipakai halaman mana pun**: `app_pages/` belum ada, dan Beranda
-baru dibangun di G10. Yang sudah dijalankan dan tercatat di sini adalah keluaran fungsinya
-langsung terhadap database, lewat skrip, bukan lewat aplikasi Streamlit.
+Metrik Beranda (M01–M04) **belum dipakai halaman mana pun saat ditulis** — sudah dipakai
+sejak `app_pages/beranda.py` dibangun di G10. Metrik Perencanaan Formasi (M05–M11) dipakai
+`app_pages/perencanaan.py`, dibangun di G11.

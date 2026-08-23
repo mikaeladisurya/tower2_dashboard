@@ -70,11 +70,11 @@ tuntas lalu lapor. **Tidak ada penerusan otomatis** ke goal berikutnya.
 | G4 | Aturan tampilan v3 | opus | SELESAI |
 | G5 | `core/db.py` + `core/format.py` | sonnet | SELESAI |
 | G6 | `core/metrics.py` | opus | SELESAI |
-| G7 | Kerangka aplikasi + navigasi | sonnet | BELUM |
-| G8 | Port chatbot apa adanya | opus | BELUM |
-| G9 | Harness tes 3 lapis | sonnet | BELUM |
-| G10 | Halaman 1 — Beranda `[GATE]` | sonnet | BELUM |
-| G11 | Halaman 2 — Perencanaan Formasi `[GATE]` | sonnet | BELUM |
+| G7 | Kerangka aplikasi + navigasi | sonnet | SELESAI |
+| G8 | Port chatbot apa adanya | opus | SELESAI |
+| G9 | Harness tes 3 lapis | sonnet | SELESAI |
+| G10 | Halaman 1 — Beranda `[GATE]` | sonnet | SELESAI |
+| G11 | Halaman 2 — Perencanaan Formasi `[GATE]` | sonnet | SELESAI |
 | G12 | Halaman 3 — Seleksi Berjalan `[GATE]` | sonnet | BELUM |
 | G13 | Halaman 4 — Corong Seleksi `[GATE]` | sonnet | BELUM |
 | G14 | Halaman 5 — Pasca-Seleksi `[GATE]` | sonnet | BELUM |

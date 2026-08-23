@@ -199,8 +199,23 @@ disengaja: PLN memang tidak pernah memegang data per-kandidat tahap FHCI.
 
 | Kolom dipakai | Gap FTK nasional |
 |---|---|
-| `realisasi_mar_2026` | **701** ← benar |
+| `realisasi_mar_2026` | **701** ← benar, jumlah 48 baris apa adanya |
 | `realisasi_apr_2026` | 33.934 ← palsu |
+
+**Susulan G11.** Angka 701 di atas menjumlah **seluruh 48 baris apa adanya**, termasuk baris
+duplikat J4 ("UID Jawa Tengah & DIY" pecahan Yogyakarta, `jumlah_pegawai=4`, gap sendiri 140).
+Begitu filter J4 (`WHERE jumlah_pegawai > 50`) diterapkan — wajib dipakai di `gap_ftk_per_unit`
+supaya baris itu tidak nangkring di peringkat 1 secara palsu — total nasionalnya bergeser jadi
+**561** (37.710 − 37.149), persis selisih 140 dari baris yang tersingkir.
+
+`gap_ftk_nasional()` dan `gap_ftk_per_unit()` di `core/metrics.py` **keduanya** memakai filter
+`jumlah_pegawai > 50`, supaya KPI nasional dan jumlah baris per-unit di halaman selalu cocok
+satu sama lain — kartu nasional yang berbunyi 701 sementara tabel di bawahnya hanya berjumlah
+561 akan terlihat seperti galat tanpa penjelasan. **701 tetap angka yang benar** untuk
+pertanyaan "berapa gap FTK dari seluruh 48 baris di tabel `unit_induk` apa adanya"; **561**
+adalah jawaban untuk "berapa gap FTK di luar anomali J4" — keduanya valid tergantung
+pertanyaannya, dan `docs/metrik.md` mencatat keduanya.
+
 ### J9 · Kohort 2025 tidak punya baris `ujian_ojt` dan `sk_penempatan`
 
 Ditemukan saat menguji perilaku dashboard dengan jangkar tanggal berjalan.

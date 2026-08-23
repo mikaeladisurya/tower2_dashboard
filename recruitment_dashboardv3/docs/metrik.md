@@ -980,11 +980,298 @@ bukan ditafsirkan di dokumen ini (penafsiran ada di halaman/laporan, bukan di ka
 
 ---
 
+## C. Seleksi Berjalan (halaman 3, G12)
+
+Berbeda dari M01–M04 (Beranda), yang melintasi seluruh gelombang: metrik di bawah selalu
+dipersempit ke satu `gelombang_id` — pertanyaannya "gelombang yang sedang jalan sudah sampai
+mana?", bukan potret nasional. `seleksi_tahap` sudah terbatas ke `kategori='seleksi'` (enam
+tahap, urutan 1–6) — baris `fhci_agregat` dan `pasca` tidak pernah masuk tabel ini, jadi tidak
+perlu filter kategori tambahan.
+
+Dua tanggal acuan dipakai konsisten di seluruh bagian ini:
+
+- **2026-08-23** (hari ini) — tidak ada gelombang terbuka, jalur keadaan kosong.
+- **2025-10-03** — `G2025-092` terbuka (`tgl_buka=2025-10-01`, `tgl_tutup=2025-10-05`), jalur
+  gelombang aktif.
+
+## M12 · `gelombang_terbuka(acuan=None) -> DataFrame`
+
+**Definisi bisnis:** gelombang yang pendaftarannya sedang terbuka pada tanggal acuan.
+
+### SQL
+
+```sql
+SELECT gelombang_id, nama_gelombang, tgl_buka, tgl_tutup,
+       date_diff('day', CAST(? AS DATE), tgl_tutup) AS hari_tersisa,
+       n_profesi, diterima_target
+FROM gelombang
+WHERE tgl_buka <= ? AND tgl_tutup >= ?
+ORDER BY tgl_tutup
+```
+
+### Keluaran nyata
+
+**acuan=2026-08-23** (0 baris — tidak ada gelombang terbuka, benar per P3: gelombang terakhir
+`G2025-092` tutup 2025-10-05, jauh sebelum hari ini):
+
+```
+Empty DataFrame
+Columns: [gelombang_id, nama_gelombang, tgl_buka, tgl_tutup, hari_tersisa, n_profesi, diterima_target]
+```
+
+**acuan=2025-10-03** (1 baris):
+
+```
+  gelombang_id                                        nama_gelombang   tgl_buka  tgl_tutup  hari_tersisa  n_profesi  diterima_target
+0    G2025-092  REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025 2025-10-01 2025-10-05             2         12             1021
+```
+
+---
+
+## M13 · `profesi_gelombang(gelombang_id) -> DataFrame`
+
+**Definisi bisnis:** profesi yang dibuka pada satu gelombang.
+
+### SQL
+
+```sql
+SELECT nama_profesi, jenjang, kota_rekrutmen, kuota
+FROM profesi
+WHERE gelombang_id = ?
+ORDER BY nama_profesi
+```
+
+### Keluaran nyata
+
+`profesi_gelombang('G2025-092')` → **12 baris**, kolom `nama_profesi, jenjang,
+kota_rekrutmen, kuota`. Seluruh 12 baris `kota_rekrutmen = 'Seluruh Indonesia'` (bukan salah
+satu dari lima kolom acak seragam J1 — `kota_rekrutmen` bukan `kota_domisili`/`kota_asal`,
+nilainya memang seragam untuk gelombang rekrutmen nasional, bukan bug generator). Contoh dua
+baris pertama:
+
+```
+                                          nama_profesi  jenjang     kota_rekrutmen  kuota
+0  Proyeksi PLN GROUP - S1 Hukum - Lokasi Penempatan...  S1/D-IV  Seluruh Indonesia     39
+1  Proyeksi PLN GROUP - S2 Hukum/Non Hukum dengan La...       S2  Seluruh Indonesia     16
+```
+
+---
+
+## M14 · `posisi_tahap_seleksi(gelombang_id, acuan=None) -> DataFrame`
+
+**Definisi bisnis:** berapa peserta menunggu di tiap tahap seleksi, berapa yang tahapnya
+sudah lewat — dihitung dari `seleksi_tahap.tanggal_tahap` terhadap acuan, bukan dari kolom
+status beku manapun.
+
+### SQL
+
+```sql
+SELECT r.urutan, st.tahap_kode, r.nama,
+       count(*) AS jumlah,
+       CAST(sum(CASE WHEN st.tanggal_tahap > ? THEN 1 ELSE 0 END) AS BIGINT) AS menunggu,
+       CAST(sum(CASE WHEN st.tanggal_tahap <= ? THEN 1 ELSE 0 END) AS BIGINT) AS sudah_lewat
+FROM seleksi_tahap st
+JOIN tahap_ref r USING (tahap_kode)
+WHERE st.gelombang_id = ?
+GROUP BY 1, 2, 3
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+**acuan=2025-10-03** (2025-10-03 jatuh sebelum tahap seleksi manapun mulai — administrasi
+baru mulai 2025-10-08 — jadi seluruhnya masih "menunggu"):
+
+```
+   urutan        tahap_kode                                 nama  jumlah  menunggu  sudah_lewat
+0       1      administrasi                 Seleksi Administrasi   49801     49801            0
+1       2           adaptif                Tes Adaptif PLN (TAP)   31178     31178            0
+2       3  akademik_inggris  Tes Akademik (TKB) & Bahasa Inggris    9418      9418            0
+3       4         psikologi                        Tes Psikologi    3406      3406            0
+4       5         fisik_mcu         Tes Fisik & Medical Check-Up    1658      1658            0
+5       6         wawancara                  Wawancara User & HR    1259      1259            0
+```
+
+**acuan=2026-01-01** (administrasi s.d. psikologi sudah lewat; fisik_mcu mulai 2026-01-05,
+wawancara mulai 2026-01-31 — keduanya masih menunggu):
+
+```
+administrasi : sudah_lewat = 49801
+psikologi    : sudah_lewat = 3406
+fisik_mcu    : sudah_lewat = 0, menunggu = 1658
+```
+
+---
+
+## M15 · `jadwal_tahap_berikutnya(gelombang_id, acuan=None) -> DataFrame`
+
+**Definisi bisnis:** tahap seleksi terdekat berikutnya sesudah acuan pada satu gelombang —
+tahap apa, tanggal berapa, di kota mana, vendor siapa. Satu baris per kombinasi kota/vendor
+pada tanggal terdekat itu, karena satu tahap bisa dijalankan serentak di beberapa kota dengan
+vendor berbeda.
+
+### SQL
+
+```sql
+WITH tanggal_terdekat AS (
+    SELECT min(tanggal_tahap) AS tgl
+    FROM seleksi_tahap
+    WHERE gelombang_id = ? AND tanggal_tahap > ?
+)
+SELECT st.tahap_kode, r.nama AS nama_tahap, st.tanggal_tahap,
+       st.lokasi_kota, v.nama AS vendor, count(*) AS jumlah
+FROM seleksi_tahap st
+JOIN tahap_ref r USING (tahap_kode)
+LEFT JOIN vendor v USING (vendor_id)
+CROSS JOIN tanggal_terdekat td
+WHERE st.gelombang_id = ? AND st.tanggal_tahap = td.tgl
+GROUP BY 1, 2, 3, 4, 5
+ORDER BY st.lokasi_kota NULLS FIRST
+```
+
+### Keluaran nyata
+
+**acuan=2025-10-03** (1 baris — administrasi tidak punya `lokasi_kota`/`vendor_id` terisi,
+diproses terpusat, bukan bug):
+
+```
+   tahap_kode            nama_tahap tanggal_tahap lokasi_kota vendor  jumlah
+0  administrasi  Seleksi Administrasi    2025-10-08        None   None    2644
+```
+
+**acuan=2026-03-01** (sesudah jadwal terakhir gelombang ini — wawancara berakhir
+2026-02-16): kosong. Jawaban yang benar, bukan galat.
+
+---
+
+## M16 · `kehadiran_tahap_terakhir(gelombang_id, acuan=None) -> dict | None`
+
+**Definisi bisnis:** kehadiran pada tahap seleksi terakhir yang sudah lewat, untuk satu
+gelombang — sinyal paling dini kalau ada yang tidak beres. Hanya menghitung tahap yang
+memang punya konsep kehadiran (`tahap_ref.ada_kehadiran`); Seleksi Administrasi berbasis
+dokumen, tidak ada sesi hadir/tidak hadir. `None` kalau belum ada satu pun tahap
+berkehadiran yang lewat.
+
+### SQL
+
+```sql
+WITH terakhir AS (
+    SELECT max(st.tanggal_tahap) AS tgl
+    FROM seleksi_tahap st
+    JOIN tahap_ref r USING (tahap_kode)
+    WHERE st.gelombang_id = ? AND r.ada_kehadiran AND st.tanggal_tahap <= ?
+)
+SELECT st.tahap_kode, r.nama, t.tgl AS tanggal_tahap,
+       CAST(sum(CASE WHEN st.status_hadir = 'HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS hadir,
+       CAST(sum(CASE WHEN st.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS tidak_hadir,
+       count(*) AS total
+FROM seleksi_tahap st
+JOIN tahap_ref r USING (tahap_kode)
+JOIN terakhir t ON st.tanggal_tahap = t.tgl
+WHERE st.gelombang_id = ?
+GROUP BY 1, 2, 3
+```
+
+### Keluaran nyata
+
+**acuan=2025-10-03** → `None`. Belum ada tahap berkehadiran yang lewat (administrasi, satu-
+satunya tahap yang sudah lewat pada tanggal ini, `ada_kehadiran=False`).
+
+**acuan=2026-01-01** (membuktikan jalur berisi benar-benar berjalan, bukan cuma jalur
+`None`): psikologi berakhir 2025-12-26, jadi itulah tahap berkehadiran terakhir yang lewat:
+
+```python
+{'tahap_kode': 'psikologi', 'nama': 'Tes Psikologi',
+ 'tanggal_tahap': Timestamp('2025-12-26'), 'hadir': 268, 'tidak_hadir': 33, 'total': 301}
+```
+
+---
+
+## M17 · `gelombang_terakhir_selesai(acuan=None) -> dict | None`
+
+**Definisi bisnis:** gelombang paling baru yang pendaftarannya sudah tutup sebelum acuan,
+beserta hasil akhirnya — dipakai keadaan kosong Halaman 3 supaya halaman tetap berguna saat
+tidak ada gelombang terbuka.
+
+`hasil_akhir` di `pendaftaran` adalah keputusan final per pelamar (`DITERIMA`/`GAGAL`),
+bukan status berjalan yang beku — aman dibaca apa adanya, beda dengan `pasca_tahap.status`
+(§4.1 ATURAN_TAMPILAN.md) yang menyatakan status sesaat generate dan bisa salah di masa depan.
+
+### SQL
+
+```sql
+-- gelombang
+SELECT gelombang_id, nama_gelombang, tgl_tutup
+FROM gelombang
+WHERE tgl_tutup < ?
+ORDER BY tgl_tutup DESC
+LIMIT 1
+
+-- hasil, dipanggil dengan gelombang_id hasil query di atas
+SELECT count(*) AS pendaftar,
+       CAST(sum(CASE WHEN hasil_akhir = 'DITERIMA' THEN 1 ELSE 0 END) AS BIGINT) AS diterima,
+       CAST(sum(CASE WHEN hasil_akhir = 'GAGAL' THEN 1 ELSE 0 END) AS BIGINT) AS gagal
+FROM pendaftaran
+WHERE gelombang_id = ?
+```
+
+### Keluaran nyata
+
+**acuan=2026-08-23:**
+
+```python
+{'gelombang_id': 'G2025-092', 'nama_gelombang': 'REKRUTMEN PLN GROUP TINGKAT S1/D4 DAN D3 TAHUN 2025',
+ 'tgl_tutup': Timestamp('2025-10-05'), 'pendaftar': 49801, 'diterima': 1021, 'gagal': 48780}
+```
+
+**acuan=2025-10-03** (pada tanggal ini `G2025-092` sendiri masih terbuka, belum "selesai" —
+gelombang terakhir yang sudah tutup adalah gelombang sebelumnya):
+
+```python
+{'gelombang_id': 'G2025-091', ...}
+```
+
+---
+
+## M18 · `gugur_per_tahap_gelombang(gelombang_id) -> DataFrame`
+
+**Definisi bisnis:** sebaran pelamar gugur per tahap, untuk satu gelombang yang sudah selesai
+diproses — melengkapi M17 untuk menjawab "lolos/gugur sampai tahap mana". Hanya pelamar
+dengan `hasil_akhir = 'GAGAL'` — keputusan final, bukan snapshot berjalan.
+
+### SQL
+
+```sql
+SELECT r.urutan, p.tahap_gugur AS tahap_kode, r.nama, count(*) AS jumlah
+FROM pendaftaran p
+JOIN tahap_ref r ON r.tahap_kode = p.tahap_gugur
+WHERE p.gelombang_id = ? AND p.hasil_akhir = 'GAGAL'
+GROUP BY 1, 2, 3
+ORDER BY 1
+```
+
+### Keluaran nyata
+
+`gugur_per_tahap_gelombang('G2025-092')` → 6 baris, jumlah totalnya **48.780** — cocok persis
+dengan `gagal` di M17:
+
+```
+   urutan        tahap_kode                                 nama  jumlah
+0       1      administrasi                 Seleksi Administrasi   18623
+1       2           adaptif                Tes Adaptif PLN (TAP)   21760
+2       3  akademik_inggris  Tes Akademik (TKB) & Bahasa Inggris    6012
+3       4         psikologi                        Tes Psikologi    1748
+4       5         fisik_mcu         Tes Fisik & Medical Check-Up     399
+5       6         wawancara                  Wawancara User & HR     238
+```
+
+---
+
 ## Yang belum ada di modul ini
 
-Halaman 3–7 belum punya metrik sama sekali — itu lingkup G12–G16, tiap goal menambah
+Halaman 4–7 belum punya metrik sama sekali — itu lingkup G13–G16, tiap goal menambah
 metriknya sendiri ke `core/metrics.py` dan bagian barunya ke dokumen ini.
 
-Metrik Beranda (M01–M04) **belum dipakai halaman mana pun saat ditulis** — sudah dipakai
-sejak `app_pages/beranda.py` dibangun di G10. Metrik Perencanaan Formasi (M05–M11) dipakai
-`app_pages/perencanaan.py`, dibangun di G11.
+Metrik Beranda (M01–M04) dipakai `app_pages/beranda.py`, dibangun di G10. Metrik Perencanaan
+Formasi (M05–M11) dipakai `app_pages/perencanaan.py`, dibangun di G11. Metrik Seleksi
+Berjalan (M12–M18) dipakai `app_pages/seleksi.py`, dibangun di G12.

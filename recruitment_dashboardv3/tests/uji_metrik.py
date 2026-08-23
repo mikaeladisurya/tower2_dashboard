@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from datetime import date
 
+import pandas as pd
+
 from core import metrics
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -303,3 +305,147 @@ def test_usulan_vs_pagu_2019_2025():
     baris = df.set_index("tahun")
     assert int(baris.loc[2025, "pagu"]) == 1050
     assert int(baris.loc[2025, "usulan"]) == 1238
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# C -- Seleksi Berjalan (halaman 3, G12)
+#
+# Dua tanggal acuan WAJIB: 2026-08-23 (tidak ada gelombang terbuka -- jalur
+# keadaan kosong) dan 2025-10-03 (G2025-092 terbuka tgl_buka=2025-10-01,
+# tgl_tutup=2025-10-05 -- jalur gelombang aktif, supaya tidak hanya jalur
+# kosong yang teruji).
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def test_gelombang_terbuka_2026_08_23_kosong():
+    """Hari ini (jangkar suite) -- tidak ada gelombang terbuka, dan itu benar
+    (P3): gelombang terakhir (G2025-092) tutup 2025-10-05, jauh sebelum acuan."""
+    df = metrics.gelombang_terbuka(acuan=date(2026, 8, 23))
+    assert df.empty
+    assert list(df.columns) == [
+        "gelombang_id",
+        "nama_gelombang",
+        "tgl_buka",
+        "tgl_tutup",
+        "hari_tersisa",
+        "n_profesi",
+        "diterima_target",
+    ]
+
+
+def test_gelombang_terbuka_2025_10_03_aktif():
+    df = metrics.gelombang_terbuka(acuan=date(2025, 10, 3))
+    assert len(df) == 1
+    baris = df.iloc[0]
+    assert baris["gelombang_id"] == "G2025-092"
+    assert int(baris["hari_tersisa"]) == 2
+    assert int(baris["n_profesi"]) == 12
+    assert int(baris["diterima_target"]) == 1021
+
+
+def test_profesi_gelombang_g2025_092():
+    df = metrics.profesi_gelombang("G2025-092")
+    assert len(df) == 12
+    assert list(df.columns) == ["nama_profesi", "jenjang", "kota_rekrutmen", "kuota"]
+    assert (df["kota_rekrutmen"] == "Seluruh Indonesia").all()
+
+
+def test_posisi_tahap_seleksi_2025_10_03_semua_menunggu():
+    """Pada 2025-10-03, Gelombang baru tutup pendaftaran -- seluruh tahap
+    seleksi masih terjadwal di masa depan (administrasi mulai 2025-10-08)."""
+    df = metrics.posisi_tahap_seleksi("G2025-092", acuan=date(2025, 10, 3))
+    assert list(df.columns) == [
+        "urutan",
+        "tahap_kode",
+        "nama",
+        "jumlah",
+        "menunggu",
+        "sudah_lewat",
+    ]
+    assert len(df) == 6
+    baris = df.set_index("tahap_kode")
+    assert int(baris.loc["administrasi", "jumlah"]) == 49801
+    assert int(baris.loc["administrasi", "menunggu"]) == 49801
+    assert int(baris.loc["administrasi", "sudah_lewat"]) == 0
+    assert int(baris.loc["wawancara", "jumlah"]) == 1259
+
+
+def test_posisi_tahap_seleksi_2026_01_01_administrasi_sudah_lewat():
+    """Pada 2026-01-01, administrasi s.d. psikologi sudah lewat; fisik_mcu &
+    wawancara belum (mulai 2026-01-05 dan 2026-01-31)."""
+    df = metrics.posisi_tahap_seleksi("G2025-092", acuan=date(2026, 1, 1)).set_index("tahap_kode")
+    assert int(df.loc["administrasi", "sudah_lewat"]) == 49801
+    assert int(df.loc["psikologi", "sudah_lewat"]) == 3406
+    assert int(df.loc["fisik_mcu", "sudah_lewat"]) == 0
+    assert int(df.loc["fisik_mcu", "menunggu"]) == 1658
+
+
+def test_jadwal_tahap_berikutnya_2025_10_03():
+    df = metrics.jadwal_tahap_berikutnya("G2025-092", acuan=date(2025, 10, 3))
+    assert list(df.columns) == [
+        "tahap_kode",
+        "nama_tahap",
+        "tanggal_tahap",
+        "lokasi_kota",
+        "vendor",
+        "jumlah",
+    ]
+    assert len(df) == 1
+    baris = df.iloc[0]
+    assert baris["tahap_kode"] == "administrasi"
+    assert baris["tanggal_tahap"] == pd.Timestamp("2025-10-08")
+    assert int(baris["jumlah"]) == 2644
+
+
+def test_jadwal_tahap_berikutnya_kosong_setelah_horison():
+    """Sesudah jadwal terakhir gelombang (wawancara berakhir 2026-02-16),
+    tidak ada lagi tahap terjadwal -- kosong, bukan galat."""
+    df = metrics.jadwal_tahap_berikutnya("G2025-092", acuan=date(2026, 3, 1))
+    assert df.empty
+
+
+def test_kehadiran_tahap_terakhir_2025_10_03_belum_ada():
+    """Pada 2025-10-03 belum ada satu pun tahap berkehadiran yang lewat
+    (administrasi tidak punya konsep kehadiran) -- None, bukan galat."""
+    assert metrics.kehadiran_tahap_terakhir("G2025-092", acuan=date(2025, 10, 3)) is None
+
+
+def test_kehadiran_tahap_terakhir_2026_01_01_terisi():
+    """Membuktikan jalur berisi benar-benar berjalan, bukan cuma jalur None:
+    pada 2026-01-01, psikologi (berakhir 2025-12-26) adalah tahap
+    berkehadiran terakhir yang lewat."""
+    hasil = metrics.kehadiran_tahap_terakhir("G2025-092", acuan=date(2026, 1, 1))
+    assert hasil is not None
+    assert hasil["tahap_kode"] == "psikologi"
+    assert hasil["tanggal_tahap"] == pd.Timestamp("2025-12-26")
+    assert hasil["hadir"] == 268
+    assert hasil["tidak_hadir"] == 33
+    assert hasil["total"] == 301
+
+
+def test_gelombang_terakhir_selesai_2026_08_23():
+    hasil = metrics.gelombang_terakhir_selesai(acuan=date(2026, 8, 23))
+    assert hasil is not None
+    assert hasil["gelombang_id"] == "G2025-092"
+    assert hasil["tgl_tutup"] == pd.Timestamp("2025-10-05")
+    assert hasil["pendaftar"] == 49801
+    assert hasil["diterima"] == 1021
+    assert hasil["gagal"] == 48780
+
+
+def test_gelombang_terakhir_selesai_2025_10_03_gelombang_sebelumnya():
+    """Pada 2025-10-03, G2025-092 masih terbuka (belum 'selesai') -- gelombang
+    terakhir yang sudah tutup adalah G2025-091."""
+    hasil = metrics.gelombang_terakhir_selesai(acuan=date(2025, 10, 3))
+    assert hasil is not None
+    assert hasil["gelombang_id"] == "G2025-091"
+
+
+def test_gugur_per_tahap_gelombang_g2025_092():
+    df = metrics.gugur_per_tahap_gelombang("G2025-092")
+    assert list(df.columns) == ["urutan", "tahap_kode", "nama", "jumlah"]
+    assert len(df) == 6
+    baris = df.set_index("tahap_kode")
+    assert int(baris.loc["administrasi", "jumlah"]) == 18623
+    assert int(baris.loc["adaptif", "jumlah"]) == 21760
+    assert int(df["jumlah"].sum()) == 48780  # cocok dengan "gagal" di atas

@@ -75,7 +75,7 @@ tuntas lalu lapor. **Tidak ada penerusan otomatis** ke goal berikutnya.
 | G9 | Harness tes 3 lapis | sonnet | SELESAI |
 | G10 | Halaman 1 — Beranda `[GATE]` | sonnet | SELESAI |
 | G11 | Halaman 2 — Perencanaan Formasi `[GATE]` | sonnet | SELESAI |
-| G12 | Halaman 3 — Seleksi Berjalan `[GATE]` | sonnet | BELUM |
+| G12 | Halaman 3 — Seleksi Berjalan `[GATE]` | sonnet | SELESAI |
 | G13 | Halaman 4 — Corong Seleksi `[GATE]` | sonnet | BELUM |
 | G14 | Halaman 5 — Pasca-Seleksi `[GATE]` | sonnet | BELUM |
 | G15 | Halaman 6 — Rencana & Realisasi `[GATE]` | sonnet | BELUM |

@@ -501,3 +501,209 @@ def usulan_vs_pagu() -> pd.DataFrame:
         ORDER BY 1
         """
     )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# C. Seleksi Berjalan (halaman 3)
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Berbeda dari denyut_pipeline() (Beranda), yang melintasi seluruh gelombang.
+# Metrik di sini selalu dipersempit ke satu `gelombang_id` -- pertanyaannya
+# "gelombang yang sedang jalan sudah sampai mana?", bukan potret nasional.
+# Kategori tahap di `seleksi_tahap` sudah terbatas pada kategori='seleksi'
+# (enam tahap, urutan 1-6) -- baris fhci_agregat dan pasca tidak pernah masuk
+# tabel ini, jadi tidak perlu filter kategori tambahan di sini.
+
+
+def gelombang_terbuka(acuan: date | None = None) -> pd.DataFrame:
+    """Gelombang yang pendaftarannya sedang terbuka pada tanggal acuan.
+
+    Kolom: gelombang_id, nama_gelombang, tgl_buka, tgl_tutup, hari_tersisa,
+    n_profesi, diterima_target. `hari_tersisa` dihitung terhadap acuan, bukan
+    disimpan sebagai kolom beku.
+    """
+    acuan = _acuan(acuan)
+    return db.query(
+        """
+        SELECT gelombang_id, nama_gelombang, tgl_buka, tgl_tutup,
+               date_diff('day', CAST(? AS DATE), tgl_tutup) AS hari_tersisa,
+               n_profesi, diterima_target
+        FROM gelombang
+        WHERE tgl_buka <= ? AND tgl_tutup >= ?
+        ORDER BY tgl_tutup
+        """,
+        [acuan, acuan, acuan],
+    )
+
+
+def profesi_gelombang(gelombang_id: str) -> pd.DataFrame:
+    """Profesi yang dibuka pada satu gelombang.
+
+    Kolom: nama_profesi, jenjang, kota_rekrutmen, kuota.
+    """
+    return db.query(
+        """
+        SELECT nama_profesi, jenjang, kota_rekrutmen, kuota
+        FROM profesi
+        WHERE gelombang_id = ?
+        ORDER BY nama_profesi
+        """,
+        [gelombang_id],
+    )
+
+
+def posisi_tahap_seleksi(gelombang_id: str, acuan: date | None = None) -> pd.DataFrame:
+    """Posisi peserta per tahap seleksi pada satu gelombang, pada tanggal acuan.
+
+    Kolom: urutan, tahap_kode, nama, jumlah, menunggu, sudah_lewat.
+    `menunggu` -- tahap terjadwal sesudah acuan, hasilnya belum keluar.
+    `sudah_lewat` -- tahap yang tanggalnya sudah lewat acuan.
+    """
+    acuan = _acuan(acuan)
+    return db.query(
+        """
+        SELECT r.urutan, st.tahap_kode, r.nama,
+               count(*) AS jumlah,
+               CAST(sum(CASE WHEN st.tanggal_tahap > ? THEN 1 ELSE 0 END) AS BIGINT) AS menunggu,
+               CAST(sum(CASE WHEN st.tanggal_tahap <= ? THEN 1 ELSE 0 END) AS BIGINT) AS sudah_lewat
+        FROM seleksi_tahap st
+        JOIN tahap_ref r USING (tahap_kode)
+        WHERE st.gelombang_id = ?
+        GROUP BY 1, 2, 3
+        ORDER BY 1
+        """,
+        [acuan, acuan, gelombang_id],
+    )
+
+
+def jadwal_tahap_berikutnya(gelombang_id: str, acuan: date | None = None) -> pd.DataFrame:
+    """Jadwal tahap seleksi terdekat sesudah acuan, untuk satu gelombang.
+
+    Kolom: tahap_kode, nama_tahap, tanggal_tahap, lokasi_kota, vendor, jumlah.
+    Satu baris per kombinasi kota/vendor pada tanggal terdekat itu -- satu
+    tahap bisa dijalankan serentak di beberapa kota dengan vendor berbeda.
+    Kosong kalau tidak ada lagi tahap terjadwal sesudah acuan.
+    """
+    acuan = _acuan(acuan)
+    return db.query(
+        """
+        WITH tanggal_terdekat AS (
+            SELECT min(tanggal_tahap) AS tgl
+            FROM seleksi_tahap
+            WHERE gelombang_id = ? AND tanggal_tahap > ?
+        )
+        SELECT st.tahap_kode, r.nama AS nama_tahap, st.tanggal_tahap,
+               st.lokasi_kota, v.nama AS vendor, count(*) AS jumlah
+        FROM seleksi_tahap st
+        JOIN tahap_ref r USING (tahap_kode)
+        LEFT JOIN vendor v USING (vendor_id)
+        CROSS JOIN tanggal_terdekat td
+        WHERE st.gelombang_id = ? AND st.tanggal_tahap = td.tgl
+        GROUP BY 1, 2, 3, 4, 5
+        ORDER BY st.lokasi_kota NULLS FIRST
+        """,
+        [gelombang_id, acuan, gelombang_id],
+    )
+
+
+def kehadiran_tahap_terakhir(gelombang_id: str, acuan: date | None = None) -> dict[str, object] | None:
+    """Kehadiran pada tahap seleksi terakhir yang sudah lewat, untuk satu
+    gelombang, pada tanggal acuan.
+
+    Kolom kembalian: tahap_kode, nama, tanggal_tahap, hadir, tidak_hadir,
+    total. Hanya menghitung tahap yang memang punya konsep kehadiran
+    (`tahap_ref.ada_kehadiran`) -- Seleksi Administrasi berbasis dokumen,
+    tidak ada sesi hadir/tidak hadir. `None` kalau belum ada satu pun tahap
+    berkehadiran yang lewat pada gelombang ini sampai acuan.
+    """
+    acuan = _acuan(acuan)
+    df = db.query(
+        """
+        WITH terakhir AS (
+            SELECT max(st.tanggal_tahap) AS tgl
+            FROM seleksi_tahap st
+            JOIN tahap_ref r USING (tahap_kode)
+            WHERE st.gelombang_id = ? AND r.ada_kehadiran AND st.tanggal_tahap <= ?
+        )
+        SELECT st.tahap_kode, r.nama, t.tgl AS tanggal_tahap,
+               CAST(sum(CASE WHEN st.status_hadir = 'HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS hadir,
+               CAST(sum(CASE WHEN st.status_hadir = 'TIDAK_HADIR' THEN 1 ELSE 0 END) AS BIGINT) AS tidak_hadir,
+               count(*) AS total
+        FROM seleksi_tahap st
+        JOIN tahap_ref r USING (tahap_kode)
+        JOIN terakhir t ON st.tanggal_tahap = t.tgl
+        WHERE st.gelombang_id = ?
+        GROUP BY 1, 2, 3
+        """,
+        [gelombang_id, acuan, gelombang_id],
+    )
+    if df.empty:
+        return None
+    return df.iloc[0].to_dict()
+
+
+def gelombang_terakhir_selesai(acuan: date | None = None) -> dict[str, object] | None:
+    """Gelombang paling baru yang pendaftarannya sudah tutup sebelum acuan.
+
+    Kolom kembalian: gelombang_id, nama_gelombang, tgl_tutup, pendaftar,
+    diterima, gagal. Dipakai untuk keadaan kosong Halaman 3 -- kalau tidak
+    ada gelombang yang sedang terbuka, halaman tetap menunjukkan hasil akhir
+    gelombang terakhir yang sudah selesai. `hasil_akhir` di `pendaftaran`
+    adalah keputusan final per pelamar, bukan status berjalan yang beku --
+    aman dibaca apa adanya (beda dengan `pasca_tahap.status`, lihat §4.1
+    ATURAN_TAMPILAN.md). `None` kalau tidak ada gelombang yang sudah tutup
+    sebelum acuan.
+    """
+    acuan = _acuan(acuan)
+    gelombang = db.query(
+        """
+        SELECT gelombang_id, nama_gelombang, tgl_tutup
+        FROM gelombang
+        WHERE tgl_tutup < ?
+        ORDER BY tgl_tutup DESC
+        LIMIT 1
+        """,
+        [acuan],
+    )
+    if gelombang.empty:
+        return None
+    baris = gelombang.iloc[0]
+    hasil = db.query(
+        """
+        SELECT count(*) AS pendaftar,
+               CAST(sum(CASE WHEN hasil_akhir = 'DITERIMA' THEN 1 ELSE 0 END) AS BIGINT) AS diterima,
+               CAST(sum(CASE WHEN hasil_akhir = 'GAGAL' THEN 1 ELSE 0 END) AS BIGINT) AS gagal
+        FROM pendaftaran
+        WHERE gelombang_id = ?
+        """,
+        [baris["gelombang_id"]],
+    ).iloc[0]
+    return {
+        "gelombang_id": baris["gelombang_id"],
+        "nama_gelombang": baris["nama_gelombang"],
+        "tgl_tutup": baris["tgl_tutup"],
+        "pendaftar": int(hasil["pendaftar"]),
+        "diterima": int(hasil["diterima"]),
+        "gagal": int(hasil["gagal"]),
+    }
+
+
+def gugur_per_tahap_gelombang(gelombang_id: str) -> pd.DataFrame:
+    """Sebaran pelamar gugur per tahap, untuk satu gelombang yang sudah
+    selesai diproses.
+
+    Kolom: urutan, tahap_kode, nama, jumlah. Hanya pelamar dengan
+    `hasil_akhir = 'GAGAL'` -- keputusan final, bukan snapshot berjalan.
+    """
+    return db.query(
+        """
+        SELECT r.urutan, p.tahap_gugur AS tahap_kode, r.nama,
+               count(*) AS jumlah
+        FROM pendaftaran p
+        JOIN tahap_ref r ON r.tahap_kode = p.tahap_gugur
+        WHERE p.gelombang_id = ? AND p.hasil_akhir = 'GAGAL'
+        GROUP BY 1, 2, 3
+        ORDER BY 1
+        """,
+        [gelombang_id],
+    )

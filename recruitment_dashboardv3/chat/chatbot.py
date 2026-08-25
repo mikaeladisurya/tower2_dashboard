@@ -82,6 +82,7 @@ def list_llm_profiles() -> list[dict[str, str]]:
                     "api_key": cfg.get("api_key"),
                     "base_url": cfg.get("base_url"),
                     "model": cfg.get("model"),
+                    "supports_tools": bool(cfg.get("supports_tools", True)),
                 }
             )
     if not profiles:
@@ -96,6 +97,7 @@ def list_llm_profiles() -> list[dict[str, str]]:
                     "api_key": key,
                     "base_url": base_url,
                     "model": model,
+                    "supports_tools": True,
                 }
             )
     return profiles
@@ -603,6 +605,8 @@ def _dispatch_tool_call(
 
 _TOOL_LEAK_MARKERS = ("run_sql_query", "render_chart")
 
+_RAW_SQL_LEAK = re.compile(r"\bSELECT\b[\s\S]+?\bFROM\b", re.IGNORECASE)
+
 _MARKDOWN_IMAGE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
 
 
@@ -685,13 +689,14 @@ def llm_answer(
                 tool_calls = message.tool_calls or []
                 if not tool_calls:
                     text = _strip_markdown_images((message.content or "").strip())
-                    if any(marker in text for marker in _TOOL_LEAK_MARKERS):
+                    if any(marker in text for marker in _TOOL_LEAK_MARKERS) or _RAW_SQL_LEAK.search(text):
                         return {
                             "text": (
                                 "Model ini sepertinya belum mendukung tool-calling dengan baik. "
                                 "Coba pilih model lain."
                             ),
                             "results": [],
+                            "needs_manual_fallback": True,
                         }
                     return {
                         "text": text or "Maaf, saya tidak berhasil menyusun jawaban.",
@@ -758,6 +763,130 @@ def llm_answer(
         return {"text": f"Terjadi kesalahan saat memproses pertanyaan: {exc}", "results": []}
 
 
+MANUAL_SQL_SYSTEM_PROMPT = """Anda adalah asisten analitik rekrutmen PLN. Jawab dalam Bahasa Indonesia, singkat dan jelas.
+
+Anda TIDAK punya akses tool/function-calling. Kalau pertanyaan butuh angka/data spesifik dari tabel:
+balas HANYA dengan satu blok kode berikut, tanpa teks lain apapun sebelum/sesudahnya:
+```sql
+SELECT ...
+```
+Hanya satu statement SELECT (boleh diawali WITH untuk CTE), dialek DuckDB. Hanya gunakan tabel & kolom
+yang benar-benar ada pada skema di bawah, jangan mengarang nama kolom/tabel. Nama kolom berspasi HARUS
+dibungkus tanda kutip dua. Tanpa titik koma ganda.
+
+Kalau pertanyaan bersifat umum/definisi/sapaan seputar rekrutmen/HR yang tidak butuh data tabel, jawab
+langsung teks biasa dalam Bahasa Indonesia, JANGAN pakai blok ```sql```.
+
+Skema tabel:
+{schema}
+
+Contoh pertanyaan dan SQL:
+{examples}
+"""
+
+MANUAL_NARRATE_SYSTEM_PROMPT = """Anda asisten analitik rekrutmen PLN. Jawab pertanyaan user dalam Bahasa
+Indonesia, singkat dan jelas, HANYA berdasarkan data JSON (preview hasil query) yang diberikan. Jangan
+mengarang angka/fakta yang tidak ada di data itu."""
+
+
+def llm_answer_manual_sql(
+    question: str,
+    profile: dict[str, str] | None,
+    conversation_context: str = "",
+    on_step: Callable[[str], None] | None = None,
+) -> dict[str, Any] | None:
+    """Fallback untuk model/provider yang tak dukung native tool-calling dengan baik.
+
+    Beda dari `llm_answer`: tidak pakai param `tools`/`tool_choice` sama sekali - SQL diminta
+    lewat instruksi prompt biasa (blok ```sql```), diekstrak & dieksekusi manual, lalu jawaban
+    dinarasikan lewat completion kedua berbasis hasil query. Tidak mendukung render_chart.
+    """
+    if not profile_is_configured(profile):
+        return None
+    try:
+        import duckdb
+        from openai import OpenAI
+
+        client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
+        schema_prompt = _build_schema_prompt()
+        messages: list[dict[str, Any]] = [
+            {
+                "role": "system",
+                "content": MANUAL_SQL_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
+            }
+        ]
+        if conversation_context:
+            messages.append({"role": "user", "content": f"Konteks percakapan sebelumnya:\n{conversation_context}"})
+        messages.append({"role": "user", "content": question})
+
+        if on_step:
+            on_step("Menyusun query...")
+        response = _create_chat_completion(client, model=profile["model"], messages=messages)
+        content = (response.choices[0].message.content or "").strip()
+        sql_candidate = _extract_sql(content)
+
+        if not re.match(r"^\s*(SELECT|WITH)\b", sql_candidate, re.IGNORECASE):
+            text = _strip_markdown_images(content)
+            return {"text": text or "Maaf, saya tidak berhasil menyusun jawaban.", "results": []}
+
+        con = duckdb.connect(str(DB_PATH), read_only=True)
+        try:
+            if not _is_safe_select(sql_candidate):
+                return {
+                    "text": "Query ditolak: hanya satu statement SELECT/WITH ke tabel yang tersedia yang diperbolehkan.",
+                    "results": [],
+                }
+            if on_step:
+                on_step("Menjalankan query...")
+            try:
+                table, total_rows = _execute_sql(con, sql_candidate)
+            except Exception as exc:
+                messages.append({"role": "assistant", "content": content})
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": f"Query gagal dieksekusi: {exc}. Perbaiki, balas HANYA blok ```sql``` baru.",
+                    }
+                )
+                response2 = _create_chat_completion(client, model=profile["model"], messages=messages)
+                content2 = (response2.choices[0].message.content or "").strip()
+                sql_candidate2 = _extract_sql(content2)
+                if not _is_safe_select(sql_candidate2):
+                    return {"text": f"Query SQL gagal dieksekusi: {exc}", "results": []}
+                try:
+                    table, total_rows = _execute_sql(con, sql_candidate2)
+                    sql_candidate = sql_candidate2
+                except Exception as exc2:
+                    return {"text": f"Query SQL gagal dieksekusi: {exc2}", "results": []}
+        finally:
+            con.close()
+
+        if on_step:
+            on_step("Menyusun jawaban...")
+        preview = table.head(20).to_dict(orient="records")
+        narrate_messages = [{"role": "system", "content": MANUAL_NARRATE_SYSTEM_PROMPT}]
+        if conversation_context:
+            narrate_messages.append(
+                {"role": "user", "content": f"Konteks percakapan sebelumnya:\n{conversation_context}"}
+            )
+        narrate_messages.append(
+            {
+                "role": "user",
+                "content": (
+                    f"Pertanyaan: {question}\n\n"
+                    f"Data (preview, {total_rows} baris total):\n{json.dumps(preview, default=str)}"
+                ),
+            }
+        )
+        response3 = _create_chat_completion(client, model=profile["model"], messages=narrate_messages)
+        answer_text = _strip_markdown_images((response3.choices[0].message.content or "").strip())
+        block = {"sql": sql_candidate, "table": table, "chart": None, "total_rows": total_rows}
+        return {"text": answer_text or "Berikut hasil query.", "results": [block]}
+    except Exception as exc:
+        traceback.print_exc()
+        return {"text": f"Terjadi kesalahan saat memproses pertanyaan: {exc}", "results": []}
+
+
 def answer_question(
     question: str,
     profile: dict[str, str] | None = None,
@@ -765,9 +894,14 @@ def answer_question(
     on_step: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     if profile_is_configured(profile):
-        llm_result = llm_answer(question, profile, conversation_context, on_step=on_step)
-        if llm_result:
-            return {"kind": "llm", **llm_result}
+        if profile.get("supports_tools", True):
+            llm_result = llm_answer(question, profile, conversation_context, on_step=on_step)
+            if llm_result and not llm_result.get("needs_manual_fallback"):
+                return {"kind": "llm", **llm_result}
+
+        manual_result = llm_answer_manual_sql(question, profile, conversation_context, on_step=on_step)
+        if manual_result:
+            return {"kind": "llm", **manual_result}
 
     return {
         "kind": "fallback",

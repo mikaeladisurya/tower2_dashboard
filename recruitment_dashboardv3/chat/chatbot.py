@@ -359,7 +359,10 @@ Pertanyaan: Berapa rata-rata "min_ipk" untuk profesi jenjang S1/D-IV?
 SQL: SELECT AVG(min_ipk) AS rata_rata_ipk FROM profesi WHERE jenjang = 'S1/D-IV';
 """.strip()
 
-ALLOWED_CHART_TYPES = {"bar", "line", "pie", "scatter"}
+ALLOWED_CHART_TYPES = {
+    "bar", "line", "pie", "scatter", "funnel", "area", "box", "violin", "histogram",
+    "timeline", "treemap", "sunburst", "icicle",
+}
 
 AGENTIC_SYSTEM_PROMPT = """Anda adalah asisten analitik rekrutmen PLN. Jawab dalam Bahasa Indonesia, singkat dan jelas.
 
@@ -424,10 +427,38 @@ TOOLS = [
                         "description": "result_id dari hasil run_sql_query yang mau divisualisasikan.",
                     },
                     "chart_type": {"type": "string", "enum": sorted(ALLOWED_CHART_TYPES)},
-                    "x": {"type": "string", "description": "Nama kolom untuk sumbu x (kategori untuk pie)."},
-                    "y": {"type": "string", "description": "Nama kolom untuk sumbu y (nilai untuk pie)."},
+                    "x": {
+                        "type": "string",
+                        "description": (
+                            "Nama kolom untuk sumbu x (kategori untuk pie/funnel; kolom yang mau "
+                            "dilihat distribusinya untuk histogram; kolom tanggal mulai untuk "
+                            "timeline; level pertama hierarki untuk treemap/sunburst/icicle)."
+                        ),
+                    },
+                    "y": {
+                        "type": "string",
+                        "description": (
+                            "Nama kolom untuk sumbu y (nilai untuk pie/funnel). Untuk histogram, isi "
+                            "sama dengan x kalau tidak ada kolom nilai terpisah. Untuk timeline, ini "
+                            "kolom nama tugas/kategori (baris). Untuk treemap/sunburst/icicle, ini "
+                            "kolom nilai/ukuran tiap segmen."
+                        ),
+                    },
                     "color": {"type": "string", "description": "Nama kolom untuk pengelompokan warna (opsional)."},
                     "title": {"type": "string", "description": "Judul singkat chart (opsional)."},
+                    "x_end": {
+                        "type": "string",
+                        "description": "Wajib untuk timeline: nama kolom tanggal selesai (pasangan dari x sebagai tanggal mulai).",
+                    },
+                    "path": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": (
+                            "Untuk treemap/sunburst/icicle: daftar nama kolom hierarki dari level "
+                            "terluar ke terdalam, mis. [\"jenjang\", \"rumpun_jurusan\"]. Kalau diisi, "
+                            "menggantikan x sebagai sumbu kategori."
+                        ),
+                    },
                 },
                 "required": ["result_id", "chart_type", "x", "y"],
             },
@@ -447,12 +478,28 @@ def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
         return None
     columns = set(table.columns)
     x, y = spec.get("x"), spec.get("y")
-    if x not in columns or y not in columns:
+    hierarchy_types = {"treemap", "sunburst", "icicle"}
+    optional_y_types = {"histogram"} | hierarchy_types
+    if x not in columns:
         return None
+    if chart_type not in optional_y_types and y not in columns:
+        return None
+    if y is not None and y not in columns:
+        y = None
     color = spec.get("color")
     if color not in columns:
         color = None
     title = spec.get("title") or None
+    if chart_type == "timeline":
+        x_end = spec.get("x_end")
+        if x_end not in columns or y not in columns:
+            return None
+    if chart_type in hierarchy_types:
+        path = spec.get("path")
+        if not isinstance(path, list) or not path:
+            path = [x]
+        if not all(isinstance(col, str) and col in columns for col in path):
+            return None
     try:
         import plotly.express as px
 
@@ -468,6 +515,21 @@ def _build_chart(spec: dict[str, Any], table: pd.DataFrame) -> Any | None:
             return px.scatter(table, **args)
         if chart_type == "pie":
             return px.pie(table, names=x, values=y, title=title)
+        if chart_type == "funnel":
+            return px.funnel(table, x=y, y=x, color=color, title=title)
+        if chart_type == "area":
+            return px.area(table, **args)
+        if chart_type == "box":
+            return px.box(table, **args)
+        if chart_type == "violin":
+            return px.violin(table, **args)
+        if chart_type == "histogram":
+            return px.histogram(table, x=x, y=y, color=color, title=title)
+        if chart_type == "timeline":
+            return px.timeline(table, x_start=x, x_end=spec.get("x_end"), y=y, color=color, title=title)
+        if chart_type in hierarchy_types:
+            fn = {"treemap": px.treemap, "sunburst": px.sunburst, "icicle": px.icicle}[chart_type]
+            return fn(table, path=path, values=y, color=color, title=title)
     except Exception:
         return None
     return None
@@ -519,6 +581,8 @@ def _dispatch_tool_call(
             "y": args.get("y"),
             "color": args.get("color") or None,
             "title": args.get("title") or None,
+            "x_end": args.get("x_end") or None,
+            "path": args.get("path") or None,
         }
         chart = _build_chart(spec, table)
         if chart is None:

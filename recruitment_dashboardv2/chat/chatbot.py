@@ -1,9 +1,9 @@
 """Agen chatbot text-to-SQL — port dari recruitment_dashboard/chatbot.py (v1).
 
 Perubahan dari v1 (lihat plan Tahap 3):
-1. Koneksi DuckDB **read-only ke berkas** `mockdb/out/rekrutmen.duckdb`, bukan
-   DataFrame di-`register` ke koneksi in-memory — database ini 4,22 juta baris,
-   tidak boleh dimuat ke memori.
+1. Koneksi DuckDB lewat `core.db.koneksi_baru()` — berkas lokal atau MotherDuck,
+   tergantung ada tidaknya token — bukan DataFrame di-`register` ke koneksi
+   in-memory: database ini 4,22 juta baris, tidak boleh dimuat ke memori.
 2. Prompt skema dibangkitkan dari katalog (`information_schema`) + nilai contoh
    kolom kategori, bukan dari `df.dtypes` DataFrame yang sudah dimuat. Di-cache
    sekali per proses (`_build_schema_prompt` pakai `functools.lru_cache`) — kalau
@@ -40,7 +40,7 @@ from typing import Any, Callable
 
 import pandas as pd
 
-from core.db import DB_PATH
+from core.db import koneksi_baru
 
 DOCS_DIR = Path(__file__).resolve().parents[1] / "docs"
 
@@ -245,14 +245,12 @@ EXPORT_ROW_LIMIT = 50_000
 def run_sql_for_export(sql: str) -> pd.DataFrame:
     """Jalankan ulang SQL dari giliran percakapan lama untuk ekspor CSV penuh.
 
-    Beda dari v1: buka koneksi read-only sendiri langsung ke file .duckdb, tidak
-    perlu meregistrasi DataFrame (tidak ada DataFrame yang dimuat ke memori).
+    Beda dari v1: buka koneksi sendiri lewat koneksi_baru(), tidak perlu
+    meregistrasi DataFrame (tidak ada DataFrame yang dimuat ke memori).
     """
-    import duckdb
-
     if not _is_safe_select(sql):
         raise ValueError("Query tidak lolos validasi keamanan untuk dijalankan ulang.")
-    con = duckdb.connect(str(DB_PATH), read_only=True)
+    con = koneksi_baru()
     try:
         return con.execute(sql).df().head(EXPORT_ROW_LIMIT)
     finally:
@@ -318,9 +316,7 @@ def _build_schema_prompt() -> str:
     Streamlit hidup, jadi cache sekali cukup — tanpa ini, 1,3 detik itu terulang
     di SETIAP giliran, sebelum langkah pertama sempat terlihat di UI.
     """
-    import duckdb
-
-    con = duckdb.connect(str(DB_PATH), read_only=True)
+    con = koneksi_baru()
     try:
         return "\n\n".join(_describe_table(con, t) for t in TABEL_INTI)
     finally:
@@ -571,19 +567,18 @@ def llm_answer(
 ) -> dict[str, Any] | None:
     """Loop agentic: model memutuskan kapan memanggil run_sql_query/render_chart.
 
-    Beda dari v1: koneksi read-only langsung ke berkas .duckdb (satu koneksi per
-    giliran percakapan, dibuka & ditutup di sini), bukan koneksi in-memory dengan
+    Beda dari v1: koneksi lewat koneksi_baru() (satu koneksi per giliran
+    percakapan, dibuka & ditutup di sini), bukan koneksi in-memory dengan
     DataFrame yang di-`register`.
     """
     if not profile_is_configured(profile):
         return None
     try:
-        import duckdb
         from openai import OpenAI
 
         client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
 
-        con = duckdb.connect(str(DB_PATH), read_only=True)
+        con = koneksi_baru()
         try:
             schema_prompt = _build_schema_prompt()
             messages: list[dict[str, Any]] = [

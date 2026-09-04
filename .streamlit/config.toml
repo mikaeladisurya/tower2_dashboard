@@ -1,0 +1,39 @@
+# Tema untuk deployment Streamlit Community Cloud.
+#
+# Cloud selalu memakai root repo sebagai working directory, jadi HANYA berkas ini
+# yang dibaca -- config.toml di dalam folder subproyek diabaikan di sana. Isinya
+# duplikat dari recruitment_dashboardv2/.streamlit/config.toml (yang tetap
+# dipertahankan supaya `streamlit run` dari dalam folder v2 tetap bertema benar).
+#
+# Konsekuensi: kalau v3 nanti ikut di-deploy dari repo ini, temanya akan bentrok
+# -- root hanya bisa punya satu config.toml. v3 perlu repo sendiri saat itu.
+#
+# Token warna dari recruitment_dashboardv2/docs/design_system.md.
+
+[theme]
+base = "light"
+font = "sans-serif"
+primaryColor = "#0077C8"
+backgroundColor = "#F7F9FC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#103A5D"
+borderColor = "#E7ECF2"
+linkColor = "#0077C8"
+chartCategoricalColors = ["#0077C8", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#4a3aa7"]
+chartSequentialColors = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5cab"]
+greenColor = "#0ca30c"
+yellowColor = "#fab219"
+orangeColor = "#ec835a"
+redColor = "#d03b3b"
+
+[theme.dark]
+primaryColor = "#2E9BE0"
+backgroundColor = "#0E1B29"
+secondaryBackgroundColor = "#132C42"
+textColor = "#EAF4FF"
+borderColor = "#1E3A52"
+linkColor = "#2E9BE0"
+greenColor = "#0ca30c"
+yellowColor = "#fab219"
+orangeColor = "#ec835a"
+redColor = "#d03b3b"

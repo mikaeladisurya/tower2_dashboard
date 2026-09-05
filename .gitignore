@@ -12,8 +12,11 @@ data sintetis/
 # yang memuat nama pegawai. Hasil sulingannya masuk ke knowledge/ (yang di-track).
 referensi/
 
-# ---- Setting lokal Claude Code (mesin-spesifik) ----
+# ---- Setting lokal editor & agen (mesin-spesifik) ----
 .claude/
+.agents/
+.vscode/
+skills-lock.json
 
 # ---- Python ----
 __pycache__/
@@ -39,6 +42,7 @@ env/
 # ---- Scratch / sementara ----
 *.tmp
 *.log
+chatbotv1.py
 
 # ---- OS ----
 Thumbs.db
@@ -67,6 +71,10 @@ knowledge/sources/rbb_fhci/raw_*.json
 mockdb/out/*.duckdb
 mockdb/out/csv/
 mockdb/out/parquet/
+# Bahan kerja eksplorasi manual: notebook ad-hoc (menyimpan keluaran sel berisi
+# cuplikan baris) + salinan skema ke Excel. Keduanya bisa dibuat ulang kapan saja.
+mockdb/eksplorasi_rekrutmen.ipynb
+mockdb/mockdb schema.xlsx
 # out/master/*.csv: blokir semua, lalu buka lagi 7 berkas FONDASI (langkah 01/02) yang
 # TIDAK bisa dibangkitkan ulang tanpa akses DAPEG asli (data sintetis/, di-gitignore di
 # atas) -- keduanya kecil (<2,2 MB) dan aman di-track (agregat, bukan baris per-orang).

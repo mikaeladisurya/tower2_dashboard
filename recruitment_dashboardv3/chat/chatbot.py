@@ -763,6 +763,128 @@ def llm_answer(
         return {"text": f"Terjadi kesalahan saat memproses pertanyaan: {exc}", "results": []}
 
 
+_MANUAL_VIEWS: dict[str, str] = {
+    "v_pendaftaran": """
+        SELECT
+            p.pendaftaran_id, p.tanggal_lamar, p.hasil_akhir, p.tahap_gugur, p.sumber_rekrutmen,
+            k.nama_lengkap, k.jenis_kelamin, k.propinsi_domisili, k.kota_domisili,
+            kp.degree, kp.program_studi, kp.skhu_ipk,
+            g.gelombang_id, g.nama_gelombang, g.angkatan, g.tahun_program,
+            pr.nama_profesi, pr.jenjang, pr.kota_rekrutmen
+        FROM pendaftaran p
+        JOIN kandidat k ON k.kandidat_id = p.kandidat_id
+        LEFT JOIN kandidat_pendidikan kp ON kp.kandidat_id = p.kandidat_id AND kp.pendidikan_terakhir = true
+        JOIN gelombang g ON g.gelombang_id = p.gelombang_id
+        JOIN profesi pr ON pr.profesi_id = p.profesi_id
+    """,
+    "v_seleksi_tahap": """
+        SELECT
+            st.pendaftaran_id, st.kandidat_id, st.gelombang_id, st.tahap_kode,
+            r.nama AS nama_tahap, r.urutan AS urutan_tahap, r.kategori,
+            st.tanggal_tahap, st.status_hadir, st.hasil, st.skor_total, st.mode, st.lokasi_kota
+        FROM seleksi_tahap st
+        JOIN tahap_ref r USING (tahap_kode)
+    """,
+    "v_pasca_tahap": """
+        SELECT
+            pt.pendaftaran_id, pt.kandidat_id, pt.gelombang_id, pt.tahap_kode,
+            r.nama AS nama_tahap, r.urutan AS urutan_tahap,
+            pt.tanggal_mulai, pt.tanggal_selesai, pt.status, pt.progres, pt.pemilik_proses
+        FROM pasca_tahap pt
+        JOIN tahap_ref r USING (tahap_kode)
+    """,
+    "v_gap_ftk_unit": """
+        SELECT
+            unit_induk, nama_pendek, jenis_unit, jumlah_pegawai, ftk_2025, realisasi_mar_2026,
+            ftk_2025 - realisasi_mar_2026 AS gap_ftk
+        FROM unit_induk
+        WHERE jumlah_pegawai > 50
+    """,
+    "v_kekosongan_per_unit": """
+        SELECT
+            pk.unit_induk, u.nama_pendek, u.jenis_unit, pk.tahun, pk.nama_posisi, pk.jenjang,
+            pk.sub_bidang, pk.pensiun, pk.mengundurkan_diri, pk.meninggal_dunia, pk.phk, pk.kekosongan
+        FROM proyeksi_kekosongan pk
+        JOIN unit_induk u ON u.unit_induk = pk.unit_induk
+        WHERE u.jumlah_pegawai > 50
+    """,
+    "v_penempatan": """
+        SELECT
+            pn.penempatan_id, pn.pendaftaran_id, pn.kandidat_id, pn.tahun_program,
+            pn.jenis_penempatan, pn.status_sk, pn.sub_bidang, pn.bidang_pembidangan,
+            pn.nama_posisi, pn.kode_grade,
+            u.nama_pendek AS unit_nama, u.jenis_unit,
+            up.nama AS updl_nama
+        FROM penempatan pn
+        LEFT JOIN unit_induk u ON u.unit_induk = pn.unit_induk
+        LEFT JOIN updl up ON up.updl_id = pn.updl_id
+    """,
+}
+
+
+def _wrap_with_manual_views(sql: str) -> str:
+    """Tempel definisi `_MANUAL_VIEWS` sebagai CTE di depan SQL dari model manual-SQL.
+
+    View ini virtual (bukan `CREATE VIEW` permanen ke file .duckdb yang read-only) - JOIN
+    yang rawan salah (mis. pasca_tahap x tahap_ref lewat tahap_kode, bukan urutan) sudah
+    benar dari sononya, model tinggal SELECT dari nama view tanpa perlu tau jebakan skema.
+    """
+    cte_defs = ",\n".join(f"{name} AS (\n{body}\n)" for name, body in _MANUAL_VIEWS.items())
+    body = sql.strip()
+    if re.match(r"^\s*WITH\b", body, re.IGNORECASE):
+        body = re.sub(r"^\s*WITH\s+", "", body, count=1, flags=re.IGNORECASE)
+        return f"WITH {cte_defs},\n{body}"
+    return f"WITH {cte_defs}\n{body}"
+
+
+MANUAL_SCHEMA_PROMPT = """Tabel: v_pendaftaran (satu baris per pendaftaran, sudah digabung kandidat+pendidikan+gelombang+profesi)
+  - pendaftaran_id, tanggal_lamar, hasil_akhir (DITERIMA/GAGAL), tahap_gugur, sumber_rekrutmen
+  - nama_lengkap, jenis_kelamin, propinsi_domisili, kota_domisili
+  - degree, program_studi, skhu_ipk (pendidikan terakhir kandidat)
+  - gelombang_id, nama_gelombang, angkatan, tahun_program
+  - nama_profesi, jenjang, kota_rekrutmen
+
+Tabel: v_seleksi_tahap (satu baris per tahap seleksi yang dijalani, tahap_ref sudah digabung)
+  - pendaftaran_id, kandidat_id, gelombang_id
+  - tahap_kode, nama_tahap, urutan_tahap (1-6), kategori
+  - tanggal_tahap, status_hadir, hasil (LULUS/GAGAL), skor_total, mode, lokasi_kota
+
+Tabel: v_pasca_tahap (satu baris per tahap pasca-seleksi/diklat, tahap_ref sudah digabung)
+  - pendaftaran_id, kandidat_id, gelombang_id
+  - tahap_kode, nama_tahap, urutan_tahap (100-106)
+  - tanggal_mulai, tanggal_selesai, status (BERJALAN/SELESAI), progres, pemilik_proses
+
+Tabel: v_gap_ftk_unit (satu baris per unit induk, unit anomali sudah disaring)
+  - unit_induk, nama_pendek, jenis_unit, jumlah_pegawai
+  - ftk_2025, realisasi_mar_2026, gap_ftk (ftk_2025 - realisasi_mar_2026)
+
+Tabel: v_kekosongan_per_unit (proyeksi kekosongan per unit x posisi x tahun, unit anomali sudah disaring)
+  - unit_induk, nama_pendek, jenis_unit, tahun, nama_posisi, jenjang, sub_bidang
+  - pensiun, mengundurkan_diri, meninggal_dunia, phk, kekosongan
+
+Tabel: v_penempatan (satu baris per penempatan kandidat setelah diterima)
+  - penempatan_id, pendaftaran_id, kandidat_id, tahun_program
+  - jenis_penempatan, status_sk, sub_bidang, bidang_pembidangan, nama_posisi, kode_grade
+  - unit_nama, jenis_unit, updl_nama"""
+
+MANUAL_SQL_FEW_SHOT = """
+Contoh 1:
+Pertanyaan: Berapa kandidat yang diterima pada gelombang tahun 2023?
+SQL: SELECT count(*) AS jumlah FROM v_pendaftaran WHERE tahun_program = 2023 AND hasil_akhir = 'DITERIMA';
+
+Contoh 2:
+Pertanyaan: Tahap mana yang paling banyak menggugurkan kandidat?
+SQL: SELECT nama_tahap, count(*) AS jumlah_gugur FROM v_seleksi_tahap WHERE hasil = 'GAGAL' GROUP BY 1 ORDER BY 2 DESC;
+
+Contoh 3:
+Pertanyaan: Berapa peserta yang sedang menjalani OJT sekarang?
+SQL: SELECT count(*) AS jumlah FROM v_pasca_tahap WHERE tahap_kode = 'ojt' AND status = 'BERJALAN';
+
+Contoh 4:
+Pertanyaan: Sebutkan 5 unit induk dengan gap FTK terbesar.
+SQL: SELECT nama_pendek, gap_ftk FROM v_gap_ftk_unit ORDER BY gap_ftk DESC LIMIT 5;
+""".strip()
+
 MANUAL_SQL_SYSTEM_PROMPT = """Anda adalah generator SQL untuk analitik data rekrutmen PLN memakai dialek DuckDB.
 Tugas anda HANYA menghasilkan satu query SQL SELECT yang menjawab pertanyaan user berdasarkan skema tabel
 berikut. Anda tidak menjawab pertanyaan langsung, tidak berbasa-basi, dan tidak menjelaskan apapun -
@@ -811,11 +933,12 @@ def llm_answer_manual_sql(
         from openai import OpenAI
 
         client = OpenAI(api_key=profile["api_key"], base_url=profile["base_url"], timeout=LLM_REQUEST_TIMEOUT)
-        schema_prompt = _build_schema_prompt()
         messages: list[dict[str, Any]] = [
             {
                 "role": "system",
-                "content": MANUAL_SQL_SYSTEM_PROMPT.format(schema=schema_prompt, examples=SQL_FEW_SHOT),
+                "content": MANUAL_SQL_SYSTEM_PROMPT.format(
+                    schema=MANUAL_SCHEMA_PROMPT, examples=MANUAL_SQL_FEW_SHOT
+                ),
             }
         ]
         if conversation_context:
@@ -844,7 +967,7 @@ def llm_answer_manual_sql(
             if on_step:
                 on_step("Menjalankan query...")
             try:
-                table, total_rows = _execute_sql(con, sql_candidate)
+                table, total_rows = _execute_sql(con, _wrap_with_manual_views(sql_candidate))
             except Exception as exc:
                 messages.append({"role": "assistant", "content": content})
                 messages.append(
@@ -859,7 +982,7 @@ def llm_answer_manual_sql(
                 if not _is_safe_select(sql_candidate2):
                     return {"text": f"Query SQL gagal dieksekusi: {exc}", "results": []}
                 try:
-                    table, total_rows = _execute_sql(con, sql_candidate2)
+                    table, total_rows = _execute_sql(con, _wrap_with_manual_views(sql_candidate2))
                     sql_candidate = sql_candidate2
                 except Exception as exc2:
                     return {"text": f"Query SQL gagal dieksekusi: {exc2}", "results": []}

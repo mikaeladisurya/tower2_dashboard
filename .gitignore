@@ -17,6 +17,8 @@ referensi/
 .agents/
 .vscode/
 skills-lock.json
+CLAUDE.md
+recruitment_dashboardv3/docs/REBUILD_WIREFRAME.md
 
 # ---- Python ----
 __pycache__/
